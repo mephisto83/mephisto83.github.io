@@ -1,0 +1,42 @@
+﻿<svg mephid="svg"
+     meph-data-x="c$.sx"
+     meph-data-y="c$.sy"
+     meph-event-height="c$.heightchanged"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g mephid="nodeg">
+        <rect data-bind='"x" : "c$.nodex", "y" : "c$.bodyy"'
+              mephid="body"
+              meph-data-rx="c$.bodyrx"
+              meph-data-ry="c$.bodyry"
+              meph-data-width="c$.nodewidth"
+              meph-data-fill="c$.headerfill"
+              meph-data-stroke="c$.bodystroke"
+              meph-data-stroke-width="c$.bodystrokewidth"
+              meph-data-height="c$.nodeheight" />
+        <rect data-bind='"x" : "c$.bodyx", "y" : "c$.headerbuffer"'
+              mephid="container"
+              meph-data-fill="c$.bodyfill"
+              meph-data-height="c$.bodyheight"
+              meph-data-width="c$.bodywidth" />
+        <text class="ignore" fill="#e3e3e3" data-bind='"x" : "c$.titlex", "y" : "c$.titley", "innerHTML": "c$.title"'>
+        </text>
+        <g>
+            <rect fill="white"
+                  meph-event-click="c$.closeNode"
+                  data-bind='"x" : "c$.iconX", "y" : "c$.iconY"' width="10" height="10"></rect>
+        </g>
+        <g mephid="outputs">
+            <!-- "name": "outputs" -->
+        </g>
+        <g mephid="menu" meph-data-height="c$.menuheightspace" meph-data-transform="c$.menutransform">
+            <!-- "name": "menu" -->
+        </g>
+        <g mephid="field">
+            <!-- "name": "fields" -->
+        </g>
+        <g mephid="inputs" meph-data-transform="c$.inputtransform">
+            <!-- "name": "inputs" -->
+        </g>
+    </g>
+</svg>

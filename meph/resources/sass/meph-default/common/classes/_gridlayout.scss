@@ -1,0 +1,115 @@
+﻿
+$phone:(320px, 480px, 100%);
+$phablet:(481px, 767px, 100%);
+$tablet:(768px, 1024px, 100%);
+$desktop:(1025px, 1000000px, 100%);
+
+@include meph-grid-layout($prefix: 'meph-grid-row-a', $defaultWidth : 100% , $sizes: ($phone $phablet $tablet $desktop)) {
+	@include transition();
+}
+ 
+
+
+$phone:(320px, 480px, 100%);
+$phablet:(481px, 767px, 100%);
+$tablet:(768px, 1024px, 50%);
+$desktop:(1025px, 1000000px, 25%);
+
+@include meph-grid-layout($prefix: 'meph-layout-grid-column-a', $defaultWidth : 100% , $sizes: ($phone $phablet $tablet $desktop), $tag: 'width') {
+	@include transition();
+}
+
+$phone:(320px, 480px, 100%);
+$phablet:(481px, 767px, 100%);
+$tablet:(768px, 1024px, 100%);
+$desktop:(1025px, 1000000px, 100%);
+ 
+ @include meph-grid-layout($prefix: 'meph-layout-grid-column-b', $defaultWidth : 100% , $sizes: ($phone $phablet $tablet $desktop), $tag: 'width') {
+	@include transition();
+}
+
+$phone:(320px, 480px, 100%);
+$phablet:(481px, 767px, 50%);
+$tablet:(768px, 1024px, 50%);
+$desktop:(1025px, 1000000px, 50%);
+ 
+ @include meph-grid-layout($prefix: 'meph-layout-grid-column-c', $defaultWidth : 100% , $sizes: ($phone $phablet $tablet $desktop), $tag: 'width') {
+	@include transition();
+}
+
+
+
+//Ten column
+$phone:(320px, 480px, 100%);
+$phablet:(481px, 767px, 50%);
+$tablet:(768px, 1024px, 20%);
+$desktop:(1025px, 1000000px, 10%);
+@include meph-grid-layout($prefix: 'meph-layout-grid-column-d', $defaultWidth : 100% , $sizes: ($phone $phablet $tablet $desktop)) {
+	@include transition();
+}
+ 
+
+
+//12 column
+$phone:(00px, 480px, 100%);
+$phablet:(481px, 767px, 50%);
+$tablet:(768px, 1024px, 33%);
+$desktop:(1025px, 1000000px, 25%);
+@include meph-grid-layout($prefix: 'meph-layout-grid-column-e', $defaultWidth : 100% , $sizes: ($phone $phablet $tablet $desktop)) {
+	@include transition();
+}
+
+
+$phone:(320px, 480px, 100%);
+$phablet:(481px, 767px, 50%);
+$tablet:(768px, 1024px, 25%);
+$desktop:(1025px, 1000000px, 25%);
+ 
+ @include meph-grid-layout($prefix: 'meph-layout-grid-column-f', $defaultWidth : 100% , $sizes: ($phone $phablet $tablet $desktop), $tag: 'width') {
+	@include transition();
+}
+
+
+$phone:(320px, 480px, 100%);
+$phablet:(481px, 767px, 50%);
+$tablet:(768px, 1024px, 75%);
+$desktop:(1025px, 1000000px, 75%);
+ 
+ @include meph-grid-layout($prefix: 'meph-layout-grid-column-g', $defaultWidth : 100% , $sizes: ($phone $phablet $tablet $desktop), $tag: 'width') {
+	@include transition();
+}
+
+ 
+//12 column
+$phone:(00px, 480px, 100%);
+$phablet:(481px, 767px, 50%);
+$tablet:(768px, 1024px, 33%);
+$desktop:(1025px, 1000000px, 25%);
+@include meph-grid-layout($prefix: 'meph-layout-grid-row-a', $defaultWidth : 25% , $sizes: ($phone $phablet $tablet $desktop), $tag: 'height') {
+	@include transition();
+}
+$phone:(00px, 480px, 300px);
+$phablet:(481px, 767px, 300px);
+$tablet:(768px, 1024px, 300px);
+$desktop:(1025px, 1000000px, 300px);
+@include meph-grid-layout($prefix: 'meph-layout-grid-row-absolute-a', $defaultWidth : 25% , $sizes: ($phone $phablet $tablet $desktop), $tag: 'height') {
+	@include transition();
+}
+ 
+ 
+//12 column
+$phone:(00px, 480px, 100%);
+$phablet:(481px, 767px, 100%);
+$tablet:(768px, 1024px, 100%);
+$desktop:(1025px, 1000000px, 100%);
+@include meph-grid-layout($prefix: 'meph-layout-grid-row-b', $defaultWidth : 100% , $sizes: ($phone $phablet $tablet $desktop), $tag: 'height') {
+	@include transition();
+}
+
+.meph-grid-layout-flex-height:after   { 
+   content: "."; 
+   visibility: hidden; 
+   display: block; 
+   height: 0; 
+   clear: both;
+}

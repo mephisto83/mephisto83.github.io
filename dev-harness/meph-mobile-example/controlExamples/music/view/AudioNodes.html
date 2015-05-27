@@ -1,0 +1,23 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        <number descriptiontext="Width" labeltext="Width" value="v$.numberValue"></number>
+        <!--<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+             width="100%" height="400">
+            <g>-->
+        <!--<audionode meph-data-nodewidth="v$.numberValue"></audionode>-->
+        <!--</g>
+        </svg>-->
+        <convolver meph-data-nodewidth="v$.numberValue"></convolver>
+        <biquadfilter meph-data-nodewidth="v$.numberValue"></biquadfilter>
+        <audiobuffersource meph-data-nodewidth="v$.numberValue"></audiobuffersource>
+        <channelmerger meph-data-nodewidth="v$.numberValue"></channelmerger>
+        <channelsplitter meph-data-nodewidth="v$.numberValue"></channelsplitter>
+        <delay meph-data-nodewidth="v$.numberValue"></delay>
+        <dynamicscompressor meph-data-nodewidth="v$.numberValue"></dynamicscompressor>
+        <gain meph-data-nodewidth="v$.numberValue"></gain>
+        <oscillator meph-data-nodewidth="v$.numberValue"></oscillator>
+        <panner meph-data-nodewidth="v$.numberValue"></panner>
+        <waveshaper meph-data-nodewidth="v$.numberValue"></waveshaper>
+        <customnode meph-data-nodewidth="v$.numberValue"></customnode>
+    </activityview>
+</div>

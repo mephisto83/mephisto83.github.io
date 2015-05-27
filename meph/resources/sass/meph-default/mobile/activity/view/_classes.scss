@@ -1,0 +1,36 @@
+﻿$activity-header-height : 40px;
+$activity-footer-height: 50px;
+$meph-activity-body-padding: 2px;
+
+.meph-activity-view {
+	height: 100%;
+}
+
+.meph-activity-view-header {
+	background-color: $meph-color-white;
+	height: $activity-header-height;
+	position: absolute;
+	width: 100%;
+	z-index: 1000;
+}
+.meph-activity-view-footer {
+	position: absolute;
+	bottom: 0px;
+	background-color: $meph-color-white;
+	width: 100%;
+	height: $activity-footer-height;
+}
+
+.meph-activity-view-body {
+	height: 100%;
+	padding-top: $activity-header-height;
+	padding-bottom: $activity-footer-height;
+	position: absolute;
+	background-color: $meph-color-transparent;
+	top: 0px; 
+	width: 100%;
+	box-sizing: border-box;
+	padding-left: $meph-activity-body-padding;
+	padding-right: $meph-activity-body-padding;
+	overflow: auto; 
+}

@@ -1,0 +1,30 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        <panel cls="meph-panel-basic">
+
+            <header>Panel Header</header>
+            <panelbody>
+                <div class="meph-layout-grid-column-e">
+                    <text descriptiontext="Name" value="ct$.name" labeltext="Name"></text>
+                    <text descriptiontext="Message" value="ct$.textValue" labeltext="Message"></text>
+                    <iconbutton icon="calculator" data-events='"buttonClickEvent" : "ct$.send"'></iconbutton>
+                </div>
+                <list data-bind='"source": "ct$.messages"'>
+                    <template
+                        name="u4m_controls_examples_communication">
+                        <div class="meph-application-menu-categories-item">
+                            <div class="meph-application-menu-categories-item-details">
+                                <span>Name</span>
+                                <span data-bind='"innerHTML": "c$.data.name"'></span>
+                                <br />
+                                <span>Message</span>
+                                <span data-bind='"innerHTML": "c$.data.message"'></span>
+                                <br />
+                            </div>
+                        </div>
+                    </template>
+                </list>
+            </panelbody>
+        </panel>
+    </activityview>
+</div>

@@ -1,0 +1,13 @@
+﻿{
+    'views': [{
+            'viewId': '4UHP001',
+            'view': 'MEPH.mobile.view.HomePageView',
+            'singleton': true,
+            'namespace': 'U4homePage',
+            'path': 'homeView'
+        },{
+			'viewId': 'fakeActivity',
+			'view' : 'MEPHTests.helper.activity.HelperActivity',
+            'path': 'helperActivity/Somethingelse'
+		}]
+}

@@ -1,0 +1,98 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        <div class="col-md-12">
+            <mephbutton type="button" class="btn btn-primary btn-xs"
+                        meph-event-click="v$.processA">
+                <span class="glyphicon glyphicon-glass">Process A(440 Hz)</span>
+            </mephbutton>
+            <mephbutton type="button" class="btn btn-primary btn-xs"
+                        meph-event-click="v$.processAFrame">
+                <span class="glyphicon glyphicon-glass">DFT Analysis A(440 Hz)</span>
+            </mephbutton>
+        </div>
+        <div class="col-md-6">
+            <h4>DFT</h4>
+            <dropbox data-events='"filesdropped":"v$.loadFiles "'></dropbox><!---->
+        </div>
+        <div class="col-md-6">
+            <h4>Analysis</h4>
+            <dropbox data-events='"filesdropped":"v$.loadFilesAnal "'></dropbox><!---->
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-1">
+                <span data-bind='"innerHTML":"v$.N"'>1</span>
+                <range descriptiontext="N"
+                       meph-data-value="v$.N"
+                       meph-data-step="64"
+                       meph-data-min="256"
+                       meph-data-max="16384"></range>
+            </div>
+            <div class="col-md-1">
+                <span data-bind='"innerHTML":"v$.M"'>1</span>
+                <range descriptiontext="M"
+                       meph-data-value="v$.M"
+                       meph-data-step="64"
+                       meph-data-min="256"
+                       meph-data-max="16384"></range>
+            </div>
+            <div class="col-md-3">
+                <span data-bind='"innerHTML":"v$.samples"'>1</span>
+                <range descriptiontext="Samples"
+                       meph-data-value="v$.samples"
+                       meph-data-step="64"
+                       meph-data-min="256"
+                       meph-data-max="16384"></range>
+            </div>
+            <div class="col-md-3">
+                <span data-bind='"innerHTML":"v$.T"'>1</span>
+                <range descriptiontext=Threshold"
+                       meph-data-value="v$.T"
+                       meph-data-step="1"
+                       meph-data-min="0"
+                       meph-data-max="250"></range>
+
+            </div>
+            <div class="col-md-3">
+                <span data-bind='"innerHTML":"v$.startTime"'>1</span>
+                <range descriptiontext="Start time"
+                       meph-data-value="v$.startTime"
+                       meph-data-step="0.1"
+                       meph-data-min="0"
+                       meph-data-max="250"></range>
+
+            </div>
+            <div class="col-md-1">
+                <span data-bind='"innerHTML":"v$.state"'>1</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <h4>Frequency</h4>
+            <mephbutton type="button" class="btn btn-primary btn-xs"
+                        meph-event-click="v$.play, v$.freqdata">
+                <span class="glyphicon glyphicon-play"></span>
+            </mephbutton>
+            <visualizer source="v$.freqdata"
+                        meph-data-height="300"
+                        scrollmutiplier="0">
+            </visualizer>
+        </div>
+        <div class="col-md-12">
+            <h4>Magnitude</h4>
+            <mephbutton type="button" class="btn btn-primary btn-xs"
+                        meph-event-click="v$.play, v$.magdata">
+                <span class="glyphicon glyphicon-play"></span>
+            </mephbutton>
+            <visualizer source="v$.magdata"
+                        meph-data-height="300"
+                        scrollmutiplier="0">
+            </visualizer>
+        </div>
+        <div class="col-md-12">
+            <h4>Phase</h4>
+            <visualizer source="v$.phasedata"
+                        meph-data-height="300"
+                        scrollmutiplier="0">
+            </visualizer>
+        </div>
+    </activityview>
+</div>

@@ -1,0 +1,410 @@
+﻿
+
+.dropbox {
+    border: 10px dashed red;
+    margin: 20px auto;
+    height: 100px;
+}
+
+.spreadsheetbody,
+.spreadsheet {
+    height: 100%;
+    width: 100%;
+    z-index: 5;
+}
+
+.noselect {
+    /**/ -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.spreadsheet {
+    overflow: hidden;
+    position: relative;
+}
+
+.audiosequenceheader {
+    position: absolute;
+    height: 40px;
+    width: 100%;
+    z-index: 100;
+}
+
+.spreadsheetwrapper {
+    padding-bottom: 40px;
+    padding-top: 67px;
+}
+
+.spreadsheetbody {
+    position: relative;
+}
+
+$padding-distance: 20px;
+
+.spreadsheetscrollbarright {
+    position: absolute;
+    right: 0;
+    z-index: 10;
+    height: 100%;
+    background-color: white;
+    top: 0px;
+    padding-top: 0px;
+    padding-bottom: $padding-distance;
+}
+
+.spreadsheetscrollbarbotom {
+    width: 100%;
+    background-color: white;
+    left: 0px;
+    z-index: 10;
+    bottom: 0px;
+    position: absolute;
+    padding-left: 15px;
+    padding-right: $padding-distance;
+}
+
+.scrollbarhandle {
+    background-color: #c1c1c1;
+    position: absolute;
+}
+
+.scrollbar {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    border: 1px solid #c1c1c1;
+}
+
+.selectarea,
+.activearea {
+    display: none;
+    position: absolute;
+    border: dotted 2px #4ba2e4;
+    pointer-events: none;
+}
+
+.noresponse {
+    pointer-events: none;
+}
+
+.infoarea {
+    background-color: rgba(186, 204, 93, 0.5);
+    border: dotted 1px rgba(186, 204, 93, 0.2);
+}
+
+.pitches {
+    background-color: rgba(93, 204, 186, 0.5);
+}
+
+.selectarea.active,
+.activearea.active {
+    display: block;
+    z-index: 4;
+}
+
+.selectarea.active {
+    background-color: rgba(93, 186, 204, 0.2);
+}
+
+.spreadsheet .bottom {
+    z-index: -1;
+}
+
+.spreadsheet .spreadsheet,
+.spreadsheet .topheader,
+.spreadsheet .leftheader {
+    position: absolute;
+}
+
+.grabrep {
+    position: absolute;
+    background-color: rgba(1, 233, 204, 0.2);
+}
+
+.tweeneditor {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.tweeneditor svg {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+$buttonspace: 50px;
+
+.tweeneditorspace {
+    position: absolute;
+    top: 0px;
+    height: 100%;
+    padding-bottom: $buttonspace;
+}
+
+.tweeneditorspace circle {
+    cursor: pointer;
+    r: 6px;
+}
+
+.button_row {
+    position: absolute;
+    height: $buttonspace;
+    bottom: 0px;
+}
+
+.spectrogram canvas,
+.spectrogram {
+    height: 100%;
+    width: 100%;
+}
+
+svg[control] {
+    overflow: visible;
+}
+
+$hoverwidth: 10px;
+
+svg path.preconnection {
+    stroke-dasharray: 10, 5;
+}
+
+svg text {
+    user-select: none;
+}
+
+svg path.connection {
+    stroke: #1fc03c;
+    stroke-width: 3px;
+}
+
+
+svg path.connection:hover {
+    stroke: yellow;
+    stroke-width: $hoverwidth;
+}
+
+svg path.connection.selected {
+    stroke: orange;
+    stroke-width: 4px;
+}
+
+svg path.connection.selected:hover {
+    stroke: red;
+    stroke-width: $hoverwidth;
+}
+
+svg text.ignore {
+    pointer-events: none;
+}
+
+
+.contextmenu {
+    position: absolute;
+    width: 150px;
+}
+
+.resourceloaderholder,
+.soundfontlistpopup,
+.audiographpopup {
+    position: absolute;
+    top: 0px;
+}
+
+.resourceloaderholder,
+.soundfontlistholder,
+.audiographholder {
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-left: 40px;
+    padding-right: 40px;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.graphBody {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    z-index: 0;
+    background-color: rgba(255, 255, 255, 0.65);
+}
+
+.meph-graph-control {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+div.graphBody div:first-child {
+    height: 100%;
+    width: 100%;
+}
+
+
+.square_list {
+    float: left;
+    width: 25%;
+    padding: 2px;
+    font-size: 10px;
+    line-height: 1.4;
+    background-color: #f9f9f9;
+    border: 1px solid #fff;
+}
+
+
+.empty_contact {
+
+    @include meph-image-background($file: 'empty_contact.png');
+    height: 100px;
+    width: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+}
+
+.hidden-header {
+    display: none;
+}
+
+.hidden-header + .meph-activity-view-body {
+    padding-top: 0px;
+}
+
+.typehead {
+    position: relative;
+
+    .typeahead.suggestions {
+        position: absolute;
+        z-index: 1000;
+        background-color: white;
+        width: 100%;
+    }
+}
+
+@-ms-keyframes spin {
+    from {
+        -ms-transform: rotate(0deg);
+    }
+
+    to {
+        -ms-transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes spin {
+    from {
+        -moz-transform: rotate(0deg);
+    }
+
+    to {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+$notificationHeight: 50px;
+
+.notification-overlay {
+    position: fixed;
+    width: 100%;
+    padding: 4px;
+    pointer-events: none;
+    z-index: 10000;
+    background-color: rgba(201, 201, 201, 0.5);
+    transition: width .2s, height .2s, background-color .2s, transform .2s, bottom .2s;
+    height: $notificationHeight;
+    bottom: 0px;
+
+    span {
+        padding-left: 3px;
+    }
+}
+
+.remove-notification {
+    bottom: -$notificationHeight;
+}
+
+.overlay {
+    position: fixed;
+    top: 0px;
+    height: 100%;
+    z-index: 10000;
+    width: 100%;
+    background-color: rgba(201, 201, 201, 0.4);
+    transition: width .2s, height .2s, background-color .2s, transform .2s, top .2s;
+
+    i {
+        font-size: 14em;
+        position: relative;
+        text-align: center;
+        width: 100%;
+        top: 20%;
+        -webkit-animation-name: spin;
+        -webkit-animation-duration: 4000ms;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-timing-function: linear;
+        -moz-animation-name: spin;
+        -moz-animation-duration: 4000ms;
+        -moz-animation-iteration-count: infinite;
+        -moz-animation-timing-function: linear;
+        -ms-animation-name: spin;
+        -ms-animation-duration: 4000ms;
+        -ms-animation-iteration-count: infinite;
+        -ms-animation-timing-function: linear;
+        animation-name: spin;
+        animation-duration: 4000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+}
+
+.overlay.relegated {
+    height: 50px;
+    width: 40px;
+    left: 50%;
+
+    i {
+        font-size: 2em;
+        top: 20%;
+    }
+}
+
+.overlay.removed {
+    top: -100%;
+
+    i {
+        font-size: 2em;
+        top: 20%;
+    }
+}

@@ -1,0 +1,120 @@
+﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "precanvas", "before" : true -->
+<range descriptiontext="start" meph-data-value="c$.position" meph-event-change="c$.update" meph-data-step="0.000001" meph-data-min="0" meph-data-max="1"></range>
+<div class="visualizer col-md-3">
+    <range descriptiontext="Magnification"
+           meph-data-value="c$.magnification"
+           meph-data-step="0.001"
+           meph-event-change="c$.sourceChanged | c$.update"
+           meph-data-min="0.001"
+           meph-data-max="1"></range>
+</div>
+<div class="visualizer col-md-1">
+    <range descriptiontext="Time"
+           meph-event-change="c$.sourceChanged | c$.update"
+           meph-data-value="c$.timeScroll"
+           meph-data-step="0.001"
+           meph-data-min="0"
+           meph-data-max="1"></range>
+</div>
+<div class="visualizer col-md-1">
+    <range descriptiontext="Pitch shift"
+           meph-data-value="c$.pitchShift"
+           meph-data-step="0.001"
+           meph-data-min="0.1"
+           meph-data-max="2"></range>
+</div>
+<div class="visualizer col-md-1">
+    <span data-bind='"innerHTML":"c$.pitchWindowSize"'></span>
+    <range descriptiontext="Pitch window size"
+           meph-data-value="c$.pitchWindowSize"
+           meph-data-step="1000"
+           meph-data-min="1000"
+           meph-data-max="10000"></range>
+</div>
+
+<div class="visualizer col-md-1">
+    <span data-bind='"innerHTML":"c$.silenceThreshold"'></span>
+    <range descriptiontext="Silence threshold"
+           meph-data-value="c$.silenceThreshold"
+           meph-data-step="0.0001"
+           meph-data-min="0.0001"
+           meph-data-max="1"></range>
+</div>
+<div class="visualizer col-md-1">
+    <span data-bind='"innerHTML":"c$.silenceTimeThreshold"'></span>
+    <range descriptiontext="Silence time threshold"
+           meph-data-value="c$.silenceTimeThreshold"
+           meph-data-step="1"
+           meph-data-min="10"
+           meph-data-max="10000"></range>
+</div>
+<div class="visualizer col-md-1">
+    <span data-bind='"innerHTML":"c$.silenceTimeSticky"'></span>
+    <range descriptiontext="Silence time stickiness"
+           meph-data-value="c$.silenceTimeSticky"
+           meph-data-step="1"
+           meph-data-min="1"
+           meph-data-max="1000"></range>
+</div>
+ 
+<div class="col-md-1"> 
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.detectSilence | c$.cancelEvent">
+        <span title="Detect Silent Areas" class="glyphicon glyphicon-headphones"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.detectPitches | c$.cancelEvent">
+        <span title="Detect Pitches" class="glyphicon glyphicon-music"></span>
+    </mephbutton>
+
+</div> 
+<!-- "instruction": true, "name" : "injectop", "close": true -->
+<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "canvas", "before" : true -->
+<div class="btn-group">
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addMark | c$.cancelEvent">
+        <span class="glyphicon glyphicon-tag"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addSelectionAsMarks | c$.cancelEvent">
+        <span class="glyphicon glyphicon-tags"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.playClip | c$.cancelEvent">
+        <span class="glyphicon glyphicon-play"></span>
+    </mephbutton>
+</div>
+<div class="btn-group">
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.scanToMark, -1 | c$.cancelEvent| c$.update">
+        <span class="glyphicon glyphicon-arrow-left"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.scanToMark, 1 | c$.cancelEvent| c$.update">
+        <span class="glyphicon glyphicon-arrow-right"></span>
+    </mephbutton>
+
+
+</div>
+<div class="btn-group">
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.cutSectionOut | c$.cancelEvent| c$.update">
+        <span class="glyphicon glyphicon-remove"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.trimSection | c$.cancelEvent| c$.update">
+        <span class="glyphicon glyphicon-resize-horizontal"></span>
+    </mephbutton>
+</div> 
+<div class="btn-group">
+    <!-- "name": "buttonpanel" -->
+</div>
+<!-- "instruction": true, "name" : "injectop", "close": true -->
+<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "beforecanvas", "before" : true -->
+<canvas mephid="markCanvas"
+        class="noresponse"
+        style=" position:absolute; top:0; z-index:19;"
+        meph-data-height="c$.height"
+        meph-data-width="c$.width"></canvas>
+<canvas mephid="markerCanvas"
+        class="noresponse"
+        style="position:absolute; top:0; z-index:31;"
+        meph-data-height="c$.height"
+        meph-data-width="c$.width"></canvas>
+<div meph-data-width="c$.width"
+     style=" position:absolute; z-index:19;"
+     mephid="silenceThresholdDiv"
+     class="noresponse infoarea"
+     meph-data-height="c$.silenceThresholdHeight"></div>
+<!-- "instruction": true, "name" : "injectop", "close": true -->

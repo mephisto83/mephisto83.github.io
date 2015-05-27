@@ -1,0 +1,33 @@
+﻿/**
+ *
+ * @class U4Styles.public.fonts
+ * Public font mixins that can used by developers building on top of the U4UX Framework.
+ */
+
+/**
+* @mixin
+* Mixin for standard U4 normal font
+* @param {number} $font-size Size of font
+*/
+@mixin u4-font-regular($font-size){
+	font: normal $font-size+$u4-font-unit $u4-font-regular;
+}
+
+/**
+* @mixin
+* Mixin for standard U4 semibold font
+* @param {number} $font-size Size of font
+*/
+@mixin u4-font-semibold($font-size) {
+	@include u4-font-regular($font-size);
+	text-shadow: 1px 0px;
+}
+
+/**
+* @mixin
+* Mixin for standard U4 bold font
+* @param {number} $font-size Size of font
+*/
+@mixin u4-font-bold($font-size){
+	font: bold $font-size+$u4-font-unit $u4-font-regular;
+}

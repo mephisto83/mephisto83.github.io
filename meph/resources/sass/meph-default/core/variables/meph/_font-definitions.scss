@@ -1,0 +1,30 @@
+﻿/**
+* @class U4Styles.private.core.variables.fontdefintions
+* Definition of fonts used throughout the system.
+*/
+
+/**
+ * @var {font-family}
+ * The regular font family used throughout the system
+ */
+$u4-font-regular:  dagny, arial, tahoma, verdana, sans-serif !default;
+
+/**
+ * @var {font-family}
+ * The light font family used throughout the system
+ */
+$u4-font-light: dagny-light, dagny, arial, tahoma, verdana, sans-serif !default;
+
+
+/**
+ * @var {font-family}
+ * The bold font family used throughout the system
+ * @deprecated Use $u4-font-regular with font-weight instead
+ */
+$u4-font-bold: dagny-bold, $u4-font-regular !default;
+
+/**
+ * @var {string}
+ * Font unit used for font mixins defined within U4Styles.public.fonts
+ */
+$u4-font-unit: px !default;

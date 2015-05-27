@@ -1,0 +1,12 @@
+﻿<div class="meph-view meph-view-remove">
+    
+    <h1 data-bind='"innerHTML": "c$.resolvedCode"'></h1>
+    <div class="meph-layout-grid-column-e">
+        <camerastream descriptiontext="Camera Stream" MEPHId="camerasource" labeltext="Camera Stream"></camerastream>
+    </div>
+    <canvas MEPHId="canvas"></canvas>
+    <iconbutton icon="search" size="X2" data-events='"click" : "v$.takeAPicture"'>
+    </iconbutton>
+    <iconbutton icon="wrench" size="X2" data-events='"click" : "v$.processPicture"'>
+    </iconbutton>
+</div>

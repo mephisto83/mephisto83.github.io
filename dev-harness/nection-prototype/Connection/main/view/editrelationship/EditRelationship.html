@@ -1,0 +1,39 @@
+﻿<div class="meph-view meph-view-remove" editrelationship>
+    <relationshipview mephid="$activityview">
+        <div class="row">
+            <div class="col-xs-9 col-sm-10 col-md-11 col-lg-11">
+                <typeahead meph-data-source="v$.relationshipTypes"
+                           meph-data-field="name"
+                           meph-data-showempty="true"
+                           meph-data-selectedobject="v$.relationshipValueObj"
+                           meph-data-value="v$.relationshipValue">
+                    <template name="Connection.template.Relationship">
+                    </template>
+                </typeahead>
+            </div>
+            <div class="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+                <mephbutton type="button" class="btn btn-default btn-lg" meph-event-click="v$.addRelationship, v$.relationshipValueObj, v$.relationshipValue">
+                    <i class="fa fa-plus"></i>
+                </mephbutton>
+            </div>
+        </div>
+
+        <list data-bind='"source": "v$.currentRelationshipAttrs"'>
+            <template name="relationship_type_list_template">
+                <li class="listitem relationshiplistitem">
+                    <div class="row">
+                        <div class="col-md-2 col-xs-2">
+                            <mephbutton type="button" class="btn btn-default" meph-event-click="v$.datachanged, c$.data">
+                                <i class="fa fa-remove"></i>
+                            </mephbutton>
+                        </div>
+                        <div class="col-md-10 col-xs-10 relationshiptext">
+                            <b data-bind='"innerHTML": "c$.data.name"'></b>
+                            <span data-bind='"innerHTML": "c$.data.category"'></span>
+                        </div>
+                    </div>
+                </li>
+            </template>
+        </list>
+    </relationshipview>
+</div>

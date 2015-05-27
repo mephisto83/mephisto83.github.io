@@ -1,0 +1,26 @@
+﻿/**
+ * A mixin for generating a tree layout.
+ *
+ **/
+ @mixin meph-tree-layout($prefix, $maxDepth, $sizes ,$defaultWidth: 0, $left: 'left') {
+		@for $i from 0 through $maxDepth {
+			.#{$prefix}#{$i} {
+				width: 100%;
+				@content;
+					@each $size in $sizes {
+						$min: nth($size, 1);
+						$max: nth($size, 2);
+						$width: nth($size, 3);
+						@include screen($resMin: $min, $resMax: $max) {
+							@if($width){
+								padding-#{$left}: $width * $i;
+							}	
+							@else { 
+								padding-#{$left}: $defaultWidth;
+							}
+						}
+					}
+			}
+		}
+ }body {
+}

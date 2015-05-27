@@ -1,0 +1,70 @@
+﻿/**
+ *
+ * @class U4Styles.private.common.mixins
+ *
+ */
+
+/**
+ * @mixin u4-linear-background
+ * 
+ * @param {String} $background-image The background image to be used.
+ * @param {String} $degrees Degrees to be used. Can be a degree (-90deg etc), top or left.
+ * @param {String/List} $color-stops List of color stops. If list, set as '(#032050 0%, #173a6b 100%)'
+ */
+@mixin u4-linear-background($background-image: "", $degrees: top, $color-stops: $u4-color-black)
+{
+	background: url($background-image), -webkit-linear-gradient($degrees, $color-stops);
+	background: url($background-image), -moz-linear-gradient($degrees, $color-stops);
+	background: url($background-image), -ms-linear-gradient($degrees, $color-stops);
+	background: url($background-image), -o-linear-gradient($degrees, $color-stops);
+}
+
+/**
+ * @mixin u4-linear-background
+ * 
+ * @param {String} $degrees Degrees to be used. Can be a degree (-90deg etc), top or left.
+ * @param {String/List} $color-stops List of color stops. If list, set as '(#032050 0%, #173a6b 100%)'
+ */
+@mixin u4-linear-gradient($degrees: top, $color-stops: $u4-color-black)
+{
+	
+	
+	background: -webkit-linear-gradient($degrees, $color-stops);
+	background: -moz-linear-gradient($degrees, $color-stops); 
+	background: -ms-linear-gradient($degrees, $color-stops);
+	background: -o-linear-gradient($degrees, $color-stops);
+}
+
+@mixin u4-background-image($degrees: top, $color-stops: $u4-color-black, $image: false , $important : ''){
+	background-image: none;
+	$local-ms-linear-gradient: -ms-linear-gradient($degrees,$color-stops);
+	
+	@if $image
+	{
+		$local-ms-linear-gradient: $image, $local-ms-linear-gradient;
+	}
+
+	@if($important != '' )
+	{
+		$local-ms-linear-gradient: $local-ms-linear-gradient $important;
+	}
+	
+	@include background-image($image, linear-gradient($degrees,$color-stops));
+	background-image: $local-ms-linear-gradient;
+}
+
+	
+@mixin u4-background-gradient($color, $gradient, $direction){
+	background-image: none;
+	@include background-gradient($color, $gradient, $direction);	
+	@if $gradient == glossy-button or $gradient == glossy-button-disabled {
+		background-image: -ms-linear-gradient($direction, color_stops(
+					$color,
+					adjust-color($color, $hue: 0deg, $saturation: 0%, $lightness: -2.353%) 48%,
+					adjust-color($color, $hue: 0deg, $saturation: 0%, $lightness: -11.373%) 52%,
+					adjust-color($color, $hue: 0deg, $saturation: 0%, $lightness: -9.412%)
+				))
+	}
+}
+
+

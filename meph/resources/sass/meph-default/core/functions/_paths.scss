@@ -1,0 +1,29 @@
+﻿/**
+ *
+ * @class U4Styles.public.functions
+ * When we refer background images or font faces within our stylesheet we should use these path functions. They ensure that if u4.scss is loaded from another folder structure than the default path, 
+ * it is enough to change core variable {@link U4Styles.public.paths#$u4-resources-path $u4-resources-path}, and ll relative paths will be set correct when regenerating the stylesheet.
+ */
+
+/**
+ * @method U4ImagePath
+ *
+ * @param {string} $relativeImagePath - Image path relative to default U4 image folder, as defined by variable {@link U4Styles.public.paths#$u4-image-path $u4-image-path}.
+ *
+ * Returns {@link U4Styles.public.paths#$u4-image-path $u4-image-path} concatinated with $relativeImagePath
+ */
+@function U4ImagePath($relativeImagePath) {
+	@return $u4-image-path + $relativeImagePath;
+}
+
+
+/**
+ * @method U4FontPath
+ *
+ * @param {string} $relativeFontPath - Path relative to default U4  font path, as defined by variable {@link U4Styles.public.paths#$u4-font-path $u4-font-path}.
+ *
+ * Returns {@link U4Styles.public.paths#$u4-font-path $u4-font-path} concatinated with $relativeFontPath
+ */
+@function U4FontPath($relativeFontPath) {
+	@return $u4-font-path + $relativeFontPath;
+}

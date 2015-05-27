@@ -1,0 +1,59 @@
+﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "inputs", "before" : true -->
+<audioselect meph-data-fill="c$.audioBufferFill"
+             meph-data-radius="c$.inputradius"
+             meph-data-title="c$.bufferTitle"
+             meph-data-titlekey="file"
+             meph-data-valuekey="id"
+             meph-data-stroke="c$.inputstroke"
+             mephid="sourceinput"
+             meph-event-updated="c$.updatedValue,source"
+             meph-data-hideconnector="c$.hideConnector"
+             meph-data-source="c$.audiobuffersources"
+             meph-data-y="c$.sourceinputy"
+             meph-data-width="c$.bodywidth"></audioselect>
+
+<audioselect meph-data-fill="c$.booleanFill"
+             meph-data-radius="c$.inputradius"
+             meph-data-title="c$.loopTitle"
+             meph-data-stroke="c$.inputstroke"
+             meph-data-source="c$.booleanSource"
+             mephid="loop"
+             meph-event-updated="c$.updatedValue,loop"
+             meph-data-y="c$.loopy"
+             meph-data-width="c$.bodywidth"></audioselect>
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="c$.loopEndTitle"
+            meph-data-stroke="c$.inputstroke"
+            mephid="loopEnd"
+            meph-data-y="c$.loopEndy"
+            meph-event-updated="c$.updatedValue,loopEnd"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="c$.loopStartTitle"
+            meph-data-stroke="c$.inputstroke"
+            mephid="loopStart"
+            meph-event-updated="c$.updatedValue,loopStart"
+            meph-data-y="c$.loopStarty"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="c$.playbackRateTitle"
+            meph-data-stroke="c$.inputstroke"
+            mephid="playbackRate"
+            meph-event-updated="c$.updatedValue,playbackRate"
+            meph-data-y="c$.playbackRatey"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<nodecontrol meph-data-fill="c$.audioBufferFill"
+             meph-data-radius="c$.inputradius"
+             meph-data-title="c$.bufferTitle"
+             meph-data-stroke="c$.inputstroke"
+             mephid="bufferoutput"
+             meph-data-y="c$.bufferoutputy"
+             meph-data-width="c$.bodywidth"></nodecontrol>
+<!-- "instruction": true, "name" : "injectop", "close": true -->

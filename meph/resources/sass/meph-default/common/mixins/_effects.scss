@@ -1,0 +1,50 @@
+﻿/**
+ *
+ * @class U4Styles.private.common.mixins
+ *
+ */
+
+/**
+ * @mixin u4-box-shadow
+ * 
+ * @param {String} $x-offset Horizontal displacement of the shadow.
+ * @param {String} $y-offset Vertical displacement of the shadow.
+ * @param {String} $blur-radius Specifies how blurred the shadow edge is.
+ * @param {String} $colour The colour of the shadow.
+ */
+@mixin u4-box-shadow($x-offset: 10px, $y-offset: 10px, $blur-radius: 10px, $colour: $u4-color-black)
+{
+    box-shadow: $x-offset $x-offset $blur-radius $colour;
+    -webkit-box-shadow: $x-offset $x-offset $blur-radius $colour;
+    -moz-box-shadow: $x-offset $x-offset $blur-radius $colour;
+    -ms-box-shadow: $x-offset $x-offset $blur-radius $colour;
+    -o-box-shadow: $x-offset $x-offset $blur-radius $colour;
+}
+
+/**
+ * @mixin u4-transform
+ * 
+ * @param {String} $transform The complete transformation expression, e.g.: rotate(90deg)
+ */
+@mixin u4-transform($transform: rotate(0deg))
+{
+	transform: $transform;
+	-webkit-transform: $transform;
+	-moz-transform: $transform;
+	-ms-transform: $transform;
+	-o-transform: $transform;
+}
+
+/**
+ * @mixin u4-transition
+ * 
+ * @param {String} $transform The complete transformation expression, e.g.: rotate(90deg)
+ */
+@mixin u4-transition($transition)
+{ 
+	transition: $transition;
+	-webkit-transition: $transition;
+	-moz-transition: $transition;
+	-ms-transition: $transition;
+	-o-transition: $transition;
+}

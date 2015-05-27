@@ -1,0 +1,213 @@
+﻿<div class="meph-view meph-view-remove meph-edit-contact">
+    <activityview data-bind='"activityName": "c$.contact.name"' mephid="activityview">  
+        <div class="col-sm-12" footerpadding edit-contact-fields>
+            <div class="center-block">
+                <img mephid="currentprofileimage"
+                     class="center-block profile"
+                     data-bind='"src": "c$.profileimagesource | v$.toImageSource"' />
+            </div>
+
+            <div>
+                <typeahead meph-data-source="v$.companysource"
+                           meph-data-field="value"
+                           labeltext="company"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, company , v$.companyValueObj, v$.companyValue"
+                           meph-data-selectedobject="v$.companyValueObj"
+                           meph-data-value="v$.companyValue">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.headlinesource"
+                           meph-data-field="value"
+                           labeltext="Headline"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, headline , v$.headlineValueObj, v$.headlineValue"
+                           meph-data-selectedobject="v$.headlineValueObj"
+                           meph-data-value="v$.headlineValue">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.namesource"
+                           meph-data-field="value"
+                           labeltext="Name"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, name , v$.nameValueObj, v$.nameValue"
+                           meph-data-selectedobject="v$.nameValueObj"
+                           meph-data-value="v$.nameValue">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <!--<dropdown labeltext="Select occupation source" labeltext="Select occupation" meph-data-source="v$.occupationsource"></dropdown>-->
+                <typeahead meph-data-source="v$.occupationsource"
+                           meph-data-field="value"
+                           labeltext="Occupation"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, occupation , v$.occupationValueObj, v$.occupationValue"
+                           meph-data-selectedobject="v$.occupationValueObj"
+                           meph-data-value="v$.occupationValue">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <!--<dropdown labeltext="Link" labeltext="Select link" meph-data-source="v$.linksource"></dropdown>-->
+                <typeahead meph-data-source="v$.linksource"
+                           meph-data-field="value"
+                           labeltext="Link"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, link , v$.linkValueObj, v$.linkValue"
+                           meph-data-selectedobject="v$.linkValueObj"
+                           meph-data-value="v$.linkValue">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <!--<dropdown labeltext="Skills" labeltext="Select skills" meph-data-source="v$.skillsource"></dropdown>-->
+
+                <typeahead meph-data-source="v$.skillssource"
+                           meph-data-field="value"
+                           labeltext="Skills"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, skills , v$.skillsValueObj, v$.skillsValue"
+                           meph-data-selectedobject="v$.skillsValueObj"
+                           meph-data-value="v$.skillsValue">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.phone1source"
+                           meph-data-field="value"
+                           labeltext="Phone"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, phone1 , v$.phone1ValueObj, v$.phone1Value"
+                           meph-data-selectedobject="v$.phone1ValueObj"
+                           meph-data-value="v$.phone1Value">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.phone2source"
+                           meph-data-field="value"
+                           labeltext="Phone 2"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, phone2 , v$.phone2ValueObj, v$.phone2Value"
+                           meph-data-selectedobject="v$.phone2ValueObj"
+                           meph-data-value="v$.phone2Value">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.email1source"
+                           meph-data-field="value"
+                           labeltext="Email"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, email1 , v$.email1ValueObj, v$.email1Value"
+                           meph-data-selectedobject="v$.email1ValueObj"
+                           meph-data-value="v$.email1Value">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.email2source"
+                           meph-data-field="value"
+                           labeltext="Email 2"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, email2 , v$.email2ValueObj, v$.email2Value"
+                           meph-data-selectedobject="v$.email2ValueObj"
+                           meph-data-value="v$.email2Value">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.addressline1source"
+                           meph-data-field="value"
+                           labeltext="Adress line 1"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, addressline1 , v$.addressline1ValueObj, v$.addressline1Value"
+                           meph-data-selectedobject="v$.addressline1ValueObj"
+                           meph-data-value="v$.addressline1Value">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.addressline2source"
+                           meph-data-field="value"
+                           labeltext="Adress line 2"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, addressline2 , v$.addressline2ValueObj, v$.addressline2Value"
+                           meph-data-selectedobject="v$.addressline2ValueObj"
+                           meph-data-value="v$.addressline2Value">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.citysource"
+                           meph-data-field="value"
+                           labeltext="City"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, city , v$.cityValueObj, v$.cityValue"
+                           meph-data-selectedobject="v$.cityValueObj"
+                           meph-data-value="v$.cityValue">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.stateprovincesource"
+                           meph-data-field="value"
+                           labeltext="State/Province"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, stateprovince , v$.stateprovinceValueObj, v$.stateprovinceValue"
+                           meph-data-selectedobject="v$.stateprovinceValueObj"
+                           meph-data-value="v$.stateprovinceValue">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+            <div>
+                <typeahead meph-data-source="v$.zipcodesource"
+                           meph-data-field="value"
+                           labeltext="Zip Code"
+                           meph-data-showempty="true"
+                           meph-event-changed="v$.changeTypeahead, zipcode , v$.zipcodeValueObj, v$.zipcodeValue"
+                           meph-data-selectedobject="v$.zipcodeValueObj"
+                           meph-data-value="v$.zipcodeValue">
+                    <template name="Connection.template.UserAttribute">
+                    </template>
+                </typeahead>
+            </div>
+
+            <label>Select a profile image.</label>
+            <list data-bind='"source": "v$.profileimagesource"'>
+                <template name="edit_list_template_afdasdfasdf">
+                    <li class="listitem">
+                        <fieldset>
+                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                <radio mephid="checkbox" meph-data-name="image" meph-event-click="v$.selectImage, c$.data"></radio>
+                            </div>
+                            <div class="col-md-9 col-sm-9 col-xs-9">
+                                <img class="center-block profile small"
+                                     data-bind='"src": "c$.data.value| v$.toImageSource"' />
+                            </div>
+                        </fieldset>
+                    </li>
+                </template>
+            </list>
+        </div> 
+    </activityview>
+</div>

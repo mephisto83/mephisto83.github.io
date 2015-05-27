@@ -1,0 +1,25 @@
+// customize bootstrap variables here: 
+@import "variables";
+@import "bootstrap";
+.graphwrap{
+	height: 500px;
+	width: 100%;
+}
+.graphholder { 
+	height: 500px;
+	width: 100%;
+}
+
+
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url("stylesheets/fonts/bootstrap/glyphicons-halflings-regular.eot");
+  src: url("../stylesheets/fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("/stylesheets/fonts/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("/stylesheets/fonts/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("/stylesheets/fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");
+}
+.typeahead {
+	position: relative;
+	display: inline-block;
+}
+.hoverlist {
+	position: absolute;
+}

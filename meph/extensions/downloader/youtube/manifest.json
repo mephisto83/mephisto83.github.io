@@ -1,0 +1,25 @@
+﻿{
+    "manifest_version": 2,
+
+    "name": "Porter Youtube Downloader",
+    "description": "Download videos from youtube directly.",
+    "version": "0.1",
+    "permissions": [ ],
+    "externally_connectable": {
+        "ids": [ "*" ]
+    },
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "icons": {
+        "128": "icon.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [ "https://*/*", "http://*/*" ],
+            "css": [ "css/porter.css" ],
+            "js": [ "meph.js", "util/String.js", "util/Dom.js", "util/Observable.js", "util/Array.js",  "porterdownloader.js" ]
+        }
+    ]
+}

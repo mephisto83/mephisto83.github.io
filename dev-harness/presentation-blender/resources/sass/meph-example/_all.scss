@@ -1,0 +1,27 @@
+﻿.meph-remote-user {
+	float: left;
+	height: 100px;
+	width: 100%;
+  border-top: 3px;
+  border-left: 10px;
+  border-color:transparent;
+  color: #13366A;
+}
+
+.meph-remote-user-id {
+	font-size: smaller;
+}
+.meph-remote-user-imagecontainer {
+	display: inline-block;
+	position: absolute;
+}
+
+.meph-remote-user-body{
+	display: inline-block;
+	border-left: solid rgba(0, 0, 0, 0) 56px;
+}
+.meph-remote-user-innerbody {
+	padding: 10px;
+	display: block;
+	background-color: white;
+} 

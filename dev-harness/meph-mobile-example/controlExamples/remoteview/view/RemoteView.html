@@ -1,0 +1,10 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        <div class="meph-layout-grid-column-e">
+            <text descriptiontext="Description" value="m$.data.userName" labeltext="Description"></text>
+            <text descriptiontext="MoreInfo" value="m$.data.moreInfo" labeltext="MoreInfo"></text>
+        </div>
+         
+        <mephbutton class="blue clickedOver" data-events='"click" : "ct$.backToRemote"'>Return to Remote</mephbutton>
+    </activityview>
+</div>

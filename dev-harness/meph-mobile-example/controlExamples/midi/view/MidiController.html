@@ -1,0 +1,35 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        <div class="col-md-2">
+            <h1 databind='"innerHTML":"v$.note"'></h1>
+        </div>
+        <div class="col-md-2">
+            <dropbox data-events='"filesdropped":"v$.loadResources"'></dropbox>
+        </div>
+        <div class="col-md-2">
+            <mephbutton meph-event-click="v$.clear">Clear</mephbutton>
+        </div>
+        <div class="col-md-2">
+            <dropdown meph-data-source="v$.soundfonts"
+                      descriptiontext="Sound fonts"
+                      meph-data-event="v$.clearCache"
+                      meph-data-value="v$.soundfontvalue"
+                      meph-data-labelfield="name"
+                      meph-data-valuefield="id"></dropdown>
+            <mephbutton meph-event-click="v$.useSoundFont">Use</mephbutton>
+
+        </div>
+        <div class="col-md-2">
+            <number meph-data-value="v$.numshift"></number>
+        </div>
+        <div class="col-md-12">
+            <listview data-bind='"source": "v$.listsource"'
+                      prevent-bounce="true"
+                      meph-data-renderondemand="true">
+                <template name="MEPHControls.midi.view.MidiEventItem">
+                </template>
+            </listview>
+        </div>
+
+    </activityview>
+</div>

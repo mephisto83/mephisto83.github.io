@@ -1,0 +1,228 @@
+﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "beforesheet", "before" : true -->
+<div class="audiosequenceheader ">
+
+    <div class="col-md-2 col-sm-4 col-xs-4">
+        <textfield value="c$.sequence.title" labeltext="Name"></textfield>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-4 ">
+        <range value="c$.scalevalue"
+               labeltext="Zoom"
+               meph-data-min="0.01"
+               meph-data-max="1"
+               meph-data-step="0.01"
+               meph-event-change="c$.update"></range>
+    </div>
+    <div class="col-md-2 col-sm-1 col-xs-1 ">
+        <number descriptiontext="BPM" meph-data-value="c$.beatspermin" labeltext="BPM"
+                meph-event-change="c$.updateBeat"></number>
+    </div>
+    <div class="col-md-2 col-sm-1 col-xs-1 ">
+        <number descriptiontext="Smallest note" meph-data-value="c$.smallestnote"
+                meph-event-change="c$.updateBeat"
+                labeltext="Minimum Note"></number>
+    </div>
+    <div class="col-md-4 col-xs-2 col-sm-2">
+        <div class="btn-group">
+            <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.saveSequence">
+                <span class="glyphicon glyphicon-save"></span>
+            </mephbutton>
+            <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.newSequence">
+                <span class="glyphicon glyphicon-plus"></span>
+            </mephbutton>
+            <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.openSavedSequence | c$.update">
+                <span class="glyphicon glyphicon-open"></span>
+            </mephbutton>
+            <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.loadGrandPiano| c$.update">
+                <span class="glyphicon glyphicon-tasks"></span>
+            </mephbutton>
+            <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.saveSequenceAsWave">
+                <span class="glyphicon glyphicon-floppy-disk"></span>
+            </mephbutton>
+        </div>
+        <div class="btn-group">
+            <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.openResources">
+                <span class="glyphicon glyphicon-ok-sign"></span><span>Resource</span>
+            </mephbutton>
+            <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.showShortCutConfigPanel">
+                <span class="glyphicon glyphicon-ok-sign"></span><span>Shortcuts</span>
+            </mephbutton>
+        </div>
+        <div class="btn-group">
+
+            <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.removeSelectedSequences">
+                <span class="glyphicon glyphicon-minus"></span>
+            </mephbutton>
+        </div>
+
+    </div>
+</div>
+<div mephid="audiographholder" class="audiographholder">
+</div>
+<div mephid="soundfontlistholder" class="soundfontlistholder">
+    <div class="col-md-2">
+        <h3 data-bind='"innerHTML" : "c$.selectedSoundFont"'></h3>
+        <div class="btn-group">
+            <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addToSequence">
+                <span class="glyphicon glyphicon-plus">&nbsp; Add To Sequence</span>
+            </mephbutton>
+        </div>
+        <dropdown meph-data-source="c$.scales"
+                  labeltext="Scales"
+                  descriptiontext="Available scales"
+                  meph-data-value="c$.selectedScale"
+                  meph-data-labelfield="name"
+                  meph-data-valuefield="id"></dropdown>
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <span data-bind='"innerHTML":"c$.firstMidiNote | c$.toNote"'></span>
+            </div>
+            <div class="col-md-6">
+                <span data-bind='"innerHTML":"c$.lastMidiNote | c$.toNote"'></span>
+            </div>
+        </div>
+        <number descriptiontext="First midi note included" meph-data-value="c$.firstMidiNote" labeltext="Start"></number>
+        <number descriptiontext="Last midi note included" meph-data-value="c$.lastMidiNote" labeltext="End"></number>
+
+        <div class="btn-group">
+            <mephbutton type="button" class="btn btn-primary btn-xs"
+                        meph-event-click="c$.selectSoundFontNotes">
+                <span class="glyphicon glyphicon-plus"></span>
+            </mephbutton>
+        </div>
+
+        <hr />
+        <h5>Sound Chunks</h5>
+        <dropdown meph-data-source="c$.selectedSoundFontChunks"
+                  meph-data-labelfield="name"
+                  meph-data-value="c$.selectedSoundFontValue"
+                  meph-data-valuefield="id"></dropdown>
+        <div class="btn-group">
+            <mephbutton type="button" class="btn btn-primary btn-xs"
+                        meph-event-click="c$.addToSelection,c$.selectedSoundFontValue">
+                <span class="glyphicon glyphicon-plus"></span>
+            </mephbutton>
+            <mephbutton type="button" class="btn btn-primary btn-xs"
+                        meph-event-click="c$.addAllChunks">
+                <span class="glyphicon glyphicon-star"></span>
+            </mephbutton>
+        </div>
+    </div>
+    <div class="col-md-10" style="overflow:auto;height: 100%;">
+        <list data-bind='"source": "c$.currentSoundFontSelection"'>
+            <template name="soundfontlist_template">
+                <li class="square_list">
+                    <input type="checkbox" meph-event-click="c$.toggleBoolean, c$.data, selected " />
+                    <span data-bind='"innerHTML" : "c$.data.name"'></span>
+                </li>
+            </template>
+        </list>
+    </div>
+</div>
+<div mephid="resourceloader" class="resourceloaderholder">
+    <div class="col-md-2">
+        <dropbox data-events='"filesdropped":"c$.loadResources"'></dropbox>
+    </div>
+    <div class="col-md-10">
+        <list data-bind='"source": "c$.resources"'>
+            <template name="resourcelist_template">
+                <li class="list-group-item">
+                    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.list.parent.viewResource, c$.data.id, c$.data.type">
+                        <span class="glyphicon glyphicon-folder-open">View</span>
+                    </mephbutton>
+                    <span data-bind='"innerHTML": "c$.data.name"'></span>
+                </li>
+            </template>
+        </list>
+    </div>
+</div>
+<div mephid="shortcutconfigpanel" class="resourceloaderholder">
+    <div class="col-md-1">
+        <ul class="list-group">
+            <li class="list-group-item">
+                Chord Shortcuts
+                <mephbutton type="button" 
+                            class="btn btn-primary btn-xs" 
+                            meph-event-click="c$.hideWhistlin | c$.showShortCuts | c$.cancelEvent">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </mephbutton>
+            </li>
+            <li class="list-group-item">
+                Whistlin' Listenin'
+                <mephbutton type="button" 
+                            class="btn btn-primary btn-xs" 
+                            meph-event-click="c$.hideShortCuts | c$.showWhistlin | c$.cancelEvent">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </mephbutton>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-11">
+        <div mephid="chordshortcuts" style="display:none;">
+            <div class="col-md-2">
+                <dropdown meph-data-source="c$.triadTypes"
+                          descriptiontext="maj,min,aug,..."
+                          meph-data-value="c$.selectedTriadType"
+                          meph-data-labelfield="name"
+                          meph-data-valuefield="text"></dropdown>
+
+                <dropdown meph-data-source="c$.triadExtensions"
+                          descriptiontext="7th,9th,..."
+                          meph-data-value="c$.selectedTriadExtensionType"
+                          meph-data-labelfield="text"
+                          meph-data-valuefield="text"></dropdown>
+
+                <dropdown meph-data-source="c$.availableShortCutKeys"
+                          descriptiontext="short cut key"
+                          meph-data-value="c$.selectedShortCutKey"
+                          meph-data-labelfield="text"
+                          meph-data-valuefield="text"></dropdown>
+                <mephbutton type="button"
+                            class="btn btn-primary btn-xs"
+                            meph-event-click="c$.addShortcut">
+                    <span class="glyphicon glyphicon-plus"></span><span>Add Shortcut</span>
+                </mephbutton>
+            </div>
+            <div class="col-md-3">
+                <list data-bind='"source": "c$.chordShortCuts"'>
+                    <template name="chordShortCuts_template">
+                        <li class="list-group-item">
+                            Triad: <span data-bind='"innerHTML": "c$.data.triad"'></span>
+                            <span data-bind='"innerHTML": "c$.data.triadExt"'></span>
+                            <span>Key</span>
+                            <span data-bind='"innerHTML": "c$.data.key"'></span>
+                            <mephbutton type="button"
+                                        class="btn btn-primary btn-xs"
+                                        meph-event-click="c$.list.parent.removeShortCut, c$.data.key">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </mephbutton>
+                        </li>
+                    </template>
+                </list>
+            </div>
+        </div>
+        <div mephid="whistlinlistenin" style="display:none;">
+            <div class="col-md-1">
+                <span data-bind='"innerHTML" : "c$.timeLength"'></span>
+                <range value="c$.timeLength"
+                       labeltext="Time length"
+                       meph-data-min="0.00"
+                       meph-data-max="10"
+                       meph-data-step="0.01"></range>
+
+                <mephbutton type="button"
+                            class="btn btn-primary btn-xs"
+                            meph-event-click="c$.recordWhistle">
+                    <span class="glyphicon glyphicon-record"></span><span>Record Whistle</span>
+                </mephbutton>
+            </div>
+            <div class="col-md-11">
+
+                <audiosignalvisualizer source="c$.whistleBuffer"
+                                       meph-data-height="500"
+                                       scrollmutiplier="0">
+                </audiosignalvisualizer>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- "instruction": true, "name" : "injectop", "close": true -->

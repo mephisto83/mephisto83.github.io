@@ -1,0 +1,30 @@
+﻿<div class="meph-view meph-view-remove">
+    <syncview data-bind='"activityName": "c$.name"'>
+        <div role="main">
+            <div class="row" style="padding-top:4px;">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <!-- Standard button -->
+                    <list data-bind='"source": "v$.synccontacts"'>
+                        <template name="connection_sync_list_template">
+                            <li class="listitem connection-list-profile-item" meph-event-click="v$.openContact, c$.data">
+                                <div class="connection-list-profile-image">
+                                    <img data-bind='"src": "c$.data | v$.toImageSource"' />
+                                </div>
+                                <div class="meph-application-menu-categories-item-details">
+                                    <b data-bind='"innerHTML": "c$.data.title"'></b>
+                                    <br />
+                                    <hr />
+                                    <span data-bind='"innerHTML": "c$.data.name"'></span>
+                                    <br />
+                                    <span data-bind='"innerHTML": "c$.data.phone"'></span>
+                                </div>
+                            </li>
+                        </template>
+                    </list>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        </div>
+    </syncview>
+</div>

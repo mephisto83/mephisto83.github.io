@@ -1,0 +1,29 @@
+﻿.meph-field-label {
+    display: block;
+    font-weight: bold;
+}
+
+.meph-field-description {
+    display: block;
+    font-size: small;
+    font-style: italic;
+}
+
+.meph-formfield-validation-error {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    background-color: $meph-color-secondary-a-4;
+}
+
+.meph-application-menu-categories-item.meph-item-selected {
+    background-color: $meph-color-secondary-a-4;
+}
+
+.meph-application-menu-categories-item.meph-item-ready {
+    background-color: $meph-color-secondary-a-5;
+}
+
+.meph-formfield-hidden {
+    display: none;
+}

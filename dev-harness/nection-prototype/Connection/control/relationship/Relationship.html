@@ -1,0 +1,19 @@
+﻿<div>
+    Relationship description
+    <div class="col-md-10 col-xs-10">
+        <list data-bind='"source": "c$.relationship"'>
+            <template name="view_relationship_type_list_template">
+                <li class="listitem relationshiplistitem">
+                    <div class="col-md-10 col-xs-10 relationshiptext">
+                        <b data-bind='"innerHTML": "c$.data.name"'></b>
+                    </div>
+                </li>
+            </template>
+        </list>
+    </div>
+    <div class="col-md-2 col-xs-2">
+        <mephbutton type="button" class="btn btn-default btn-lg " meph-event-click="v$.createIfNonExistent | c$.editRelationship">
+            <i class="fa fa-pencil-square-o"></i>
+        </mephbutton>
+    </div>
+</div>

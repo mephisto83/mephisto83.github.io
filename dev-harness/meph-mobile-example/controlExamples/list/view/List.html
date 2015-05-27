@@ -1,0 +1,21 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        <list data-bind='"source": "ct$.listsource"'>
+            <template 
+                name="u4m_controls_examples_list">
+                <div class="">
+                    <div class="meph-application-menu-categories-item-details" >
+                        <span>Name</span>
+                        <span data-bind='"innerHTML": "c$.data.name"'></span>
+                        <br />
+                        <span>Property</span>
+                        <span  data-bind='"innerHTML": "c$.data.property"'></span>
+                        <br />
+                        <span>Address</span>
+                        <span data-bind='"innerHTML": "c$.data.address"'></span>
+                    </div>
+                </div>
+            </template>
+        </list>
+    </activityview>
+</div>

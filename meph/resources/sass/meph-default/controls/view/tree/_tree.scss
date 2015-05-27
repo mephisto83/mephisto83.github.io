@@ -1,0 +1,14 @@
+﻿
+
+/**
+ * Creates a tree layout.
+ **/
+
+$phone:(00px, 480px, 15px);
+$phablet:(481px, 767px, 20px);
+$tablet:(768px, 1024px, 4%);
+$desktop:(1025px, 1000000px, 5%);
+
+@include meph-tree-layout($prefix: 'meph-tree-depth-', $maxDepth: 10, $sizes: ($phone $phablet $tablet $desktop)){
+	@include transition();
+}

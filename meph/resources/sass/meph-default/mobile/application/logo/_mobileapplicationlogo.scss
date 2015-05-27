@@ -1,0 +1,18 @@
+﻿.mobile-application-logo {
+	margin: auto;
+	width: 292px;
+	height: $meph-topbar-height;
+	position: relative;
+	pointer-events: none; 
+}
+.mobile-application-logo .meph-application-logo:before {
+	content: 'MEPH';
+	font-size: 42px;
+	position: absolute;
+	white-space: nowrap;
+	@include meph-image-background($file: 'meph.png');
+	background-repeat: no-repeat;
+	background-position-x: -5px;
+	padding-left: 24px;
+	background-position-y: 13px;
+}

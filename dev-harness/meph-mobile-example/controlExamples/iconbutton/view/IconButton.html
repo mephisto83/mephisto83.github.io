@@ -1,0 +1,26 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+          <list data-bind='"source": "ct$.listsource"'>
+            <template 
+                name="u4m_controls_examples_list">
+                <div class="meph-layout-grid-column-e">
+                    <div class="meph-application-menu-categories-item-details meph-iconbutton-view" >
+                        <b  data-bind='"innerHTML": "c$.data.name"'></b>
+                        <br />
+                        <div style="" data-bind='"class": "c$.data.cls"'></div>
+                        <div style="" data-bind='"class": "c$.data.clsX2"'></div>
+                        <div style="" data-bind='"class": "c$.data.clsX4"'></div>
+                    </div>
+                </div>
+            </template>
+        </list>
+    </activityview>
+    <style>
+        .meph-iconbutton-view
+        {
+            background-color: #fff;
+            margin: 10px;
+            box-shadow: 1px 1px 1px 1px rgba(128, 128, 128, 0.39);
+        }
+    </style>
+</div>

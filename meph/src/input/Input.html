@@ -1,0 +1,16 @@
+﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "beforeinput", "before" : false -->
+<input data-bind='"id": "c$.id", "type": "c$.type", "value": "c$.inputfield.value", "class": "c$.inputCls"'
+       mephid="inputfield" class="form-control"
+       meph-data-disabled="c$.disabled"
+       meph-data-max="c$.max"
+       meph-data-maxlength="c$.maxlength"
+       meph-data-min="c$.min"
+       meph-data-pattern="c$.pattern"
+       meph-data-readonly="c$.readonly"
+       meph-data-required="c$.required"
+       meph-data-size="c$.size"
+       meph-data-name="c$.name"
+       meph-data-placeholder="c$.placeholder"
+       meph-data-step="c$.step"
+       data-events='"change" : "c$.inputfield.value | c$.value", "keyup": "c$.raiseEvent, keypressed", "focus": "c$.raiseEvent, focussed", "blur": "c$.raiseEvent, blurred"' />
+<!-- "instruction": true, "name" : "injectop", "close": true -->

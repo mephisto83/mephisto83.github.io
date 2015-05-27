@@ -1,0 +1,15 @@
+﻿/**
+ *
+ * @class U4Styles.private.common.mixins
+ *
+ */
+
+
+/**
+* @mixin u4-icon-font-spin
+* A keyframe specific mixin for spinning elements
+* @param {String} $browser Target specific browser, example: moz, webkit, ms, o. The mixin will append - before and after.
+*/ 
+@mixin meph-image-background($file) {
+	background-image: url('images/'+$file);
+}

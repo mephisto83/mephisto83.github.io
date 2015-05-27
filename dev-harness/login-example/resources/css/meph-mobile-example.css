@@ -1,0 +1,56 @@
+/**
+* @class U4MStyles
+* @singleton
+* Sass variables exposed by MEPH. You can chooose to override these variables in a themed version of the MEPH style library:
+*
+*		//1. Import theme overrides - Here you give the standard MEPH variables a themed value.
+*		@import 'themes/custom-theme'; 
+*
+*		//2. Import the entire MEPH Sass library - theme variables will override the defaults.
+*		@import 'meph'; 
+*
+* Or you choose to just reuse the public variables by only importing file:
+*
+*		@import 'meph-variables-public'
+*/
+/**
+* @class U4MStyles.private
+*
+* U4Styles.private contain themeable variables & resources exposed by the current release of the U4UX framework. 
+* These variables might change inbetween each release, so they should in general __not__ be used by module developers.
+* Internally, the variables are exposed so that we can make a theme on top of the default MEPH styleset.
+*/
+/* line 1, ../sass/meph-example/_all.scss */
+.meph-remote-user {
+  float: left;
+  height: 100px;
+  width: 100%;
+  border-top: 3px;
+  border-left: 10px;
+  border-color: transparent;
+  color: #13366A;
+}
+
+/* line 11, ../sass/meph-example/_all.scss */
+.meph-remote-user-id {
+  font-size: smaller;
+}
+
+/* line 14, ../sass/meph-example/_all.scss */
+.meph-remote-user-imagecontainer {
+  display: inline-block;
+  position: absolute;
+}
+
+/* line 19, ../sass/meph-example/_all.scss */
+.meph-remote-user-body {
+  display: inline-block;
+  border-left: solid rgba(0, 0, 0, 0) 56px;
+}
+
+/* line 23, ../sass/meph-example/_all.scss */
+.meph-remote-user-innerbody {
+  padding: 10px;
+  display: block;
+  background-color: white;
+}

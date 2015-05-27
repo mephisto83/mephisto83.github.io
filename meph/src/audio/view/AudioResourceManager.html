@@ -1,0 +1,42 @@
+﻿<div class="col-md-12">
+    <div class="col-md-3">
+        <h5>Audio Resources</h5>
+        <list meph-data-source="c$.audiobuffers">
+            <template name="audio_resource_manager_item_template">
+                <li class="list-group-item" meph-event-click="c$.list.parent.viewAudioBuffer,c$.data">
+                    <div class="meph-application-menu-categories-item-details">
+                        <label>Name : </label><span data-bind='"innerHTML": "c$.data.file"'></span>
+                        <label>Type : </label>
+                        <span data-bind='"innerHTML": "c$.data.type"'></span>
+                    </div>
+                </li>
+            </template>
+        </list>
+    </div>
+
+    <div class="col-md-3">
+        <h5>Audio Resources</h5>
+        <textfield descriptiontext="Audio Resource" 
+                   meph-data-value="c$.audiobuffer.file" 
+                   labeltext="Text"></textfield>
+    </div>
+
+    <div class="col-md-3">
+        <h5>Audio Graphs</h5>
+        <list meph-data-source="c$.audioGraphs">
+            <template name="audio_resource_manager_item_graph_template">
+                <li class="list-group-item" meph-event-click="c$.list.parent.viewGraphData,c$.data">
+                    <div class="meph-application-menu-categories-item-details">
+                        <label>Name : </label><span data-bind='"innerHTML": "c$.data.name"'></span>
+                    </div>
+                </li>
+            </template>
+        </list>
+    </div>
+    <div class="col-md-3">
+        <h5>Audio Graph</h5>
+        <textfield descriptiontext="Audio Graph"
+                   meph-data-value="c$.audiograph.name"
+                   labeltext="Text"></textfield>
+    </div>
+</div>

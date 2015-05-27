@@ -1,0 +1,29 @@
+﻿<div class="tweeneditor">
+    <div class="col-md-12 tweeneditorspace">
+        <svg mephid="svg"></svg>
+    </div>
+    <div class="col-md-12 button_row">
+        <div class="btn-group">
+            <mephbutton type="button"
+                        class="btn btn-xs"
+                        meph-event-click="c$.onAddPointAndPath">
+                Path
+                <span class="glyphicon glyphicon-plus"></span>
+            </mephbutton>
+            <mephbutton type="button"
+                        class="btn btn-xs"
+                        meph-event-click="c$.onAddPoint">
+                Point
+                <span class="glyphicon glyphicon-plus"></span>
+            </mephbutton>
+        </div>
+        <div class="btn-group">
+            <mephbutton type="button"
+                        class="btn btn-xs btn-info"
+                        meph-event-click="c$.setSelectedLineToBezier | c$.addControlsToSelectedLine">
+                Bezier
+                <span class="glyphicon glyphicon-cog"></span>
+            </mephbutton>
+        </div>
+    </div>
+</div>

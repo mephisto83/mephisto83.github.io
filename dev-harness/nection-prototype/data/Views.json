@@ -1,0 +1,102 @@
+﻿{
+    "views": [
+        {
+            "viewId": "FirstTimePage",
+            "view": "Connection.firsttime.view.View",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/first/time/login"
+        },
+        {
+            "viewId": "Fakelogin",
+            "view": "Connection.fakelogin.view.FakeLogin",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/fake/login"
+        },
+        {
+            "viewId": "LoggedInHandler",
+            "view": "Connection.session.Handler",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "login/{provider}"
+        },
+        {
+            "viewId": "SyncPage",
+            "view": "Connection.sync.view.SyncContacts",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/sync/contacts"
+        },
+        {
+            "viewId": "main",
+            "view": "Connection.main.view.Main",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/connection"
+        },
+        {
+            "viewId": "accountresolution",
+            "view": "Connection.account.view.AccountResolution",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/accountres"
+        },
+        {
+            "viewId": "Contact",
+            "view": "Connection.main.view.Contact",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/main/contact"
+        },
+        {
+            "viewId": "CreateContact_",
+            "view": "Connection.main.view.create.CreateContact",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/main/create/contact"
+        },
+        {
+            "viewId": "PreviewContact",
+            "view": "Connection.main.view.create.PreviewContact",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/main/create/preview"
+        },
+        {
+            "viewId": "EditRelationship",
+            "view": "Connection.main.view.editrelationship.EditRelationship",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/main/contact/relationship/edit"
+        },
+        {
+            "viewId": "Accounts",
+            "view": "Connection.account.view.Accounts",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "accounts"
+        },
+        {
+            "viewId": "Me",
+            "view": "Connection.contact.view.Contact",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/main/me"
+        },
+        {
+            "viewId": "EditContact",
+            "view": "Connection.contact.view.EditContact",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/main/me/edit"
+        },
+        {
+            "viewId": "CreateContact",
+            "view": "Connection.main.view.connect.ConnectContact",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/main/me/connect"
+        }
+    ]
+}

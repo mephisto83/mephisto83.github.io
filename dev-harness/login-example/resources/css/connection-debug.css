@@ -1,0 +1,2637 @@
+/**
+* @class U4MStyles
+* @singleton
+* Sass variables exposed by MEPH. You can chooose to override these variables in a themed version of the MEPH style library:
+*
+*		//1. Import theme overrides - Here you give the standard MEPH variables a themed value.
+*		@import 'themes/custom-theme'; 
+*
+*		//2. Import the entire MEPH Sass library - theme variables will override the defaults.
+*		@import 'meph'; 
+*
+* Or you choose to just reuse the public variables by only importing file:
+*
+*		@import 'meph-variables-public'
+*/
+/**
+* @class U4MStyles.private
+*
+* U4Styles.private contain themeable variables & resources exposed by the current release of the U4UX framework. 
+* These variables might change inbetween each release, so they should in general __not__ be used by module developers.
+* Internally, the variables are exposed so that we can make a theme on top of the default MEPH styleset.
+*/
+/*<palette>
+<url>http://colorschemedesigner.com/#5cc2Pw0w0w0w0</url>
+<colorspace>
+RGB (Web Safe Colors); RGB color space reduced to 216 web safe color set
+</colorspace>
+<colorset id="primary" title="Primary Color">
+<color id="primary-1" nr="1" rgb="CC0066" r="204" g="0" b="102"/>
+<color id="primary-2" nr="2" rgb="993366" r="153" g="51" b="102"/>
+<color id="primary-3" nr="3" rgb="990033" r="153" g="0" b="51"/>
+<color id="primary-4" nr="4" rgb="FF3399" r="255" g="51" b="153"/>
+<color id="primary-5" nr="5" rgb="FF6699" r="255" g="102" b="153"/>
+</colorset>
+<colorset id="secondary-a" title="Secondary Color A">
+<color id="secondary-a-1" nr="1" rgb="FF9900" r="255" g="153" b="0"/>
+<color id="secondary-a-2" nr="2" rgb="CC9933" r="204" g="153" b="51"/>
+<color id="secondary-a-3" nr="3" rgb="996600" r="153" g="102" b="0"/>
+<color id="secondary-a-4" nr="4" rgb="FFCC33" r="255" g="204" b="51"/>
+<color id="secondary-a-5" nr="5" rgb="FFCC66" r="255" g="204" b="102"/>
+</colorset>
+<colorset id="secondary-b" title="Secondary Color B">
+<color id="secondary-b-1" nr="1" rgb="003399" r="0" g="51" b="153"/>
+<color id="secondary-b-2" nr="2" rgb="333399" r="51" g="51" b="153"/>
+<color id="secondary-b-3" nr="3" rgb="003366" r="0" g="51" b="102"/>
+<color id="secondary-b-4" nr="4" rgb="3366CC" r="51" g="102" b="204"/>
+<color id="secondary-b-5" nr="5" rgb="6699CC" r="102" g="153" b="204"/>
+</colorset>
+<colorset id="complement" title="Complementary Color">
+<color id="complement-1" nr="1" rgb="99FF00" r="153" g="255" b="0"/>
+<color id="complement-2" nr="2" rgb="999933" r="153" g="153" b="51"/>
+<color id="complement-3" nr="3" rgb="669900" r="102" g="153" b="0"/>
+<color id="complement-4" nr="4" rgb="CCFF33" r="204" g="255" b="51"/>
+<color id="
+complement-5" nr="5" rgb="CCFF66" r="204" g="255" b="102"/>
+</colorset>
+</palette>
+*/
+/**
+ * @property $meph-color-primary-1
+ **/
+/**
+ * @property $meph-color-primary-2
+ **/
+/**
+ * @property $meph-color-primary-3
+ **/
+/**
+ * @property $meph-color-primary-4
+ **/
+/**
+ * @property $meph-color-primary-5
+ **/
+/**
+ * @property $meph-border-color
+ **/
+/**
+ * @property $meph-border-color
+ **/
+/* line 88, ../../../../meph/resources/sass/meph-default/common/variables/_mobilecolors.scss */
+.meph-color-black:before {
+  color: black;
+}
+
+/* line 91, ../../../../meph/resources/sass/meph-default/common/variables/_mobilecolors.scss */
+.meph-color-red:before {
+  color: red;
+}
+
+/* line 94, ../../../../meph/resources/sass/meph-default/common/variables/_mobilecolors.scss */
+.meph-color-green:before {
+  color: green;
+}
+
+/* line 98, ../../../../meph/resources/sass/meph-default/common/variables/_mobilecolors.scss */
+.meph-color-blue:before {
+  color: blue;
+}
+
+/**
+ * iPhone
+ **/
+/**
+ * iPhone retina
+ **/
+/**
+ * iPhone 5
+ **/
+/**
+ * iPad
+ **/
+/**
+ * iPad retina
+ **/
+/**
+ *
+ * @class U4Styles.private.common.mixins
+ *
+ */
+/**
+ * @mixin u4-linear-background
+ * 
+ * @param {String} $background-image The background image to be used.
+ * @param {String} $degrees Degrees to be used. Can be a degree (-90deg etc), top or left.
+ * @param {String/List} $color-stops List of color stops. If list, set as '(#032050 0%, #173a6b 100%)'
+ */
+/**
+ * @mixin u4-linear-background
+ * 
+ * @param {String} $degrees Degrees to be used. Can be a degree (-90deg etc), top or left.
+ * @param {String/List} $color-stops List of color stops. If list, set as '(#032050 0%, #173a6b 100%)'
+ */
+/**
+ *
+ * @class U4Styles.private.common.mixins
+ *
+ */
+/**
+* @mixin u4-icon-font-spin
+* A keyframe specific mixin for spinning elements
+* @param {String} $browser Target specific browser, example: moz, webkit, ms, o. The mixin will append - before and after.
+*/
+/**
+ *
+ * @class U4Styles.private.common.mixins
+ *
+ */
+/**
+ * @mixin
+ * 
+ * @param {String} $animation Name of the animation as defined in the keyframes structure.
+ * @param {duration} $duration Specifies how many seconds or milliseconds the animation takes to complete one cycle.
+ * @param {timing} $timing Describes how the animation will progress over one cycle of its duration.
+ */
+/**
+ *
+ * @class U4Styles.private.common.mixins
+ *
+ */
+/**
+ * @mixin u4-box-shadow
+ * 
+ * @param {String} $x-offset Horizontal displacement of the shadow.
+ * @param {String} $y-offset Vertical displacement of the shadow.
+ * @param {String} $blur-radius Specifies how blurred the shadow edge is.
+ * @param {String} $colour The colour of the shadow.
+ */
+/**
+ * @mixin u4-transform
+ * 
+ * @param {String} $transform The complete transformation expression, e.g.: rotate(90deg)
+ */
+/**
+ * @mixin u4-transition
+ * 
+ * @param {String} $transform The complete transformation expression, e.g.: rotate(90deg)
+ */
+/**
+ *
+ * @class U4Styles.private.common.mixins
+ *
+ */
+/**
+ * @mixin u4-linear-background
+ * 
+ * @param {String} $background-image The background image to be used.
+ * @param {String} $degrees Degrees to be used. Can be a degree (-90deg etc), top or left.
+ * @param {String/List} $color-stops List of color stops. If list, set as '(#032050 0%, #173a6b 100%)'
+ */
+/**
+ * @mixin u4-linear-background
+ * 
+ * @param {String} $degrees Degrees to be used. Can be a degree (-90deg etc), top or left.
+ * @param {String/List} $color-stops List of color stops. If list, set as '(#032050 0%, #173a6b 100%)'
+ */
+/**
+ * A mixin for generating a layout.
+ *
+ **/
+/**
+ * meph-size-x2 {  font-size: 10px;}
+ */
+/**
+ * meph-size-x2 {  font-size: 10px;}
+ */
+/**
+ * A mixin for generating a tree layout.
+ *
+ **/
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-grid-row-a {
+  width: 100%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 320px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-grid-row-a {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-grid-row-a {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-grid-row-a {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-grid-row-a {
+    width: 100%;
+  }
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-layout-grid-column-a {
+  width: 100%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 320px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-a {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-a {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-a {
+    width: 50%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-a {
+    width: 25%;
+  }
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-layout-grid-column-b {
+  width: 100%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 320px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-b {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-b {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-b {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-b {
+    width: 100%;
+  }
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-layout-grid-column-c {
+  width: 100%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 320px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-c {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-c {
+    width: 50%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-c {
+    width: 50%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-c {
+    width: 50%;
+  }
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-layout-grid-column-d {
+  width: 100%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 320px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-d {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-d {
+    width: 50%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-d {
+    width: 20%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-d {
+    width: 10%;
+  }
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-layout-grid-column-e {
+  width: 100%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-e {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-e {
+    width: 50%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-e {
+    width: 33%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-e {
+    width: 25%;
+  }
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-layout-grid-column-f {
+  width: 100%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 320px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-f {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-f {
+    width: 50%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-f {
+    width: 25%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-f {
+    width: 25%;
+  }
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-layout-grid-column-g {
+  width: 100%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 320px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-g {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-g {
+    width: 50%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-g {
+    width: 75%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-column-g {
+    width: 75%;
+  }
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-layout-grid-row-a {
+  height: 25%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-a {
+    height: 100%;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-a {
+    height: 50%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-a {
+    height: 33%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-a {
+    height: 25%;
+  }
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-layout-grid-row-absolute-a {
+  height: 25%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-absolute-a {
+    height: 300px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-absolute-a {
+    height: 300px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-absolute-a {
+    height: 300px;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-absolute-a {
+    height: 300px;
+  }
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-layout-grid-row-b {
+  height: 100%;
+  float: left;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-b {
+    height: 100%;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-b {
+    height: 100%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-b {
+    height: 100%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 6, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+  .meph-layout-grid-row-b {
+    height: 100%;
+  }
+}
+
+/* line 109, ../../../../meph/resources/sass/meph-default/common/classes/_gridlayout.scss */
+.meph-grid-layout-flex-height:after {
+  content: ".";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+/* line 33, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x1 {
+  font-size: 12px;
+}
+
+/**positioning***/
+/* line 38, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x1.meph-position-left {
+  padding-left: 12px;
+}
+
+/* line 41, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x1.meph-position-left [iconbuttoncls] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/* line 46, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x1.meph-position-left [iconbuttoncls]:before {
+  position: absolute;
+  top: 6px;
+}
+
+/* line 33, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x2 {
+  font-size: 24px;
+}
+
+/**positioning***/
+/* line 38, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x2.meph-position-left {
+  padding-left: 24px;
+}
+
+/* line 41, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x2.meph-position-left [iconbuttoncls] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/* line 46, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x2.meph-position-left [iconbuttoncls]:before {
+  position: absolute;
+  top: 12px;
+}
+
+/* line 33, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x3 {
+  font-size: 36px;
+}
+
+/**positioning***/
+/* line 38, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x3.meph-position-left {
+  padding-left: 36px;
+}
+
+/* line 41, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x3.meph-position-left [iconbuttoncls] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/* line 46, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x3.meph-position-left [iconbuttoncls]:before {
+  position: absolute;
+  top: 18px;
+}
+
+/* line 33, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x4 {
+  font-size: 48px;
+}
+
+/**positioning***/
+/* line 38, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x4.meph-position-left {
+  padding-left: 48px;
+}
+
+/* line 41, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x4.meph-position-left [iconbuttoncls] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/* line 46, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x4.meph-position-left [iconbuttoncls]:before {
+  position: absolute;
+  top: 24px;
+}
+
+/* line 33, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x5 {
+  font-size: 60px;
+}
+
+/**positioning***/
+/* line 38, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x5.meph-position-left {
+  padding-left: 60px;
+}
+
+/* line 41, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x5.meph-position-left [iconbuttoncls] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/* line 46, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x5.meph-position-left [iconbuttoncls]:before {
+  position: absolute;
+  top: 30px;
+}
+
+/* line 33, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x6 {
+  font-size: 72px;
+}
+
+/**positioning***/
+/* line 38, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x6.meph-position-left {
+  padding-left: 72px;
+}
+
+/* line 41, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x6.meph-position-left [iconbuttoncls] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/* line 46, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x6.meph-position-left [iconbuttoncls]:before {
+  position: absolute;
+  top: 36px;
+}
+
+/* line 33, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x7 {
+  font-size: 84px;
+}
+
+/**positioning***/
+/* line 38, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x7.meph-position-left {
+  padding-left: 84px;
+}
+
+/* line 41, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x7.meph-position-left [iconbuttoncls] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/* line 46, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x7.meph-position-left [iconbuttoncls]:before {
+  position: absolute;
+  top: 42px;
+}
+
+/* line 33, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x8 {
+  font-size: 96px;
+}
+
+/**positioning***/
+/* line 38, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x8.meph-position-left {
+  padding-left: 96px;
+}
+
+/* line 41, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x8.meph-position-left [iconbuttoncls] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/* line 46, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x8.meph-position-left [iconbuttoncls]:before {
+  position: absolute;
+  top: 48px;
+}
+
+/* line 33, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x9 {
+  font-size: 108px;
+}
+
+/**positioning***/
+/* line 38, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x9.meph-position-left {
+  padding-left: 108px;
+}
+
+/* line 41, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x9.meph-position-left [iconbuttoncls] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/* line 46, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-size-x9.meph-position-left [iconbuttoncls]:before {
+  position: absolute;
+  top: 54px;
+}
+
+/* line 22, ../../../../meph/resources/sass/meph-default/common/classes/_textsize.scss */
+[iconbuttoncls] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/* line 61, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-color-white {
+  color: white;
+}
+
+/* line 61, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-color-black {
+  color: black;
+}
+
+/* line 61, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-color-blue {
+  color: blue;
+}
+
+/* line 61, ../../../../meph/resources/sass/meph-default/common/mixins/_gridlayout.scss */
+.meph-color-red {
+  color: red;
+}
+
+/**
+ *
+ * @class U4Styles.public.functions
+ * When we refer background images or font faces within our stylesheet we should use these path functions. They ensure that if u4.scss is loaded from another folder structure than the default path, 
+ * it is enough to change core variable {@link U4Styles.public.paths#$u4-resources-path $u4-resources-path}, and ll relative paths will be set correct when regenerating the stylesheet.
+ */
+/**
+ * @method U4ImagePath
+ *
+ * @param {string} $relativeImagePath - Image path relative to default U4 image folder, as defined by variable {@link U4Styles.public.paths#$u4-image-path $u4-image-path}.
+ *
+ * Returns {@link U4Styles.public.paths#$u4-image-path $u4-image-path} concatinated with $relativeImagePath
+ */
+/**
+ * @method U4FontPath
+ *
+ * @param {string} $relativeFontPath - Path relative to default U4  font path, as defined by variable {@link U4Styles.public.paths#$u4-font-path $u4-font-path}.
+ *
+ * Returns {@link U4Styles.public.paths#$u4-font-path $u4-font-path} concatinated with $relativeFontPath
+ */
+/**
+* @class U4Styles.private.core.variables.fontdefintions
+* Definition of fonts used throughout the system.
+*/
+/**
+ * @var {font-family}
+ * The regular font family used throughout the system
+ */
+/**
+ * @var {font-family}
+ * The light font family used throughout the system
+ */
+/**
+ * @var {font-family}
+ * The bold font family used throughout the system
+ * @deprecated Use $u4-font-regular with font-weight instead
+ */
+/**
+ * @var {string}
+ * Font unit used for font mixins defined within U4Styles.public.fonts
+ */
+/**
+*
+* @class U4Styles.public.paths
+* Path variables used to define resource paths relative to the location of the generated stylesheet.
+* If you generate a separate stylesheet using U4 resource variables (images, fonts etc), you might need to change/define
+*  the {@link #u4-resources-path} variable before importing the U4 variables.
+*/
+/**
+* @var {path}
+* Defines the default location for u4 resources
+* Overwrite this if you intend to import U4 resources from somewhere else, or if your css is located in another place than default.
+*/
+/**
+* @var {path} $u4-font-path
+* Defines the default location for u4 fonts relative to the current css folder.
+* Overwrite this if you intend to import default u4 fonts from another location than default
+*
+* __Note__: This implies that all u4 fonts referred to by us should use this path. Utility function {@link U4Styles.private.core.functions.paths#U4FontPath U4FontPath} 
+* exists as a convenience function concatinating and returning  $u4-font-path + $relativeImagePath.
+*/
+/**
+* @var {path} $u4-image-path
+* Defines the default location for u4 images relative to the current css folder.
+* Overwrite this if you intend to import default u4 images from another location than default
+*
+* __Note__: This implies that all u4 images referred to by us should use this path. Utility function {@link U4Styles.private.core.functions.paths#U4ImagePath U4ImagePath} 
+* exists as a convenience function concatinating and returning  $u4-image-path + $relativeImagePath.
+*
+*/
+/**
+ *
+ * @class U4Styles.public.fonts
+ * Public font mixins that can used by developers building on top of the U4UX Framework.
+ */
+/**
+* @mixin
+* Mixin for standard U4 normal font
+* @param {number} $font-size Size of font
+*/
+/**
+* @mixin
+* Mixin for standard U4 semibold font
+* @param {number} $font-size Size of font
+*/
+/**
+* @mixin
+* Mixin for standard U4 bold font
+* @param {number} $font-size Size of font
+*/
+/* line 1, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+}
+@media screen {
+  /* line 1, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+  html,
+  body {
+    overflow: hidden;
+  }
+}
+
+/* line 12, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+div {
+  box-sizing: border-box;
+}
+
+/* line 16, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+.div,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+button,
+.h6,
+div, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 36, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+button {
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background-color: #ffffff;
+  border: solid 1px #336666;
+  border-radius: 3px;
+  outline-color: transparent;
+}
+/* line 46, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+button.clickedOver, button:hover {
+  background-color: #94d3f7;
+  border-color: transparent;
+}
+/* line 52, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+button.clicked, button:active {
+  background-color: #33CCCC;
+  border-color: #66CCCC;
+}
+
+/* line 59, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+button.blue {
+  background-color: #FF6600;
+  color: #ffffff;
+}
+/* line 63, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+button.blue.clickedOver, button.blue:hover {
+  background-color: #101010;
+}
+/* line 68, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+button.blue.clicked, button.blue:active {
+  background-color: #66CCCC;
+}
+
+/* line 74, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+iframe.u4-iframe {
+  height: 640px;
+  width: 100%;
+}
+
+/* line 80, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+input[type=range].vVertical {
+  -webkit-appearance: none;
+  background-color: green;
+  width: 200px;
+  height: 10px;
+  margin-top: 100px;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  z-index: 0;
+}
+
+/* line 94, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+input[type=range].vHorizon {
+  -webkit-appearance: none;
+  background-color: pink;
+  height: 10px;
+  width: 200px;
+}
+
+/* line 101, ../../../../meph/resources/sass/meph-default/core/classes/_standardtags.scss */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background-color: #e1e1e8;
+  border-radius: 2px;
+  width: 20px;
+  height: 20px;
+}
+
+/* line 1, ../../../../meph/resources/sass/meph-default/core/classes/_utility.scss */
+.meph-stretch {
+  width: 100%;
+  height: 100%;
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/core/classes/_utility.scss */
+.listitem {
+  cursor: pointer;
+}
+
+/* line 1, ../../../../meph/resources/sass/meph-default/controls/view/_classes.scss */
+.meph-view {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  transform: translateX(0%);
+  -webkit-transform: translate(0%, 0px);
+}
+
+/* line 9, ../../../../meph/resources/sass/meph-default/controls/view/_classes.scss */
+.meph-view-remove {
+  opacity: 0;
+  transform: translateX(-100%);
+  -webkit-transform: translate(-100%, 0px);
+}
+
+/* line 15, ../../../../meph/resources/sass/meph-default/controls/view/_classes.scss */
+.meph-split {
+  width: 80%;
+  margin: auto;
+  float: left;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: solid 1px rgba(205, 205, 205, 0.63);
+}
+
+/* line 24, ../../../../meph/resources/sass/meph-default/controls/view/_classes.scss */
+.meph-label {
+  font-weight: bold;
+}
+
+/* line 29, ../../../../meph/resources/sass/meph-default/controls/view/_classes.scss */
+.visualizer {
+  overflow: hidden;
+}
+
+/* line 3, ../../../../meph/resources/sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+.meph-flyout-panel {
+  width: 300px;
+  position: fixed;
+  top: 0px;
+  z-index: 10000;
+  /* For Safari 3.1 to 6.0 */
+  -webkit-transition-property: all;
+  -webkit-transition-duration: 0.2s;
+  -webkit-transition-timing-function: ease;
+  -webkit-transition-delay: 0s;
+  /* Standard syntax */
+  transition-property: all;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+  opacity: 0;
+}
+
+/* line 13, ../../../../meph/resources/sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+.meph-flyout-panel-left {
+  transform: translateX(-300px);
+  -webkit-transform: translate(-300px, 0px);
+}
+
+/* line 18, ../../../../meph/resources/sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+.meph-flyout-panel-open-left {
+  opacity: 1.0;
+  transform: translateX(0px);
+  -webkit-transform: translate(0px, 0px);
+}
+
+/* line 24, ../../../../meph/resources/sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+[flyoutpanel] .meph-application-menu-categories-item {
+  width: 100%;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+@media screen and (min-width: 800px) {
+  /* line 24, ../../../../meph/resources/sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+  [flyoutpanel] .meph-application-menu-categories-item {
+    width: 290px;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/controls/view/panel/_panel.scss */
+.meph-panel-header {
+  width: 100%;
+  position: absolute;
+  height: 30px;
+  background-color: #66CCCC;
+  border-radius: 4px 4px 0 0;
+  padding: 4px 4px;
+  font-weight: bold;
+}
+
+/* line 17, ../../../../meph/resources/sass/meph-default/controls/view/panel/_panel.scss */
+.meph-panel-footer {
+  width: 100%;
+  position: absolute;
+  height: 30px;
+  background-color: #66CCCC;
+  border-radius: 0 0 4px 4px;
+  padding: 4px 4px;
+  bottom: 0;
+}
+
+/* line 26, ../../../../meph/resources/sass/meph-default/controls/view/panel/_panel.scss */
+.meph-panel-body-left {
+  width: 10px;
+  position: absolute;
+  top: 30px;
+  display: none;
+}
+
+/* line 32, ../../../../meph/resources/sass/meph-default/controls/view/panel/_panel.scss */
+.meph-panel-body-right {
+  width: 10px;
+  position: absolute;
+  top: 30px;
+  right: 0px;
+  display: none;
+}
+
+/* line 40, ../../../../meph/resources/sass/meph-default/controls/view/panel/_panel.scss */
+.meph-panel-body {
+  width: 100%;
+  height: 100%;
+  border-left: solid 10px transparent;
+  border-top: solid 30px transparent;
+  border-bottom: 30px transparent;
+  border-right: solid 10px transparent;
+  padding-bottom: 35px;
+}
+
+/* line 50, ../../../../meph/resources/sass/meph-default/controls/view/panel/_panel.scss */
+.meph-panel {
+  position: relative;
+  padding: 4px;
+}
+/* line 53, ../../../../meph/resources/sass/meph-default/controls/view/panel/_panel.scss */
+.meph-panel .meph-inner-panel {
+  width: 100%;
+  position: relative;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #993300;
+  border-radius: 4px;
+}
+
+/* line 3, ../../../../meph/resources/sass/meph-default/controls/view/button/_iconbutton.scss */
+.meph-icon-button {
+  background-color: transparent;
+  position: relative;
+  border: none;
+  white-space: nowrap;
+}
+
+/**
+ * Creates a tree layout.
+ **/
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-0 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-0 {
+    padding-left: 0px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-0 {
+    padding-left: 0px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-0 {
+    padding-left: 0%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-0 {
+    padding-left: 0%;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-1 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-1 {
+    padding-left: 15px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-1 {
+    padding-left: 20px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-1 {
+    padding-left: 4%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-1 {
+    padding-left: 5%;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-2 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-2 {
+    padding-left: 30px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-2 {
+    padding-left: 40px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-2 {
+    padding-left: 8%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-2 {
+    padding-left: 10%;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-3 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-3 {
+    padding-left: 45px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-3 {
+    padding-left: 60px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-3 {
+    padding-left: 12%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-3 {
+    padding-left: 15%;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-4 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-4 {
+    padding-left: 60px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-4 {
+    padding-left: 80px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-4 {
+    padding-left: 16%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-4 {
+    padding-left: 20%;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-5 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-5 {
+    padding-left: 75px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-5 {
+    padding-left: 100px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-5 {
+    padding-left: 20%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-5 {
+    padding-left: 25%;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-6 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-6 {
+    padding-left: 90px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-6 {
+    padding-left: 120px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-6 {
+    padding-left: 24%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-6 {
+    padding-left: 30%;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-7 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-7 {
+    padding-left: 105px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-7 {
+    padding-left: 140px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-7 {
+    padding-left: 28%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-7 {
+    padding-left: 35%;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-8 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-8 {
+    padding-left: 120px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-8 {
+    padding-left: 160px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-8 {
+    padding-left: 32%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-8 {
+    padding-left: 40%;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-9 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-9 {
+    padding-left: 135px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-9 {
+    padding-left: 180px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-9 {
+    padding-left: 36%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-9 {
+    padding-left: 45%;
+  }
+}
+
+/* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+.meph-tree-depth-10 {
+  width: 100%;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+@media screen and (min-width: 0px) and (max-width: 480px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-10 {
+    padding-left: 150px;
+  }
+}
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-10 {
+    padding-left: 200px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-10 {
+    padding-left: 40%;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1000000px) {
+  /* line 7, ../../../../meph/resources/sass/meph-default/common/mixins/_treelayout.scss */
+  .meph-tree-depth-10 {
+    padding-left: 50%;
+  }
+}
+
+/* line 1, ../../../../meph/resources/sass/meph-default/controls/view/field/_field.scss */
+.meph-field-label {
+  display: block;
+  font-weight: bold;
+}
+
+/* line 6, ../../../../meph/resources/sass/meph-default/controls/view/field/_field.scss */
+.meph-field-description {
+  display: block;
+  font-size: small;
+  font-style: italic;
+}
+
+/* line 12, ../../../../meph/resources/sass/meph-default/controls/view/field/_field.scss */
+.meph-formfield-validation-error {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  background-color: #FF9933;
+}
+
+/* line 19, ../../../../meph/resources/sass/meph-default/controls/view/field/_field.scss */
+.meph-application-menu-categories-item.meph-item-selected {
+  background-color: #FF9933;
+}
+
+/* line 23, ../../../../meph/resources/sass/meph-default/controls/view/field/_field.scss */
+.meph-application-menu-categories-item.meph-item-ready {
+  background-color: #FF9966;
+}
+
+/* line 27, ../../../../meph/resources/sass/meph-default/controls/view/field/_field.scss */
+.meph-formfield-hidden {
+  display: none;
+}
+
+/* line 3, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.dropbox {
+  border: 10px dashed red;
+  margin: 20px auto;
+  height: 100px;
+}
+
+/* line 9, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.spreadsheetbody,
+.spreadsheet {
+  height: 100%;
+  width: 100%;
+  z-index: 5;
+}
+
+/* line 16, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.noselect {
+  /**/
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* line 25, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.spreadsheet {
+  overflow: hidden;
+  position: relative;
+}
+
+/* line 30, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.audiosequenceheader {
+  position: absolute;
+  height: 40px;
+  width: 100%;
+  z-index: 100;
+}
+
+/* line 37, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.spreadsheetwrapper {
+  padding-bottom: 40px;
+  padding-top: 67px;
+}
+
+/* line 42, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.spreadsheetbody {
+  position: relative;
+}
+
+/* line 48, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.spreadsheetscrollbarright {
+  position: absolute;
+  right: 0;
+  z-index: 10;
+  height: 100%;
+  background-color: white;
+  top: 0px;
+  padding-top: 0px;
+  padding-bottom: 20px;
+}
+
+/* line 59, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.spreadsheetscrollbarbotom {
+  width: 100%;
+  background-color: white;
+  left: 0px;
+  z-index: 10;
+  bottom: 0px;
+  position: absolute;
+  padding-left: 15px;
+  padding-right: 20px;
+}
+
+/* line 70, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.scrollbarhandle {
+  background-color: #c1c1c1;
+  position: absolute;
+}
+
+/* line 75, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.scrollbar {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  border: 1px solid #c1c1c1;
+}
+
+/* line 83, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.selectarea,
+.activearea {
+  display: none;
+  position: absolute;
+  border: dotted 2px #4ba2e4;
+  pointer-events: none;
+}
+
+/* line 91, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.noresponse {
+  pointer-events: none;
+}
+
+/* line 95, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.infoarea {
+  background-color: rgba(186, 204, 93, 0.5);
+  border: dotted 1px rgba(186, 204, 93, 0.2);
+}
+
+/* line 100, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.pitches {
+  background-color: rgba(93, 204, 186, 0.5);
+}
+
+/* line 104, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.selectarea.active,
+.activearea.active {
+  display: block;
+  z-index: 4;
+}
+
+/* line 110, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.selectarea.active {
+  background-color: rgba(93, 186, 204, 0.2);
+}
+
+/* line 114, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.spreadsheet .bottom {
+  z-index: -1;
+}
+
+/* line 118, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.spreadsheet .spreadsheet,
+.spreadsheet .topheader,
+.spreadsheet .leftheader {
+  position: absolute;
+}
+
+/* line 124, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.grabrep {
+  position: absolute;
+  background-color: rgba(1, 233, 204, 0.2);
+}
+
+/* line 129, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.tweeneditor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* line 135, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.tweeneditor svg {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* line 143, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.tweeneditorspace {
+  position: absolute;
+  top: 0px;
+  height: 100%;
+  padding-bottom: 50px;
+}
+
+/* line 150, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.tweeneditorspace circle {
+  cursor: pointer;
+  r: 6px;
+}
+
+/* line 155, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.button_row {
+  position: absolute;
+  height: 50px;
+  bottom: 0px;
+}
+
+/* line 161, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.spectrogram canvas,
+.spectrogram {
+  height: 100%;
+  width: 100%;
+}
+
+/* line 167, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+svg[control] {
+  overflow: visible;
+}
+
+/* line 173, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+svg path.preconnection {
+  stroke-dasharray: 10, 5;
+}
+
+/* line 177, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+svg text {
+  user-select: none;
+}
+
+/* line 181, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+svg path.connection {
+  stroke: #1fc03c;
+  stroke-width: 3px;
+}
+
+/* line 187, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+svg path.connection:hover {
+  stroke: yellow;
+  stroke-width: 10px;
+}
+
+/* line 192, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+svg path.connection.selected {
+  stroke: orange;
+  stroke-width: 4px;
+}
+
+/* line 197, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+svg path.connection.selected:hover {
+  stroke: red;
+  stroke-width: 10px;
+}
+
+/* line 202, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+svg text.ignore {
+  pointer-events: none;
+}
+
+/* line 207, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.contextmenu {
+  position: absolute;
+  width: 150px;
+}
+
+/* line 212, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.resourceloaderholder,
+.soundfontlistpopup,
+.audiographpopup {
+  position: absolute;
+  top: 0px;
+}
+
+/* line 219, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.resourceloaderholder,
+.soundfontlistholder,
+.audiographholder {
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  padding-left: 40px;
+  padding-right: 40px;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+/* line 235, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.graphBody {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  z-index: 0;
+  background-color: rgba(255, 255, 255, 0.65);
+}
+
+/* line 244, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.meph-graph-control {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+/* line 250, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+div.graphBody div:first-child {
+  height: 100%;
+  width: 100%;
+}
+
+/* line 256, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.square_list {
+  float: left;
+  width: 25%;
+  padding: 2px;
+  font-size: 10px;
+  line-height: 1.4;
+  background-color: #f9f9f9;
+  border: 1px solid #fff;
+}
+
+/* line 267, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.empty_contact {
+  background-image: url("images/empty_contact.png");
+  height: 100px;
+  width: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+}
+
+/* line 277, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.hidden-header {
+  display: none;
+}
+
+/* line 281, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.hidden-header + .meph-activity-view-body {
+  padding-top: 0px;
+}
+
+/* line 285, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.typehead {
+  position: relative;
+}
+/* line 288, ../../../../meph/resources/sass/meph-default/controls/view/_misc.scss */
+.typehead .typeahead.suggestions {
+  position: absolute;
+  z-index: 1000;
+  background-color: white;
+  width: 100%;
+}
+
+/* line 1, ../../../../meph/resources/sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
+.meph-mobile-application-container,
+.meph-application-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/**
+ * Mobile header top bar height.
+ */
+/* line 8, ../../../../meph/resources/sass/meph-default/mobile/application/header/_mobileapplicationheader.scss */
+.meph-application-header {
+  position: absolute;
+  background-color: #101010;
+  height: 50px;
+  width: 100%;
+  font-family: dagny-bold, dagny, arial, tahoma, verdana, sans-serif;
+  color: #ffffff;
+}
+
+/* line 17, ../../../../meph/resources/sass/meph-default/mobile/application/header/_mobileapplicationheader.scss */
+.meph-application-menu-button-container {
+  margin-top: 2px;
+}
+
+/* line 21, ../../../../meph/resources/sass/meph-default/mobile/application/header/_mobileapplicationheader.scss */
+.btn.btn-passive {
+  background-color: transparent;
+}
+
+/* line 1, ../../../../meph/resources/sass/meph-default/mobile/application/body/_mobileapplicationbody.scss */
+.meph-application-body {
+  height: 100%;
+  border-top: solid transparent 50px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+}
+
+/* line 1, ../../../../meph/resources/sass/meph-default/mobile/application/footer/_mobileapplicationfooter.scss */
+.meph-application-footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+}
+
+/* line 1, ../../../../meph/resources/sass/meph-default/mobile/application/logo/_mobileapplicationlogo.scss */
+.mobile-application-logo {
+  margin: auto;
+  width: 292px;
+  height: 50px;
+  position: relative;
+  pointer-events: none;
+}
+
+/* line 8, ../../../../meph/resources/sass/meph-default/mobile/application/logo/_mobileapplicationlogo.scss */
+.mobile-application-logo .meph-application-logo:before {
+  content: 'MEPH';
+  font-size: 42px;
+  position: absolute;
+  white-space: nowrap;
+  background-image: url("images/meph.png");
+  background-repeat: no-repeat;
+  background-position-x: -5px;
+  padding-left: 24px;
+  background-position-y: 13px;
+}
+
+/* line 9, ../../../../meph/resources/sass/meph-default/mobile/application/menuview/_applicationmenucategories.scss */
+.meph-application-menu-categories-item {
+  margin: 10px;
+  color: #336666;
+  opactiy: 1.0;
+  border-radius: 3px;
+  -moz-transition: 0.2s, 0.1s;
+  -o-transition: 0.2s, 0.1s;
+  -webkit-transition: 0.2s, 0.1s;
+  transition: 0.2s, 0.1s;
+  cursor: pointer;
+}
+
+/**/
+/* line 19, ../../../../meph/resources/sass/meph-default/mobile/application/menuview/_applicationmenucategories.scss */
+.meph-application-menu-categories-item-details {
+  display: block;
+  padding-left: 8px;
+}
+
+/* line 23, ../../../../meph/resources/sass/meph-default/mobile/application/menuview/_applicationmenucategories.scss */
+.meph-application-menu-categories-item-description {
+  padding: 14px;
+}
+
+/* line 27, ../../../../meph/resources/sass/meph-default/mobile/application/menuview/_applicationmenucategories.scss */
+.meph-appliation-menu-categories-item-title {
+  padding: 0;
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* line 34, ../../../../meph/resources/sass/meph-default/mobile/application/menuview/_applicationmenucategories.scss */
+.meph-item-removal.meph-application-menu-categories-item-details,
+.meph-item-removal.meph-application-menu-categories-item-description,
+.meph-item-removal.meph-application-menu-categories-item {
+  opactiy: 0;
+  font-size: 0em;
+}
+
+/* line 1, ../../../../meph/resources/sass/meph-default/mobile/view/_homepage.scss */
+.meph-home-page-view {
+  position: absolute;
+  -moz-transition: 0.1s, 0.1s;
+  -o-transition: 0.1s, 0.1s;
+  -webkit-transition: 0.1s, 0.1s;
+  transition: 0.1s, 0.1s;
+  height: 100%;
+  width: 100%;
+  transform: translateX(0%);
+  -webkit-transform: translate(0%, 0px);
+}
+
+/* line 11, ../../../../meph/resources/sass/meph-default/mobile/view/_homepage.scss */
+.meph-remove-home-page {
+  transform: translateX(-100%);
+  -webkit-transform: translate(-100%, 0px);
+}
+
+/* line 5, ../../../../meph/resources/sass/meph-default/mobile/activity/view/_classes.scss */
+.meph-activity-view {
+  height: 100%;
+}
+
+/* line 9, ../../../../meph/resources/sass/meph-default/mobile/activity/view/_classes.scss */
+.meph-activity-view-header {
+  background-color: #ffffff;
+  height: 40px;
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* line 16, ../../../../meph/resources/sass/meph-default/mobile/activity/view/_classes.scss */
+.meph-activity-view-footer {
+  position: absolute;
+  bottom: 0px;
+  background-color: #ffffff;
+  width: 100%;
+  height: 50px;
+}
+
+/* line 24, ../../../../meph/resources/sass/meph-default/mobile/activity/view/_classes.scss */
+.meph-activity-view-body {
+  height: 100%;
+  padding-top: 40px;
+  padding-bottom: 50px;
+  position: absolute;
+  background-color: transparent;
+  top: 0px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 2px;
+  padding-right: 2px;
+  overflow: auto;
+}
+
+/* line 1, ../../../../meph/resources/sass/meph-default/mobile/application/menu/_applicationmenu.scss */
+.meph-application-menu {
+  position: absolute;
+}
+
+/* line 5, ../../../../meph/resources/sass/meph-default/mobile/application/menu/_applicationmenu.scss */
+.application-menu-list {
+  color: black;
+  cursor: pointer;
+}
+
+/* line 10, ../../../../meph/resources/sass/meph-default/mobile/application/menu/_applicationmenu.scss */
+.meph-application-flyout-menu {
+  background-color: transparent;
+}
+
+/* As hex codes */
+/* Main Primary color */
+/* Main Secondary color (1) */
+/* Main Secondary color (2) */
+/* Main Complement color */
+/* As RGBa codes */
+/* Main Primary color */
+/* Main Secondary color (1) */
+/* Main Secondary color (2) */
+/* Main Complement color */
+/* line 70, ../sass/connection-default/_all.scss */
+.mainview .meph-activity-view-body {
+  padding-top: 50px;
+  padding-bottom: 0px;
+}
+/* line 74, ../sass/connection-default/_all.scss */
+.mainview .meph-activity-view-body .listwrapper {
+  height: 100%;
+  overflow: auto;
+}
+/* line 81, ../sass/connection-default/_all.scss */
+.mainview .meph-activity-view-header {
+  height: auto;
+}
+
+/* line 88, ../sass/connection-default/_all.scss */
+[footerpadding] {
+  padding-bottom: 70px;
+}
+
+/* line 92, ../sass/connection-default/_all.scss */
+[headerpadding] {
+  padding-top: 50px;
+}
+
+/* line 96, ../sass/connection-default/_all.scss */
+.connection-app-add-contact {
+  top: 2px;
+  position: absolute;
+  right: 2px;
+  display: none;
+}
+
+/* line 105, ../sass/connection-default/_all.scss */
+.connection-list-profile-item {
+  list-style: none;
+  padding: 3px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  height: 75px;
+}
+
+/* line 113, ../sass/connection-default/_all.scss */
+.connection-show .connection-app-add-contact {
+  display: block;
+}
+
+/* line 117, ../sass/connection-default/_all.scss */
+.connection-list-profile-item:nth-of-type(n) {
+  background-color: #0091cf;
+}
+
+/* line 121, ../sass/connection-default/_all.scss */
+.connection-list-profile-item:nth-of-type(2n) {
+  background-color: #32a600;
+}
+
+/* line 125, ../sass/connection-default/_all.scss */
+.connection-list-profile-item:nth-of-type(3n) {
+  background-color: #e9b000;
+}
+
+/* line 129, ../sass/connection-default/_all.scss */
+.connection-list-profile-item:nth-of-type(4n) {
+  background-color: #f66e00;
+}
+
+/* line 133, ../sass/connection-default/_all.scss */
+.connection-list-profile-item:nth-of-type(5n) {
+  background-color: #f1594e;
+}
+
+/* line 139, ../sass/connection-default/_all.scss */
+.connection-list-profile-image {
+  position: absolute;
+  width: 50px;
+}
+
+/* line 147, ../sass/connection-default/_all.scss */
+.connection-list-profile-image + .meph-application-menu-categories-item-details {
+  padding-left: 55px;
+  color: white;
+}
+
+/* line 152, ../sass/connection-default/_all.scss */
+.meph-application-menu-categories-item-details hr {
+  margin: 1px;
+  border: 0;
+  height: 1px;
+  background-image: -webkit-linear-gradient(left, transparent, rgba(255, 255, 255, 0.75), transparent);
+  background-image: -moz-linear-gradient(left, transparent, rgba(255, 255, 255, 0.75), transparent);
+  background-image: -ms-linear-gradient(left, transparent, rgba(255, 255, 255, 0.75), transparent);
+  background-image: -o-linear-gradient(left, transparent, rgba(255, 255, 255, 0.75), transparent);
+}
+
+/* line 164, ../sass/connection-default/_all.scss */
+.meph-application-body.container-fluid {
+  padding: 2px;
+  margin: 0;
+}
+
+/* line 170, ../sass/connection-default/_all.scss */
+.meph-application-body .btn-lg, .meph-application-body .btn-group-lg > .btn {
+  border-radius: 0;
+}
+
+/* line 175, ../sass/connection-default/_all.scss */
+.listitem {
+  list-style: none;
+}
+
+/* line 182, ../sass/connection-default/_all.scss */
+.relationshiplistitem input[type=checkbox] {
+  width: 25px;
+  height: 25px;
+}
+
+/* line 187, ../sass/connection-default/_all.scss */
+.relationshiplistitem .relationshiptext {
+  padding-top: 11px;
+}
+
+/* line 192, ../sass/connection-default/_all.scss */
+.connecton-application-header [flyoutpanel] {
+  background-color: white;
+  margin-top: 50px;
+  padding-top: 0px;
+  height: 100%;
+}
+/* line 198, ../sass/connection-default/_all.scss */
+.connecton-application-header [flyoutpanel] .connection-menu-template {
+  color: black;
+}
+/* line 202, ../sass/connection-default/_all.scss */
+.connecton-application-header [flyoutpanel] .connection-menu-template.list-group-item:last-child {
+  border-radius: 0px;
+}
+
+/* line 207, ../sass/connection-default/_all.scss */
+.vertspace {
+  margin-top: 4px;
+}
+
+/**
+ * iPhone
+ **/
+/**
+ * iPhone retina
+ **/
+/**
+ * iPhone 5
+ **/
+/**
+ * iPad
+ **/
+/**
+ * iPad retina
+ **/
+/* line 2, ../sass/connection-default/_templates.scss */
+.businesscard.defaultcard {
+  height: 100%;
+  padding: 0px;
+}
+/* line 6, ../sass/connection-default/_templates.scss */
+.businesscard.defaultcard .inner-container {
+  padding: 10px;
+}
+/* line 10, ../sass/connection-default/_templates.scss */
+.businesscard.defaultcard .businesscard-container {
+  background: white;
+  height: 100%;
+  border: black solid 90px;
+}
+@media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-device-pixel-ratio: 3) {
+  /* line 10, ../sass/connection-default/_templates.scss */
+  .businesscard.defaultcard .businesscard-container {
+    border: black solid 10px;
+    border-top: black solid 27px;
+    border-bottom: black solid 27px;
+  }
+}
+/* line 22, ../sass/connection-default/_templates.scss */
+.businesscard.defaultcard .businesscard-container:before {
+  content: "";
+  border-style: solid;
+  border-width: 140px 140px 140px 0;
+  border-color: transparent #43DD66 transparent transparent;
+  position: absolute;
+  left: 0px;
+  transform: rotate(-45deg);
+  bottom: -91px;
+  left: -21px;
+  overflow: hidden;
+}
+/* line 35, ../sass/connection-default/_templates.scss */
+.businesscard.defaultcard .businesscard-col-6 {
+  position: relative;
+  float: left;
+}
+@media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape) {
+  /* line 35, ../sass/connection-default/_templates.scss */
+  .businesscard.defaultcard .businesscard-col-6 {
+    width: 50%;
+  }
+}
+@media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) {
+  /* line 35, ../sass/connection-default/_templates.scss */
+  .businesscard.defaultcard .businesscard-col-6 {
+    width: 100%;
+  }
+}
+
+/* line 49, ../sass/connection-default/_templates.scss */
+[qrcode] {
+  padding-top: 10px;
+}
+
+/* line 217, ../sass/connection-default/_all.scss */
+.contact-list-item:nth-child(2n) {
+  background-color: #f7f7f7;
+}
+/* line 221, ../sass/connection-default/_all.scss */
+.contact-list-item .contact-image {
+  background-image: url("images/empty_contact.png");
+  height: 64px;
+  width: 64px;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-position-y: 50%;
+  background-color: grey;
+  background-size: 106% 172%;
+  border-radius: 50% 50%;
+}
+/* line 233, ../sass/connection-default/_all.scss */
+.contact-list-item h4 {
+  color: #f37462;
+  margin: 0;
+}
+
+/* line 240, ../sass/connection-default/_all.scss */
+.createcontact video {
+  width: 100%;
+}
+
+/* line 247, ../sass/connection-default/_all.scss */
+body.mea-culpa {
+        /*.contact-list-item:nth-child(2n) {
+            background-color: $color2;
+            color: $color1;
+
+            a {
+                color: $color4;
+            }
+        }*/
+}
+/* line 249, ../sass/connection-default/_all.scss */
+body.mea-culpa [editrelationship] h2 {
+  margin: 0px;
+}
+/* line 253, ../sass/connection-default/_all.scss */
+body.mea-culpa [editrelationship] .row {
+  margin-right: -10px;
+  margin-left: 0px;
+}
+/* line 259, ../sass/connection-default/_all.scss */
+body.mea-culpa .meph-application-header {
+  background-color: #191919;
+  color: #FFF056;
+}
+/* line 264, ../sass/connection-default/_all.scss */
+body.mea-culpa .contact-list-item {
+  background-color: #FFFFFF;
+  color: #191919;
+}
+/* line 268, ../sass/connection-default/_all.scss */
+body.mea-culpa .contact-list-item a {
+  color: #FFF056;
+}
+/* line 271, ../sass/connection-default/_all.scss */
+body.mea-culpa .contact-list-item a i.fa {
+  color: #191919;
+}
+/* line 277, ../sass/connection-default/_all.scss */
+body.mea-culpa .list-group-item {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+/* line 289, ../sass/connection-default/_all.scss */
+body.mea-culpa .contact-list-item h4 {
+  color: #191919;
+}
+/* line 293, ../sass/connection-default/_all.scss */
+body.mea-culpa .glyphicon.glyphicon-th-large.meph-color-white {
+  color: #FFF056;
+}
+/* line 298, ../sass/connection-default/_all.scss */
+body.mea-culpa .meph-view.mainview .meph-activity-view-header {
+  background-color: #191919;
+}
+/* line 301, ../sass/connection-default/_all.scss */
+body.mea-culpa .meph-view.mainview .meph-activity-view-header h2 {
+  margin: 0px;
+}
+/* line 306, ../sass/connection-default/_all.scss */
+body.mea-culpa .meph-activity-view-body,
+body.mea-culpa .meph-application-body.container-fluid {
+  padding: 0px;
+}
+/* line 312, ../sass/connection-default/_all.scss */
+body.mea-culpa .mainview .meph-activity-view-body .listwrapper {
+  margin-top: 60px;
+}
+/* line 318, ../sass/connection-default/_all.scss */
+body.mea-culpa .mainview.accounts .meph-activity-view-body .listwrapper {
+  margin-top: 60px;
+}
+/* line 323, ../sass/connection-default/_all.scss */
+body.mea-culpa .fa {
+  color: #191919;
+}
+/* line 328, ../sass/connection-default/_all.scss */
+body.mea-culpa .meph-application-header .fa {
+  color: #FFFFFF;
+}
+/* line 334, ../sass/connection-default/_all.scss */
+body.mea-culpa .btn-social .fa {
+  color: #FFFFFF;
+}
+/* line 339, ../sass/connection-default/_all.scss */
+body.mea-culpa .meph-activity-view-footer {
+  background-color: #191919;
+}
+/* line 345, ../sass/connection-default/_all.scss */
+body.mea-culpa .meph-application-body .btn-lg, body.mea-culpa .meph-application-body .btn-group-lg > .btn {
+  border-radius: 0;
+  background-image: none;
+  background-color: transparent;
+  border-color: transparent;
+}
+/* line 353, ../sass/connection-default/_all.scss */
+body.mea-culpa .meph-application-body .meph-activity-view-footer .fa {
+  color: #FFFFFF;
+}
+/* line 359, ../sass/connection-default/_all.scss */
+body.mea-culpa .glyphicon.glyphicon-th-large.meph-color-white {
+  color: #FFFFFF;
+  padding: 6px;
+  box-shadow: none;
+  outline: none;
+}
+/* line 367, ../sass/connection-default/_all.scss */
+body.mea-culpa .meph-application-header.connecton-application-header .fa fa-plus,
+body.mea-culpa .meph-application-header.connecton-application-header .fa.fa-bars {
+  font-size: 2em;
+}
+/* line 373, ../sass/connection-default/_all.scss */
+body.mea-culpa .meph-application-header.connecton-application-header .meph-application-menu-button-container button {
+  padding: 0;
+  padding-left: 15px;
+  padding-top: 6px;
+  outline: none;
+}
+/* line 382, ../sass/connection-default/_all.scss */
+body.mea-culpa .profile {
+  height: 200px;
+  width: 200px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+}
+/* line 390, ../sass/connection-default/_all.scss */
+body.mea-culpa .connection-list-profile-image {
+  height: 79px;
+  width: 79px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: white;
+  border-radius: 50%;
+  /*@include meph-image-background($file: 'empty_contact.png');*/
+}
+
+/* line 247, ../sass/connection-default/_all.scss */
+body.big-top {
+        /*.contact-list-item:nth-child(2n) {
+            background-color: $color2;
+            color: $color1;
+
+            a {
+                color: $color4;
+            }
+        }*/
+}
+/* line 249, ../sass/connection-default/_all.scss */
+body.big-top [editrelationship] h2 {
+  margin: 0px;
+}
+/* line 253, ../sass/connection-default/_all.scss */
+body.big-top [editrelationship] .row {
+  margin-right: -10px;
+  margin-left: 0px;
+}
+/* line 259, ../sass/connection-default/_all.scss */
+body.big-top .meph-application-header {
+  background-color: #C63D0F;
+  color: #3B3738;
+}
+/* line 264, ../sass/connection-default/_all.scss */
+body.big-top .contact-list-item {
+  background-color: #FDF3E7;
+  color: #C63D0F;
+}
+/* line 268, ../sass/connection-default/_all.scss */
+body.big-top .contact-list-item a {
+  color: #3B3738;
+}
+/* line 271, ../sass/connection-default/_all.scss */
+body.big-top .contact-list-item a i.fa {
+  color: #C63D0F;
+}
+/* line 277, ../sass/connection-default/_all.scss */
+body.big-top .list-group-item {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+/* line 289, ../sass/connection-default/_all.scss */
+body.big-top .contact-list-item h4 {
+  color: #C63D0F;
+}
+/* line 293, ../sass/connection-default/_all.scss */
+body.big-top .glyphicon.glyphicon-th-large.meph-color-white {
+  color: #3B3738;
+}
+/* line 298, ../sass/connection-default/_all.scss */
+body.big-top .meph-view.mainview .meph-activity-view-header {
+  background-color: #C63D0F;
+}
+/* line 301, ../sass/connection-default/_all.scss */
+body.big-top .meph-view.mainview .meph-activity-view-header h2 {
+  margin: 0px;
+}
+/* line 306, ../sass/connection-default/_all.scss */
+body.big-top .meph-activity-view-body,
+body.big-top .meph-application-body.container-fluid {
+  padding: 0px;
+}
+/* line 312, ../sass/connection-default/_all.scss */
+body.big-top .mainview .meph-activity-view-body .listwrapper {
+  margin-top: 60px;
+}
+/* line 318, ../sass/connection-default/_all.scss */
+body.big-top .mainview.accounts .meph-activity-view-body .listwrapper {
+  margin-top: 60px;
+}
+/* line 323, ../sass/connection-default/_all.scss */
+body.big-top .fa {
+  color: #C63D0F;
+}
+/* line 328, ../sass/connection-default/_all.scss */
+body.big-top .meph-application-header .fa {
+  color: #FDF3E7;
+}
+/* line 334, ../sass/connection-default/_all.scss */
+body.big-top .btn-social .fa {
+  color: #FDF3E7;
+}
+/* line 339, ../sass/connection-default/_all.scss */
+body.big-top .meph-activity-view-footer {
+  background-color: #C63D0F;
+}
+/* line 345, ../sass/connection-default/_all.scss */
+body.big-top .meph-application-body .btn-lg, body.big-top .meph-application-body .btn-group-lg > .btn {
+  border-radius: 0;
+  background-image: none;
+  background-color: transparent;
+  border-color: transparent;
+}
+/* line 353, ../sass/connection-default/_all.scss */
+body.big-top .meph-application-body .meph-activity-view-footer .fa {
+  color: #FDF3E7;
+}
+/* line 359, ../sass/connection-default/_all.scss */
+body.big-top .glyphicon.glyphicon-th-large.meph-color-white {
+  color: #FDF3E7;
+  padding: 6px;
+  box-shadow: none;
+  outline: none;
+}
+/* line 367, ../sass/connection-default/_all.scss */
+body.big-top .meph-application-header.connecton-application-header .fa fa-plus,
+body.big-top .meph-application-header.connecton-application-header .fa.fa-bars {
+  font-size: 2em;
+}
+/* line 373, ../sass/connection-default/_all.scss */
+body.big-top .meph-application-header.connecton-application-header .meph-application-menu-button-container button {
+  padding: 0;
+  padding-left: 15px;
+  padding-top: 6px;
+  outline: none;
+}
+/* line 382, ../sass/connection-default/_all.scss */
+body.big-top .profile {
+  height: 200px;
+  width: 200px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+}
+/* line 390, ../sass/connection-default/_all.scss */
+body.big-top .connection-list-profile-image {
+  height: 79px;
+  width: 79px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: white;
+  border-radius: 50%;
+  /*@include meph-image-background($file: 'empty_contact.png');*/
+}

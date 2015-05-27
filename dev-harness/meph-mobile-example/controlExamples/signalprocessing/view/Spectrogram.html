@@ -1,0 +1,10 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"' mephid="activity">
+        <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="v$.processSin">
+            Sin
+            <span class="glyphicon glyphicon-th"></span>
+        </mephbutton>
+        <spectrogram meph-data-data="v$.sin" meph-data-autoprocess="true" mephid="spectrogram"></spectrogram>
+
+    </activityview>
+</div>

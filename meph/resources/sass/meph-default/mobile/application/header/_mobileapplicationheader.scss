@@ -1,0 +1,23 @@
+﻿/**
+ * Mobile header top bar height.
+ */
+$meph-topbar-height: 50px;
+$meph-topbar-height-with-border: $meph-topbar-height;
+$meph-color-complement-a-1: $meph-color-white;
+
+.meph-application-header {
+    position: absolute;
+    background-color: $meph-topbar-background-color;
+    height: $meph-topbar-height;
+    width: 100%;
+    font-family: $u4-font-bold;
+    color: $meph-color-complement-a-1;
+}
+
+.meph-application-menu-button-container {
+    margin-top: 2px;
+}
+
+.btn.btn-passive {
+    background-color: transparent;
+}

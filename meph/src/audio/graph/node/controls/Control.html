@@ -1,0 +1,23 @@
+﻿<svg mephid="svg" control
+     meph-data-x="c$.x"
+     meph-data-y="c$.y"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g>
+        <!-- "name": "beforecircle" -->
+        <circle meph-data-transform="c$.connectortransform"
+                meph-data-fill="c$.fill"
+                meph-data-r="c$.controlradius"
+                mephid="connector"
+                meph-data-stroke="c$.stroke"></circle>
+        <!-- "name": "aftercircle" -->
+
+        <text meph-data-transform="c$.texttransform"
+              meph-data-text-anchor="c$.anchor"
+              meph-data-font-size="c$.fontsize"
+              meph-data-width="c$.dragareawidth"
+              dominant-baseline="central"
+              data-bind='"innerHTML": "c$.titlevalue"'></text>
+        <!-- "name" : "aftertext" -->
+    </g>
+</svg>

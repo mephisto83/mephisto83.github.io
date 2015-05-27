@@ -1,0 +1,11 @@
+java -jar yuicompressor-2.4.8.jar tween/TweenEditor.js -o min/tween/min-TweenEditor.js
+ java -jar yuicompressor-2.4.8.jar signalprocessing/Spectrogram.js -o min/signalprocessing/min-Spectrogram.js
+ java -jar yuicompressor-2.4.8.jar mobile/providers/identity/IdentityProvider.js -o min/mobile/providers/identity/min-IdentityProvider.js
+ java -jar yuicompressor-2.4.8.jar mobile/providers/identity/FacebookProvider.js -o min/mobile/providers/identity/min-FacebookProvider.js
+ java -jar yuicompressor-2.4.8.jar mobile/mixins/Activity.js -o min/mobile/mixins/min-Activity.js
+ java -jar yuicompressor-2.4.8.jar Constants.js -o min/min-Constants.js
+ java -jar yuicompressor-2.4.8.jar mobile/activity/ActivityController.js -o min/mobile/activity/min-ActivityController.js
+ java -jar yuicompressor-2.4.8.jar math/ExpressionTranslation.js -o min/math/min-ExpressionTranslation.js
+ java -jar yuicompressor-2.4.8.jar math/Set.js -o min/math/min-Set.js
+ java -jar yuicompressor-2.4.8.jar math/ExpressionMatch.js -o min/math/min-ExpressionMatch.js
+ java -jar yuicompressor-2.4.8.jar math/expression/Factor.js -o min/math/expression/min-Factor.js

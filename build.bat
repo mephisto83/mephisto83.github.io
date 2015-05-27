@@ -1,0 +1,1 @@
+jsduck meph/src --builtin-classes --guides guides.json --output docs

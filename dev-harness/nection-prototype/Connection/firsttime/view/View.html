@@ -1,0 +1,22 @@
+﻿<div class="meph-view meph-view-remove login-view">
+    <!--<activityview data-bind='"activityName": "c$.name"'>-->
+
+    <div role="main" class="col-md-12" style="padding-top:4px;">
+        <list data-bind='"source": "v$.accounts"'>
+            <template name="views_account_template">
+                <li class="listitem accounttemplate" mephid="wrapper">
+                    <a meph-event-click="v$.logInWith, c$.data"
+                       mephid="link"
+                       meph-data-nothing="c$.data.loginAdded | v$.toDisabled, c$.data, c$.link, c$.wrapper"
+                       data-bind='"class":"c$.data.$btnclass"' class="btn btn-block btn-social btn-pinterest">
+                        <i data-bind='"class":"c$.data.$iconclass"'></i>
+                        <span data-bind='"class":"c$.data.online | v$.toOnlineBtnClass"'>Sign in with <b data-bind='"innerHTML": "c$.data.name"'></b></span>
+                        <span data-bind='"class":"c$.data.online | v$.toOfflineBtnClass"'>Sign out of <b data-bind='"innerHTML": "c$.data.name"'></b></span>
+                    </a>
+                </li>
+            </template>
+        </list>
+    </div>
+
+    <!--</activityview>-->
+</div>

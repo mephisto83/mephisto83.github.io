@@ -1,0 +1,100 @@
+﻿/*<palette>
+<url>http://colorschemedesigner.com/#5cc2Pw0w0w0w0</url>
+<colorspace>
+RGB (Web Safe Colors); RGB color space reduced to 216 web safe color set
+</colorspace>
+<colorset id="primary" title="Primary Color">
+<color id="primary-1" nr="1" rgb="CC0066" r="204" g="0" b="102"/>
+<color id="primary-2" nr="2" rgb="993366" r="153" g="51" b="102"/>
+<color id="primary-3" nr="3" rgb="990033" r="153" g="0" b="51"/>
+<color id="primary-4" nr="4" rgb="FF3399" r="255" g="51" b="153"/>
+<color id="primary-5" nr="5" rgb="FF6699" r="255" g="102" b="153"/>
+</colorset>
+<colorset id="secondary-a" title="Secondary Color A">
+<color id="secondary-a-1" nr="1" rgb="FF9900" r="255" g="153" b="0"/>
+<color id="secondary-a-2" nr="2" rgb="CC9933" r="204" g="153" b="51"/>
+<color id="secondary-a-3" nr="3" rgb="996600" r="153" g="102" b="0"/>
+<color id="secondary-a-4" nr="4" rgb="FFCC33" r="255" g="204" b="51"/>
+<color id="secondary-a-5" nr="5" rgb="FFCC66" r="255" g="204" b="102"/>
+</colorset>
+<colorset id="secondary-b" title="Secondary Color B">
+<color id="secondary-b-1" nr="1" rgb="003399" r="0" g="51" b="153"/>
+<color id="secondary-b-2" nr="2" rgb="333399" r="51" g="51" b="153"/>
+<color id="secondary-b-3" nr="3" rgb="003366" r="0" g="51" b="102"/>
+<color id="secondary-b-4" nr="4" rgb="3366CC" r="51" g="102" b="204"/>
+<color id="secondary-b-5" nr="5" rgb="6699CC" r="102" g="153" b="204"/>
+</colorset>
+<colorset id="complement" title="Complementary Color">
+<color id="complement-1" nr="1" rgb="99FF00" r="153" g="255" b="0"/>
+<color id="complement-2" nr="2" rgb="999933" r="153" g="153" b="51"/>
+<color id="complement-3" nr="3" rgb="669900" r="102" g="153" b="0"/>
+<color id="complement-4" nr="4" rgb="CCFF33" r="204" g="255" b="51"/>
+<color id="
+complement-5" nr="5" rgb="CCFF66" r="204" g="255" b="102"/>
+</colorset>
+</palette>
+*/
+/**
+ * @property $meph-color-primary-1
+ **/
+$meph-color-primary-1: #101010; 
+/**
+ * @property $meph-color-primary-2
+ **/
+$meph-color-primary-2: #336666;
+ 
+/**
+ * @property $meph-color-primary-3
+ **/
+$meph-color-primary-3: transparent;
+
+/**
+ * @property $meph-color-primary-4
+ **/
+$meph-color-primary-4: #33CCCC;
+
+/**
+ * @property $meph-color-primary-5
+ **/
+$meph-color-primary-5: #66CCCC;
+
+/**
+ * @property $meph-border-color
+ **/
+$meph-color-secondary-a-1: #FF6600;
+$meph-color-secondary-a-2: #CC6633;
+$meph-color-secondary-a-3: #993300; 
+$meph-color-secondary-a-4: #FF9933;
+$meph-color-secondary-a-5: #FF9966;
+
+
+/**
+ * @property $meph-border-color
+ **/
+$meph-border-color: $meph-color-primary-2;
+
+
+
+$meph-color-white: #ffffff;
+$meph-color-transparent: transparent;
+$meph-topbar-background-color: $meph-color-primary-1;
+$meph-border-color-hover: $meph-color-primary-3;
+$meph-border-color-active: $meph-color-primary-5;
+$meph-selected: $meph-color-primary-4;
+$meph-button-main: $meph-color-secondary-a-1;
+
+
+
+.meph-color-black:before {
+	color:black;
+}
+.meph-color-red:before {
+	color:red;
+}
+.meph-color-green:before {
+	color:green;
+}
+
+.meph-color-blue:before{
+	color:blue; 
+}

@@ -1,0 +1,31 @@
+﻿
+$meph-text-defaultSize: 12;
+
+
+$d2:(d2, $meph-text-defaultSize/2);
+$d3:(d3, $meph-text-defaultSize/3);
+$d4:(d4, $meph-text-defaultSize/4);
+$d5:(d5, $meph-text-defaultSize/5);
+
+$x1:(x1, $meph-text-defaultSize*1);
+$x2:(x2, $meph-text-defaultSize*2);
+$x3:(x3, $meph-text-defaultSize*3);
+$x4:(x4, $meph-text-defaultSize*4);
+$x5:(x5, $meph-text-defaultSize*5);
+$x6:(x6, $meph-text-defaultSize*6);
+$x7:(x7, $meph-text-defaultSize*7);
+$x8:(x8, $meph-text-defaultSize*8);
+$x9:(x9, $meph-text-defaultSize*9);
+
+@include meph-text-size-position($prefix: meph-size, $sizes:($x1 $x2 $x3 $x4 $x5 $x6 $x7 $x8 $x9));
+
+[iconbuttoncls] {
+	position: absolute;
+	top:0px;
+	left:0px;
+}
+$white:(white, white);
+$black:(black, black);
+$red:(red, red);
+$blue:(blue, blue); 
+@include meph-text-color($prefix: meph-color, $sizes:($white $black $blue $red) );

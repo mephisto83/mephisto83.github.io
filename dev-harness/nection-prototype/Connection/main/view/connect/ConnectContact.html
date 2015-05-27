@@ -1,0 +1,22 @@
+﻿<div class="meph-view meph-view-remove mainview  createcontact">
+    <activityview data-bind='"activityName": "c$.name"' mephid="createview">
+        <br />
+        <div class="row">
+            <div class="col-xs-4">
+                <iconselect size="5" meph-event-change="v$.channelUpdate, v$.createview.r.value, v$.createview.g.value, v$.createview.b.value" mephid="r" icon-source="fa-car;fa-camera-retro;fa-bed;fa-user-secret;fa-subway;fa-anchor"></iconselect>
+            </div>
+            <div class="col-xs-4">
+                <iconselect size="5" meph-event-change="v$.channelUpdate, v$.createview.r.value, v$.createview.g.value, v$.createview.b.value" mephid="g" icon-source="fa-car;fa-camera-retro;fa-bed;fa-user-secret;fa-subway;fa-anchor"></iconselect>
+            </div>
+            <div class="col-xs-4">
+                <iconselect size="5" meph-event-change="v$.channelUpdate, v$.createview.r.value, v$.createview.g.value, v$.createview.b.value" mephid="b" icon-source="fa-car;fa-camera-retro;fa-bed;fa-user-secret;fa-subway;fa-anchor"></iconselect>
+            </div>
+        </div>
+        <listview data-bind='"source": "v$.contacts"'
+                  meph-event-itemclick="v$.connectContact"
+                  meph-data-renderondemand="true">
+            <template name="Connection.template.ContactItem">
+            </template>
+        </listview>
+    </activityview>
+</div>

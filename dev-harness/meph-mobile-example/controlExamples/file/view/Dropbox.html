@@ -1,0 +1,23 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        Dropbox
+
+
+        <dropbox data-events='"filesdropped":"ct$.loadFiles"'></dropbox>
+
+        <list data-bind='"source": "ct$.listsource"'>
+            <template name="dropbox_page">
+                <div class="">
+                    <div class="meph-application-menu-categories-item-details">
+                        <span>Name</span>
+                        <span data-bind='"innerHTML": "c$.data.file.name"'></span>
+                        <img data-bind='"src": "c$.data.res"'></span>
+                        <br />
+                    </div>
+                </div>
+            </template>
+        </list>
+
+    </activityview>
+
+</div>

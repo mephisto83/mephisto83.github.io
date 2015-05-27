@@ -1,0 +1,49 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        <div class="meph-layout-grid-column-e">
+            <text descriptiontext="Description" value="ct$.userName" labeltext="Text"></text>
+        </div>
+        <div class="meph-layout-grid-column-e">
+            <checkbox descriptiontext="Video, i.e. Video calls, or feeds" value="ct$.videoEnabled" labeltext="Video"></checkbox>
+        </div>
+        <div class="meph-layout-grid-column-e">
+            <checkbox descriptiontext="Allow data, i.e. Image, Video or Sound files can be shared" value="ct$.dataEnabled" labeltext="Data"></checkbox>
+
+        </div>
+
+        <div class="meph-layout-grid-column-e">
+            <list data-bind='"source": "ct$.listsource"' data-events='"itemclicked": "ct$.setSelectedReference"'>
+                <template
+                    name="u4m_controls_examples_list">
+                    <div class="meph-application-menu-categories-item" data-bind='"class": "c$.data.selected | c$.list.controller.transformSelected"'>
+                        <div class="meph-application-menu-categories-item-details">
+                            <span>Name</span>
+                            <span data-bind='"innerHTML": "c$.data.userName"'></span>
+                            <br />
+                            <span>Property</span>
+                            <span data-bind='"innerHTML": "c$.data.remoteUser"'></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </template>
+            </list>
+        </div>
+
+        <div class="meph-layout-grid-column-e">
+            <list data-bind='"source": "ct$.remoteViews"' data-events='"itemclicked": "ct$.goToView"'>
+                <template
+                    name="remote_views">
+                    <div class="meph-application-menu-categories-item" data-bind='"class": "c$.data.ready | c$.list.controller.transformReady"'>
+                        <div class="meph-application-menu-categories-item-details">
+                            <span>Path</span>
+                            <span data-bind='"innerHTML": "c$.data.path"'></span>
+                            <br />
+                        </div>
+                    </div>
+                </template>
+            </list>
+        </div>
+
+        <mephbutton class="blue clickedOver" data-events='"click" : "ct$.openRemote"'>Open Remote</mephbutton>
+    </activityview>
+</div>

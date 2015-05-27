@@ -1,0 +1,65 @@
+﻿/**
+ * A mixin for generating a layout.
+ *
+ **/
+ @mixin meph-grid-layout($prefix, $defaultWidth, $sizes, $tag: width) {
+		.#{$prefix} {
+			#{$tag}: $defaultWidth;
+			float: left;
+			@content;
+			@each $size in $sizes {
+				$min: nth($size, 1);
+				$max: nth($size, 2);
+				$width: nth($size, 3);
+				@include screen($resMin: $min, $resMax: $max) {
+					  	@if($width){
+							#{$tag}: $width;
+						}	
+						@else {
+							#{$tag} : $defaultWidth;
+						}
+				}
+			}
+		}
+ };
+ 
+/**
+ * meph-size-x2 {  font-size: 10px;}
+ */
+@mixin meph-text-size-position($prefix, $sizes, $postfix: px, $tag: font-size, $prefix-pos: meph-position, $sel : '[iconbuttoncls]') {
+	@each $size in $sizes {
+		$sizePostFix : nth($size,1);
+		$sizeValue : nth($size,2);
+		.#{$prefix}-#{$sizePostFix} {
+			#{$tag}: $sizeValue+$postfix; 
+		}		
+
+		/**positioning***/
+		.#{$prefix}-#{$sizePostFix}.#{$prefix-pos}-left {
+			padding-left: ($sizeValue)+$postfix;
+		}
+		.#{$prefix}-#{$sizePostFix}.#{$prefix-pos}-left #{$sel}{ 
+			position: absolute;
+			top: 0px;
+			left: 0px;
+		}
+		.#{$prefix}-#{$sizePostFix}.#{$prefix-pos}-left #{$sel}:before {
+			position: absolute;
+			top: ($sizeValue/2)+$postfix;  
+		} 
+	}
+};
+
+
+/**
+ * meph-size-x2 {  font-size: 10px;}
+ */
+@mixin meph-text-color($prefix, $sizes, $tag: color) {
+	@each $size in $sizes {
+		$sizePostFix : nth($size,1);
+		$sizeValue : nth($size,2);
+		.#{$prefix}-#{$sizePostFix} {
+			#{$tag}: $sizeValue; 
+		}		
+	}
+};

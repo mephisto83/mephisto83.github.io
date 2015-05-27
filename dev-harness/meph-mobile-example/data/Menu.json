@@ -1,0 +1,220 @@
+﻿{
+    "menu": [
+        {
+            "description": "Controls",
+            "children": [
+                {
+                    "viewId": "MEPH004",
+                    "description": "Icon Buttons",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/buttons/IconButton"
+                },
+                {
+                    "viewId": "SIG_PROCESS",
+                    "description": "Signal Processing",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "signal/processing"
+                },
+                {
+                    "viewId": "MidiController",
+                    "description": "Midi Controller Example",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "midi/controller/example"
+
+                },
+                {
+                    "viewId": "BUILD_MANAGER",
+                    "description": "Build Manager",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "build/manager"
+                },
+                {
+                    "viewId": "MEPH009",
+                    "description": "Communication",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/communication/Communication"
+                },
+                {
+                    "viewId": "audiosequencer",
+                    "description": "Audio Sequencer",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/music/AudioSequencer"
+                },
+                {
+                    "viewId": "audioresourcesmanager",
+                    "description": "Audio Resources Manager",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/music/AudioResource/Manager"
+                },
+                {
+                    "viewId": "MEPH0102",
+                    "description": "Music Visualizer",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/music/Visualizer"
+                },
+                {
+                    "viewId": "audiograph",
+                    "description": "Audio graph",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/audio/graph"
+                },
+                {
+                    "viewId": "audionodes",
+                    "description": "Audio Nodes",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/audio/nodes"
+                },
+                {
+                    "viewId": "svgaudiograph",
+                    "description": "SVG Audio graph",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/music/svgaudiograph"
+                },
+                {
+                    "viewId": "tweeneditor",
+                    "description": "Tween Editor",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/tween/editor"
+                },
+                {
+                    "viewId": "spectrogram",
+                    "description": "Spectrogram",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/spectrogram"
+                },
+                {
+                    "viewId": "scrollbar",
+                    "description": "Scrollbar",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/scrollbar"
+                },
+                {
+                    "viewId": "MEPH0302",
+                    "description": "Spread sheet",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/spreadsheet"
+                },
+                {
+                    "viewId": "MEPSequencer02",
+                    "description": "Sequencer",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/sequencer/Sequencer"
+                },
+                {
+                    "viewId": "MEPH108",
+                    "description": "Dropbox",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/file/Dropbox"
+                },
+                {
+                    "viewId": "MEPH010",
+                    "description": "Remoting",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/remoting/Remoting"
+                },
+                {
+                    "viewId": "MEPH011",
+                    "description": "Remote View",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/remoteview/RemoteView"
+                },
+                {
+                    "viewId": "MEPH012",
+                    "description": "QR Code",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/qrcode/Qrcode"
+                },
+                {
+                    "viewId": "MEPH013",
+                    "description": "Graph",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/graph/Graph"
+                },
+                {
+                    "viewId": "MEPH002",
+                    "description": "List",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/list/List"
+                },
+                {
+                    "viewId": "MEPH003",
+                    "description": "Button(s)",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/buttons/Button"
+                },
+                {
+                    "viewId": "MEPH008",
+                    "description": "Drawing Surface",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/drawing/Surface"
+                },
+                {
+                    "viewId": "MEPH005",
+                    "description": "Tree",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/tree/Tree"
+                },
+                {
+                    "viewId": "MEPH007",
+                    "description": "Panel",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/panel/Panel"
+                },
+                {
+                    "viewId": "MEPH006",
+                    "description": "Text Inputs",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/text/TextInput"
+                }
+            ]
+        },
+        {
+            "description": "Template List",
+            "children": [
+                {
+                    "viewId": "testmenuitem",
+                    "description": "Test menuItem",
+                    "iconType": "launch"
+                }
+            ]
+        },
+        {
+            "description": "Form Fields",
+            "children": [
+                {
+                    "viewId": "MEPHX1004",
+                    "description": "Text Input Field",
+                    "accessId": "U4UX100",
+                    "iconType": "launch"
+                }
+            ]
+        }
+    ]
+}

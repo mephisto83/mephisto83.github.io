@@ -1,0 +1,38 @@
+﻿<div class="meph-view meph-view-remove mainview accounts">
+    <activityview mephid="activityview" data-bind='"activityName": "c$.name"'>
+
+        <list data-bind='"source": "v$.accounts"'>
+            <template name="account_template">
+                <li class="listitem accounttemplate">
+                    <div class="row">
+                        <div class="col-md-2 col-xs-2">
+                            <a class="btn btn-block "
+                               mephid="plugbtn"
+                               meph-data-nothing="c$.data.loginAdded | v$.toDisabled, c$.data, c$.plugbtn"
+                               meph-event-click="c$.filterEvents, c$.plugbtn | v$.longRunning , c$.data, c$.plugbtn | v$.toggleAccountConnection, c$.data">
+                                <i data-bind='"class":"c$.data.using | v$.toAccountStatus,fa fa-plug fa-2, false, c$.data"' class="fa fa-plug fa-2"></i>
+                                <i data-bind='"class":"c$.data.using | v$.toAccountStatus,fa fa-ban fa-2, true, c$.data"' class="fa fa-ban fa-2 btn-hide"></i>
+                                <i data-bind='"class":"c$.data.retrieving | v$.toAccountStatus,fa fa-wifi fa-2, wifi, c$.data"' class="fa fa-wifi fa-2 btn-hide"></i>
+                            </a>
+                        </div>
+                        <div class="col-md-9 col-xs-9 ">
+                            <a data-bind='"class":"c$.data.$btnclass "'
+                               mephid="loginbtn"
+                               meph-data-nothing="c$.data.loginAdded | v$.toDisabled, c$.data, c$.loginbtn"
+                               meph-event-click="c$.filterEvents, c$.loginbtn | v$.logInWith, c$.data"
+                               class="btn btn-block btn-social btn-pinterest">
+                                <i data-bind='"class":"c$.data.$iconclass"'></i>
+                                <span data-bind='"class":"c$.data.online | v$.toOnlineBtnClass"'>Sign in with <b data-bind='"innerHTML": "c$.data.name"'></b></span>
+                                <span data-bind='"class":"c$.data.online | v$.toOfflineBtnClass"'>Signed in with <b data-bind='"innerHTML": "c$.data.name"'></b></span>
+                            </a>
+                        </div>
+                        <div class="col-md-12 col-xs-12 btn-hide alert alert-danger "
+                             data-bind='"class":"c$.data.error | v$.toDisplayError,alert alert-danger vertspace col-md-12 col-xs-12, c$.data"'>
+                            <span data-bind='"innerHTML":"c$.data.error"'></span>
+                        </div>
+                    </div>
+                </li>
+            </template>
+        </list>
+    </activityview>
+</div>

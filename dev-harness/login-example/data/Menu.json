@@ -1,0 +1,16 @@
+﻿{
+    "menu": [
+        {
+            "description": "Controls",
+            "children": [
+                {
+                    "viewId": "MEPH002",
+                    "description": "Login",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/login"
+                }
+            ]
+        }
+    ]
+}

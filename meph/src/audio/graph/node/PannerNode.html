@@ -1,0 +1,100 @@
+﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "inputs", "before" : true -->
+<nodecontrol meph-data-fill="c$.audioBufferFill"
+             meph-data-radius="c$.inputradius"
+             meph-data-title="c$.bufferTitle"
+             meph-data-stroke="c$.inputstroke"
+             mephid="bufferinput"
+             meph-data-y="c$.bufferinputy"
+             meph-data-width="c$.bodywidth"></nodecontrol>
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="c$.coneInnerAngleTitle"
+            meph-data-stroke="c$.inputstroke"
+            mephid="coneInnerAngle"
+            meph-data-minvalue="0"
+            meph-data-maxvalue="360"
+            meph-data-default="360"
+            meph-event-updated="c$.updatedValue,coneInnerAngle"
+            meph-data-y="c$.coneInnerAngley"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="c$.coneOuterAngleTitle"
+            meph-data-stroke="c$.inputstroke"
+            mephid="coneOuterAngle"
+            meph-data-minvalue="0"
+            meph-data-maxvalue="360"
+            meph-data-default="0"
+            meph-event-updated="c$.updatedValue,coneOuterAngle"
+            meph-data-y="c$.coneOuterAngley"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="c$.coneOuterGainTitle"
+            meph-data-stroke="c$.inputstroke"
+            mephid="coneOuterGain"
+            meph-data-minvalue="0"
+            meph-data-maxvalue="360"
+            meph-data-default="0"
+            meph-event-updated="c$.updatedValue,coneOuterGain"
+            meph-data-y="c$.coneOuterGainy"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="c$.refDistanceTitle"
+            meph-data-stroke="c$.inputstroke"
+            mephid="refDistance"
+            meph-data-minvalue="0"
+            meph-data-maxvalue="2"
+            meph-data-default="1"
+            meph-event-updated="c$.updatedValue,refDistance"
+            meph-data-y="c$.refDistancey"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="Max Distance"
+            meph-data-stroke="c$.inputstroke"
+            mephid="maxDistance"
+            meph-data-minvalue="0"
+            meph-data-maxvalue="20000"
+            meph-data-default="10000"
+            meph-event-updated="c$.updatedValue,maxDistance"
+            meph-data-y="c$.maxDistancey"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="c$.rolloffFactorTitle"
+            meph-data-stroke="c$.inputstroke"
+            mephid="rolloffFactor"
+            meph-data-minvalue="0"
+            meph-data-maxvalue="2"
+            meph-data-default="1"
+            meph-event-updated="c$.updatedValue,rolloffFactor"
+            meph-data-y="c$.rolloffFactory"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<audioselect meph-data-fill="c$.stringFill"
+             meph-data-radius="c$.inputradius"
+             meph-data-title="c$.panningModelTitle"
+             meph-data-stroke="c$.inputstroke"
+             meph-event-updated="c$.updatedValue,panningModel"
+             mephid="panningModel"
+             meph-data-source="c$.distanceModelTypes"
+             meph-data-y="c$.panningModely"
+             meph-data-width="c$.bodywidth"></audioselect>
+
+
+<nodecontrol meph-data-fill="c$.audioBufferFill"
+             meph-data-radius="c$.inputradius"
+             meph-data-title="c$.bufferTitle"
+             meph-data-stroke="c$.inputstroke"
+             mephid="bufferoutput"
+             meph-data-y="c$.bufferoutputy"
+             meph-data-width="c$.bodywidth"></nodecontrol>
+<!-- "instruction": true, "name" : "injectop", "close": true -->

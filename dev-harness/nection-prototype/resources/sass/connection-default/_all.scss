@@ -1,0 +1,459 @@
+﻿
+
+/* As hex codes */
+
+$color-primary-0: #AA3939; /* Main Primary color */
+$color-primary-1: #FFAAAA;
+$color-primary-2: #D46A6A;
+$color-primary-3: #801515;
+$color-primary-4: #550000;
+
+$color-secondary-1-0: #AA6C39; /* Main Secondary color (1) */
+$color-secondary-1-1: #FFD1AA;
+$color-secondary-1-2: #D49A6A;
+$color-secondary-1-3: #804515;
+$color-secondary-1-4: #552700;
+
+$color-secondary-2-0: #226666; /* Main Secondary color (2) */
+$color-secondary-2-1: #669999;
+$color-secondary-2-2: #407F7F;
+$color-secondary-2-3: #0D4D4D;
+$color-secondary-2-4: #003333;
+
+$color-complement-0: #2D882D; /* Main Complement color */
+$color-complement-1: #88CC88;
+$color-complement-2: #55AA55;
+$color-complement-3: #116611;
+$color-complement-4: #004400;
+
+
+
+/* As RGBa codes */
+
+$rgba-primary-0: rgba(0, 145, 207,1); /* Main Primary color */
+$rgba-primary-1: rgba(50,166,0,1);
+$rgba-primary-2: rgba(241,89,78,1);
+$rgba-primary-3: rgba(233, 176, 0,1);
+$rgba-primary-4: rgba( 246, 110, 0,1);
+
+$rgba-secondary-1-0: rgba(170,108, 57,1); /* Main Secondary color (1) */
+$rgba-secondary-1-1: rgba(255,209,170,1);
+$rgba-secondary-1-2: rgba(212,154,106,1);
+$rgba-secondary-1-3: rgba(128, 69, 21,1);
+$rgba-secondary-1-4: rgba( 85, 39, 0,1);
+
+$rgba-secondary-2-0: rgba( 34,102,102,1); /* Main Secondary color (2) */
+$rgba-secondary-2-1: rgba(102,153,153,1);
+$rgba-secondary-2-2: rgba( 64,127,127,1);
+$rgba-secondary-2-3: rgba( 13, 77, 77,1);
+$rgba-secondary-2-4: rgba( 0, 51, 51,1);
+
+$rgba-complement-0: rgba( 45,136, 45,1); /* Main Complement color */
+$rgba-complement-1: rgba(136,204,136,1);
+$rgba-complement-2: rgba( 85,170, 85,1);
+$rgba-complement-3: rgba( 17,102, 17,1);
+$rgba-complement-4: rgba( 0, 68, 0,1);
+
+.connection-application-logo {
+}
+
+
+$view-header-body-height: 50px;
+$view-header-body-padding-botttom: 0px;
+
+$profile_height: 200px;
+$profile_width: 200px;
+
+$profile_height_sm: 100px;
+$profile_width_sm: 100px;
+
+$profile_list_height: 79px;
+$profile_list_width: 79px;
+
+.mainview {
+    .meph-activity-view-body {
+        padding-top: $view-header-body-height;
+        padding-bottom: $view-header-body-padding-botttom;
+
+        .listwrapper {
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    }
+
+
+    .meph-activity-view-header {
+        height: auto;
+    }
+}
+
+.meph-view.login-view,
+.listwrapper,
+.meph-view.meph-edit-contact .meph-activity-view-body,
+.meph-view.main-contact .meph-activity-view-body {
+    @include phones() {
+        overflow-y: scroll; /* has to be scroll, not auto */
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+$view-header-top-padding: $view-header-body-height;
+
+[footerpadding] {
+    padding-bottom: $view-header-body-height + 20px;
+}
+
+/*[headerpadding] {
+    padding-top: $view-header-top-padding;
+}*/
+
+$space-between-fields: 50px;
+
+[edit-contact-fields] > div {
+    margin-bottom: $space-between-fields;
+}
+
+.connection-app-add-contact {
+    top: 2px;
+    position: absolute;
+    right: 2px;
+    display: none;
+}
+
+.connection-app-search-main {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.connection-app-add-contact.hearbeat {
+    right: 50%;
+}
+
+$profile-item-height: 75px;
+
+.connection-list-profile-item {
+    list-style: none;
+    padding: 3px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    height: $profile-item-height;
+}
+
+.connection-show .connection-app-add-contact {
+    display: block;
+}
+
+.connection-list-profile-item:nth-of-type(n) {
+    background-color: $rgba-primary-0;
+}
+
+.connection-list-profile-item:nth-of-type(2n) {
+    background-color: $rgba-primary-1;
+}
+
+.connection-list-profile-item:nth-of-type(3n) {
+    background-color: $rgba-primary-3;
+}
+
+.connection-list-profile-item:nth-of-type(4n) {
+    background-color: $rgba-primary-4;
+}
+
+.connection-list-profile-item:nth-of-type(5n) {
+    background-color: $rgba-primary-2;
+}
+
+
+
+.connection-list-profile-image {
+    position: absolute;
+    width: 50px;
+}
+
+$connection-list-profile-details-padding: 55px;
+$connection-list-profile-image-width: $connection-list-profile-details-padding - 5px;
+
+.connection-list-profile-image + .meph-application-menu-categories-item-details {
+    padding-left: $connection-list-profile-details-padding;
+    color: white;
+}
+
+.meph-application-menu-categories-item-details hr {
+    margin: 1px;
+    border: 0;
+    height: 1px;
+    background-image: -webkit-linear-gradient(left, transparent, rgba(255, 255, 255, 0.75), transparent);
+    background-image: -moz-linear-gradient(left, transparent, rgba(255, 255, 255, 0.75), transparent);
+    background-image: -ms-linear-gradient(left, transparent, rgba(255, 255, 255, 0.75), transparent);
+    background-image: -o-linear-gradient(left, transparent, rgba(255, 255, 255, 0.75), transparent);
+}
+
+$profile-item-image-height: $profile-item-height - 10;
+
+.meph-application-body.container-fluid {
+    padding: 2px;
+    margin: 0;
+}
+
+.meph-application-body {
+    .btn-lg, .btn-group-lg > .btn {
+        border-radius: 0;
+    }
+}
+
+.listitem {
+    list-style: none;
+}
+
+.relationshiplistitem {
+}
+
+.relationshiplistitem input[type=checkbox] {
+    width: 25px;
+    height: 25px;
+}
+
+.relationshiplistitem .relationshiptext {
+    padding-top: 11px;
+}
+
+
+.connecton-application-header [flyoutpanel] {
+    background-color: white;
+    margin-top: 50px;
+    padding-top: 0px;
+    height: 100%;
+
+    .connection-menu-template {
+        color: black;
+    }
+
+    .connection-menu-template.list-group-item:last-child {
+        border-radius: 0px;
+    }
+}
+
+.vertspace {
+    margin-top: 4px;
+}
+
+@import "media";
+
+@import "templates";
+
+.contact-list-item {
+
+    &:nth-child(2n) {
+        background-color: rgb(247, 247, 247);
+    }
+
+    .contact-image {
+        background-image: url("images/empty_contact.png");
+        height: 64px;
+        width: 64px;
+        background-repeat: no-repeat;
+        background-position: 50%;
+        background-position-y: 50%;
+        background-color: grey;
+        background-size: 106% 172%;
+        border-radius: 50% 50%;
+    }
+
+    h4 {
+        color: rgb(243, 116, 98);
+        margin: 0;
+    }
+}
+
+.createcontact {
+    video {
+        width: 100%;
+    }
+}
+
+
+@mixin pallette($palette, $color1, $color2, $color3, $color4) {
+    body.#{$palette} {
+        [editrelationship] {
+            h2 {
+                margin: 0px;
+            }
+
+            .row {
+                margin-right: -10px;
+                margin-left: 0px;
+            }
+        }
+
+        .meph-application-header {
+            background-color: $color1;
+            color: $color4;
+        }
+
+        .contact-list-item {
+            background-color: $color3;
+            color: $color1;
+
+            a {
+                color: $color4;
+
+                i.fa {
+                    color: $color1;
+                }
+            }
+        }
+
+        .list-group-item {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+        /*.contact-list-item:nth-child(2n) {
+            background-color: $color2;
+            color: $color1;
+
+            a {
+                color: $color4;
+            }
+        }*/
+        .contact-list-item h4 {
+            color: $color1;
+        }
+
+        .glyphicon.glyphicon-th-large.meph-color-white {
+            color: $color4;
+        }
+
+
+        .meph-view.mainview .meph-activity-view-header {
+            background-color: $color1;
+
+            h2 {
+                margin: 0px;
+            }
+        }
+
+        .meph-activity-view-body,
+        .meph-application-body.container-fluid {
+            padding: 0px;
+        }
+
+        .meph-activity-view-body {
+            padding-top: 57px;
+        }
+
+        .meph-view.main-contact,
+        .mainview.accounts {
+            .meph-activity-view-body {
+                padding-top: 0px;
+            }
+        }
+
+        .mainview {
+            .meph-activity-view-body .listwrapper {
+                /*margin-top: 60px;
+                margin-bottom: 60px;*/
+            }
+        }
+
+        .mainview.accounts {
+            .meph-activity-view-body .listwrapper {
+                margin-top: 0px;
+                margin-bottom: 0px;
+            }
+        }
+
+        .fa {
+            color: $color1;
+        }
+
+        .meph-application-header {
+            .fa {
+                color: $color3;
+            }
+        }
+
+        .btn-social {
+            .fa {
+                color: $color3;
+            }
+        }
+
+        .meph-activity-view-footer {
+            background-color: $color1;
+        }
+
+
+        .meph-application-body {
+            .btn-lg, .btn-group-lg > .btn {
+                border-radius: 0;
+                background-image: none;
+                background-color: transparent;
+                border-color: transparent;
+            }
+
+            .meph-activity-view-footer {
+                .fa {
+                    color: $color3;
+                }
+            }
+        }
+
+        .glyphicon.glyphicon-th-large.meph-color-white {
+            color: $color3;
+            padding: 6px;
+            box-shadow: none;
+            outline: none;
+        }
+
+        .list-group-item:active {
+            background-color: $color2;
+        }
+
+        .meph-application-header.connecton-application-header {
+            .fa fa-plus,
+            .fa.fa-bars {
+                font-size: 2em;
+            }
+
+            .meph-application-menu-button-container {
+                button {
+                    padding: 0;
+                    padding-left: 15px;
+                    padding-top: 6px;
+                    outline: none;
+                }
+            }
+        }
+
+        .profile {
+            height: $profile_height;
+            width: $profile_width;
+            background-size: contain;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            background-position-x: 50%;
+        }
+
+        .profile.small {
+            height: $profile_height_sm;
+            width: $profile_width_sm;
+        }
+
+        .connection-list-profile-image {
+            height: $profile_list_height;
+            width: $profile_list_width;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-color: white;
+            border-radius: 50%;
+            background-position-x: 50%;
+            /*@include meph-image-background($file: 'empty_contact.png');*/
+        }
+    }
+}
+
+@include pallette($palette:"mea-culpa", $color1: #191919, $color2: #DFE2DB, $color4: #FFF056, $color3: #FFFFFF);
+
+@include pallette($palette:"big-top", $color1: #C63D0F, $color2: #7E8F7C, $color4: #3B3738, $color3: #FDF3E7);

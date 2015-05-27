@@ -1,0 +1,16 @@
+﻿{
+    "menu": [
+        {
+            "description": "Controls",
+            "children": [
+                {
+                    "viewId": "FirstTimePage",
+                    "description": "Icon Buttons",
+                    "iconType": "launch",
+                    "itemType": "launch",
+                    "path": "/buttons/IconButton"
+                }
+            ]
+        }
+    ]
+}

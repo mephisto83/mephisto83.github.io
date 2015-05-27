@@ -1,0 +1,15 @@
+﻿{
+    "views": [
+        {
+            "viewId": "4UHP001",
+            "view": "MEPH.mobile.view.HomePageView",
+            "singleton": true,
+            "namespace": "U4homePage"
+        },
+        {
+            "viewId": "BLEND001",
+            "view": "Blend.presentation.view.Blender",
+            "path": "/presentation/blend"
+        }
+    ]
+}

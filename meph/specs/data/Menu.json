@@ -1,0 +1,12 @@
+﻿{
+    'menu': [{
+            'description': 'Desktop',
+			'children':[{
+				'viewID':'testmenuitem',
+				'description': 'Test menuItem',
+				'accessId': 'U4UX100',
+				'iconType:': 'launch',
+				'itemType:': 'launch'
+			}]
+	}]
+}

@@ -1,0 +1,38 @@
+﻿ /**
+ *
+ * @class U4Styles.public.paths
+ * Path variables used to define resource paths relative to the location of the generated stylesheet.
+ * If you generate a separate stylesheet using U4 resource variables (images, fonts etc), you might need to change/define
+ *  the {@link #u4-resources-path} variable before importing the U4 variables.
+ */
+ 
+/**
+* @var {path}
+* Defines the default location for u4 resources
+* Overwrite this if you intend to import U4 resources from somewhere else, or if your css is located in another place than default.
+*/
+$u4-resources-path: "../" !default;
+
+
+/**
+* @var {path} $u4-font-path
+* Defines the default location for u4 fonts relative to the current css folder.
+* Overwrite this if you intend to import default u4 fonts from another location than default
+*
+* __Note__: This implies that all u4 fonts referred to by us should use this path. Utility function {@link U4Styles.private.core.functions.paths#U4FontPath U4FontPath} 
+* exists as a convenience function concatinating and returning  $u4-font-path + $relativeImagePath.
+*/
+$u4-font-path: $u4-resources-path + "fonts/" !default;
+
+
+/**
+* @var {path} $u4-image-path
+* Defines the default location for u4 images relative to the current css folder.
+* Overwrite this if you intend to import default u4 images from another location than default
+*
+* __Note__: This implies that all u4 images referred to by us should use this path. Utility function {@link U4Styles.private.core.functions.paths#U4ImagePath U4ImagePath} 
+* exists as a convenience function concatinating and returning  $u4-image-path + $relativeImagePath.
+*
+*/
+$u4-image-path: $u4-resources-path + "images/" !default;
+

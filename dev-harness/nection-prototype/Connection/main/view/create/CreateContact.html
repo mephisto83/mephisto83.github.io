@@ -1,0 +1,13 @@
+﻿<div class="meph-view meph-view-remove mainview createcontact">
+    <createcontactview data-bind='"activityName": "c$.name"' mephid="createview">
+
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <span data-bind='"innerHTML": "v$.status"'></span>
+            <camera mephid="camera" descriptiontext="Camera Image" meph-event-change="v$.onImageChange" labeltext="Camera Image"></camera>
+            <div style="display:none;" canvasholder> <canvas mephid="canvas"></canvas></div>
+            <camerastream mephid="camerasource"></camerastream>
+        </div>
+        <div class="col-md-3"></div>
+    </createcontactview>
+</div>

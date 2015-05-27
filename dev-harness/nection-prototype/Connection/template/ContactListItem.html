@@ -1,0 +1,21 @@
+﻿<li class="list-group-item contact-list-item" meph-event-click="v$.openContact, c$.data">
+    <a href="avascript:void(0);">
+        <div class="row">
+            <div class="col-md-2 col-xs-3 col-sm-3 col-lg-2 ">
+                <div data-bind='"style.backgroundImage" : "c$.data.profileimageurl"' class="connection-list-profile-image"></div>
+                <!--<img class="contact-image" data-bind='"src": "c$.data | v$.toImageSource"'>-->
+            </div>
+
+            <div class="col-md-10 col-xs-9 col-sm-9 col-lg-10">
+                <h4 data-bind='"innerHTML": "c$.data.name"'></h4>
+                <i class="fa fa-phone"></i>&nbsp; &nbsp;<span data-bind='"innerHTML": "c$.data.phone1"'></span>
+                <br />
+                <i class="fa fa-envelope"></i>&nbsp; &nbsp;<span data-bind='"innerHTML": "c$.data.email1"'></span>
+                <br />
+                <i class="fa fa-at"></i>&nbsp; &nbsp;<small data-bind='"innerHTML": "c$.data.occupation"'></small>
+                <br />
+                <i class="fa fa-cogs"></i>&nbsp; &nbsp;<small data-bind='"innerHTML": "c$.data.company"'></small>
+            </div>
+        </div>
+    </a>
+</li>

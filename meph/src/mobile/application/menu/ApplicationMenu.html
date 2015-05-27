@@ -1,0 +1,25 @@
+﻿<div class="meph-application-menu">
+    <div class="meph-application-menu-button-container">
+        <mephbutton class="btn btn-passive btn-lg" data-events='"buttonClickEvent" : "c$.openFlyoutMenu"'>
+            <i class="fa fa-bars fa-2"></i>
+        </mephbutton>
+    </div>
+
+    <flyoutpanel
+        mephid="flyoutPanel"
+        data-events='"itemclicked": "c$.menuItemClicked"'
+        data-bind='"list.source": "c$.menusource"'
+        cls="meph-application-flyout-menu"
+        position="left">
+        <list MEPHId="list" >
+            <template name="u4m_applicationmenuitem">
+                <li class="application-menu-list list-group-item">
+                    <div>
+                        <span data-bind='"innerHTML": "c$.data.name"'></span>
+                    </div>
+                </li>
+            </template>
+        </list>
+    </flyoutpanel>
+
+</div>

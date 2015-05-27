@@ -1,0 +1,21 @@
+﻿/**
+ *
+ * @class U4Styles.private.common.mixins
+ *
+ */
+
+/**
+ * @mixin
+ * 
+ * @param {String} $animation Name of the animation as defined in the keyframes structure.
+ * @param {duration} $duration Specifies how many seconds or milliseconds the animation takes to complete one cycle.
+ * @param {timing} $timing Describes how the animation will progress over one cycle of its duration.
+ */
+@mixin u4-animation($animation: "", $duration: 1s, $timing: ease, $iteration-count: 1, $direction: normal)
+{
+    animation: $animation $duration $timing $iteration-count $direction;
+    -webkit-animation: $animation $duration $timing $iteration-count $direction;
+    -moz-animation: $animation $duration $timing $iteration-count $direction;
+	-ms-animation: $animation $duration $timing $iteration-count $direction;
+	-o-animation: $animation $duration $timing $iteration-count $direction;
+}

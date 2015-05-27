@@ -1,0 +1,83 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        <div role="main">
+
+            <!-- Main jumbotron for a primary marketing message or call to action -->
+            <div class="page-header col-md-2">
+                <h4>Music Visualizer!</h4>
+                <p>Drop a piece of music into the drop box..</p>
+            </div>
+
+            <div class="page-header col-md-4">
+                <h4>File Resources</h4>
+                <list meph-data-source="ct$.banks">
+                    <template name="file_resources_musicvisualizer">
+                        <li class="list-group-item">
+                            <div class="meph-application-menu-categories-item-details">
+
+                                <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="v$.copySnippet, c$.data.clip | v$.playSnippet | c$.cancelEvent">
+                                    <span class="glyphicon glyphicon-play"></span>
+                                </mephbutton>
+                                <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="ct$.removeSnippet, c$.data | c$.cancelEvent">
+                                    <span class="glyphicon glyphicon-minus"></span>
+                                </mephbutton>
+                                <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="v$.changeName, c$.data | c$.cancelEvent">
+                                    <span class="glyphicon glyphicon-glass"></span>
+                                </mephbutton>
+                                <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="ct$.createResource, c$.data.clip , c$.data | c$.cancelEvent">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </mephbutton>
+                                <span data-bind='"innerHTML": "c$.data.name"'></span>
+                                <span data-bind='"innerHTML": "c$.data.time"'></span> s
+                            </div>
+                        </li>
+                    </template>
+                </list>
+
+            </div>
+
+            <div class="page-header col-md-2">
+                <h4>
+                    Drop box
+                </h4>
+                <dropbox data-events='"filesdropped":"ct$.loadFiles "'></dropbox><!---->
+
+
+            </div>
+            <div class="page-header col-md-2">
+                <h4>File Resources</h4>
+                <list meph-data-source="ct$.fileResources">
+                    <template name="music_visualizer_page">
+                        <li class="list-group-item" meph-event-click="ct$.visualizeFile, c$.data.file, c$.data.res | ct$.loadBytes, c$.data.file | v$.drawBytes ">
+                            <div class="meph-application-menu-categories-item-details">
+                                <span>File</span>
+                                <span data-bind='"innerHTML": "c$.data.file.name"'></span>
+                            </div>
+                        </li>
+                    </template>
+                </list>
+
+            </div>
+
+            <div class="col-md-12">
+                <h4>
+                    Visual Selector
+                </h4>
+                <visualselector source="v$.data"
+                                meph-data-maxlevel="1"
+                                meph-data-vertical="v$.verticalScroll"
+                                meph-data-marks="ct$.soundFileMarks"
+                                meph-data-stretchmarks="ct$.stretchMarks"
+                                meph-event-saveclip="ct$.saveClipToBank"
+                                meph-data-height="300"
+                                scrollmutiplier="0">
+                    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="ct$.createSnippets, ct$.soundFileMarks | c$.cancelEvent">
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </mephbutton>
+
+                </visualselector>
+            </div>
+        </div>
+    </activityview>
+
+</div>

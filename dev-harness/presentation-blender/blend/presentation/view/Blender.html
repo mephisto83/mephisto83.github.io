@@ -1,0 +1,33 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        <div role="main">
+            <!-- Main jumbotron for a primary marketing message or call to action -->
+            <div class="page-header col-md-2">
+                <h4>Music Visualizer!</h4>
+                <p>Drop a piece of music into the drop box..</p>
+            </div>
+            <div class="page-header col-md-5">
+                <h4>
+                    Drop data
+                </h4>
+                <dropbox data-events='"filesdropped":"v$.loadFiles "'></dropbox><!---->
+            </div>
+            <div class="page-header col-md-2">
+                <h4>File Resources</h4>
+                <code data-bind='"innerHTML":"v$.result"'></code>
+            </div>
+
+            <div class="page-header col-md-2">
+                <h4>Split With</h4>
+                <textfield data-bind='"value":"v$.splitWith"'></textfield>
+            </div>
+            <div class="page-header col-md-12">
+                <h4>Enter speech here</h4>
+                <multilinetext data-bind='"value":"v$.textinput"'></multilinetext>
+                <mephbutton data-events='"click":"v$.clickedButton"'>Spiral</mephbutton>
+                <mephbutton data-events='"click":"v$.brickRoadStarWars"'>Brick Road Star Wars</mephbutton>
+                <mephbutton data-events='"click":"v$.emptyRoom"'>Empty Room</mephbutton>
+            </div>
+        </div>
+    </activityview>
+</div>

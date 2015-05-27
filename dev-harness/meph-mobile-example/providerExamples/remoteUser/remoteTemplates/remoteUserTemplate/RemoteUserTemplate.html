@@ -1,0 +1,16 @@
+﻿<div class="meph-remote-user">
+    <div class="meph-remote-user-innerbody">
+        <div class="meph-remote-user-imagecontainer">
+            <img data-bind='"src": "c$.data.remoteImage"' class="meph-remote-image" />
+        </div>
+        <div class="meph-remote-user-body">
+            <span data-bind='"innerHTML": "c$.data.userName"'></span>
+            <div data-bind='"innerHTML": "c$.data.remoteUser"' class="meph-remote-user-id"></div>
+            <iconbutton icon="synchronize" color="c$.data.videoEnabled | c$.convertToColor" size="X1" data-events='"buttonClickEvent" : "c$.toggleCallingUser"'></iconbutton>
+            <iconbutton icon="sprocket" color="c$.data.dataEnabled | c$.convertToColor" size="X1" data-events='"buttonClickEvent" : "c$.callUser"'></iconbutton>
+            <div data-bind='"class": "c$.calling"'>
+            </div>
+        </div>
+        <video autoplay="true" MEPHId="cameraStream" style="width: 100%;"></video>
+    </div>
+</div>

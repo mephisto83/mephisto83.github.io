@@ -1,0 +1,34 @@
+﻿<div class="col-md-12" style="height:100%">
+    <div class="col-md-12" style="height:40px;">
+        <!-- "name": "beforesheet" -->
+    </div>
+    <div class="col-md-12 spreadsheetwrapper" style="height:100%;">
+        <div class="spreadsheet noselect" mephid="spreadsheet">
+            <div class="spreadsheetbody" mephid="body">
+                <canvas class="topheader" mephid="topheader"></canvas>
+                <canvas class="topheader bottom" mephid="topheadercontent"></canvas>
+                <canvas class="leftheader" mephid="leftheader" tabindex="0"></canvas>
+                <canvas class="leftheader bottom" mephid="leftheadercontent"></canvas>
+                <canvas class="spreadsheet" mephid="canvas" tabindex="0"></canvas>
+                <canvas class="spreadsheet bottom" mephid="canvascontent"></canvas>
+                <svg class="spreadsheet " mephid="canvassvg" tabindex="0"></svg>
+                <div class="activearea" mephid="activeareatop"></div>
+                <div class="activearea" mephid="activearealeft"></div>
+                <div class="activearea" mephid="activearea"></div>
+                <div class="selectarea" mephid="selectarea"></div>
+                <div class="selectarea" mephid="selectarealeft"></div>
+                <div class="selectarea" mephid="selectareatop"></div>
+                <!-- "name": "spreadsheetbodyend" -->
+            </div>
+            <div class="spreadsheetscrollbarright">
+                <scrollbar meph-data-virtualsize="c$.verticalSize"
+                           meph-data-horizontal="false"
+                           meph-data-scrollbarposition="c$.vbarposition"></scrollbar>
+            </div>
+            <div class="spreadsheetscrollbarbotom" mephid="bottombar">
+                <scrollbar meph-data-virtualsize="c$.horizontalSize"
+                           meph-data-scrollbarposition="c$.hbarposition"></scrollbar>
+            </div>
+        </div>
+    </div>
+</div>

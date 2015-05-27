@@ -1,0 +1,15 @@
+﻿<div data-type="U4MTests.helper.composite.DeepHelperComposite"
+    data-alias="deephelpercomposite">
+    <h5>Header 5 first</h5>
+    <m_input MEPHId="headerInput"></m_input>
+    <h1>Header 1</h1>
+    <helpercomposite MEPHId="helperComposite"
+        data-bind='"helperCompositeProperty": "c$.deepHelperProperty"'>
+    </helpercomposite>
+    <p>Normal Paragraph</p>
+    <m_input MEPHId="personInput"></m_input>
+    <span>Normal Span</span>
+    <helpercomposite
+        data-events='"click" : "$c.clicked"'
+        MEPHId="lastHelperComposite"></helpercomposite>
+</div>

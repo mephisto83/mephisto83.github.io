@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../meph/polyfills/Promise.js"></script>
+    <script src="../meph/src/meph.js"></script>
+</head>
+<body>
+    Signed in.
+    <script>
+        var path = '../meph/src';
+        u4mFrameWork('MEPH', path);
+        MEPH.ready().then(function () {
+            if (window.parent) {
+                var options = {},
+                    args = MEPH.Array(window.location.hash.split('&')).select(function (x) {
+                        return {
+                            key: x.split('=')[0],
+                            value: x.split('=')[1]
+                        }
+                    }).foreach(function (x) {
+                        options[x.key.replace('#', '')] = x.value;
+                    });;
+                console.log(JSON.stringify(options));
+                alert('signinhandler ' + window.signinhandler);
+                window.signinhandler(options);
+                window.parent.document.body.dispatchEvent(MEPH.createEvent('signedin', options));
+            }
+            else {
+                alert('no parent window');
+            }
+        });
+    </script>
+</body>
+</html>

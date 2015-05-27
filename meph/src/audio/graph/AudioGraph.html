@@ -1,0 +1,83 @@
+﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "aftergraphbody", "before" : true -->
+<div>Audio Graph</div>
+<div class="btn-group">
+    <mephbutton type="button" class="btn btn-primary btn-xs">
+        <span class="glyphicon glyphicon-play-circle"></span>
+    </mephbutton>
+</div>
+<div class="btn-group">
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.openGraph">
+        <span class="glyphicon glyphicon-open"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.removeSelectedConnections">
+        <span class="glyphicon glyphicon-remove"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.saveGraph | c$.nameGraph | c$.broadCast,AUDIO_GRAPH_SAVED">
+        <span class="glyphicon glyphicon-save"></span>
+    </mephbutton>
+</div>
+<div class="btn-group">
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addCustom">
+        Custom <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addInput">
+        Input <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addOutput">
+        Output <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addConvolver">
+        Convolver  <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addAudioSource">
+        Audio Source  <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addDelay">
+        Delay  <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addBiquadFilter">
+        Biquad Filter  <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addChannelMerger">
+        Channel Merger <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addChannelSplitter">
+        Channel Splitter <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addDynamicsCompressor">
+        Dynamic Compression  <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addGain">
+        Gain <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addOscillator">
+        Oscillator <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addPanner">
+        Panner <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+    <mephbutton type="button" class="btn btn-primary btn-xs" meph-event-click="c$.addWaveShaper">
+        Wave Shaper <span class="glyphicon glyphicon-plus"></span>
+    </mephbutton>
+</div>
+<div class="audiographpopup" mephid="audiographpopup" style="display: none;">
+    <div class="panel panel-default">
+        <div class="panel-heading">Add Graph</div>
+        <div class="panel-body">
+            <textfield mephid="field"></textfield>
+            <hr />
+            <list data-bind='"source": "c$.graphsources"'>
+                <template name="audio_graph_source_list">
+                    <div class="meph-application-menu-categories-item-details" meph-event-click="c$.list.parent.openGraphInstance, c$.data.name">
+                        <span>Name</span>
+                        <span data-bind='"innerHTML": "c$.data.name"'></span>
+                    </div>
+                </template>
+            </list>
+        </div>
+    </div>
+</div>
+<!-- "instruction": true, "name" : "injectop", "close": true -->

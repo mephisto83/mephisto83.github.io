@@ -1,0 +1,15 @@
+﻿@mixin mephtransition($duration: 0.2s, $delay: 0s) {
+
+	/* For Safari 3.1 to 6.0 */
+	-webkit-transition-property: all;
+	-webkit-transition-duration: $duration;
+	-webkit-transition-timing-function: ease;
+	-webkit-transition-delay: $delay;
+
+	/* Standard syntax */
+	transition-property: all;
+	transition-duration: $duration;
+	transition-timing-function: ease;
+	transition-delay: $delay;
+
+}

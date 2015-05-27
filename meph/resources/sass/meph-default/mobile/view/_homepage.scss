@@ -1,0 +1,15 @@
+﻿.meph-home-page-view
+{
+    position: absolute;
+    @include transition( .1s, .1s);
+    height: 100%;
+    width: 100%;
+    transform: translateX(0%);
+    -webkit-transform: translate(0%,0px);
+}
+
+.meph-remove-home-page
+{
+    transform: translateX(-100%);
+    -webkit-transform: translate(-100%,0px);
+}

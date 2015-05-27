@@ -1,0 +1,9 @@
+﻿{
+    "menu": [
+        {
+            "viewId": "BLEND001",
+            "description": "Presentation Blender",
+            "iconType": "launch"
+        }
+    ]
+}

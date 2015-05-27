@@ -1,0 +1,1 @@
+filewatcher "Filewatcher.setup.js"

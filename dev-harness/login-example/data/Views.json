@@ -1,0 +1,18 @@
+﻿{
+    "views": [
+        {
+            "viewId": "4UHP001",
+            "view": "MEPH.mobile.view.HomePageView",
+            "singleton": true,
+            "namespace": "U4homePage",
+            "path": "/home"
+        },
+        {
+            "viewId": "MEPH002",
+            "singleton": true,
+            "namespace": "Login",
+            "view": "Login.login.view.Login",
+            "path": "/list/List"
+        }
+    ]
+}

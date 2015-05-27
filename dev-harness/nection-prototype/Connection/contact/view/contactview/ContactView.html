@@ -1,0 +1,19 @@
+﻿  <!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "activityheader", "before" : true -->
+<div class="col-md-12" style="padding-bottom:7px;">
+    <typeahead meph-data-source="v$.cards"
+               meph-data-showempty="true"
+               meph-event-changed="v$.refreshCard"
+               meph-data-selectedobject="v$.selectedCard"
+               meph-data-value="v$.selectedCardValue">
+        <template name="Connection.template.Card">
+        </template>
+    </typeahead>
+</div>
+<!-- "instruction": true, "name" : "injectop", "close": true -->
+<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "activityfooter", "before" : true -->
+<div class="col-md-12">
+    <mephbutton type="button" meph-event-click="v$.editMe" class="btn btn-primary btn-lg ">
+        <i class="fa fa-pencil-square-o"></i>
+    </mephbutton>
+</div>
+<!-- "instruction": true, "name" : "injectop", "close": true -->

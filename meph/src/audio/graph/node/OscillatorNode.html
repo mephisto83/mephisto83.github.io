@@ -1,0 +1,44 @@
+﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "inputs", "before" : true -->
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="c$.detuneTitle"
+            meph-data-stroke="c$.inputstroke"
+            mephid="detune"
+            meph-data-minvalue="0"
+            meph-data-maxvalue="1500"
+            meph-data-default="0"
+            meph-event-updated="c$.updatedValue,detune"
+            meph-data-y="c$.detuney"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<audiorange meph-data-fill="c$.numberFill"
+            meph-data-radius="c$.inputradius"
+            meph-data-title="c$.frequencyTitle"
+            meph-data-stroke="c$.inputstroke"
+            meph-data-minvalue="0"
+            meph-data-maxvalue="15000"
+            meph-data-default="440"
+            mephid="frequency"
+            meph-event-updated="c$.updatedValue,frequency"
+            meph-data-y="c$.frequencyy"
+            meph-data-width="c$.bodywidth"></audiorange>
+
+<audioselect meph-data-fill="c$.stringFill"
+             meph-data-radius="c$.inputradius"
+             meph-data-title="c$.typefieldTitle"
+             meph-data-stroke="c$.inputstroke"
+             meph-data-source="c$.typesource"
+             meph-event-updated="c$.updatedValue,type"
+             mephid="typeinput"
+             meph-data-y="c$.typeinputy"
+             meph-data-width="c$.bodywidth"></audioselect>
+
+<nodecontrol meph-data-fill="c$.audioBufferFill"
+             meph-data-radius="c$.inputradius"
+             meph-data-title="c$.bufferTitle"
+             meph-data-stroke="c$.inputstroke"
+             mephid="bufferoutput"
+             meph-data-y="c$.bufferoutputy"
+             meph-data-width="c$.bodywidth"></nodecontrol>
+<!-- "instruction": true, "name" : "injectop", "close": true -->

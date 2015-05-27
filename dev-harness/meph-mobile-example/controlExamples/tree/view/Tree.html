@@ -1,0 +1,30 @@
+﻿<div class="meph-view meph-view-remove">
+    <activityview data-bind='"activityName": "c$.name"'>
+        <tree data-bind='"treeSource": "ct$.source"'>
+            <template name="u4m_controls_examples_list">
+                <div class="meph-tree-view">
+                    <div style="">
+                        <span>Name</span>
+                        <span data-bind='"innerHTML": "c$.data.name"'></span>
+                        <br />
+                        <span>Property</span>
+                        <span data-bind='"innerHTML": "c$.data.property"'></span>
+                        <br />
+                        <span>Address</span>
+                        <span data-bind='"innerHTML": "c$.data.address"'></span>
+                    </div>
+                </div>
+            </template>
+        </tree>
+    </activityview>
+
+    <style>
+        .meph-tree-view
+        {
+            overflow: auto;
+            background-color: #fff;
+            margin: 10px;
+            box-shadow: 1px 1px 1px 1px rgba(128, 128, 128, 0.39);
+        }
+    </style>
+</div>

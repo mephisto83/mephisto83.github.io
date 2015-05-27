@@ -1,0 +1,84 @@
+﻿[
+        {
+            "title": "MEPH Guides",
+            "items": [
+                {
+                    "name": "getting_started",
+                    "url": "guides/getting_started",
+                    "title": "Getting Started with MEPH",
+                    "description": "This introduction to MEPH explains how you can get started."
+                }	
+            ]
+        },{
+			"title": "IOC",
+			"items": [{
+				"name": "ioc",
+				"url": "guides/ioc",
+				"title":"Let's talk about IOC",
+				"description" :"Explaings how IOC works in MEPH."
+			},{
+				"name": "menu_provider",
+				"url": "guides/menu_provider",
+				"title":"Menu Provider",
+				"description" :"A description of the menu provider."
+			},{
+				"name": "session_manager",
+				"url": "guides/session_manager",
+				"title":"Session Manager",
+				"description" :"A description of the session provider."
+			}]
+		},{
+			"title": "Standard Mobile Application",
+			"items": [{
+				"name": "standardmobileapplication",
+				"url": "guides/standardmobileapplication",
+				"title":"A standard mobile application.",
+				"description" :"I need what now?"
+			}]
+		},{
+			"title": "Views and the JSON Objects",
+			"items": [{
+				"name": "application_views",
+				"url": "guides/application_views",
+				"title":"Quick start on views.",
+				"description" :"Getting it in."
+			}]
+		},{
+			"title": "Binding not Bondage",
+			"items": [{
+				"name": "binding",
+				"url": "guides/binding",
+				"title":"Get my binding on.",
+				"description" :"Concepts of the bind."
+			}]
+		}, {
+			"title": "Custom Controls",
+			"items": [{
+				"name": "customcontrols",
+				"url": "guides/customcontrols",
+				"title": "Custom Controls 101",
+				"description" :"All about custom controls."
+			},{
+				"name": "extendingcontrols",
+				"url": "guides/extendingcontrols",
+				"title": "Custom Controls 201",
+				"description" :"Extending controls."
+			}]
+		}, {
+			"title": "Class System",
+			"items": [{
+				"name": "class_system",
+				"url": "guides/class_system",
+				"title": "MEPH Class System",
+				"description" :"A description of the MEPH class system."
+			}]
+		}, {
+			"title": "Mixins",
+			"items": [{
+				"name": "mixins",
+				"url": "guides/mixins",
+				"title": "Mixins",
+				"description" :"A description of mixins in MEPH."
+			}]
+		}
+    ]

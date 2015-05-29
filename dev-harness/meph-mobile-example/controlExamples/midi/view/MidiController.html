@@ -16,11 +16,37 @@
                       meph-data-value="v$.soundfontvalue"
                       meph-data-labelfield="name"
                       meph-data-valuefield="id"></dropdown>
+            <mephbutton meph-event-click="v$.usePiano">Use Piano</mephbutton>
             <mephbutton meph-event-click="v$.useSoundFont">Use</mephbutton>
 
         </div>
         <div class="col-md-2">
             <number meph-data-value="v$.numshift"></number>
+            <textfield meph-data-value="v$.audioFileNumberFormat" meph-event-change="v$.detectNotes" placeholder="Audio file number format" descriptiontext="### => Midi #"></textfield>
+            <div><span>Midi Notes Detected : </span>   <span data-bind='"innerHTML": "v$.numberOfMidiNotesDetected"'></span></div>
+            <textfield meph-data-value="v$.currentBankName" placeholder="Bank name" descriptiontext="Name assigned to bank of samples"></textfield>
+            <mephbutton meph-event-click="v$.bookCurrentNotesToBank">Use</mephbutton>
+        </div>
+        <div class="col-md-2">
+            <div style="max-height:300px;overflow-y:scroll">
+                <listview data-bind='"source": "v$.listOfSounds"'
+                          prevent-bounce="true"
+                          meph-data-renderondemand="true">
+                    <template name="MEPHControls.midi.view.SoundItem">
+                    </template>
+                </listview>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div style="max-height:300px;overflow-y:scroll">
+                <listview data-bind='"source": "v$.listOfBanks"'
+                          prevent-bounce="true"
+                          meph-event-itemclick="v$.clickedOnBank"
+                          meph-data-renderondemand="true">
+                    <template name="MEPHControls.midi.view.BankItem">
+                    </template>
+                </listview>
+            </div>
         </div>
         <div class="col-md-12">
             <listview data-bind='"source": "v$.listsource"'

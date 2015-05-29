@@ -9073,7 +9073,7 @@ a.list-group-item.active > [mephplatform] .badge, .nav-pills > .active > a > [me
   background-color: rgba(201, 201, 201, 0.5);
   transition: width .2s, height .2s, background-color .2s, transform .2s, bottom .2s;
   height: 50px;
-  bottom: 0px;
+  bottom: 100px;
 }
 /* line 349, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .notification-overlay span {

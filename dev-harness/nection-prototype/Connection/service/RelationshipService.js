@@ -495,8 +495,8 @@
         toaddcoverted = toaddcoverted.orderBy(me.sortCards);
 
         result = result.concat(toaddcoverted.where(function (x) {
-            return result.contains(function (y) {
-                return x.card !== y.card;
+            return !result.contains(function (y) {
+                return x.card === y.card;
             });
         }));
         return result;

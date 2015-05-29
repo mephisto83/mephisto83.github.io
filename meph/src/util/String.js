@@ -227,5 +227,18 @@ if (!String.prototype.nth)
         return j + "th";
     }
 
+if (!String.prototype.getNumber) {
+    String.prototype.getNumber = function (format) {
+        var digits = [].interpolate(0, format.split('').length, function () {
+            return '([0-9])';
+        }).join('');
+
+        var res = this.match(new RegExp(digits));
+        if (res) {
+            return parseFloat(res.first());
+        }
+        return null;
+    }
+}
 
 MEPH.define('MEPH.util.String', {});

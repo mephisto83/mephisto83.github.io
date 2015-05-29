@@ -8,9 +8,12 @@
         'MEPH.list.View',
         'MEPH.util.FileReader',
         'MEPH.input.Number',
+        'MEPH.input.Text',
         'MEPH.file.Dropbox',
         'MEPH.input.Dropdown',
         'MEPHControls.midi.view.MidiEventItem',
+        'MEPHControls.midi.view.SoundItem',
+        'MEPHControls.midi.view.BankItem',
         'MEPH.audio.midi.controller.MidiController'],
     properties: {
         $midiController: null,
@@ -18,12 +21,25 @@
         note: null,
         soundfonts: null,
         soundfontvalue: null,
-        numshift: 0
+        banks: null,
+        defaultMidiNumberFormat: '###',
+        audioFileNumberFormat: null,
+        currentBankName: null,
+        listOfSounds: null,
+        usingPiano: false,
+        listOfBanks: null,
+        currentBank: null,
+        numshift: 0,
+        numberOfMidiNotesDetected: 0
     },
     initialize: function () {
         var me = this;
+        me.listOfBanks = MEPH.util.Observable.observable([]);
+        me.listOfSounds = MEPH.util.Observable.observable([]);
         me.listsource = MEPH.util.Observable.observable([]);
+
         me.callParent.apply(me, arguments);
+
         me.$midiController = new MEPH.audio.midi.controller.MidiController();
         me.ready = me.$midiController.auto().then(function (scope) {
             me.$scope = scope;
@@ -32,9 +48,11 @@
     onLoaded: function () {
         var me = this;
         me.name = 'Midi Controller';
+
         me.ready.then(function () {
             console.log('loading the instrument');
             me.loadInstrument();
+            me.audioFileNumberFormat = me.defaultMidiNumberFormat;
         })
     },
     loadResources: function () {
@@ -65,11 +83,65 @@
                         type: 'font'
                     });
                 }
-            })
+            }).where();
+            me.listOfSounds.push.apply(me.listOfSounds, resources.select(function (t) {
+                if (!(t.resource && t.resource.file)) {
+
+                    return ({
+                        name: t.name,
+                        id: t.id,
+                        type: 'audio',
+                        file: t.file
+                    });
+                }
+            }).where().where(function (x) {
+                return !me.listOfSounds.contains(function (t) {
+                    return t.name === x.name;
+                });
+            }));
+            me.detectNotes();
+            me.mp3SoundSamplse = resources.select(function (t) {
+                if (t.resource && t.resource.file) {
+                    return ({
+                        name: t.resource.file.name,
+                        id: t.id,
+                        type: 'font'
+                    });
+                }
+            }).where();
             if (me.soundfonts.first()) {
                 me.soundfontvalue = me.soundfonts.first().id;
             }
         }, 1000)
+    },
+    clickedOnBank: function () {
+        var me = this,
+            data = MEPH.util.Array.convert(arguments).last().domEvent.data;
+
+        me.currentBank = data;
+    },
+    detectNotes: function () {
+        var me = this;
+        me.audioFileNumberFormat = me.audioFileNumberFormat || me.defaultMidiNumberFormat
+        me.numberOfMidiNotesDetected = me.listOfSounds.count(function (x) {
+            var res = x.file.getNumber(me.audioFileNumberFormat);
+            return res != null;
+        });
+    },
+    bookCurrentNotesToBank: function () {
+        var me = this;
+        me.createBank(me.listOfSounds.select(function (x) {
+            var res = x.file.getNumber(me.audioFileNumberFormat);
+            x.midiNote = res;
+            return x;
+        }), me.currentBankName);
+
+        me.listOfSounds.dump();
+        me.detectNotes();
+    },
+    createBank: function (notes, name) {
+        var me = this;
+        me.listOfBanks.push({ notes: notes, name: name });
     },
     useSoundFont: function () {
         var me = this;
@@ -108,9 +180,34 @@
         });
         return me.selectedSoundFontChunks;
     },
-    clearCache: function(){
+    clearCache: function () {
         var me = this;
         me.audioCache = null;
+    },
+    usePiano: function () {
+        var me = this;
+        me.usingPiano = true;
+        me.loadGrandPiano();
+    },
+    loadGrandPiano: function () {
+        var me = this;
+        if (!me.pianoloaded) {
+            me.pianoloaded = true;
+            return MEPH.requires('MEPH.audio.music.instrument.piano.GrandPiano').then(function (piano) {
+                var grandpiano = new MEPH.audio.music.instrument.piano.GrandPiano();
+                return grandpiano.ready().then(function () {
+                    var sequence = grandpiano.createSequence();
+                    //if (me.$inj && me.$inj.audioResources) {
+                    //  me.$inj.audioResources.addSequence(sequence);
+                    me.grandpiano = grandpiano;
+                    //me.openSequence(sequence.id);
+                    // }
+                })
+            })
+        }
+    },
+    openSequence: function () {
+        var me = this;
     },
     get: function (id) {
         var me = this;
@@ -122,14 +219,41 @@
         if (found) {
             return found;
         }
-        var chunk = me.audioChunks.first(function (chunk) {
-            return chunk.id === id;
-        });
-        var t = me.$inj.audioResources.getSoundFontAudioInstance(chunk);
-        t.id = chunk.id;
-        //t.complete();
-        me.audioCache[id].push(t);
-        return t;
+        if (me.currentBank) {
+            var note = me.currentBank.notes.first(function (x) {
+                return x.midiNote - id === 0;
+            });
+            if (note) {
+                var audio = me.$inj.audioResources.getGraphInstance(note.id);
+                if (audio) {
+                    me.audioCache[id].push(audio);
+
+                    return audio;
+                }
+            }
+        }
+        else if (me.usingPiano) {
+            if (me.grandpiano) {
+                me.grandpianosequence = me.grandpianosequence || me.grandpiano.createSequence();
+
+                if (t) {
+                    t.id = chunk.id;
+                    //t.complete();
+                    me.audioCache[id].push(t);
+                    return t;
+                }
+            }
+        }
+        else {
+            var chunk = me.audioChunks.first(function (chunk) {
+                return chunk.id === id;
+            });
+            var t = me.$inj.audioResources.getSoundFontAudioInstance(chunk);
+            t.id = chunk.id;
+            //t.complete();
+            me.audioCache[id].push(t);
+            return t;
+        }
     },
     loadInstrument: function () {
         var context = null;   // the Web Audio "context" object
@@ -171,7 +295,12 @@
             if (soundfont) {
                 activeNotes.push(soundfont);
                 soundfont.complete();
-                soundfont.playProcessor(0, true);
+                if (me.currentBank) {
+                    soundfont.play(0);
+                }
+                else {
+                    soundfont.playProcessor(0, true);
+                }
                 //debugger
             }
             //activeNotes.push(noteNumber);
@@ -185,6 +314,12 @@
         }
         var throttle = {};
         function noteOff(noteNumber, data, evt) {
+            //var soundfont = me.get(noteNumber - me.numshift);
+            //if (me.currentBank && soundfont) {
+            //    soundfont.stop(0);
+            //}
+            //else {
+            //}
             //setTimeout()
             //var soundfont = activeNotes.first(function (x) {
             //    return x.isReady() && x.id === (noteNumber - me.numshift);

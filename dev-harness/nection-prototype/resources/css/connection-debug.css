@@ -1048,6 +1048,52 @@ input[type="range"]::-webkit-slider-thumb {
   cursor: pointer;
 }
 
+/* line 10, ../../../../meph/resources/sass/meph-default/core/classes/_utility.scss */
+.meph-draggable .panel-heading {
+  cursor: move;
+}
+
+/* line 14, ../../../../meph/resources/sass/meph-default/core/classes/_utility.scss */
+.stretchable-handle:hover {
+  cursor: nesw-resize;
+}
+
+/* line 18, ../../../../meph/resources/sass/meph-default/core/classes/_utility.scss */
+.meph-noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* line 28, ../../../../meph/resources/sass/meph-default/core/classes/_utility.scss */
+.meph-stretchable .panel .panel-default {
+  height: 100%;
+  margin-bottom: 0;
+}
+/* line 33, ../../../../meph/resources/sass/meph-default/core/classes/_utility.scss */
+.meph-stretchable .panel-body {
+  height: 100%;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  margin: 0;
+  margin-top: 49px;
+}
+/* line 43, ../../../../meph/resources/sass/meph-default/core/classes/_utility.scss */
+.meph-stretchable .panel-footer {
+  margin: 0px;
+  position: absolute;
+  border-radius: 0;
+  padding: 9px;
+  bottom: -59px;
+  border-bottom-right-radius: 11px;
+  border-bottom-left-radius: 10px;
+}
+
 /* line 1, ../../../../meph/resources/sass/meph-default/controls/view/_classes.scss */
 .meph-view {
   position: absolute;
@@ -2551,7 +2597,7 @@ div.graphBody div:first-child {
   width: 100%;
 }
 
-/* line 278, ../sass/connection-default/_all.scss */
+/* line 280, ../sass/connection-default/_all.scss */
 body.mea-culpa {
         /*.contact-list-item:nth-child(2n) {
             background-color: $color2;
@@ -2562,129 +2608,178 @@ body.mea-culpa {
             }
         }*/
 }
-/* line 280, ../sass/connection-default/_all.scss */
+/* line 282, ../sass/connection-default/_all.scss */
+body.mea-culpa.mobile-bottom-menu.mea-culpa .meph-activity-view-footer {
+  bottom: 50px;
+}
+/* line 286, ../sass/connection-default/_all.scss */
+body.mea-culpa.mobile-bottom-menu.mea-culpa .meph-application-header {
+  bottom: 0;
+  z-index: 1000000;
+}
+/* line 290, ../sass/connection-default/_all.scss */
+body.mea-culpa.mobile-bottom-menu.mea-culpa .meph-application-header .meph-flyout-panel {
+  width: 100%;
+}
+/* line 294, ../sass/connection-default/_all.scss */
+body.mea-culpa.mobile-bottom-menu.mea-culpa .meph-application-header [flyoutpanel] {
+  height: 50px;
+  bottom: 0px;
+  top: initial;
+  background-color: transparent;
+  margin-top: 0px;
+}
+/* line 301, ../sass/connection-default/_all.scss */
+body.mea-culpa.mobile-bottom-menu.mea-culpa .meph-application-header [flyoutpanel] ul {
+  margin: 0px;
+}
+/* line 304, ../sass/connection-default/_all.scss */
+body.mea-culpa.mobile-bottom-menu.mea-culpa .meph-application-header [flyoutpanel] ul .listitem {
+  float: left;
+  background-color: transparent;
+  text-align: center;
+  width: 25%;
+  border: 0;
+}
+/* line 311, ../sass/connection-default/_all.scss */
+body.mea-culpa.mobile-bottom-menu.mea-culpa .meph-application-header [flyoutpanel] ul .listitem .fa {
+  margin-top: -6px;
+  text-align: center;
+}
+/* line 316, ../sass/connection-default/_all.scss */
+body.mea-culpa.mobile-bottom-menu.mea-culpa .meph-application-header [flyoutpanel] ul .listitem h4 {
+  display: block;
+  font-size: small;
+  margin: 0;
+  color: #FFFFFF;
+}
+/* line 327, ../sass/connection-default/_all.scss */
+body.mea-culpa.mobile-bottom-menu.mea-culpa .meph-application-body {
+  border-top: 0px;
+}
+/* line 333, ../sass/connection-default/_all.scss */
 body.mea-culpa [editrelationship] h2 {
   margin: 0px;
 }
-/* line 284, ../sass/connection-default/_all.scss */
+/* line 337, ../sass/connection-default/_all.scss */
 body.mea-culpa [editrelationship] .row {
   margin-right: -10px;
   margin-left: 0px;
 }
-/* line 290, ../sass/connection-default/_all.scss */
+/* line 343, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-application-header {
   background-color: #191919;
   color: #FFF056;
 }
-/* line 295, ../sass/connection-default/_all.scss */
+/* line 348, ../sass/connection-default/_all.scss */
 body.mea-culpa .contact-list-item {
   background-color: #FFFFFF;
   color: #191919;
 }
-/* line 299, ../sass/connection-default/_all.scss */
+/* line 352, ../sass/connection-default/_all.scss */
 body.mea-culpa .contact-list-item a {
   color: #FFF056;
 }
-/* line 302, ../sass/connection-default/_all.scss */
+/* line 355, ../sass/connection-default/_all.scss */
 body.mea-culpa .contact-list-item a i.fa {
   color: #191919;
 }
-/* line 308, ../sass/connection-default/_all.scss */
+/* line 361, ../sass/connection-default/_all.scss */
 body.mea-culpa .list-group-item {
   padding-left: 8px;
   padding-right: 8px;
 }
-/* line 320, ../sass/connection-default/_all.scss */
+/* line 373, ../sass/connection-default/_all.scss */
 body.mea-culpa .contact-list-item h4 {
   color: #191919;
 }
-/* line 324, ../sass/connection-default/_all.scss */
+/* line 377, ../sass/connection-default/_all.scss */
 body.mea-culpa .glyphicon.glyphicon-th-large.meph-color-white {
   color: #FFF056;
 }
-/* line 329, ../sass/connection-default/_all.scss */
+/* line 382, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-view.mainview .meph-activity-view-header {
   background-color: #191919;
 }
-/* line 332, ../sass/connection-default/_all.scss */
+/* line 385, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-view.mainview .meph-activity-view-header h2 {
   margin: 0px;
 }
-/* line 337, ../sass/connection-default/_all.scss */
+/* line 390, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-activity-view-body,
 body.mea-culpa .meph-application-body.container-fluid {
   padding: 0px;
 }
-/* line 342, ../sass/connection-default/_all.scss */
+/* line 395, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-activity-view-body {
   padding-top: 57px;
 }
-/* line 348, ../sass/connection-default/_all.scss */
+/* line 401, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-view.main-contact .meph-activity-view-body,
 body.mea-culpa .mainview.accounts .meph-activity-view-body {
   padding-top: 0px;
 }
-/* line 354, ../sass/connection-default/_all.scss */
+/* line 407, ../sass/connection-default/_all.scss */
 body.mea-culpa .mainview .meph-activity-view-body .listwrapper {
   /*margin-top: 60px;
   margin-bottom: 60px;*/
 }
-/* line 361, ../sass/connection-default/_all.scss */
+/* line 414, ../sass/connection-default/_all.scss */
 body.mea-culpa .mainview.accounts .meph-activity-view-body .listwrapper {
   margin-top: 0px;
   margin-bottom: 0px;
 }
-/* line 367, ../sass/connection-default/_all.scss */
+/* line 420, ../sass/connection-default/_all.scss */
 body.mea-culpa .fa {
   color: #191919;
 }
-/* line 372, ../sass/connection-default/_all.scss */
+/* line 425, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-application-header .fa {
   color: #FFFFFF;
 }
-/* line 378, ../sass/connection-default/_all.scss */
+/* line 431, ../sass/connection-default/_all.scss */
 body.mea-culpa .btn-social .fa {
   color: #FFFFFF;
 }
-/* line 383, ../sass/connection-default/_all.scss */
+/* line 436, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-activity-view-footer {
   background-color: #191919;
 }
-/* line 389, ../sass/connection-default/_all.scss */
+/* line 442, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-application-body .btn-lg, body.mea-culpa .meph-application-body .btn-group-lg > .btn {
   border-radius: 0;
   background-image: none;
   background-color: transparent;
   border-color: transparent;
 }
-/* line 397, ../sass/connection-default/_all.scss */
+/* line 450, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-application-body .meph-activity-view-footer .fa {
   color: #FFFFFF;
 }
-/* line 403, ../sass/connection-default/_all.scss */
+/* line 456, ../sass/connection-default/_all.scss */
 body.mea-culpa .glyphicon.glyphicon-th-large.meph-color-white {
   color: #FFFFFF;
   padding: 6px;
   box-shadow: none;
   outline: none;
 }
-/* line 410, ../sass/connection-default/_all.scss */
+/* line 463, ../sass/connection-default/_all.scss */
 body.mea-culpa .list-group-item:active {
   background-color: #DFE2DB;
 }
-/* line 415, ../sass/connection-default/_all.scss */
+/* line 468, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-application-header.connecton-application-header .fa fa-plus,
 body.mea-culpa .meph-application-header.connecton-application-header .fa.fa-bars {
   font-size: 2em;
 }
-/* line 421, ../sass/connection-default/_all.scss */
+/* line 474, ../sass/connection-default/_all.scss */
 body.mea-culpa .meph-application-header.connecton-application-header .meph-application-menu-button-container button {
   padding: 0;
   padding-left: 15px;
   padding-top: 6px;
   outline: none;
 }
-/* line 430, ../sass/connection-default/_all.scss */
+/* line 483, ../sass/connection-default/_all.scss */
 body.mea-culpa .profile {
   height: 200px;
   width: 200px;
@@ -2693,12 +2788,12 @@ body.mea-culpa .profile {
   border-radius: 50%;
   background-position-x: 50%;
 }
-/* line 439, ../sass/connection-default/_all.scss */
+/* line 492, ../sass/connection-default/_all.scss */
 body.mea-culpa .profile.small {
   height: 100px;
   width: 100px;
 }
-/* line 444, ../sass/connection-default/_all.scss */
+/* line 497, ../sass/connection-default/_all.scss */
 body.mea-culpa .connection-list-profile-image {
   height: 79px;
   width: 79px;
@@ -2710,7 +2805,7 @@ body.mea-culpa .connection-list-profile-image {
   /*@include meph-image-background($file: 'empty_contact.png');*/
 }
 
-/* line 278, ../sass/connection-default/_all.scss */
+/* line 280, ../sass/connection-default/_all.scss */
 body.big-top {
         /*.contact-list-item:nth-child(2n) {
             background-color: $color2;
@@ -2721,129 +2816,178 @@ body.big-top {
             }
         }*/
 }
-/* line 280, ../sass/connection-default/_all.scss */
+/* line 282, ../sass/connection-default/_all.scss */
+body.big-top.mobile-bottom-menu.big-top .meph-activity-view-footer {
+  bottom: 50px;
+}
+/* line 286, ../sass/connection-default/_all.scss */
+body.big-top.mobile-bottom-menu.big-top .meph-application-header {
+  bottom: 0;
+  z-index: 1000000;
+}
+/* line 290, ../sass/connection-default/_all.scss */
+body.big-top.mobile-bottom-menu.big-top .meph-application-header .meph-flyout-panel {
+  width: 100%;
+}
+/* line 294, ../sass/connection-default/_all.scss */
+body.big-top.mobile-bottom-menu.big-top .meph-application-header [flyoutpanel] {
+  height: 50px;
+  bottom: 0px;
+  top: initial;
+  background-color: transparent;
+  margin-top: 0px;
+}
+/* line 301, ../sass/connection-default/_all.scss */
+body.big-top.mobile-bottom-menu.big-top .meph-application-header [flyoutpanel] ul {
+  margin: 0px;
+}
+/* line 304, ../sass/connection-default/_all.scss */
+body.big-top.mobile-bottom-menu.big-top .meph-application-header [flyoutpanel] ul .listitem {
+  float: left;
+  background-color: transparent;
+  text-align: center;
+  width: 25%;
+  border: 0;
+}
+/* line 311, ../sass/connection-default/_all.scss */
+body.big-top.mobile-bottom-menu.big-top .meph-application-header [flyoutpanel] ul .listitem .fa {
+  margin-top: -6px;
+  text-align: center;
+}
+/* line 316, ../sass/connection-default/_all.scss */
+body.big-top.mobile-bottom-menu.big-top .meph-application-header [flyoutpanel] ul .listitem h4 {
+  display: block;
+  font-size: small;
+  margin: 0;
+  color: #FDF3E7;
+}
+/* line 327, ../sass/connection-default/_all.scss */
+body.big-top.mobile-bottom-menu.big-top .meph-application-body {
+  border-top: 0px;
+}
+/* line 333, ../sass/connection-default/_all.scss */
 body.big-top [editrelationship] h2 {
   margin: 0px;
 }
-/* line 284, ../sass/connection-default/_all.scss */
+/* line 337, ../sass/connection-default/_all.scss */
 body.big-top [editrelationship] .row {
   margin-right: -10px;
   margin-left: 0px;
 }
-/* line 290, ../sass/connection-default/_all.scss */
+/* line 343, ../sass/connection-default/_all.scss */
 body.big-top .meph-application-header {
   background-color: #C63D0F;
   color: #3B3738;
 }
-/* line 295, ../sass/connection-default/_all.scss */
+/* line 348, ../sass/connection-default/_all.scss */
 body.big-top .contact-list-item {
   background-color: #FDF3E7;
   color: #C63D0F;
 }
-/* line 299, ../sass/connection-default/_all.scss */
+/* line 352, ../sass/connection-default/_all.scss */
 body.big-top .contact-list-item a {
   color: #3B3738;
 }
-/* line 302, ../sass/connection-default/_all.scss */
+/* line 355, ../sass/connection-default/_all.scss */
 body.big-top .contact-list-item a i.fa {
   color: #C63D0F;
 }
-/* line 308, ../sass/connection-default/_all.scss */
+/* line 361, ../sass/connection-default/_all.scss */
 body.big-top .list-group-item {
   padding-left: 8px;
   padding-right: 8px;
 }
-/* line 320, ../sass/connection-default/_all.scss */
+/* line 373, ../sass/connection-default/_all.scss */
 body.big-top .contact-list-item h4 {
   color: #C63D0F;
 }
-/* line 324, ../sass/connection-default/_all.scss */
+/* line 377, ../sass/connection-default/_all.scss */
 body.big-top .glyphicon.glyphicon-th-large.meph-color-white {
   color: #3B3738;
 }
-/* line 329, ../sass/connection-default/_all.scss */
+/* line 382, ../sass/connection-default/_all.scss */
 body.big-top .meph-view.mainview .meph-activity-view-header {
   background-color: #C63D0F;
 }
-/* line 332, ../sass/connection-default/_all.scss */
+/* line 385, ../sass/connection-default/_all.scss */
 body.big-top .meph-view.mainview .meph-activity-view-header h2 {
   margin: 0px;
 }
-/* line 337, ../sass/connection-default/_all.scss */
+/* line 390, ../sass/connection-default/_all.scss */
 body.big-top .meph-activity-view-body,
 body.big-top .meph-application-body.container-fluid {
   padding: 0px;
 }
-/* line 342, ../sass/connection-default/_all.scss */
+/* line 395, ../sass/connection-default/_all.scss */
 body.big-top .meph-activity-view-body {
   padding-top: 57px;
 }
-/* line 348, ../sass/connection-default/_all.scss */
+/* line 401, ../sass/connection-default/_all.scss */
 body.big-top .meph-view.main-contact .meph-activity-view-body,
 body.big-top .mainview.accounts .meph-activity-view-body {
   padding-top: 0px;
 }
-/* line 354, ../sass/connection-default/_all.scss */
+/* line 407, ../sass/connection-default/_all.scss */
 body.big-top .mainview .meph-activity-view-body .listwrapper {
   /*margin-top: 60px;
   margin-bottom: 60px;*/
 }
-/* line 361, ../sass/connection-default/_all.scss */
+/* line 414, ../sass/connection-default/_all.scss */
 body.big-top .mainview.accounts .meph-activity-view-body .listwrapper {
   margin-top: 0px;
   margin-bottom: 0px;
 }
-/* line 367, ../sass/connection-default/_all.scss */
+/* line 420, ../sass/connection-default/_all.scss */
 body.big-top .fa {
   color: #C63D0F;
 }
-/* line 372, ../sass/connection-default/_all.scss */
+/* line 425, ../sass/connection-default/_all.scss */
 body.big-top .meph-application-header .fa {
   color: #FDF3E7;
 }
-/* line 378, ../sass/connection-default/_all.scss */
+/* line 431, ../sass/connection-default/_all.scss */
 body.big-top .btn-social .fa {
   color: #FDF3E7;
 }
-/* line 383, ../sass/connection-default/_all.scss */
+/* line 436, ../sass/connection-default/_all.scss */
 body.big-top .meph-activity-view-footer {
   background-color: #C63D0F;
 }
-/* line 389, ../sass/connection-default/_all.scss */
+/* line 442, ../sass/connection-default/_all.scss */
 body.big-top .meph-application-body .btn-lg, body.big-top .meph-application-body .btn-group-lg > .btn {
   border-radius: 0;
   background-image: none;
   background-color: transparent;
   border-color: transparent;
 }
-/* line 397, ../sass/connection-default/_all.scss */
+/* line 450, ../sass/connection-default/_all.scss */
 body.big-top .meph-application-body .meph-activity-view-footer .fa {
   color: #FDF3E7;
 }
-/* line 403, ../sass/connection-default/_all.scss */
+/* line 456, ../sass/connection-default/_all.scss */
 body.big-top .glyphicon.glyphicon-th-large.meph-color-white {
   color: #FDF3E7;
   padding: 6px;
   box-shadow: none;
   outline: none;
 }
-/* line 410, ../sass/connection-default/_all.scss */
+/* line 463, ../sass/connection-default/_all.scss */
 body.big-top .list-group-item:active {
   background-color: #7E8F7C;
 }
-/* line 415, ../sass/connection-default/_all.scss */
+/* line 468, ../sass/connection-default/_all.scss */
 body.big-top .meph-application-header.connecton-application-header .fa fa-plus,
 body.big-top .meph-application-header.connecton-application-header .fa.fa-bars {
   font-size: 2em;
 }
-/* line 421, ../sass/connection-default/_all.scss */
+/* line 474, ../sass/connection-default/_all.scss */
 body.big-top .meph-application-header.connecton-application-header .meph-application-menu-button-container button {
   padding: 0;
   padding-left: 15px;
   padding-top: 6px;
   outline: none;
 }
-/* line 430, ../sass/connection-default/_all.scss */
+/* line 483, ../sass/connection-default/_all.scss */
 body.big-top .profile {
   height: 200px;
   width: 200px;
@@ -2852,12 +2996,12 @@ body.big-top .profile {
   border-radius: 50%;
   background-position-x: 50%;
 }
-/* line 439, ../sass/connection-default/_all.scss */
+/* line 492, ../sass/connection-default/_all.scss */
 body.big-top .profile.small {
   height: 100px;
   width: 100px;
 }
-/* line 444, ../sass/connection-default/_all.scss */
+/* line 497, ../sass/connection-default/_all.scss */
 body.big-top .connection-list-profile-image {
   height: 79px;
   width: 79px;

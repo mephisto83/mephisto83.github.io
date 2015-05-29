@@ -1,4 +1,4 @@
-﻿
+﻿$top-zindex: 1000000;
 
 /* As hex codes */
 
@@ -222,7 +222,7 @@ $profile-item-image-height: $profile-item-height - 10;
 
 .connecton-application-header [flyoutpanel] {
     background-color: white;
-    margin-top: 50px;
+    margin-top: $view-header-body-height;
     padding-top: 0px;
     height: 100%;
 
@@ -275,7 +275,60 @@ $profile-item-image-height: $profile-item-height - 10;
 
 
 @mixin pallette($palette, $color1, $color2, $color3, $color4) {
+
+
     body.#{$palette} {
+        &.mobile-bottom-menu.#{$palette} {
+            .meph-activity-view-footer {
+                bottom: 50px;
+            }
+
+            .meph-application-header {
+                bottom: 0;
+                z-index: $top-zindex;
+
+                .meph-flyout-panel {
+                    width: 100%;
+                }
+
+                [flyoutpanel] {
+                    height: $view-header-body-height;
+                    bottom: 0px;
+                    top: initial;
+                    background-color: transparent;
+                    margin-top: 0px;
+
+                    ul {
+                        margin: 0px;
+
+                        .listitem {
+                            float: left;
+                            background-color: transparent;
+                            text-align: center;
+                            width: 25%;
+                            border: 0;
+
+                            .fa {
+                                margin-top: -6px;
+                                text-align: center;
+                            }
+
+                            h4 {
+                                display: block;
+                                font-size: small;
+                                margin: 0;
+                                color: $color3;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .meph-application-body {
+                border-top: 0px;
+            }
+        }
+
         [editrelationship] {
             h2 {
                 margin: 0px;

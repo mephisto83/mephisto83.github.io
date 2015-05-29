@@ -143,6 +143,7 @@ MEPH.define('MEPH.field.FormField', {
                                                 'labelText',
                                                 'descriptionCls',
                                                 'baseComponentCls',
+                                                'placeholder',
                                                 'componentCls',
                                                 'inputCssClass',
                                                 'labelClsBase',

@@ -236,6 +236,7 @@
                         'util/Observable.spec.js',
                         'util/Rest.spec.js',
                         'util/Queryable.spec.js',
+                        'util/String.spec.js',
                         'util/Renderer.spec.js',
                         'util/SVG.spec.js',
                         'util/Validatable.spec.js',

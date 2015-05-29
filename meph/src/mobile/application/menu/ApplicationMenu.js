@@ -14,6 +14,7 @@ MEPH.define('MEPH.mobile.application.menu.ApplicationMenu', {
     requires: ['MEPH.panel.flyout.FlyoutPanel',
                 'MEPH.button.IconButton',
                 'MEPH.mobile.services.MobileServices',
+                'MEPH.util.Style',
                 'MEPH.list.List',
                 'MEPH.util.Observable',
                 'MEPH.util.Dom'],
@@ -25,6 +26,7 @@ MEPH.define('MEPH.mobile.application.menu.ApplicationMenu', {
         $menuPromise: null,
         opened: false,
         $menuProviders: null,
+        alwaysOpen: false,
         menusource: null,
         $applicationMenuPromise: null
     },
@@ -49,6 +51,10 @@ MEPH.define('MEPH.mobile.application.menu.ApplicationMenu', {
             });
         });
         return promise;
+    },
+    hideMenuButton: function () {
+        var me = this;
+        MEPH.util.Style.hide(me.menubuttoncontainer);
     },
     /**
      * Gets the menu item associated with the data. 
@@ -224,6 +230,10 @@ MEPH.define('MEPH.mobile.application.menu.ApplicationMenu', {
             return handler(clickResult);
         }
     },
+    setAlwaysOpen: function (val) {
+        var me = this;
+        me.alwaysOpen = val;
+    },
     /**
      * Sets up event listeners.
      **/
@@ -266,15 +276,17 @@ MEPH.define('MEPH.mobile.application.menu.ApplicationMenu', {
     */
     close: function () {
         var me = this;
+        if (!me.alwaysOpen) {
 
-        if (me.opened) {
-            MEPH.Log('close application menu');
-            me.$applicationMenuPromise = me.$applicationMenuPromise.then(function () {
-                return me.flyoutPanel.close().then(function () {
-                    me.opened = false;
-                    MEPH.Log('application menu closed');
+            if (me.opened) {
+                MEPH.Log('close application menu');
+                me.$applicationMenuPromise = me.$applicationMenuPromise.then(function () {
+                    return me.flyoutPanel.close().then(function () {
+                        me.opened = false;
+                        MEPH.Log('application menu closed');
+                    });
                 });
-            });
+            }
         }
         return me.$applicationMenuPromise;
     },

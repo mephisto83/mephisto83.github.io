@@ -13,6 +13,13 @@
     onLoaded: function () {
         var me = this;
         me.applicationmenu.hide();
+        if (me.addContactBtn)
+            me.addContactBtn.hide();
+        if (document.body.classList.contains('mobile-bottom-menu')) {
+            me.applicationmenu.hideMenuButton();
+            me.applicationmenu.setAlwaysOpen(true);
+            me.applicationmenu.open();
+        }
         if (me.$inj && me.$inj.userService) {
             if (me.$inj.userService.isLoggedIn()) {
                 me.onloggedIn();
@@ -48,12 +55,16 @@
     onloggedOut: function () {
         var me = this;
         me.loggedin = false;
+        if (me.addContactBtn)
+            me.addContactBtn.hide();
         //me.applicationmenu.hide();
         //me.headerdom.classList.remove('connection-show');
     },
     onloggedIn: function () {
         var me = this;
         me.loggedin = true;
+        if (me.addContactBtn)
+            me.addContactBtn.show();
         //me.applicationmenu.show();
         //me.headerdom.classList.add('connection-show');
     },

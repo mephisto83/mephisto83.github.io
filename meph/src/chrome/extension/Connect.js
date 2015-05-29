@@ -4,7 +4,7 @@
     },
     listen: function () {
         var me = this;
-        if (!window.chrome)
+        if (!window.chrome || !window.chrome.runtime || !window.chrome.runtime.onConnect)
             return;
         return (function () {
             var listener = {
@@ -39,7 +39,7 @@
     bus: function (contentpage) {
         var id = MEPH.GUID();
         var channel = MEPH.GUID();
-        if (!window.chrome)
+        if (!window.chrome || !window.chrome.runtime || !window.chrome.runtime.onConnect)
             return;
 
         if (!channel) {
@@ -133,7 +133,7 @@
         })();
     },
     connect: function (channel) {
-        if (!window.chrome)
+        if (!window.chrome || !window.chrome.runtime || !window.chrome.runtime.onConnect)
             return;
 
         if (!channel) {
@@ -168,7 +168,8 @@
     },
 
     screenShot: function (options, windowId) {
-        if (!window.chrome) {
+
+        if (!window.chrome || !window.chrome.runtime || !window.chrome.runtime.onConnect) {
             return;
         }
 
@@ -186,4 +187,4 @@
             });
         });
     }
-})
+});

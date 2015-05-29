@@ -39,12 +39,14 @@
             connectionmenu: true,
             viewId: 'main',
             name: 'Contacts',
+            cls: 'fa fa-users',
             path: 'main/contact'
         }]
         if (!me.loggedIn) {
             res.push({
                 connectionmenu: true,
                 name: 'Login',
+                cls: 'fa fa-key',
                 viewId: 'FirstTimePage',
                 path: 'login'
             });
@@ -54,20 +56,27 @@
                 connectionmenu: true,
                 viewId: 'Me',
                 name: 'My profile',
+                cls: 'fa fa-user',
                 path: 'main/me'
             })
             res.push({
                 connectionmenu: true,
                 viewId: 'CreateContact',
+                cls: 'fa fa-user-plus',
                 path: 'main/create/contact',
                 name: 'New Contact'
             }, {
                 connectionmenu: true,
                 name: 'Accounts',
                 viewId: 'Accounts',
+                cls: 'fa fa-university',
                 path: 'accounts'
             });
         }
+        res.foreach(function (x) {
+            if (x.cls.indexOf('fa-2x') === -1)
+                x.cls += ' fa-2x';
+        });
         return res;
     },
     ownsData: function (data) {

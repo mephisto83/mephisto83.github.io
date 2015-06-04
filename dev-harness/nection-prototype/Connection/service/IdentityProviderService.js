@@ -66,7 +66,7 @@
     },
     onInjectionsComplete: function () {
         var me = this, identityProvider;
-        return me.updateProviders();
+         me.updateProviders();
     },
     providerStatusChange: function (type, args) {
         var me = this;

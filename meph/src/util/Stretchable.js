@@ -7,7 +7,7 @@ MEPH.define('MEPH.util.Stretchable', {
     properties: {
     },
     statics: {
-        stretchable: function (dom, handle) {
+        stretchable: function (dom, handle, min) {
 
             if (dom) {
                 if (!handle) {
@@ -45,8 +45,16 @@ MEPH.define('MEPH.util.Stretchable', {
                         document.body.addEventListener(evt, function (e) {
                             if (following) {
                                 var pos = MEPH.util.Dom.getScreenEventPositions(e, dom).first();
-                                MEPH.util.Style.width(dom, (pos.x - start.x) + startEventPosition.width);
-                                MEPH.util.Style.height(dom, (pos.y - start.y) + startEventPosition.height);
+                                var width = (pos.x - start.x) + startEventPosition.width;
+                                var height = (pos.y - start.y) + startEventPosition.height;
+                                if (min) {
+                                    if (min.width)
+                                        width = Math.max(width, min.width);
+                                    if (min.height)
+                                        height = Math.max(height, min.height);
+                                }
+                                MEPH.util.Style.width(dom, width);
+                                MEPH.util.Style.height(dom, height);
                                 positionHandle();
                                 hasStretched = true;
                             }

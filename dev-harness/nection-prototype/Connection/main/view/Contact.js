@@ -36,7 +36,8 @@
     afterShow: function () {
         var me = this;
         var arguments = me.activityArguments;
-
+        MEPH.util.Style.hide(me.$activityview.removeRelationshipBtn);
+        MEPH.util.Style.hide(me.$activityview.addRelationshipBtn);
         if (arguments.data) {
             me.contact = arguments.data;
         }
@@ -49,8 +50,16 @@
                 me.$inj.overlayService.relegate('connection-contact');
 
                 return me.$inj.relationshipService.getRelationShip(me.contact).then(function (relation) {
-                    if (me.$activityview.relationshipdescription)
+                    if (me.$activityview.relationshipdescription) {
                         me.$activityview.relationshipdescription.relationship = relation
+                    }
+                    if (relation) {
+                        MEPH.util.Style.show(me.$activityview.removeRelationshipBtn);
+                    }
+                    else {
+                        MEPH.util.Style.show(me.$activityview.addRelationshipBtn);
+                    }
+
                     me.relationship = relation;
                 }).catch(function () {
                     MEPH.Log('GetRelationship error.')
@@ -60,6 +69,13 @@
             }
         })
     },
+    editRelationship: function () {
+        var me = this;
+
+
+        MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'EditRelationship', path: 'main/contact/relationship/edit', contact: me.contact });
+    },
+
     createIfNonExistent: function () {
         var me = this;
         return Promise.all([me.when.loaded, me.when.injected]).then(function () {

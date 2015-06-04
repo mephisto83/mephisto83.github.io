@@ -207,7 +207,7 @@ MEPH.define('MEPH.graph.Node', {
     },
     addZone: function (zone) {
         var me = this;
-        if (!me.$activezones.contains(zone)) {
+        if (!me.$activezones.contains(function (x) { return x === zone; })) {
             me.$activezones.push(zone);
             zone.on('click', me.onNodeClicked.bind(me, zone, me));
         }

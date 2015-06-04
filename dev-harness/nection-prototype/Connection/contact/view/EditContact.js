@@ -3,7 +3,11 @@
     templates: true,
     extend: 'MEPH.mobile.activity.container.Container',
     mixins: ['MEPH.mobile.mixins.Activity'],
-    injections: ['contactService', 'identityProvider', 'overlayService', 'customProvider'],
+    injections: ['contactService',
+        'identityProvider',
+        'overlayService',
+        'customProvider',
+        'stateService'],
     requires: ['MEPH.util.Observable',
                 'MEPH.mobile.activity.view.ActivityView',
                 'MEPH.input.Dropdown',
@@ -86,9 +90,16 @@
         MEPH.subscribe(Connection.constant.Constants.CurrentCard, function (type, options) {
             me.initMe(options)
         });
+        me.when.injected.then(function () {
+            var handler = function () {
+                me.initMe(me.$inj.stateService.get(Connection.constant.Constants.CurrentCard));
+            };
+            handler();
+            me.$inj.stateService.on(Connection.constant.Constants.CurrentCard, handler);
+        });
         MEPH.subscribe([Connection.constant.Constants.LoggedOut, Connection.constant.Constants.LoggedIn], function () {
             me.initMe();
-        })
+        });
     },
     onLoaded: function () {
         var me = this;
@@ -117,9 +128,10 @@
     },
     initMe: function (options) {
         var me = this, identityProvider;
-        if (me.$inj && me.$inj.identityProvider  && (me.activityArguments || options)) {///&& !me.$inited
+        if (me.$inj && me.$inj.identityProvider && (me.activityArguments || options)) {///&& !me.$inited
 
             me.$inj.overlayService.open('connection-contact-edit');
+            me.$inj.overlayService.relegate('connection-contact-edit');
             identityProvider = me.$inj.identityProvider;
             var properties = ['email2', 'phone1', 'phone2', 'name', 'email1',
                 'company', 'title',
@@ -136,9 +148,12 @@
             var cardid = (options || me.activityArguments).selectedCardId;
             me.currentcardid = cardid;
 
+            var mycontact = me.$inj.stateService.get('mycontact') || null;
             me.$inj.customProvider.getProperties(cardid).then(function (res) {
                 res.foreach(function (r) {
-                    me[r.propType + 'Value'] = r.value;
+                    if (mycontact[r.propType] !== r.value) {
+                        me[r.propType + 'Value'] = r.value;
+                    }
                     if (r.propType === 'profileimage') {
                         me.activityview.currentprofileimage.src = r.value;
                     }
@@ -146,6 +161,14 @@
             }).then(function () {
                 me.$inj.overlayService.close('connection-contact-edit');
             });
+            if (mycontact) {
+                for (var i in mycontact) {
+                    me[i + 'Value'] = mycontact[i];
+                    if (i === 'profileimage') {
+                        me.activityview.currentprofileimage.src = mycontact[i];
+                    }
+                }
+            }
             me.sources = properties.select(function (prop) {
                 return me[prop + 'source']
             });
@@ -203,11 +226,11 @@
     //afterShow: function () {
     //    var me = this;
     //    me.great();
-    //    me.initMe();
+    //    // me.initMe();
     //},
     //afterHide: function () {
     //    var me = this;
-    //   // me.$inited = false;
+    //    MEPH.publish()
     //    me.great();
     //},
     visbility: function (res) {

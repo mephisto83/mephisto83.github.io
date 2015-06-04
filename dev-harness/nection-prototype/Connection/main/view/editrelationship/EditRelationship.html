@@ -20,17 +20,15 @@
 
         <list data-bind='"source": "v$.currentRelationshipAttrs"'>
             <template name="relationship_type_list_template">
-                <li class="listitem relationshiplistitem">
-                    <div class="row">
-                        <div class="col-md-2 col-xs-2">
-                            <mephbutton type="button" class="btn btn-default" meph-event-click="v$.datachanged, c$.data">
-                                <i class="fa fa-remove"></i>
-                            </mephbutton>
-                        </div>
-                        <div class="col-md-10 col-xs-10 relationshiptext">
-                            <b data-bind='"innerHTML": "c$.data.name"'></b>
-                            <span data-bind='"innerHTML": "c$.data.category"'></span>
-                        </div>
+                <li class="row list-group-item listitem relationshiplistitem">
+                    <div class="col-md-2 col-xs-2">
+                        <mephbutton type="button" class="btn btn-default" meph-event-click="v$.datachanged, c$.data">
+                            <i class="fa fa-remove"></i>
+                        </mephbutton>
+                    </div>
+                    <div class="col-md-10 col-xs-10 relationshiptext">
+                        <b data-bind='"innerHTML": "c$.data.name"'></b>
+                        <span data-bind='"innerHTML": "c$.data.category"'></span>
                     </div>
                 </li>
             </template>

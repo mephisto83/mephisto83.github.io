@@ -7,6 +7,14 @@
                 dom.style.transform = "translate(" + (x) + "px," + (y) + "px)";
             }
         },
+        hideshow: function (a, b) {
+            if (a) {
+                Style.show(a);
+            }
+            if (b) {
+                Style.hide(b);
+            }
+        },
         setPosition: function (dom, x, y) {
             Style.left(dom, x);
             Style.top(dom, y);
@@ -88,6 +96,20 @@
         backgroundColor: function (dom, color) {
             dom.style.backgroundColor = color;
         },
+        strokeWidth: function (dom, width) {
+            if (dom) {
+                dom.style.borderWidth = parseFloat(width) + 'px';
+            }
+        },
+        borderRadius: function (dom, rad, relative) {
+
+            if (relative) {
+                dom.style.borderRadius = rad;
+            }
+            else {
+                dom.style.borderRadius = parseFloat(rad) + 'px';;
+            }
+        },
         absolute: function (dom) {
             Style.position(dom, 'absolute');
         },
@@ -112,11 +134,25 @@
                 height: y
             }
         },
+        bodyArea: function () {
+            var bsize = document.body.getBoundingClientRect();
+            return bsize.width * bsize.height;
+        },
         size: function (dom) {
+            if (dom.nodeType === 1)
+                return dom.getBoundingClientRect();
             return {
                 width: dom.clientWidth,
                 height: dom.clientHeight
             }
+        },
+        area: function (dom) {
+            var size = MEPH.util.Style.size(dom);
+            return parseFloat(size.width) * parseFloat(size.height);
+        },
+        areaLine: function (dom) {
+            var size = MEPH.util.Style.size(dom);
+            return parseFloat(size.width) + parseFloat(size.height);
         },
         circleCurve: function (r, x, a, b) {
             //        (x−a)2+(y−b)2=r2
@@ -174,4 +210,6 @@
             }
         }
     }
+}).then(function () {
+    MEPH.addBindPrefixShortCuts('style', 'object', MEPH.util.Style);
 });

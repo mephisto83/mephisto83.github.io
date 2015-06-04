@@ -67,11 +67,17 @@ MEPH.define('MEPH.mixins.Referrerable', {
                     connections = me.getReferenceConnections().select(function (x) { return x.type });;
                 return MEPH.Array(connections.concat(MEPH.getBindPrefixShortCuts().select(function (x) { return x.type; }))).unique(function (x) { return x; });
             },
-            getConnection: function (type) {
-                var me = this,
+            getConnection: function (type, prefix) {
+                var me = this, refs,
                     reference;
                 if (type === MEPH.control.Control.connectables.control) {
                     return me;
+                }
+                else if (type === MEPH.control.Control.connectables.object) {
+                    refs = MEPH.getBindPrefixShortCut(prefix);
+                    if (refs && refs.reference) {
+                        return refs.reference || null;
+                    }
                 }
                 reference = me.$referenceConnections.first(function (x) { return x.type === type; });
                 if (reference) {

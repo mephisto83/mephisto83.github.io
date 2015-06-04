@@ -6,7 +6,9 @@
 MEPH.define('MEPH.table.SpreadSheet', {
     alias: 'spreadsheet',
     templates: true,
-    requires: ['MEPH.util.Renderer', 'MEPH.util.Style', 'MEPH.util.Dom', 'MEPH.scrollbar.Scrollbar', 'MEPH.util.SVG'],
+    requires: ['MEPH.util.Renderer',
+        'MEPH.util.HTMLRenderer',
+        'MEPH.util.Style', 'MEPH.util.Dom', 'MEPH.scrollbar.Scrollbar', 'MEPH.util.SVG'],
     extend: 'MEPH.control.Control',
     statics: {
         states: {
@@ -21,6 +23,7 @@ MEPH.define('MEPH.table.SpreadSheet', {
         vertical: false,
         animatemode: false,
         animFrame: null,
+        enablehtml: false,
         enablesvg: false,
         columnOffsets: null,
         rowOffsets: null,
@@ -82,6 +85,7 @@ MEPH.define('MEPH.table.SpreadSheet', {
                 args.path === 'columns' ||
                 args.path === 'vertical' ||
                 args.property === 'enablesvg' ||
+                args.property === 'enablehtml' ||
                 args.property === 'startColumn' ||
                 args.property === 'startRow' ||
                 args.property === 'vbarposition' ||
@@ -89,6 +93,17 @@ MEPH.define('MEPH.table.SpreadSheet', {
                 args.path === 'rows') {
                 if (args.property === 'enablesvg') {
                     if (me.enablesvg && !me.svgrenderer) {
+                        me.svgrenderer = new MEPH.util.SVG();
+                        me.svgrenderer.batchdraw = true;
+                        me.svgrenderer.setCanvas(me.canvassvg);
+                    }
+                }
+                if (args.property === 'enablehtml') {
+                    if (me.enablehtml && !me.htmlrenderer) {
+                        me.htmlrenderer = new MEPH.util.HTMLRenderer();
+                        me.htmlrenderer.batchdraw = true;
+                        me.htmlrenderer.setCanvas(me.canvashtml);
+
                         me.svgrenderer = new MEPH.util.SVG();
                         me.svgrenderer.batchdraw = true;
                         me.svgrenderer.setCanvas(me.canvassvg);
@@ -813,6 +828,27 @@ MEPH.define('MEPH.table.SpreadSheet', {
                         //me.dispatchEvent('mouseoveritem', {
                         //    items: items, header: header
                         //}, canvas)
+                    })
+                }
+                else if (me.enablehtml) {
+                    me.svgrenderer.clear();
+                    var res = me.svgrenderer.draw(headerInstructions.where(function(x){
+                        switch (x.shape) {
+                            case MEPH.util.SVG.shapes.bezier:
+                            case MEPH.util.SVG.shapes.line:
+                                return false;
+                        }
+                        return true;
+                    }));
+                    me.htmlrenderer.clear();
+                    var res = me.htmlrenderer.draw(headerInstructions);
+                    res.foreach(function (item) {
+                        me.dun(item.shape);
+                        me.don('mouseover', item.shape, function (item) {
+                            me.dispatchEvent('mouseoveritem', {
+                                items: [item.options.relObj], header: null
+                            }, me.canvas)
+                        }.bind(me, item), item.shape);
                     })
                 }
                 else {

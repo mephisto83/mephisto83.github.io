@@ -1151,14 +1151,14 @@
                 binder = new MEPH.bind.Binder(), result,
                 object = {
                     getListOfTransferableAttributes: function () {
-                        return MEPH.Array([{ name: 'customAttr', options: {} }])
+                        return MEPH.Array([{ name: 'customattr', options: {} }])
                     }
                 };
-            dom.setAttribute('customAttr', 'p$.value');
+            dom.setAttribute('customattr', 'p$.value');
 
             result = binder.parseDomAttributes(dom, null, null, object);
             expect(result).theTruth('parsing didnt work as expected');
-            expect(result.customAttr).theTruth('parsing didnt yield a customAttr rule');
+            expect(result.customattr).theTruth('parsing didnt yield a customAttr rule');
 
         }).catch(function (error) {
             expect(error).caught();

@@ -3,6 +3,7 @@
  * Provides view definitions.
  **/
 MEPH.define('MEPH.mobile.providers.viewprovider.ViewProvider', {
+    injections: ['storage'],
     properties: {
         configuration: null,
         viewlibrary: null

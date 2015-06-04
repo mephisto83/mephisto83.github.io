@@ -28,6 +28,7 @@ MEPH.define('MEPH.mobile.activity.container.Container', {
             dom;
         dom = me.getDomTemplate();
         view = dom.first();
+        MEPH.publish(MEPH.Constants.ON_SHOW, me.activityArguments)
         return me.viewTransition(view, { remove: me.$removeHomePageCls }).then(function (x) {
             me.fire('show', {});
         });;
@@ -42,6 +43,7 @@ MEPH.define('MEPH.mobile.activity.container.Container', {
             dom = me.getDomTemplate();
 
         view = dom.first();
+        MEPH.publish(MEPH.Constants.ON_HIDE, me.activityArguments)
         return me.viewTransition(view, { add: me.$removeHomePageCls }).then(function (x) {
             me.fire('hide', {});
         });

@@ -1,6 +1,6 @@
 ﻿describe("MEPH/audio/midi/controller/MidiController.spec.js", 'MEPH.audio.midi.controller.MidiController', function () {
 
-    var MIDI_CONNECTED = true;
+    var MIDI_CONNECTED = false;
     beforeEach(function () {
         jasmine.addMatchers(MEPH.customMatchers);
     });

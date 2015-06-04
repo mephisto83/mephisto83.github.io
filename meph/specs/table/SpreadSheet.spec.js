@@ -686,6 +686,53 @@
         expect(spreadsheet.svgrenderer).toBeTruthy();
     });
 
+    it('can use an div to draw content instead of a canvas', function () {
+        var spreadsheet = new MEPH.table.SpreadSheet();
+        spreadsheet.enablehtml = true;
+        expect(spreadsheet.htmlrenderer).toBeTruthy();
+        expect(spreadsheet.svgrenderer).toBeTruthy();
+    });
+
+    it('calls the html renderer when in html model for content', function (done) {
+        MEPH.render('MEPH.table.SpreadSheet', 'scrollingtable').then(function (r) {
+            var results = r.res;
+            var app = r.app;
+
+            var dom,
+                scrollingtable = results.first().classInstance;
+            scrollingtable.rowheaders = "1";
+            scrollingtable.enablehtml = true;
+            scrollingtable.columnheaders = "1";
+            scrollingtable.columns = "26";
+            scrollingtable.rows = "1000";
+            var called;
+            scrollingtable.getMainContentInstructions = function () { return []; };
+            scrollingtable.htmlrenderer = {
+                clear: function () {
+                },
+                draw: function () {
+                    called = true;
+                }
+            }
+
+            scrollingtable.updateCells();
+            ///Assert
+            return new Promise(function (r) {
+                setTimeout(function () {
+                    expect(called).toBeTruthy();
+                    if (app) {
+                        app.removeSpace();
+                    }
+                    r();
+                }, 550);
+            })
+        }).catch(function (error) {
+            expect(error || new Error('did not render as expected')).caught();
+        }).then(function () {
+            done();
+        });
+    });
+
     it('calls the svg renderer when in svg mode for content.', function (done) {
         MEPH.render('MEPH.table.SpreadSheet', 'scrollingtable').then(function (r) {
             var results = r.res;

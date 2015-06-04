@@ -15,9 +15,12 @@
         REQUEST_BLOB_SAVE: 'REQUEST_BLOB_SAVE',
         OPEN_ACTIVITY: 'OPEN_ACTIVITY',
         ProviderStatusChange: 'ProviderStatus change : login related',
-        OAuthPropertyApplied:'Fire when an Oauthprovider has set a property on a source array.',
+        OAuthPropertyApplied: 'Fire when an Oauthprovider has set a property on a source array.',
+        ON_SHOW: 'ON_SHOW',
+        ON_HIDE: 'ON_HIDE',
+        START_ACTIVITY: 'START_ACTIVITY',
         provider: {
-            PROVIDERONLINE:'PROVIDERONLINE',
+            PROVIDERONLINE: 'PROVIDERONLINE',
             IDENTITY_STATUS_CHANGE: 'IDENTITY_STATUS_CHANGE'
         }
     }

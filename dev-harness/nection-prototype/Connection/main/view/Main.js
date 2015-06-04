@@ -19,31 +19,47 @@
         var me = this;
         me.callParent.apply(me, arguments);
         MEPH.Log('Creating Main page.');
-        me.on('load', me.onLoaded.bind(me));
-        me.ready = new Promise(function (r) {
-            me.injectionsResolve = r;
-        }).catch(function (e) {
-            debugger
-        });
+        // me.on('load', me.onLoaded.bind(me));
 
+        me.ready = me.when.injected;
         MEPH.subscribe(Connection.constant.Constants.ConnectionLogIn, me.loadContactsAndMerge.bind(me));
     },
-    onInjectionsComplete: function () {
-        var me = this;
-        MEPH.Log('Injections complete.');
-        me.injectionsResolve();
-    },
-    onLoaded: function () {
+    afterShow: function () {
         var me = this;
         me.name = 'Main';
         MEPH.Log('Loaded Main.');
-        if (!me.inited) {
+        if (!me.listsource) {
             me.listsource = MEPH.util.Observable.observable([]);
-            setTimeout(function () {
-                me.loadContactsAndMerge();
-            }, 1000);
-            me.inited = true;
+            me.loadRelationshipContacts();
         }
+    },
+    loadRelationshipContacts: function () {
+        var me = this;
+        me.afterRelationshipsLoaded = me.when.injected.then(function () {
+            Promise.resolve().then(function () {
+                return me.$inj.relationshipService.loadCache();
+            }).then(function () {
+                return me.$inj.relationshipService.setMyRelationshipContacts();
+            }).then(function () {
+                me.$inj.relationshipService.loadRelationshipContacts(me.listsource);
+            });
+        });
+    },
+    loadCacheContacts: function () {
+        var me = this;
+        return me.afterRelationshipsLoaded.then(function () {
+            return me.when.injected.then(function () {
+                return Promise.resolve().then(function () {
+                    return me.$inj.overlayService.open('connection-main');
+                }).then(function () {
+                    return me.$inj.relationshipService.loadCache();
+                }).then(function () {
+                    return me.$inj.relationshipService.composeCards(me.listsource);
+                }).catch(function () {
+                    MEPH.Error('Couldnt compose cards for some reason.')
+                });
+            });
+        });
     },
     loadContactsAndMerge: function () {
         var me = this;
@@ -59,57 +75,55 @@
                     message: 'Loading and merging contacts'
                 });
             }
-            Promise.resolve().then(function () {
-                return me.$inj.overlayService.open('connection-main');
-            }).then(function () {
-                return me.$inj.relationshipService.loadCache();
-            }).then(function () {
-                return me.$inj.relationshipService.composeCards(me.listsource);
-            }).catch(function () {
-                MEPH.Log('Couldnt compose cards for some reason.')
-            }).then(function () {
-                return me.$inj.overlayService.relegate('connection-main');
-            }).then(function () {
-                return me.$inj.relationshipService.loadDeviceContacts().then(function (contacts) {
-                    if (contacts) {
-                        deviceContacts = contacts;
-                    }
-                    MEPH.Log('Loaded device contacts.' + (contacts ? contacts.length : 0));
-                });
-            }).catch(function () {
-                MEPH.Log('There was a problem getting contacts from the device')
-            }).then(function () {
-                MEPH.Log('Get contact list ', 5)
-                return me.$inj.relationshipService.getContactList()
-            }).then(function (contactListFromServer) {
-                MEPH.Log('Set contact list ', 5)
-                savedContactsFromServer = contactListFromServer;
-            }).catch(function () {
-                MEPH.Log('an error occurred while getting my contact list from the server')
-            }).then(function () {
-                MEPH.Log('Get my relationship contacts', 5)
-                return me.$inj.relationshipService.getMyRelationshipContacts();
-            }).then(function (mycontacts) {
-                MEPH.Log('Got contact list ', 5)
-                myRelationshipsContacts = mycontacts;
-            }).catch(function () {
-                MEPH.Log('An error occurred while eget my relationship contacts.')
-            }).then(function () {
-                MEPH.Log('Setting contact parts', 5);
-                return me.$inj.relationshipService.setContactParts(deviceContacts, savedContactsFromServer, myRelationshipsContacts);
-            }).then(function () {
-                MEPH.Log('Merging device contacts', 5);
-                return me.$inj.relationshipService.mergeDeviceContacts();
-            }).then(function () {
-                MEPH.Log('Composing cards ', 5);
-                return me.$inj.relationshipService.composeCards(me.listsource);
-            }).catch(function () {
-                MEPH.Log('Something went wrong composing the cards.');
-            }).then(function () {
-                if (!me.$hasSearched)
-                    me.$inj.relationshipService.searchContacts(0, me.searchlimit, true, '', me.listsource);
-                return me.$inj.overlayService.close('connection-main');
-            });
+            return me.loadCacheContacts()
+                 .then(function () {
+                     return me.$inj.overlayService.relegate('connection-main');
+                 })
+                 .then(function () {
+                     return me.$inj.relationshipService.loadDeviceContacts().then(function (contacts) {
+                         if (contacts) {
+                             deviceContacts = contacts;
+                         }
+                         MEPH.Log('Loaded device contacts.' + (contacts ? contacts.length : 0));
+                     }).then(function () {
+                         return me.$inj.relationshipService.setDeviceContacts(deviceContacts);
+                     });
+                 }).catch(function () {
+                     MEPH.Error('There was a problem getting contacts from the device')
+                 }).then(function () {
+                     MEPH.Log('Get contact list ', 5)
+                     return me.$inj.relationshipService.getContactList()
+                 }).then(function (contactListFromServer) {
+                     MEPH.Log('Set contact list ', 5)
+                     savedContactsFromServer = contactListFromServer;
+                     return me.$inj.relationshipService.setSavedContacts(savedContactsFromServer);
+                 }).catch(function () {
+                     MEPH.Error('an error occurred while getting my contact list from the server')
+                 }).then(function () {
+                     MEPH.Log('Get my relationship contacts', 5)
+                     return me.$inj.relationshipService.getMyRelationshipContacts();
+                 }).then(function (mycontacts) {
+                     MEPH.Log('Got contact list ', 5)
+                     myRelationshipsContacts = mycontacts;
+                     me.$inj.relationshipService.setMyRelationshipContacts(myRelationshipsContacts);
+                 }).catch(function () {
+                     MEPH.Error('An error occurred while eget my relationship contacts.')
+                 }).then(function () {
+                     MEPH.Log('Setting contact parts', 5);
+                     //return me.$inj.relationshipService.setContactParts(deviceContacts, savedContactsFromServer, myRelationshipsContacts);
+                 }).then(function () {
+                     MEPH.Log('Merging device contacts', 5);
+                     return me.$inj.relationshipService.mergeDeviceContacts();
+                 }).then(function () {
+                     MEPH.Log('Composing cards ', 5);
+                     return me.$inj.relationshipService.composeCards(me.listsource);
+                 }).catch(function () {
+                     MEPH.Error('Something went wrong composing the cards.');
+                 }).then(function () {
+                     if (!me.$hasSearched)
+                         me.$inj.relationshipService.searchContacts(0, me.searchlimit, true, '', me.listsource);
+                     return me.$inj.overlayService.close('connection-main');
+                 });
         });;
 
     },

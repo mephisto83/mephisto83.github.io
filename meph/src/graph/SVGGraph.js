@@ -58,7 +58,7 @@ MEPH.define('MEPH.graph.SVGGraph', {
                 });;
                 newconnection.getNodes().foreach(function (x) {
                     x.getZones().where(function (z) {
-                        return connection.zones.contains(z.getOptions().id);
+                        return connection.zones.contains(function (x) { return x === z.getOptions().id });
                     }).foreach(function (zones) {
                         newconnection.addZone(zones);
                     });;

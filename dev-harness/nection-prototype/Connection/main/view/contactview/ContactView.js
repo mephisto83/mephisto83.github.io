@@ -6,6 +6,7 @@
     onLoaded: function () {
         var me = this;
         me.great()
-        me.hideCloseBtn()
+        me.hideCloseBtn();
+        me.hideFooter();
     }
 });

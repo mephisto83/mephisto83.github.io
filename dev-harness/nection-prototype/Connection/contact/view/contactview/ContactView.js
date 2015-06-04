@@ -8,6 +8,7 @@
     onLoaded: function () {
         var me = this;
         me.great()
+        me.hideFooter();
         me.hideCloseBtn()
     }
 });

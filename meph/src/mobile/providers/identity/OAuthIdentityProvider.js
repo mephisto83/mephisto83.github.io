@@ -112,14 +112,13 @@
                         }).catch(function (e) {
                             me.isonline = false;
                             MEPH.Log('Caught an error checking for online status of ' + me.constructor.key)
-                            if (true) {//e.status === 401
-                                me.credential = null;
-                                me.deleteCookies();
-                                return me.$inj.storage.set(me.storagekey, null)
-                                    .catch(function () {
-                                        MEPH.Log('There was a problem storing a null for he credentials.');
-                                    });
-                            }
+                            me.credential = null;
+                            me.deleteCookies();
+                            return me.$inj.storage.set(me.storagekey, null)
+                                .catch(function () {
+                                    MEPH.Log('There was a problem storing a null for he credentials.');
+                                });
+
                         });
                     }
                 }).catch(function () {

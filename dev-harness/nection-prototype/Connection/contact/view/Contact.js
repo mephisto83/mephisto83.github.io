@@ -3,7 +3,10 @@
     templates: true,
     extend: 'Connection.control.contactbase.ContactBase',
     mixins: ['MEPH.mobile.mixins.Activity'],
-    injections: ['contactService', 'identityProvider', 'overlayService'],
+    injections: ['contactService',
+        'identityProvider',
+        'stateService',
+        'overlayService'],
     requires: ['MEPH.util.Observable',
         'MEPH.input.Dropdown', 'MEPH.qrcode.Generator',
         'Connection.template.business.DefaultTemplate',
@@ -20,7 +23,11 @@
         var me = this;
         me.cards = me.cards || MEPH.util.Observable.observable([]);
         me.great()
-        me.$activityview.hideCloseBtn()
+        me.$activityview.hideCloseBtn();
+
+        MEPH.subscribe(MEPH.Constants.START_ACTIVITY, function (type, activityConfig) {
+            me.nextActivityConfig = activityConfig;
+        });
         me.initMe();
     },
     afterShow: function () {
@@ -36,6 +43,13 @@
                 me.$inj.overlayService.close('connection-contact-aftershow');
             console.info('end qr code;')
         })
+    },
+    afterHide: function () {
+        var me = this;
+        if (me.nextActivityConfig && me.nextActivityConfig.viewId === 'EditContact') {
+
+            return me.editMe();
+        }
     },
     initMe: function () {
         var me = this;
@@ -59,33 +73,46 @@
 
         if (me.selectedCard && (!me.selectedCardValue || (me.selectedCardValue === me.selectedCard.name))) {
             me.$inj.identityProvider.autoSelect(false);
-
-            MEPH.publish(Connection.constant.Constants.CurrentCard, {
-                selectedCardId: me.selectedCard.id,
-                autoSelect: false
+            // setTimeout(function () {
+            //MEPH.publish(Connection.constant.Constants.CurrentCard, {
+            //    selectedCardId: me.selectedCard.id,
+            //    autoSelect: false
+            //});
+            me.when.injected.then(function () {
+                me.$inj.stateService.set(Connection.constant.Constants.CurrentCard, {
+                    selectedCardId: me.selectedCard.id,
+                    autoSelect: false
+                })
             });
-            MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
-                viewId: 'EditContact', path: 'main/me/edit',
-                selectedCardId: me.selectedCard ? me.selectedCard.id : null
-            });
+            //MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
+            //    viewId: 'EditContact',
+            //    path: 'main/me/edit',
+            //    selectedCardId: me.selectedCard ? me.selectedCard.id : null
+            //});
+            //}, 200);
         }
         else if (me.selectedCardValue) {
 
             me.$inj.overlayService.open('connection-contact-createcard');
-            me.$inj.contactService.createCard(me.selectedCardValue).then(function (card) {
-                
+            return me.$inj.contactService.createCard(me.selectedCardValue).then(function (card) {
+
                 me.cards.push(card);
                 me.selectedCard = card;
-                MEPH.publish(Connection.constant.Constants.CurrentCard, {
-                    selectedCardId: card.id,
-                    autoSelect: true
-                });
+                //MEPH.publish(Connection.constant.Constants.CurrentCard, {
+                //    selectedCardId: card.id,
+                //    autoSelect: true
+                //});
                 me.$inj.identityProvider.autoSelect(card.id);
-                MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
-                    viewId: 'EditContact', path: 'main/me/edit',
+                me.$inj.stateService.set(Connection.constant.Constants.CurrentCard, {
                     selectedCardId: card.id,
-                    autoSelect: true
+                    autoSelect: true,
+                    autoSelectId: card.id
                 });
+                //MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
+                //    viewId: 'EditContact', path: 'main/me/edit',
+                //    selectedCardId: card.id,
+                //    autoSelect: true
+                //});
             }).catch(function () { }).then(function () {
                 me.$inj.overlayService.close('connection-contact-createcard');
             });

@@ -1,42 +1,68 @@
 ﻿<div class="meph-view meph-view-remove">
-    <activityview data-bind='"activityName": "c$.name"'>
+    <activityview data-bind='"activityName": "c$.name"' mephid="activityview">
         <div class="col-md-2">
-            <h1 databind='"innerHTML":"v$.note"'></h1>
-        </div>
-        <div class="col-md-2">
-            <dropbox data-events='"filesdropped":"v$.loadResources"'></dropbox>
-        </div>
-        <div class="col-md-2">
-            <mephbutton meph-event-click="v$.clear">Clear</mephbutton>
-        </div>
-        <div class="col-md-2">
-            <dropdown meph-data-source="v$.soundfonts"
-                      descriptiontext="Sound fonts"
-                      meph-data-event="v$.clearCache"
-                      meph-data-value="v$.soundfontvalue"
-                      meph-data-labelfield="name"
-                      meph-data-valuefield="id"></dropdown>
-            <mephbutton meph-event-click="v$.usePiano">Use Piano</mephbutton>
-            <mephbutton meph-event-click="v$.useSoundFont">Use</mephbutton>
+            <panel mephid="optionspanel">
+                <panelbody>
 
+                    <number meph-data-value="v$.note" labeltext="Note"></number>
+                    <div class="col-md-12">
+                        <dropbox data-events='"filesdropped":"v$.loadResources"'></dropbox>
+                    </div>
+                    <div class="col-md-12">
+                        <mephbutton meph-event-click="v$.clear">Clear</mephbutton>
+                    </div>
+                    <div class="col-md-12">
+                        <dropdown meph-data-source="v$.soundfonts"
+                                  descriptiontext="Sound fonts"
+                                  meph-data-event="v$.clearCache"
+                                  meph-data-value="v$.soundfontvalue"
+                                  meph-data-labelfield="name"
+                                  meph-data-valuefield="id"></dropdown>
+                        <mephbutton meph-event-click="v$.usePiano">Use Piano</mephbutton>
+                        <mephbutton meph-event-click="v$.useSoundFont">Use</mephbutton>
+
+                    </div>
+                    <div class="col-md-12">
+                        <number descriptiontext="Key shift" meph-data-value="v$.numshift"></number>
+                        <dropdown meph-data-source="v$.optionsForAddingBanks"
+                                  descriptiontext="Add Options"
+                                  mephid="dropd"
+                                  meph-data-value="v$.addBy"
+                                  meph-data-labelfield="name"
+                                  meph-event-change="boolean.IsLikeEqual, v$.addBy,1 |
+                      boolean.Then, style.hideshow, v$.activityview.optionspanel.addMidiKeyOption, v$.activityview.optionspanel.addSamplesOption |
+                      boolean.Else, style.hideshow, v$.activityview.optionspanel.addSamplesOption, v$.activityview.optionspanel.addMidiKeyOption"
+                                  meph-data-valuefield="value"></dropdown>
+                        <div mephid="addMidiKeyOption">
+                            <textfield meph-data-value="v$.audioFileNumberFormat" meph-event-change="v$.detectNotes" placeholder="Audio file number format" descriptiontext="### => Midi #"></textfield>
+                            <div><span>Midi Notes Detected : </span>   <span data-bind='"innerHTML": "v$.numberOfMidiNotesDetected"'></span></div>
+
+                            <textfield meph-data-value="v$.currentBankName" placeholder="Bank name" descriptiontext="Name assigned to bank of samples"></textfield>
+                            <mephbutton meph-event-click="v$.bookCurrentNotesToBank">Use</mephbutton>
+                        </div>
+                        <div mephid="addSamplesOption">
+                            <div><span>Samples Detected : </span>   <span data-bind='"innerHTML": "v$.numberOfSamplesDetected"'></span></div>
+                            <textfield meph-data-value="v$.currentBankName"
+                                       placeholder="Bank name"
+                                       descriptiontext="Name assigned to bank of samples"></textfield>
+                            <mephbutton meph-event-click="v$.bookCurrentSamplesToBank">Use</mephbutton>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div style="max-height:300px;overflow-y:scroll">
+                            <listview data-bind='"source": "v$.listOfSounds"'
+                                      prevent-bounce="true"
+                                      meph-data-renderondemand="true">
+                                <template name="MEPHControls.midi.view.SoundItem">
+                                </template>
+                            </listview>
+                        </div>
+                    </div>
+
+                </panelbody>
+            </panel>
         </div>
-        <div class="col-md-2">
-            <number meph-data-value="v$.numshift"></number>
-            <textfield meph-data-value="v$.audioFileNumberFormat" meph-event-change="v$.detectNotes" placeholder="Audio file number format" descriptiontext="### => Midi #"></textfield>
-            <div><span>Midi Notes Detected : </span>   <span data-bind='"innerHTML": "v$.numberOfMidiNotesDetected"'></span></div>
-            <textfield meph-data-value="v$.currentBankName" placeholder="Bank name" descriptiontext="Name assigned to bank of samples"></textfield>
-            <mephbutton meph-event-click="v$.bookCurrentNotesToBank">Use</mephbutton>
-        </div>
-        <div class="col-md-2">
-            <div style="max-height:300px;overflow-y:scroll">
-                <listview data-bind='"source": "v$.listOfSounds"'
-                          prevent-bounce="true"
-                          meph-data-renderondemand="true">
-                    <template name="MEPHControls.midi.view.SoundItem">
-                    </template>
-                </listview>
-            </div>
-        </div>
+
         <div class="col-md-2">
             <div style="max-height:300px;overflow-y:scroll">
                 <listview data-bind='"source": "v$.listOfBanks"'

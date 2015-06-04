@@ -1,12 +1,14 @@
 ﻿MEPH.define('Connection.main.view.connect.ConnectContact', {
-    alias: 'create_contact',
+    alias: 'connect_contact',
     templates: true,
     extend: 'MEPH.mobile.activity.container.Container',
     mixins: ['MEPH.mobile.mixins.Activity'],
     injections: ['contactService', 'relationshipService'],
     requires: ['MEPH.input.Text',
+        'MEPH.util.Style',
         'MEPH.icon.Select',
         'MEPH.qrcode.Qrcode',
+        'Connection.template.ContactItemDistance',
         'Connection.main.view.create.createcontactview.CreateContactView',
         'MEPH.util.Observable'],
     properties: {
@@ -20,6 +22,17 @@
         var me = this;
         me.contacts = MEPH.util.Observable.observable([]);
         me.callParent.apply(me, arguments);
+
+    },
+    connectContact: function () {
+        var me = this,
+            item = MEPH.util.Array.create(arguments).last().domEvent.data;
+        
+        MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
+            viewId: 'Contact',
+            path: 'main/contact',
+            data: item
+        });
     },
     afterHide: function () {
         var me = this;
@@ -35,16 +48,16 @@
         var me = this;
         me.createview.hideCloseBtn();
         me.createview.hideHeader();
+        me.createview.hideFooter();
+        MEPH.util.Style.hide(me.createview.filterRow);
     },
     afterShow: function () {
         var me = this;
         me.refreshContactList();
-        me.hideBar();
         me.$channel = '0-0-0';
         me.when.injected.then(function () {
             return me.$inj.relationshipService.setPosition(me.$channel)
         });
-        // me.$refreshTimeout = setTimeout(me.refreshContactList.bind(me), me.refreshPeriod);
     },
     channelUpdate: function (r, g, b) {
         var me = this;
@@ -66,6 +79,6 @@
     },
     onLoaded: function () {
         var me = this;
-        me.name = 'Create Contact';
+        me.hideBar();
     }
 });

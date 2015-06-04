@@ -14,6 +14,31 @@
         MEPH.subscribe(Connection.constant.Constants.ConnectionLogIn, me.onloggedIn.bind(me));
         // MEPH.subscribe(Connection.constant.Constants.LoggedIn, me.onloggedIn.bind(me));
         me.mixins.injectable.init.apply(me);
+
+        MEPH.subscribe(MEPH.Constants.ON_SHOW, function (type, args) {
+            if (args.path === 'main/me' ||
+                args.path === 'main/create/contact' ||
+                args.path === 'main/contact/relationship/edit') {
+                if (args.path === 'main/contact/relationship/edit') {
+                    me.mode = 'relationshipedit';
+                }
+                if (args.path === 'main/create/contact') {
+                    me.mode = 'createcontact';
+                }
+                else if (args.path === 'main/me') {
+                    me.mode = 'edit';
+                }
+                if (me.loadMenu) {
+                    me.loadMenu();
+                }
+            }
+            else if (me.mode) {
+                me.mode = null;
+                if (me.loadMenu) {
+                    me.loadMenu();
+                }
+            }
+        });
         me.when.injected.then(function () {
             if (me.$inj.userService.isLoggedIn()) {
                 me.onloggedIn();
@@ -71,6 +96,40 @@
                 viewId: 'Accounts',
                 cls: 'fa fa-university',
                 path: 'accounts'
+            });
+        }
+        if (me.mode === 'edit') {
+
+            res.unshift({
+                connectionmenu: true,
+                name: 'Edit',
+                viewId: 'EditContact',
+                cls: 'fa fa-pencil-square-o',
+                path: 'main/me/edit'
+            });
+
+            res.removeWhere(function (x) {
+                return x.viewId === 'Me';
+            });
+        }
+        else if (me.mode === 'createcontact') {
+            ///main/create/contact
+
+            res.removeWhere(function (x) {
+                return x.viewId === 'CreateContact';
+            });
+        }
+        else if (me.mode === 'relationshipedit') {
+            res.unshift({
+                connectionmenu: true,
+                name: 'Contact',
+                viewId: 'Contact',
+                cls: 'fa fa-user ',
+                path: 'main/contact'
+            });
+
+            res.removeWhere(function (x) {
+                return ['Me', 'Accounts', 'CreateContact'].some(function (t) { return t === x.viewId; });;
             });
         }
         res.foreach(function (x) {

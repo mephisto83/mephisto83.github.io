@@ -29,6 +29,7 @@ MEPH.define('MEPH.control.Control', {
             controller: 'controller',
             html: 'html',
             self: 'self',
+            object: 'object',
             subcontrol: 'subcontrol'
         }
     },
@@ -50,6 +51,7 @@ MEPH.define('MEPH.control.Control', {
         $isDestroyed: false,
         data: null,
         componentCls: null,
+        minimizable: false,
         $loadedPromise: null,
         $autoBindProperties: null,
         id: null

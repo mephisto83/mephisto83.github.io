@@ -94,7 +94,7 @@
 
         Observable.defineDependentProperty('panelCls', me, ['basePanelCls', 'cls'], function () {
             var result = [];
-            
+
             if (me.basePanelCls) {
                 result.push(me.basePanelCls);
             }

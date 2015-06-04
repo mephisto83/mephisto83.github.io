@@ -22,7 +22,7 @@ if (document) {
 
         window.runningInCordova = true;
     }, false);
-    document.addEventListener("touchstart", function () { }, true); // iOS Buttons Fix
+    // document.addEventListener("touchstart", function () { }, true); // iOS Buttons Fix
 }
 
 var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
@@ -214,6 +214,14 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
         console.log(error);
 
     };
+    meph.Error = function (error) {
+        if (console.error) {
+            console.error(error);
+        }
+        else {
+            meph.Log(error);
+        }
+    }
     /**
      * @method createClass
      * Creates a class
@@ -921,7 +929,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
         ];
 
 
-    meph.patternTypes = ['presenter', 'controller', 'view', 'model', 'viewmodel'];
+    meph.patternTypes = ['presenter', 'controller', 'view', 'model', 'viewmodel', 'object'];
     meph.templateType = templateType;
     meph.folderPathSeparator = folderPathSeparator;
     meph.privatePropertyPrefix = privatePropertyPrefix;
@@ -987,12 +995,12 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
      * @param {String} prefix
      * @param {String} type
      **/
-    meph.addBindPrefixShortCuts = function addBindPrefixShortCuts(prefix, type) {
+    meph.addBindPrefixShortCuts = function addBindPrefixShortCuts(prefix, type, reference) {
         var has = bindPrefixShortCuts.some(function (x) {
             return x.prefix === prefix;
         });
         if (!has) {
-            bindPrefixShortCuts.push({ prefix: prefix, type: type });
+            bindPrefixShortCuts.push({ prefix: prefix, type: type, reference: reference });
         }
     };
 
@@ -1859,7 +1867,8 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
         var initializing = false,
             fnTest = /xyz/.test(function () {
                 xyz;
-            }) ? /\b_great\b/ : /.*/;
+            }) ? /\bgreat\b/ : /.*/,
+            fnPTest = /\bcallParent\b/;
 
         // The base Class implementation (does nothing)
         this.Class = function () {
@@ -1936,7 +1945,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                     continue;
                 // Check if we're overwriting an existing function
                 prototype[name] = typeof prop[name] == "function" &&
-                typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+                typeof _super[name] == "function" && (fnTest.test(prop[name]) || fnPTest.test(prop[name])) ?
                 (function (name, fn) {
                     return function () {
                         var tmp = this.callParent;
@@ -1956,18 +1965,14 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                 prop[name];
                 if (typeof prototype[name] == "function") {
                     var _addsuper = typeof prop[name] === "function" &&
-                    typeof _super[name] === "function";
-                    // 'script.soundfont.chunks.SoundFontChunk'
+                        typeof _super[name] === "function" &&
+                    (fnPTest.test(prop[name]) || fnTest.test(prop[name]));
+
                     var nooverrides = false;
                     if (!_addsuper) {
 
                         if (!(prop.requires || []).some(function (x) {
-
-                            //    var re = new RegExp("\b" + x.split('.').last() + "\b/ : /.*");
-                            //    var $fnTest = /xyz/.test(function () {
-                            //        xyz;
-                            //}) ? re : /.*/;
-                            return !(new RegExp(x.split('.').last()).test(prop[name]));
+                            return !(new RegExp('[\/b]' + x.split('.').last() + '[\/b]').test(prop[name]));
                         })) {
                             nooverrides = true;
                         }
@@ -1991,7 +1996,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                                     }
                                 }
                                 //for (var i = 0; i < tempclassnames.length; i++) {
-                                (tempclassnames).foreach(function (t, i) {
+                                (tempclassnames).forEach(function (t, i) {
                                     var c = getDefinedClass(tempclassnames[i]);
                                     var namespaceSplit = tempclassnames[i].split(".");
                                     var cname = namespaceSplit[namespaceSplit.length - 1];
@@ -2179,7 +2184,8 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
             }
         }).then(function () {
             //if (meph.singleFileRequiredClasses) {
-            //    return meph.requires.apply(meph, meph.sin gleFileRequiredClasses)
+            //    debugger
+            //    return meph.requires.apply(meph, meph.singleFileRequiredClasses)
             //}
         }).then(function () {
             window.SingleFileMode = false;
@@ -2222,6 +2228,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                 $frameWorkPath + '/util/Array.js',
                 $frameWorkPath + '/util/String.js',
                 $frameWorkPath + '/util/Dom.js',
+                $frameWorkPath + '/util/Boolean.js',
                 $frameWorkPath + '/util/Template.js',
                 $frameWorkPath + '/util/Observable.js'];
         //window.SingleFileMode ? Promise.resolve() : 
@@ -2233,6 +2240,8 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
             return meph.requires($meph + '.util.Template');
         }).then(function () {
             return meph.requires($meph + '.util.Observable');
+        }).then(function () {
+            return meph.requires($meph + '.util.Boolean');
         });
         //meph.loadScripts(meph.requiredFiles);
     }

@@ -3,7 +3,7 @@ var rel = location.pathname.substr(0, index);
 var path = rel + 'meph/src';
 var mobileexample = 'dev-harness/nection-prototype/';
 if (window.singleFileFunction) {
-    
+
     window.singleFileFunction();
 }
 var MEPHControlsPath = rel + mobileexample + 'Connection';
@@ -26,6 +26,12 @@ MEPH.ready().then(function () {
                 stayOn: '/staypath'
             },
             ioc: {
+                stateService: {
+                    
+                    'static': true,
+                    type: 'Connection.service.StateService',
+                    config: {}
+                },
                 sessionManager: {
                     'static': true,
                     type: 'Connection.session.SessionManager',
@@ -242,12 +248,6 @@ MEPH.ready().then(function () {
                             'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }]
                         },
                     }
-                },
-                signalService: {
-                    'static': true,
-                    type: 'MEPH.service.SignalRService',
-                    config: {
-                    }
                 }
             }
         }).ready().then(function (x) {
@@ -257,7 +257,6 @@ MEPH.ready().then(function () {
         });
 
     });
-    MEPH.loadScripts(['/signalr/hubs']);
 
 });
 //webrtcDetectedBrowser === 'firefox' ? {

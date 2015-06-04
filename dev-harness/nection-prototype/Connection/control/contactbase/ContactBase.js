@@ -2,6 +2,7 @@
     extend: 'MEPH.mobile.activity.container.Container',
     requires: ['MEPH.qrcode.Generator',
                 'MEPH.util.Style'],
+    injections: ['stateService'],
     properties: {
     },
     initialize: function () {
@@ -57,8 +58,9 @@
         //    cardid = null;
         //}
         if (me.$inj && me.$inj.contactService && cardid) {
-            return me.$inj.contactService.me(cardid).then(function (contact) {
+            return me.$inj.contactService.me(cardid, me.contact).then(function (contact) {
                 me.contact = contact;
+                me.$inj.stateService.set('mycontact', contact);
             });
         }
         else if (me.source && me.source.length) {

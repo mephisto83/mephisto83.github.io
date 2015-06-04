@@ -29,6 +29,7 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
         me.tokens.push(MEPH.subscribe(MEPH.Constants.OPEN_ACTIVITY, me.onOpenActivity.bind(me)));
 
         me.listenToStatePop();
+        MEPH.ActivityController = me;
         //window.history.pushState({ activityId: null, initial: true }, '', '');
     },
     setAppPath: function (appPath) {
@@ -251,6 +252,13 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
     onOpenActivity: function (type, option) {
         var me = this;
         MEPH.Log('Open an activity');
+        var currentactivity = me.getCurrentActivity();
+        if (currentactivity) {
+            var args = currentactivity.getActivityArguments();
+            if (args.viewId === option.viewId && args.path === option.path) {
+                return currentactivity;
+            }
+        }
         return me.openOrCreateActivity(option, null)
     },
     openOrCreateActivity: function (activityConfig, querystring) {
@@ -259,6 +267,8 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
             var res,
                 activity = me.getActivity(activityConfig);
             var currentactivity = me.getCurrentActivity();
+
+            MEPH.publish(MEPH.Constants.START_ACTIVITY, activityConfig);
 
             if (activity) {
                 MEPH.Log('Opening existing activity');
@@ -312,7 +322,7 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
                 }
                 return view;
             }).then(function (view) {
-                return me.startActivity(view || activityConfig);
+                return me.startActivity(view || activityConfig, null, { skip: true });
             });
         });
     },
@@ -322,9 +332,9 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
      * @param {Object} activityConfig.viewId
      * @param {String} querystring
      **/
-    startActivity: function (activityConfig, querystring) {
+    startActivity: function (activityConfig, querystring, options) {
         var me = this, currentActivity = me.getCurrentActivity();
-
+        options = options || {};
         MEPH.Log('Start activity');
         return Promise.resolve().then(function () {
             if (currentActivity) {
@@ -368,9 +378,10 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
                     }, me.getActivityName(activityConfig, activity), combinedPath);
                 }
 
-                if (result.classInstance.afterShow)
-                    result.classInstance.afterShow();
-
+                if (!options.skip) {
+                    if (result.classInstance.afterShow)
+                        result.classInstance.afterShow();
+                }
                 MEPH.publish(MEPH.Constants.ActivityStarted, { activity: activity });
                 return result;
             })['catch'](function (error) {
@@ -548,6 +559,7 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
         var me = this,
           promise = Promise.resolve(),
           currentActivity = me.getCurrentActivity();
+
         if (currentActivity) {
             promise = promise.then(function () {
                 return currentActivity.initHide({ activityToBeShown: activity }).then(function () {

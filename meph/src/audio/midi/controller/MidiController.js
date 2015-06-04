@@ -33,7 +33,7 @@
                     case 0x90:
                         if (event.data[2] != 0) {  // if velocity != 0, this is a note-on message
                             noteOnCallbacks.forEach(function (t) {
-                                t.func(event.data[1], event.data, event);
+                                t.func(event.data[1], event.data, event, event.data[2]);
                             });
                             // noteOn(event.data[1]);
                             return;
@@ -41,7 +41,7 @@
                         // if velocity == 0, fall thru: it's a note-off.  MIDI's weird, y'all.
                     case 0x80:
                         noteOffCallbacks.forEach(function (t) {
-                            t.func(event.data[1], event.data, event);
+                            t.func(event.data[1], event.data, event, event.data[2]);
                         });
                         //noteOff(event.data[1]);
                         return;

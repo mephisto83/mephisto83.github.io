@@ -33,7 +33,7 @@
             "view": "Connection.main.view.Main",
             "singleton": true,
             "namespace": "Connection",
-            "path": "/connection"
+            "path": "/main"
         },
         {
             "viewId": "accountresolution",

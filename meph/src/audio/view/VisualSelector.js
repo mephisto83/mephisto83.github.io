@@ -29,7 +29,7 @@ MEPH.define('MEPH.audio.view.VisualSelector', {
         stretchlinewidth: 3,
         marktype: 'default',
         stretchtype: 'stretchtype',
-        windowingcolor:'#aa3939',
+        windowingcolor: '#aa3939',
         markercolor: '#d9534f',
         markscolor: '#f0ad4e',
         markscolorbg: 'rgba(45, 64, 114, 0.5)',
@@ -933,16 +933,17 @@ MEPH.define('MEPH.audio.view.VisualSelector', {
         var me = this;
         return newmarks.select(function (x, index) {
             var btntemplate = me.createMarkerBtn();
-            var btn = btntemplate.querySelector('[removebtn]');
-            me.don('click', btn, function (x) {
-                me.marks.removeWhere(function (y) { return y === x; });
-            }.bind(me, x));
+            if (btntemplate) {
+                var btn = btntemplate.querySelector('[removebtn]');
+                me.don('click', btn, function (x) {
+                    me.marks.removeWhere(function (y) { return y === x; });
+                }.bind(me, x));
 
-            me.don('click', btntemplate.querySelector('[playbtn]'), function (x) {
-                console.log('play snippet')
-                me.playSnippet(x);
-            }.bind(me, x))
-
+                me.don('click', btntemplate.querySelector('[playbtn]'), function (x) {
+                    console.log('play snippet')
+                    me.playSnippet(x);
+                }.bind(me, x))
+            }
             return {
                 marker: x,
                 dom: btntemplate
@@ -971,9 +972,12 @@ MEPH.define('MEPH.audio.view.VisualSelector', {
     },
     createMarkerBtn: function () {
         var me = this;
-        var clone = me.markerBtnTemplate.cloneNode(true);
-        me.markerCanvas.parentNode.appendChild(clone);
-        return clone;
+        if (me.markerBtnTemplate) {
+            var clone = me.markerBtnTemplate.cloneNode(true);
+            me.markerCanvas.parentNode.appendChild(clone);
+            return clone;
+        }
+        return null;
     },
     createStretchMark: function () {
         var me = this;

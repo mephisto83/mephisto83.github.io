@@ -146,7 +146,7 @@ MEPH.define('MEPH.util.Observable', {
                                             references;
                                         options.references = options.references || [];
                                         path.unshift(propName);
-                                        if (!options.references.contains(function (x) { return x === obj; })) {
+                                        if (!options.references.some(function (x) { return x === obj; })) {
                                             references = MEPH.Array([this].concat(options.references));
                                             alteredOptions = {
                                                 references: references,
@@ -162,7 +162,7 @@ MEPH.define('MEPH.util.Observable', {
 
                         properties = properties.where(function (x) {
                             if (isObservable(obj) && MEPH.util.Observable.canObserve(obj)) {
-                                return !getObservableProperties(obj).contains(function (y) {
+                                return !getObservableProperties(obj).some(function (y) {
                                     return y === x;
                                 });;
                             }
@@ -243,6 +243,15 @@ MEPH.define('MEPH.util.Observable', {
                                         return true;
                                     }.bind(obj, propName)
                                 });
+
+                                Object.defineProperty(obj, 'fireAltered', {
+                                    enumerable: false,
+                                    writable: true,
+                                    configurable: false,
+                                    value: function () {
+                                        this.fire('altered', { path: '' });
+                                    }
+                                })
 
                                 Object.defineProperty(obj, nonEnumerablePropertyPrefix + propName, {
                                     enumerable: false,

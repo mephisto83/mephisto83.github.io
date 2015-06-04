@@ -184,6 +184,7 @@ MEPH.define('MEPH.util.Dom', {
         convertUrlToRegex: function (url) {
             var match = '[A-Za-z0-9_]*';
             var regex = new RegExp('({)[A-Za-z0-9_]*(})', 'g');
+            //url = url.split('/').join('//');
             var hasTemplate = regex.test(url);
             if (hasTemplate) {
                 return url.replace(regex, match);
@@ -477,6 +478,107 @@ MEPH.define('MEPH.util.Dom', {
             }
             return positions;
         },
+        generateCssSelector: function (dom) {
+            var res = [];
+            while (dom && dom.parentNode && dom.parentNode !== document.body && dom !== document.body) {
+                var cssList = MEPH.util.Array.create(dom.classList).select(function (x) {
+                    return '.' + x;
+                }).join('');
+                var index = MEPH.util.Array.create(dom.parentNode.children).firstIndex(function (x) { return x === dom; })
+                res.unshift(dom.nodeName.toLowerCase() + cssList + ':nth-child(' + (index + 1) + ')');
+                dom = dom.parentNode
+            }
+            return res.join(' > ') || 'body';
+        },
+        getBestOverlap: function (rect, root, best, ignoreFunt) {
+            root = root || document.body;
+            var Dom = MEPH.util.Dom, bestdom;
+            var children = root.childNodes;
+            if (ignoreFunt && ignoreFunt(root)) {
+                return { best: 0, dom: root }
+            }
+            var len = children.length;
+            var current;
+            var bestObj
+            for (var i = len; i--;) {
+                if (ignoreFunt && ignoreFunt(children[i])) {
+                    continue;
+                }
+                var area = MEPH.util.Style.areaLine(children[i]);
+                if (area > 0) {
+                    var overlap = Dom.calculateOverlap(children[i], rect);
+
+                    current = ((1 / (area)) * overlap);
+                    if (best === undefined || best < current) {
+                        best = current;
+                        bestdom = children[i];
+                    }
+                }
+                var currentObj = Dom.getBestOverlap(rect, children[i], best, ignoreFunt);
+                if (currentObj.best > best) {
+                    best = currentObj.best;
+                    bestdom = currentObj.dom;
+                }
+            }
+            return {
+                best: best,
+                dom: bestdom
+            }
+        },
+        calculateOverlap: function (dom, rect) {
+            var rec = dom.getBoundingClientRect();
+            var maxleft = Math.max(rect.left, rec.left);
+            var minright = Math.min(rect.right, rec.right);
+            var maxtop = Math.max(rect.top, rec.top);
+            var minbottom = Math.min(rect.bottom, rec.bottom);
+
+            var overlayWidth = minright - maxleft;
+            var overlayHeight = minbottom - maxtop;
+            if (overlayHeight < 0 || overlayWidth < 0) return 0;
+            return overlayHeight * overlayWidth;
+        },
+        findTextPosition: function (text) {
+            var item = MEPH.util.Dom.findTextHelper(text, document.body);
+            if (item) {
+                return item.parentNode.getBoundingClientRect();
+            }
+            return null;
+        },
+        findTextNode: function (text) {
+            var item = MEPH.util.Dom.findTextHelper(text, document.body);
+            if (item) {
+                return item.parentNode;
+            }
+            return null;
+        },
+
+        hasText: function (text, node) {
+            var hasText = node.innerText.indexOf(text) !== -1;
+            return hasText;
+        },
+
+        findTextHelper: function (text, root) {
+            var nodes = root.childNodes;
+            var len = nodes.length;
+            for (var i = len  ; i--;) {
+                if (nodes[i].nodeType === 1 && MEPH.util.Dom.hasText(text, nodes[i])) {
+                    if (nodes[i].childNodes) {
+                        var res = MEPH.util.Dom.findTextHelper(text, nodes[i]);
+                        if (res === false) {
+                            return nodes[i];
+                        }
+                        return res;
+                    }
+                    else {
+                        return nodes[i]
+                    }
+                }
+                else if (nodes[i].nodeType === 3 && nodes[i].textContent.indexOf(text) !== -1) {
+                    return nodes[i];
+                }
+            }
+            return false;
+        },
         tryParseAttributeJson: function (str) {
             try {
                 return JSON.parse('{' + str + '}');
@@ -561,5 +663,5 @@ MEPH.define('MEPH.util.Dom', {
             }
         }
 
-    });
+    })
 })

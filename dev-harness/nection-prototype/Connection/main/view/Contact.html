@@ -1,7 +1,19 @@
 ﻿<div class="meph-view meph-view-remove main-contact">
     <contactview data-bind='"activityName": "v$.contact.name"' mephid="$activityview">
         <div class="col-md-12 col-xs-12">
-            <div data-bind='"style.backgroundImage" : "v$.contact.profileimageurl"' mephid="profileimage" class="center-block empty_contact profile"></div>
+            <div data-bind='"style.backgroundImage" : "v$.contact.profileimageurl"'
+                 mephid="profileimage"
+                 class="center-block empty_contact profile"></div>
+            <div style="position:absolute; top:0px;" class="connection-box">
+                <div mephid="removeRelationshipBtn" style="display:none;">
+                    <i class="fa fa-link fa-2x col-md-12"></i>
+                    <div>Connected</div>
+                </div>
+                <div mephid="addRelationshipBtn" style="display:none;" meph-event-click="v$.createIfNonExistent | v$.editRelationship">
+                    <i class="fa fa-chain-broken fa-2x col-md-12"></i>
+                    <div>Connect</div>
+                </div>
+            </div>
         </div>
         <div class="col-md-12 col-xs-12">
             <h3 data-bind='"innerHTML":"v$.contact.name"'></h3>
@@ -17,13 +29,9 @@
             <small data-bind='"innerHTML":"v$.contact.stateprovince"'></small>
             <small data-bind='"innerHTML":"v$.contact.zipcode"'></small>
 
-            <!--<i class="fa fa-envelope-o"></i>&nbsp; &nbsp;   <small data-bind='"innerHTML":"v$.contact.email1"'></small>-->
             <contactlink value="v$.contact.email1" fa-icon="fa-envelope-o" type="email"></contactlink>
-            <!--<i class="fa fa-envelope-o"></i>&nbsp; &nbsp;    <small data-bind='"innerHTML":"v$.contact.email2"'></small>-->
             <contactlink value="v$.contact.email2" fa-icon="fa-envelope-o" type="email"></contactlink>
-            <!--<i class="fa fa-phone"></i>&nbsp; &nbsp;   <small data-bind='"innerHTML":"v$.contact.phone1"'></small>-->
             <contactlink value="v$.contact.phone1" fa-icon="fa-phone" type="phone"></contactlink>
-            <!--<i class="fa fa-phone"></i>&nbsp; &nbsp;   <small data-bind='"innerHTML":"v$.contact.phone2"'></small>-->
             <contactlink value="v$.contact.phone2" fa-icon="fa-phone" type="phone"></contactlink>
         </div>
         <div class="col-md-12 col-xs-12"

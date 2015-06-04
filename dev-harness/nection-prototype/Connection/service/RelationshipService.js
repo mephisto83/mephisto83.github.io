@@ -53,6 +53,30 @@
             MEPH.Log('an error occurred while loading cache.')
         });
     },
+    setDeviceContacts: function (deviceContacts) {
+        var me = this;
+        return me.ready.then(function () {
+            MEPH.Log('Set Contact Parts', 9);
+            me.deviceContacts = deviceContacts || me.deviceContacts;
+        });
+    },
+    setSavedContacts: function (savedContactsFromServer) {
+        var me = this;
+        return me.ready.then(function () {
+            MEPH.Log('Set Contact Parts', 9);
+            me.savedContactsFromServer = savedContactsFromServer || me.savedContactsFromServer;
+        });
+    },
+    setMyRelationshipContacts: function (myRelationshipsContacts) {
+        var me = this;
+        return me.ready.then(function () {
+            MEPH.Log('Set Contact Parts', 9);
+            me.myRelationshipsContacts = myRelationshipsContacts || me.myRelationshipsContacts;
+            if (me.myRelationshipsContacts) {
+                me.relationshipsContacts = me.convertContactDTO(me.myRelationshipsContacts);
+            }
+        });
+    },
     setContactParts: function (deviceContacts, savedContactsFromServer, myRelationshipsContacts) {
         var me = this;
         return me.ready.then(function () {
@@ -215,8 +239,8 @@
             var getrelationshipcontacts = me.$inj.rest.addPath('relationship/my/relationships');
             MEPH.Log('[get]' + getrelationshipcontacts.path());
             return getrelationshipcontacts.get().then(function (response) {
-                if (response && response.authorized && response.contacts) {
-                    return response.contacts;
+                if (response && response.authorized && response.results) {
+                    return response.results;
                 }
                 return null;
             })
@@ -264,9 +288,10 @@
         else if (x.match && (!y.match || x.match.indexOf('<b>') === -1)) {
             return 1;
         }
-        ['name', 'firstname', 'lastname', 'middlename', 'email1'].first(function (t) {
+        ['name', 'firstname', 'lastname', 'middlename', 'email1'].some(function (t) {
+            var _t;
             if (y[t] && x[t]) {
-                var _t = (x[t] || '').localeCompare((y[t] || ''));
+                _t = (x[t] || '').localeCompare((y[t] || ''));
                 if (_t)
                     res = _t;
             }
@@ -482,6 +507,17 @@
             MEPH.Log('Couldnt get near contacts.')
         });
     },
+    loadRelationshipContacts: function (source) {
+        if (source && source.length === 0) {
+            var me = this;
+
+            source.pump(function (skip, take) {
+                return me.relationshipsContacts.subset(skip, skip + (take || 15));
+            });
+            source.push.apply(source, me.relationshipsContacts.subset(0, 1));
+            source.dump();
+        }
+    },
     collectSearchItems: function (search, cards) {
         var me = this,
             result = (cards || []).select();
@@ -492,6 +528,17 @@
         toaddcoverted = toaddcoverted.concat(me.serverCachedSearchResults.where(function (x) {
             return x.quick_search.indexOf(search) !== -1;
         }));
+        if (me.relationshipsContacts) {
+            toaddcoverted.unshift.apply(toaddcoverted, me.relationshipsContacts.where(function (x) {
+                if (!me.serverCachedSearchResults.some(function (t) {
+                       return t.contactId === x.contactId;
+                })) {
+                    return false;
+                }
+                return x.quick_search.indexOf(search) !== -1;
+            }));
+        }
+
         toaddcoverted = toaddcoverted.orderBy(me.sortCards);
 
         result = result.concat(toaddcoverted.where(function (x) {
@@ -572,22 +619,8 @@
                         });
                     }));
                     me.serverCachedSearchResults = me.serverCachedSearchResults.subset(0, 10000);
-                    cards.foreach(function (x) {
-
+                    cards.forEach(function (x) {
                         x.quick_search = (JSON.stringify(x) || '').toLowerCase();
-                        //var t = me.serverCachedSearchResults.first(function (y) {
-                        //    return x.card === y.card;
-                        //});
-                        //if (t) {
-                        //    var index = me.serverCachedSearchResults.indexOf(t);
-                        //    if (index !== -1) {
-                        //        me.serverCachedSearchResults.splice(index, 1, x);
-                        //    }
-                        //    index = toaddcoverted.indexOf(t);
-                        //    if (index !== -1) {
-                        //        toaddcoverted.splice(index, 1, x);
-                        //    }
-                        //}
                     });
 
                     // me.serverCachedSearchResults.push.apply(me.serverCachedSearchResults, cards);
@@ -631,6 +664,8 @@
                 card.profileimageurl = '';
                 card.profileimage = '';
             }
+            card.quick_search = card.quick_search || (JSON.stringify(card) || '').toLowerCase();
+
             if (!card.match) {
                 card.match = card.name;
             }

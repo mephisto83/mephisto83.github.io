@@ -177,8 +177,11 @@ MEPH.define('MEPH.mobile.providers.identity.FacebookProvider', {
         var me = this;
         MEPH.Log('google provider : ready');
 
+        if (me.$ready) {
+            return me.$ready;
+        }
 
-        return me.when.injected.then(function () {
+        me.$ready = me.when.injected.then(function () {
             MEPH.Log('setup api, and return key');
             me.isReady = true;
             me.api = me.$inj.rest.clear().addPath('graph.facebook.com/v2.3').absolute();
@@ -186,5 +189,7 @@ MEPH.define('MEPH.mobile.providers.identity.FacebookProvider', {
                 return MEPH.mobile.providers.identity.FacebookProvider.key;
             });
         });
+
+        return me.$ready;
     }
 });

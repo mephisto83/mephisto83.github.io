@@ -8,6 +8,7 @@
                 'MEPH.input.Typeahead',
                 'Connection.main.view.editrelationship.relationshipview.RelationshipView'],
     injections: ['relationshipService',
+                    'overlayService',
                     'contactService'],
     properties: {
         currentRelationships: null,
@@ -46,6 +47,9 @@
     updateRelations: function () {
         var me = this;
         if (me.$inj && me.$inj.relationshipService && me.contact) {
+
+            me.$inj.overlayService.open('connection-contact-update-relationship');
+            me.$inj.overlayService.relegate('connection-contact-update-relationship');
             me.$inj.relationshipService.getRelationshiptypes(me.relationshipTypes).then(function (currentRelationshipAttrs) {
                 return me.$inj.relationshipService.getRelationShip(me.contact).then(function (description) {
                     me.currentRelationshipAttrs.clear();
@@ -56,6 +60,9 @@
 
                     me.currentRelationshipAttrs.push.apply(me.currentRelationshipAttrs, res);
                 });
+            }).catch(function () {
+            }).then(function () {
+                me.$inj.overlayService.close('connection-contact-update-relationship');
             })
         }
     },
@@ -86,9 +93,15 @@
         var me = this, service;
         if (me.$inj && me.$inj.relationshipService && me.contact) {
             service = me.$inj.relationshipService;
+            me.$inj.overlayService.open('connection-contact-updating-relationship');
             return service.updateRelationship(me.contact, valueObj || value, del).then(function (res) {
                 me.processRelationshipResponse(res);
                 me.relationshipValue = null;
+                return res;
+            }).catch(function () {
+
+            }).then(function (res) {
+                me.$inj.overlayService.close('connection-contact-updating-relationship');
                 return res;
             });
         }
@@ -98,18 +111,18 @@
         var me = this;
         return me.updateRelationship(data, null, true);
     },
-    ok: function () {
-        var me = this;
-        if (me.$inj && me.$inj.relationshipService && me.contact) {
-            return Promise.resolve().then(function () {
-                //Everything is already up to date by now.
-                // return me.$inj.relationshipService.updateRelationship(me.contact, me.currentRelationshipAttrs.select());
-            }).then(function () {
-                window.history.back();
-            })
-        }
+    //ok: function () {
+    //    var me = this;
+    //    if (me.$inj && me.$inj.relationshipService && me.contact) {
+    //        return Promise.resolve().then(function () {
+    //            //Everything is already up to date by now.
+    //            // return me.$inj.relationshipService.updateRelationship(me.contact, me.currentRelationshipAttrs.select());
+    //        }).then(function () {
+    //            window.history.back();
+    //        })
+    //    }
 
-    },
+    //},
     cancel: function () {
         window.history.back();
     },

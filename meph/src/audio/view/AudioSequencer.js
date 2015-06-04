@@ -239,23 +239,27 @@ MEPH.define('MEPH.audio.view.AudioSequencer', {
             clearTimeout(me.$updateTimeout);
         }
         me.$updateTimeout = setTimeout(function () {
-            var resources = me.$inj.audioResources.getResources();
-            me.resources = resources.select(function (t) {
-                if (t.resource && t.resource.file) {
-                    return ({
-                        name: t.resource.file.name,
-                        id: t.id,
-                        type: 'font'
-                    });
+            me.when.injected.then(function () {
+                if (me.$inj.audioResources) {
+                    var resources = me.$inj.audioResources.getResources();
+                    me.resources = resources.select(function (t) {
+                        if (t.resource && t.resource.file) {
+                            return ({
+                                name: t.resource.file.name,
+                                id: t.id,
+                                type: 'font'
+                            });
+                        }
+                        else if (t.name) {
+                            return ({
+                                name: t.name,
+                                id: t.id,
+                                type: 'graph'
+                            });
+                        }
+                    })
                 }
-                else if (t.name) {
-                    return ({
-                        name: t.name,
-                        id: t.id,
-                        type: 'graph'
-                    });
-                }
-            })
+            });
         }, 1000)
     },
     viewResource: function (resource, type) {

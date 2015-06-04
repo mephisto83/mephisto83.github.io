@@ -161,7 +161,7 @@ MEPH.define('MEPH.bind.Binder', {
                     if (connectables.some(function (x) {
                         return x === instruction.shortCut.type;
                     })) {
-                        target = me.getConnection(classInstance, instruction.shortCut.type);
+                        target = me.getConnection(classInstance, instruction.shortCut.type, instruction.shortCut.prefix);
                         instructionPath = instruction.path.subset(1).join('.');
                         if (target && Binder.isOnPath(instructionPath, args.path)) {
                             me.executeInstructions(classInstance, instructionPath, altered, instructions, obj, i, false, args);//me, ;
@@ -363,7 +363,7 @@ MEPH.define('MEPH.bind.Binder', {
                             if (connectables.some(function (x) {
                                 return x === instruction.shortCut.type;
                             })) {
-                                var target = me.getConnection(obj, instruction.shortCut.type);
+                                var target = me.getConnection(obj, instruction.shortCut.type, instruction.shortCut.prefix);
                                 instructionPath = instruction.path.subset(1).join('.');
                                 if (target && Binder.isOnPath(instructionPath, args.path)) {
                                     me.executeInstructions(dom, instructionPath, altered, instructions, obj, i, false, args);//me, ;
@@ -388,12 +388,12 @@ MEPH.define('MEPH.bind.Binder', {
 
         return (parameters || []).select(function (param) {
             var value;
-            if (param && param.shortCut && me.getConnection(obj, param.shortCut.type)) {
+            if (param && param.shortCut && me.getConnection(obj, param.shortCut.type, param.shortCut.prefix)) {
                 if (param.shortCut.type === 'subcontrol') {
                     value = MEPH.getPathValue(param.path.subset(1).join('.'), obj);
                 }
                 else {
-                    value = MEPH.getPathValue(param.path.subset(1).join('.'), me.getConnection(obj, param.shortCut.type));// obj);
+                    value = MEPH.getPathValue(param.path.subset(1).join('.'), me.getConnection(obj, param.shortCut.type, param.shortCut.prefix));// obj);
                 }
                 return value;
             }
@@ -424,13 +424,13 @@ MEPH.define('MEPH.bind.Binder', {
                 value = MEPH.getPathValue(instruction.path.subset(1).join('.'), obj);
             }
             else {
-                value = MEPH.getPathValue(instruction.path.subset(1).join('.'), me.getConnection(obj, instruction.shortCut.type));// obj);
+                value = MEPH.getPathValue(instruction.path.subset(1).join('.'), me.getConnection(obj, instruction.shortCut.type, instruction.shortCut.prefix));// obj);
             }
             return value;
         });
 
         instructions.foreach(function (instruction, index) {
-            var target = me.getConnection(obj, instruction.shortCut.type),
+            var target = me.getConnection(obj, instruction.shortCut.type, instruction.shortCut.prefix),
                 value;
             promise = promise.then(function (target, index, result) {
                 var success,
@@ -438,6 +438,8 @@ MEPH.define('MEPH.bind.Binder', {
                 value = MEPH.getPathValue(path, target);
                 if (typeof (value) === 'function') {
                     var paramValues = me.getValuesOfParameter(instruction.params, obj);
+                    instructions[' instructions'] = true;
+                    instructions[' instructionIndex'] = index;
                     paramValues = paramValues.concat([result, dom, prop, eventType, instructions, obj, eventargs]);
                     return value.apply(target, paramValues);
                 }
@@ -522,9 +524,9 @@ MEPH.define('MEPH.bind.Binder', {
             }
         }
     },
-    getConnection: function (obj, type) {
+    getConnection: function (obj, type, prefix) {
         var me = this;
-        return obj.getConnection(type);
+        return obj.getConnection(type, prefix);
     },
     getConnectableTypes: function (obj) {
         var me = this;

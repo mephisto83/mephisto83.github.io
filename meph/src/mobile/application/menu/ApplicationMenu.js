@@ -239,7 +239,7 @@ MEPH.define('MEPH.mobile.application.menu.ApplicationMenu', {
      **/
     setUpEventListeners: function () {
         var me = this, Dom = MEPH.util.Dom;
-        me.don(['click', 'touchend'], me.$window.document.body, function (type, evnt) {
+        me.don(['click'], me.$window.document.body, function (type, evnt) {//, 'touchend'
             var source = Dom.getEventSource(evnt), anscestor, domTemplate = me.getDomTemplate();
             if (domTemplate) {
                 anscestor = domTemplate.first(function (x) {

@@ -14,7 +14,8 @@ MEPH.define('MEPH.input.Dropdown', {
     properties: {
         source: null,
         labelfield: 'label',
-        valuefield: 'value'
+        valuefield: 'value',
+        selected: null
     },
     initialize: function () {
         var me = this;
@@ -67,11 +68,15 @@ MEPH.define('MEPH.input.Dropdown', {
                 me.source.foreach(function (x, index) {
                     MEPH.util.Dom.addOption(x[me.labelfield], index, me.selectDom);
                 });
-                if (me.$selectedObject) {
-                    var index = me.source.indexOf(me.$selectedObject);
-                    if (me.selectDom.selectedIndex !== index && index > -1) {
-                        me.selectDom.selectedIndex = index;
-                    }
+                if (me.$selectedObject !== undefined) {
+                    var index = me.source.indexWhere(function (x) {
+                        return x[me.valuefield] === me.$selectedObject;
+                    });
+                    index = index ? index.first() : null;
+                    if (index !== null)
+                        if (me.selectDom.selectedIndex !== index && index > -1) {
+                            me.selectDom.selectedIndex = index;
+                        }
                 }
             }
         }
@@ -80,6 +85,7 @@ MEPH.define('MEPH.input.Dropdown', {
     onchange: function (index) {
         var me = this;
         me.$selectedObject = me.source[index];
+        me.selected = me.$selectedObject;
         if (me.valuefield !== 'null')
             return me.source[index][me.valuefield];
         return me.source[index];
@@ -95,7 +101,8 @@ MEPH.define('MEPH.input.Dropdown', {
     **/
     addTransferables: function () {
         var me = this,
-            properties = MEPH.Array(['value']);
+            properties = MEPH.Array(['selected']);//'value'
+        
         me.callParent.apply(me, arguments);
         properties.foreach(function (prop) {
             me.addTransferableAttribute(prop, {

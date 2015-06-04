@@ -65,78 +65,126 @@
     },
     propertyTypes: function () {
 
-        return [{
+        return [
+        {
             "name": "name"
-        }, {
+        },
+        {
             "name": "firstname"
-        }, {
+        },
+        {
             "name": "lastname"
-        }, {
+        },
+        {
             "name": "middlename"
-        }, {
+        },
+        {
             "name": "location"
-        }, {
+        },
+        {
             "name": "languages"
-        }, {
+        },
+        {
             "name": "gender"
-        }, {
+        },
+        {
             "name": "link"
-        }, {
+        },
+        {
             "name": "profileimage"
-        }, {
+        },
+        {
             "name": "schools"
-        }, {
+        },
+        {
             "name": "work"
-        }, {
+        },
+        {
             "name": "profileimage-large"
-        }, {
+        },
+        {
             "name": "occupation"
-        }, {
+        },
+        {
             "name": "skills"
-        }, {
+        },
+        {
             "name": "url"
-        }, {
+        },
+        {
             "name": "headline"
-        }, {
+        },
+        {
             "name": "email1"
-        }, {
+        },
+        {
             "name": "email2"
-        }, {
+        },
+        {
             "name": "email3"
-        }, {
-            "name": "phone"
-        }, {
+        },
+        {
+            "name": "phone1"
+        },
+        {
             "name": "phone2"
-        }, {
+        },
+        {
+            "name": "phone3"
+        },
+        {
             "name": "addressline1"
-        }, {
+        },
+        {
             "name": "addressline2"
-        }, {
+        },
+        {
+            "name": "addressline3"
+        },
+        {
             "name": "city"
-        }, {
+        },
+        {
             "name": "stateprovince"
-        }, {
+        },
+        {
+            "name": "district"
+        },
+        {
+            "name": "county"
+        },
+        {
             "name": "zipcode"
-        }, {
+        },
+        {
             "name": "company"
-        }, {
+        },
+        {
             "name": "companies"
-        }, {
+        },
+        {
             "name": "title"
         }
         ];
     },
-    me: function (cardid) {
+
+    me: function (cardid, result) {
         var me = this;
-        var result = {};
+        result = result || {};
         me.propertyTypes().foreach(function (t) {
-            result[t.name] = '';
+            result[t.name] = result[t.name] || '';
         });
         return me.ready.then(function () {
             me.$inj.customProvider.assignProperties(cardid, result).then(function () {
                 //     return me.$inj.overlayService.open('contact/me/card');
             }).then(function () {
+
                 return me.$inj.rest.addPath('contact/me/card/{cardid}').get({ cardid: cardid }).then(function (res) {
+
+                    result._pause();
+                    me.propertyTypes().foreach(function (t) {
+                        result[t.name] = '';
+                    });
                     if (res && res.authorized) {
 
                         res.attributes.foreach(function (attr) {
@@ -153,6 +201,8 @@
                 });
             }).then(function (res) {
                 //      me.$inj.overlayService.close('contact/me/card');
+                result._start();
+                result.fireAltered();
                 return res;
             });
 

@@ -8,5 +8,6 @@
         me.great()
         me.hideHeader();
         me.hideCloseBtn()
+        me.hideFooter();
     }
 });

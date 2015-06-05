@@ -44,7 +44,7 @@
 
         me.setupQrCodes();
 
-        return Promise.all([me.when.loaded, me.when.injected]).then(function () {
+        Promise.all([me.when.loaded, me.when.injected]).then(function () {
             if (me.$inj.relationshipService) {
                 me.$inj.overlayService.open('connection-contact');
                 me.$inj.overlayService.relegate('connection-contact');
@@ -72,18 +72,17 @@
     editRelationship: function () {
         var me = this;
 
-
         MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'EditRelationship', path: 'main/contact/relationship/edit', contact: me.contact });
     },
 
     createIfNonExistent: function () {
         var me = this;
-        return Promise.all([me.when.loaded, me.when.injected]).then(function () {
+        Promise.all([me.when.loaded, me.when.injected]).then(function () {
             if (me.$inj.relationshipService) {
                 if (!me.relationship) {
                     me.$inj.overlayService.open('connection-contact-create-releationship');
                     me.$inj.overlayService.relegate('connection-contact-create-releationship');
-                    return me.$inj.relationshipService.createRelationship(me.contact).then(function (relationship) {
+                    me.$inj.relationshipService.createRelationship(me.contact).then(function (relationship) {
                         me.relationship = relationship;
                         me.$activityview.relationshipdescription.relationship = relationship;
                     }).catch(function () {
@@ -99,6 +98,5 @@
         var me = this;
         me.$activityview.hideCloseBtn();
         me.$activityview.hideHeader();
-        me.name = 'Contact';
     }
 });

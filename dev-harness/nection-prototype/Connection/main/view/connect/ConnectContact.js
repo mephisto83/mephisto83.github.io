@@ -73,7 +73,7 @@
                 me.contacts.unshift.apply(me.contacts, list.subset(0, 1));
                 me.contacts.dump();
             }).catch(function () {
-                MEPH.Log('No contacts to update near contacts list.');
+                MEPH.Error('No contacts to update near contacts list.');
             });
         });
     },

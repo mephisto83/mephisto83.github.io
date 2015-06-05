@@ -47,7 +47,7 @@
     },
     loadCacheContacts: function () {
         var me = this;
-        return me.afterRelationshipsLoaded.then(function () {
+        return (me.afterRelationshipsLoaded || Promise.resolve()).then(function () {
             return me.when.injected.then(function () {
                 return Promise.resolve().then(function () {
                     return me.$inj.overlayService.open('connection-main');

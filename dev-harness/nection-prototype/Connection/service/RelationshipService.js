@@ -510,12 +510,13 @@
     loadRelationshipContacts: function (source) {
         if (source && source.length === 0) {
             var me = this;
-
-            source.pump(function (skip, take) {
-                return me.relationshipsContacts.subset(skip, skip + (take || 15));
-            });
-            source.push.apply(source, me.relationshipsContacts.subset(0, 1));
-            source.dump();
+            if (me.relationshipsContacts) {
+                source.pump(function (skip, take) {
+                    return me.relationshipsContacts.subset(skip, skip + (take || 15));
+                });
+                source.push.apply(source, me.relationshipsContacts.subset(0, 1));
+                source.dump();
+            }
         }
     },
     collectSearchItems: function (search, cards) {

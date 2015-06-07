@@ -50,9 +50,9 @@
                 me.$inj.overlayService.relegate('connection-contact');
 
                 return me.$inj.relationshipService.getRelationShip(me.contact).then(function (relation) {
-                    if (me.$activityview.relationshipdescription) {
-                        me.$activityview.relationshipdescription.relationship = relation
-                    }
+                    //if (me.$activityview.relationshipdescription) {
+                    //    me.$activityview.relationshipdescription.relationship = relation
+                    //}
                     if (relation) {
                         MEPH.util.Style.show(me.$activityview.removeRelationshipBtn);
                     }
@@ -84,7 +84,7 @@
                     me.$inj.overlayService.relegate('connection-contact-create-releationship');
                     me.$inj.relationshipService.createRelationship(me.contact).then(function (relationship) {
                         me.relationship = relationship;
-                        me.$activityview.relationshipdescription.relationship = relationship;
+                        //  me.$activityview.relationshipdescription.relationship = relationship;
                     }).catch(function () {
                     }).then(function () {
 

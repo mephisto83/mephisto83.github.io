@@ -155,9 +155,9 @@
 @mixin iphone6($orientation: all)
 {
 //1334 ×750
-  $deviceMinWidth: 414px;
-  $deviceMaxWidth: 736px;
-  $devicePixelRatio: 3;
+  $deviceMinWidth: 374px;
+  $deviceMaxWidth: 667px;
+  $devicePixelRatio: 2;
   $deviceAspectRatio: '40/71';
 
   @if $orientation == all
@@ -189,8 +189,8 @@
 
 @mixin iphone6plus($orientation: all) {
 //1334 ×750
-  $deviceMinWidth: 1242px;
-  $deviceMaxWidth: 2208px;
+  $deviceMinWidth: 413px;
+  $deviceMaxWidth: 736px;
   $devicePixelRatio: 3;
   $deviceAspectRatio: '40/71';
 
@@ -200,7 +200,8 @@
       and (min-device-width: $deviceMinWidth) 
       and (max-device-width: $deviceMaxWidth)
       and (-webkit-device-pixel-ratio: $devicePixelRatio) 
-      and (device-aspect-ratio: $deviceAspectRatio) {
+    //  and (device-aspect-ratio: $deviceAspectRatio)
+     {
 
       @content;
     }

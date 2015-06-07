@@ -241,8 +241,8 @@ $space-between-fields: 50px;
 
                         .listitem {
                             float: left;
-                            background-color: transparent;
                             text-align: center;
+                            background-color: transparent;
                             /*width: 25%;*/
                             border: 0;
 
@@ -256,6 +256,14 @@ $space-between-fields: 50px;
                                 font-size: $tiny-text-size;
                                 margin: 0;
                                 color: $color3;
+                            }
+
+                            &:active {
+                                background-color: $color4;
+
+                                i {
+                                    color: $color7;
+                                }
                             }
                         }
                     }
@@ -288,7 +296,7 @@ $space-between-fields: 50px;
 
 
             &:nth-child(2n) {
-                background-color: transparentize($color6,.77);
+                background-color: transparentize($color6,.07);
             }
 
             h4, h3, h2 {
@@ -298,8 +306,7 @@ $space-between-fields: 50px;
                 margin: 0;
             }
 
-            background-color: transparentize($color7,.95);
-            ;
+            background-color: transparentize($color7,.17);
             color: $color1;
             border: none;
 
@@ -311,16 +318,33 @@ $space-between-fields: 50px;
                 }
             }
 
+            div,
             small {
-                white-space: nowrap;
-                text-overflow: ellipsis;
                 color: $color4;
             }
 
             .contact-list-item-information {
                 /*text-align: right;*/
-                background-color: rgba(255, 255, 255, 0.6);
+                background-color: $color3;
                 border-radius: 19px;
+                padding-left: 26px;
+
+                @include iphone6() {
+                    padding-left: 40px;
+                }
+
+                @include iphone6plus() {
+                    padding-left: 40px;
+                }
+
+                h3 {
+                    position: relative;
+                    padding-top: 30px;
+                    padding-bottom: 8px;
+                    padding-left: 0;
+                }
+
+                padding-bottom: 5px;
             }
 
             .contact-image {
@@ -366,6 +390,18 @@ $space-between-fields: 50px;
         .meph-activity-view-body,
         .meph-application-body.container-fluid {
             padding: 0px;
+        }
+
+        .meph-activity-view-body {
+            $pos-split: 17%;
+            background: $color6; /* Old browsers */
+            background: -moz-linear-gradient(top, $color6 $pos-split, $color7 $pos-split, $color7 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop($pos-split,$color6), color-stop($pos-split,$color7), color-stop(100%,$color7)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top, $color6 $pos-split,$color7 $pos-split,$color7 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top, $color6 $pos-split,$color7 $pos-split,$color7 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top, $color6 $pos-split,$color7 $pos-split,$color7 100%); /* IE10+ */
+            background: linear-gradient(to bottom, $color6 $pos-split,$color7 $pos-split,$color7 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color6', endColorstr='$color7',GradientType=0 ); /* IE6-9 */
         }
 
         .accounts {
@@ -468,6 +504,10 @@ $space-between-fields: 50px;
             }
         }
 
+        $profile-image-border-width: 6px;
+        $padding-size: 10px;
+        $button-dim: 58px;
+
         .profile {
             height: $profile_height;
             width: $profile_width;
@@ -475,6 +515,7 @@ $space-between-fields: 50px;
             background-repeat: no-repeat;
             border-radius: 50%;
             background-position-x: 50%;
+            border: solid $profile-image-border-width $color3;
         }
 
         .profile.small {
@@ -485,24 +526,92 @@ $space-between-fields: 50px;
         .connection-list-profile-image {
             height: $profile_list_height;
             width: $profile_list_width;
+
+
+            @include iphone5() {
+                height: 133px;
+                width: 133px;
+            }
+
+            @include iphone6() {
+                height: 173px;
+                width: 173px;
+            }
+
+            @include iphone6plus() {
+                height: 200px;
+                width: 200px;
+            }
+
             background-repeat: no-repeat;
             background-size: contain;
             background-color: white;
             border-radius: 50%;
             position: relative;
             background-position-x: 50%;
+            z-index: 100;
+            border: solid $profile-image-border-width $color3;
             /*@include meph-image-background($file: 'empty_contact.png');*/
         }
 
         .contact-view-header {
-            background-color: $color7;
-            padding-top: 10px;
-            padding-bottom: 10px;
+            /*background-color: $color7;*/
+            padding-top: $padding-size;
+            padding-bottom: $padding-size;
         }
 
         .contact-view-body {
-            background-color: transparentize($color6, .5);
+            /*background-color: transparentize($color6, .1);*/
             padding-top: 5px;
+
+            .contact-view-body-details {
+                background-color: $color3;
+                padding: $padding-size;
+                border-radius: $padding-size;
+
+                small {
+                    color: $color2;
+                }
+            }
+        }
+
+        .meph-application-body {
+            .row.contactlink {
+                background-color: $color3;
+                border-radius: 10px;
+                margin-left: 0px;
+                margin-right: 0px;
+                padding: 5px;
+
+                span {
+                    color: $color5;
+                }
+            }
+
+            .contactlink a {
+
+                button {
+                    background-color: $color1;
+                    padding: 10px;
+                    border-radius: 50%;
+                    width: $button-dim;
+                    height: $button-dim;
+
+                    i.linkicon {
+                        color: $color3;
+                    }
+                }
+
+                &:active {
+                    button {
+                        background-color: $color4;
+                    }
+
+                    i.linkicon {
+                        color: $color7;
+                    }
+                }
+            }
         }
 
         [editrelationship] .row.relationshiplistitem {

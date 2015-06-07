@@ -62,9 +62,6 @@ complement-5" nr="5" rgb="CCFF66" r="204" g="255" b="102"/>
 * A keyframe specific mixin for spinning elements
 * @param {String} $browser Target specific browser, example: moz, webkit, ms, o. The mixin will append - before and after.
 */ /**  @class U4Styles.private.common.mixins  */ /** @mixin  @param {String} $animation Name of the animation as defined in the keyframes structure. @param {duration} $duration Specifies how many seconds or milliseconds the animation takes to complete one cycle. @param {timing} $timing Describes how the animation will progress over one cycle of its duration. */ /**  @class U4Styles.private.common.mixins  */ /** @mixin u4-box-shadow  @param {String} $x-offset Horizontal displacement of the shadow. @param {String} $y-offset Vertical displacement of the shadow. @param {String} $blur-radius Specifies how blurred the shadow edge is. @param {String} $colour The colour of the shadow. */ /** @mixin u4-transform  @param {String} $transform The complete transformation expression, e.g.: rotate(90deg) */ /** @mixin u4-transition  @param {String} $transform The complete transformation expression, e.g.: rotate(90deg) */ /**  @class U4Styles.private.common.mixins  */ /** @mixin u4-linear-background  @param {String} $background-image The background image to be used. @param {String} $degrees Degrees to be used. Can be a degree (-90deg etc), top or left. @param {String/List} $color-stops List of color stops. If list, set as '(#032050 0%, #173a6b 100%)' */ /** @mixin u4-linear-background  @param {String} $degrees Degrees to be used. Can be a degree (-90deg etc), top or left. @param {String/List} $color-stops List of color stops. If list, set as '(#032050 0%, #173a6b 100%)' */ /** A mixin for generating a layout.  */ /** meph-size-x2 {  font-size: 10px;} */ /** meph-size-x2 {  font-size: 10px;} */ /** A mixin for generating a tree layout.  */ /**positioning***/ /**positioning***/ /**positioning***/ /**positioning***/ /**positioning***/ /**positioning***/ /**positioning***/ /**positioning***/ /**positioning***/ /**  @class U4Styles.public.functions When we refer background images or font faces within our stylesheet we should use these path functions. They ensure that if u4.scss is loaded from another folder structure than the default path,  it is enough to change core variable {@link U4Styles.public.paths#$u4-resources-path $u4-resources-path}, and ll relative paths will be set correct when regenerating the stylesheet. */ /** @method U4ImagePath  @param {string} $relativeImagePath - Image path relative to default U4 image folder, as defined by variable {@link U4Styles.public.paths#$u4-image-path $u4-image-path}.  Returns {@link U4Styles.public.paths#$u4-image-path $u4-image-path} concatinated with $relativeImagePath */ /** @method U4FontPath  @param {string} $relativeFontPath - Path relative to default U4  font path, as defined by variable {@link U4Styles.public.paths#$u4-font-path $u4-font-path}.  Returns {@link U4Styles.public.paths#$u4-font-path $u4-font-path} concatinated with $relativeFontPath */ /**
-* @class U4Styles.private.core.variables.fontdefintions
-* Definition of fonts used throughout the system.
-*/ /** @var {font-family} The regular font family used throughout the system */ /** @var {font-family} The light font family used throughout the system */ /** @var {font-family} The bold font family used throughout the system @deprecated Use $u4-font-regular with font-weight instead */ /** @var {string} Font unit used for font mixins defined within U4Styles.public.fonts */ /**
 *
 * @class U4Styles.public.paths
 * Path variables used to define resource paths relative to the location of the generated stylesheet.
@@ -101,7 +98,7 @@ complement-5" nr="5" rgb="CCFF66" r="204" g="255" b="102"/>
 * @mixin
 * Mixin for standard U4 bold font
 * @param {number} $font-size Size of font
-*/ /** Creates a tree layout. */ /* The animation code */ /** Mobile header top bar height. */ /**/ /*!
+*/ /** Creates a tree layout. */ /** Mobile header top bar height. */ /**/ /*!
  *  Font Awesome 4.3.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
  */ /* FONT PATH -------------------------- */ /* makes the font 33% larger relative to the icon container */ /* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen readers do not read off random characters that represent icons */ /* Social Buttons for Bootstrap  Copyright 2013-2014 Panayiotis Lipiridis Licensed under the MIT License  https://github.com/lipis/bootstrap-social */ }
@@ -3025,15 +3022,15 @@ a.list-group-item.active > [mephplatform] .badge, .nav-pills > .active > a > [me
 [mephplatform] .meph-stretchable .panel-body { height: 100%; padding: 0; position: absolute; width: 100%; top: 0; margin: 0; margin-top: 49px; }
 /* line 43, ../sass/meph-default/core/classes/_utility.scss */
 [mephplatform] .meph-stretchable .panel-footer { margin: 0px; position: absolute; border-radius: 0; padding: 9px; bottom: -59px; border-bottom-right-radius: 11px; border-bottom-left-radius: 10px; }
-/* line 1, ../sass/meph-default/controls/view/_classes.scss */
-[mephplatform] .meph-view { position: absolute; height: 100%; width: 100%; transform: translateX(0%); -webkit-transform: translate(0%, 0px); }
-/* line 9, ../sass/meph-default/controls/view/_classes.scss */
-[mephplatform] .meph-view-remove { opacity: 0; transform: translateX(-100%); -webkit-transform: translate(-100%, 0px); }
-/* line 15, ../sass/meph-default/controls/view/_classes.scss */
+/* line 2, ../sass/meph-default/controls/view/_classes.scss */
+[mephplatform] .meph-view, [mephplatform] .meph-home-page-view { position: absolute; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; height: 100%; width: 100%; transform: translateX(0%); -webkit-transform: perspective(600px) translate(0%, 0px); }
+/* line 12, ../sass/meph-default/controls/view/_classes.scss */
+[mephplatform] .meph-remove-home-page, [mephplatform] .meph-view-remove { opacity: 0; transform: translateX(-100%); -webkit-transform: translate(-100%, 0px); }
+/* line 19, ../sass/meph-default/controls/view/_classes.scss */
 [mephplatform] .meph-split { width: 80%; margin: auto; float: left; padding-top: 10px; padding-bottom: 10px; border-bottom: solid 1px rgba(205, 205, 205, 0.63); }
-/* line 24, ../sass/meph-default/controls/view/_classes.scss */
+/* line 28, ../sass/meph-default/controls/view/_classes.scss */
 [mephplatform] .meph-label { font-weight: bold; }
-/* line 29, ../sass/meph-default/controls/view/_classes.scss */
+/* line 33, ../sass/meph-default/controls/view/_classes.scss */
 [mephplatform] .visualizer { overflow: hidden; }
 /* line 3, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
 [mephplatform] .meph-flyout-panel { width: 300px; position: fixed; top: 0px; z-index: 10000; /* For Safari 3.1 to 6.0 */ -webkit-transition-property: all; -webkit-transition-duration: 0.2s; -webkit-transition-timing-function: ease; -webkit-transition-delay: 0s; /* Standard syntax */ transition-property: all; transition-duration: 0.2s; transition-timing-function: ease; transition-delay: 0s; opacity: 0; }
@@ -3303,20 +3300,11 @@ a.list-group-item.active > [mephplatform] .badge, .nav-pills > .active > a > [me
 [mephplatform] .overlay.removed i { font-size: 2em; top: 20%; }
 /* line 1, ../sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
 [mephplatform] .meph-mobile-application-container, [mephplatform] .meph-application-container { width: 100%; height: 100%; position: relative; }
-/* line 8, ../sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
-[mephplatform] .meph-mobile-application-container { perspective: 1000; -webkit-perspective: 1000; }
-/* line 9, ../sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
-[mephplatform] .meph-mobile-application-container > div { transform-style: preserve-3d; transition: all 1.0s linear; }
-@keyframes page-transition { 0% { transform: rotateY(0deg); }
-  50% { left: 0; transform: rotateY(180deg); }
-  100% { left: 100%; } }
-/* line 36, ../sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
-[mephplatform] .meph-remove-home-page, [mephplatform] .meph-view-remove { animation-name: page-transition; animation-duration: 1s; }
 /* line 8, ../sass/meph-default/mobile/application/header/_mobileapplicationheader.scss */
-[mephplatform] .meph-application-header { position: absolute; background-color: #101010; height: 50px; width: 100%; font-family: dagny-bold, dagny, arial, tahoma, verdana, sans-serif; color: #ffffff; }
-/* line 17, ../sass/meph-default/mobile/application/header/_mobileapplicationheader.scss */
+[mephplatform] .meph-application-header { position: absolute; background-color: #101010; height: 50px; width: 100%; color: #ffffff; }
+/* line 16, ../sass/meph-default/mobile/application/header/_mobileapplicationheader.scss */
 [mephplatform] .meph-application-menu-button-container { margin-top: 2px; }
-/* line 21, ../sass/meph-default/mobile/application/header/_mobileapplicationheader.scss */
+/* line 20, ../sass/meph-default/mobile/application/header/_mobileapplicationheader.scss */
 [mephplatform] .btn.btn-passive { background-color: transparent; }
 /* line 1, ../sass/meph-default/mobile/application/body/_mobileapplicationbody.scss */
 [mephplatform] .meph-application-body { height: 100%; border-top: solid transparent 50px; box-sizing: border-box; background-color: #ffffff; }
@@ -3336,10 +3324,6 @@ a.list-group-item.active > [mephplatform] .badge, .nav-pills > .active > a > [me
 [mephplatform] .meph-appliation-menu-categories-item-title { padding: 0; margin: 0; padding-top: 10px; padding-bottom: 10px; }
 /* line 34, ../sass/meph-default/mobile/application/menuview/_applicationmenucategories.scss */
 [mephplatform] .meph-item-removal.meph-application-menu-categories-item-details, [mephplatform] .meph-item-removal.meph-application-menu-categories-item-description, [mephplatform] .meph-item-removal.meph-application-menu-categories-item { opactiy: 0; font-size: 0em; }
-/* line 1, ../sass/meph-default/mobile/view/_homepage.scss */
-[mephplatform] .meph-home-page-view { position: absolute; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; height: 100%; width: 100%; transform: translateX(0%); -webkit-transform: translate(0%, 0px); }
-/* line 11, ../sass/meph-default/mobile/view/_homepage.scss */
-[mephplatform] .meph-remove-home-page { transform: translateX(-100%); -webkit-transform: translate(-100%, 0px); }
 /* line 5, ../sass/meph-default/mobile/activity/view/_classes.scss */
 [mephplatform] .meph-activity-view { height: 100%; }
 /* line 9, ../sass/meph-default/mobile/activity/view/_classes.scss */

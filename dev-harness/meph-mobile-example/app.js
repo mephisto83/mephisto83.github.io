@@ -6,6 +6,7 @@ var mobileexample = 'dev-harness/meph-mobile-example/';
 var MEPHControlsPath = rel + mobileexample + 'controlExamples';
 var ProvidersPath = rel + mobileexample + 'providerExamples';
 mephFrameWork('MEPH', path);
+
 MEPH.ready().then(function () {
     MEPH.setPath(path, 'MEPH');
     MEPH.setPath(buildpath, 'MEPHBuild');

@@ -139,20 +139,22 @@ MEPH.define('Connection.provider.local.CustomProvider', {
     },
     getProperties: function (card) {
         var me = this;
-        var cachedCard = me.cards.first(function (x) {
-            return x.id === card;
-        });
-        if (cachedCard && cachedCard.properties && cachedCard.properties.length) {
-            return Promise.resolve().then(function () {
-                return cachedCard.properties ? cachedCard.properties.select(function (x) {
-                    return {
-                        provider: me.id,
-                        type: me.id,
-                        propType: x.property,
-                        value: x.value
-                    }
-                }) : [];
+        if (me.card) {
+            var cachedCard = me.cards.first(function (x) {
+                return x.id === card;
             });
+            if (cachedCard && cachedCard.properties && cachedCard.properties.length) {
+                return Promise.resolve().then(function () {
+                    return cachedCard.properties ? cachedCard.properties.select(function (x) {
+                        return {
+                            provider: me.id,
+                            type: me.id,
+                            propType: x.property,
+                            value: x.value
+                        }
+                    }) : [];
+                });
+            }
         }
         return me.$inj.rest.addPath('contact/me/card/{card}').get({ card: card }).then(function (res) {
             if (res && res.attributes)

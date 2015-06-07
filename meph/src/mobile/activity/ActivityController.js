@@ -285,6 +285,8 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
             else {
                 MEPH.Log('Starting new activity');
                 res = me.startActivity(activityConfig, querystring).then(function (options) {
+                    if (!options)
+                        console.log(activityConfig)
                     var activity = options.classInstance;
                     //me.pushState(me.$window, {
                     //    activityId: activity.getActivityId(),

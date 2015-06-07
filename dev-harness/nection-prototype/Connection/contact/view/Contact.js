@@ -36,11 +36,13 @@
 
         console.info('qr code;')
         if (!me.cards || !me.cards.first())
-            me.$inj.overlayService.open('connection-contact-aftershow');
+            if (me.$inj && me.$inj.overlayService)
+                me.$inj.overlayService.open('connection-contact-aftershow');
         return me.refreshCard().then(function () {
             me.setupQrCodes();
             if (!me.cards || !me.cards.first())
-                me.$inj.overlayService.close('connection-contact-aftershow');
+                if (me.$inj && me.$inj.overlayService)
+                    me.$inj.overlayService.close('connection-contact-aftershow');
             console.info('end qr code;')
         })
     },

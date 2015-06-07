@@ -42,7 +42,7 @@ MEPH.define('MEPH.input.Dropdown', {
                             MEPH.util.Observable.observable(obj);
                             obj.un(me.source);
                             obj.on('changed', function () {
-                                me.updateDomElements();
+                                me.updateDomElement(obj);
                             }, me.source);
                         }
                     })
@@ -56,7 +56,7 @@ MEPH.define('MEPH.input.Dropdown', {
         else if (args.path === 'value') {
 
             me.$selectedObject = me.value;
-            me.updateDomElements();
+            me.updateDomElement(me.value);
         }
     },
     updateDomElements: function () {
@@ -70,7 +70,10 @@ MEPH.define('MEPH.input.Dropdown', {
                 });
                 if (me.$selectedObject !== undefined) {
                     var index = me.source.indexWhere(function (x) {
-                        return x[me.valuefield] === me.$selectedObject;
+                        if (me.valuefield !== 'null') {
+                            return x[me.valuefield] === me.$selectedObject;
+                        }
+                        return x === me.$selectedObject;
                     });
                     index = index ? index.first() : null;
                     if (index !== null)
@@ -81,6 +84,17 @@ MEPH.define('MEPH.input.Dropdown', {
             }
         }
 
+    },
+    updateDomElement: function (obj) {
+        var me = this;
+        if (obj && me.source) {
+            var index = me.source.indexOf(obj);
+            var option = me.selectDom.options[index];
+            if (option) {
+                option.label = obj[me.labelfield]
+            }
+        }
+        else me.updateDomElements();
     },
     onchange: function (index) {
         var me = this;
@@ -105,7 +119,7 @@ MEPH.define('MEPH.input.Dropdown', {
     addTransferables: function () {
         var me = this,
             properties = MEPH.Array(['selected']);//'value'
-        
+
         me.callParent.apply(me, arguments);
         properties.foreach(function (prop) {
             me.addTransferableAttribute(prop, {

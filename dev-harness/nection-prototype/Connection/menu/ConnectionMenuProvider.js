@@ -132,6 +132,14 @@
                 return ['Me', 'Accounts', 'CreateContact'].some(function (t) { return t === x.viewId; });;
             });
         }
+        res.push({
+            connectionmenu: true,
+            name: 'Style',
+            viewId: 'styleOptions',
+            cls: 'fa fa-diamond',
+            path: 'temporary/style/options'
+        });
+
         res.foreach(function (x) {
             if (x.cls.indexOf('fa-2x') === -1)
                 x.cls += ' fa-2x';

@@ -1,6 +1,6 @@
 ﻿<div class="meph-view meph-view-remove main-contact">
     <contactview data-bind='"activityName": "v$.contact.name"' mephid="$activityview">
-        <div class="col-md-12 col-xs-12">
+        <div class="col-md-12 col-xs-12 contact-view-header">
             <div data-bind='"style.backgroundImage" : "v$.contact.profileimageurl"'
                  mephid="profileimage"
                  class="center-block empty_contact profile"></div>
@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12 col-xs-12">
+        <div class="col-md-12 col-xs-12 contact-view-body">
             <h3 data-bind='"innerHTML":"v$.contact.name"'></h3>
             <i class="fa fa-at"></i>&nbsp; &nbsp;    <small data-bind='"innerHTML":"v$.contact.occupation"'></small>
             <br />
@@ -34,14 +34,14 @@
             <contactlink value="v$.contact.phone1" fa-icon="fa-phone" type="phone"></contactlink>
             <contactlink value="v$.contact.phone2" fa-icon="fa-phone" type="phone"></contactlink>
         </div>
-        <div class="col-md-12 col-xs-12"
+        <div class="col-md-12 col-xs-12 contact-view-body"
              meph-event-click="v$.hideShow, v$.$activityview.smallqrcode, v$.$activityview.qrcode">
             <div class="col-md-12 col-xs-12" mephid="qrcode" id="qrcode" qrcode>
             </div>
             <div class="col-md-12 col-xs-12" id="smallqrcode" mephid="smallqrcode" qrcode>
             </div>
         </div>
-        <div class="col-md-12 col-xs-12" footerpadding>
+        <div class="col-md-12 col-xs-12 contact-view-body" footerpadding>
             <relationship mephid="relationshipdescription" meph-data-contact="v$.contact"></relationship>
         </div>
     </contactview>

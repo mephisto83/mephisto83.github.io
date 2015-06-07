@@ -14,6 +14,13 @@
             "namespace": "Connection",
             "path": "/fake/login"
         },
+{
+            "viewId": "styleOptions",
+            "view": "MEPH.mobile.pages.style.StyleOptions",
+            "singleton": true,
+            "namespace": "MEPH",
+            "path": "/style/options"
+        },
         {
             "viewId": "LoggedInHandler",
             "view": "Connection.session.Handler",

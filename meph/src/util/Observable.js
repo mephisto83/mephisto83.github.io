@@ -4,7 +4,7 @@
  **/
 MEPH.define('MEPH.util.Observable', {
     statics: {
-        useObserve: true,
+        useObserve: false,
 
         propKeyToArray: function (obj) {
             var props = [];
@@ -184,7 +184,7 @@ MEPH.define('MEPH.util.Observable', {
                             value: function () {
                                 this.fire('altered', { path: '' });
                             }
-                        })
+                        });
 
 
                         if (Object.observe && MEPH.util.Observable.useObserve) {
@@ -197,10 +197,10 @@ MEPH.define('MEPH.util.Observable', {
                                         removeAlteredListeners(x.oldValue, me);
                                         return x.name;
                                     })
-                                    .where(function (x) {
+                                    .filter(function (x) {
                                         return typeof (obj[x.name]) !== 'function' && x.name[0] !== '$';
                                     })
-                                    .foreach(function (change) {
+                                    .forEach(function (change) {
                                         var propName = change.name;
                                         var old = change.oldValue;
                                         var value = obj[change.name];

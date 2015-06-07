@@ -22,6 +22,7 @@ $rgba-primary-4: rgba( 246, 110, 0,1);
 .connection-application-logo {
 }
 
+$meph-activity-view-body-padding-top: 43px;
 
 $view-header-body-height: 50px;
 $view-header-body-padding-botttom: 0px;
@@ -32,8 +33,8 @@ $profile_width: 200px;
 $profile_height_sm: 100px;
 $profile_width_sm: 100px;
 
-$profile_list_height: 79px;
-$profile_list_width: 79px;
+$profile_list_height: 150px;
+$profile_list_width: 150px;
 
 .mainview {
     .meph-activity-view-body {
@@ -203,29 +204,6 @@ $space-between-fields: 50px;
 
 @import "templates";
 
-.contact-list-item {
-
-    &:nth-child(2n) {
-        background-color: rgb(247, 247, 247);
-    }
-
-    .contact-image {
-        background-image: url("images/empty_contact.png");
-        height: 64px;
-        width: 64px;
-        background-repeat: no-repeat;
-        background-position: 50%;
-        background-position-y: 50%;
-        background-color: grey;
-        background-size: 106% 172%;
-        border-radius: 50% 50%;
-    }
-
-    h4 {
-        color: rgb(243, 116, 98);
-        margin: 0;
-    }
-}
 
 .createcontact {
     video {
@@ -234,11 +212,11 @@ $space-between-fields: 50px;
 }
 
 
-@mixin pallette($palette, $color1, $color2, $color3, $color4) {
+@mixin pallette($palette, $color1, $color2, $color3, $color4, $color5, $color6, $color7) {
 
 
-    body.#{$palette} {
-        &.mobile-bottom-menu.#{$palette} {
+    body[color-palette='#{$palette}'] {
+        &.mobile-bottom-menu[color-palette='#{$palette}'] {
             .meph-activity-view-footer {
                 bottom: 50px;
             }
@@ -265,7 +243,7 @@ $space-between-fields: 50px;
                             float: left;
                             background-color: transparent;
                             text-align: center;
-                            width: 25%;
+                            /*width: 25%;*/
                             border: 0;
 
                             .fa {
@@ -305,9 +283,25 @@ $space-between-fields: 50px;
             color: $color4;
         }
 
+
         .contact-list-item {
-            background-color: $color3;
+
+
+            &:nth-child(2n) {
+                background-color: transparentize($color6,.77);
+            }
+
+            h4, h3, h2 {
+                color: $color1;
+                /*white-space: nowrap;
+                text-overflow: ellipsis;*/
+                margin: 0;
+            }
+
+            background-color: transparentize($color7,.95);
+            ;
             color: $color1;
+            border: none;
 
             a {
                 color: $color4;
@@ -316,26 +310,44 @@ $space-between-fields: 50px;
                     color: $color1;
                 }
             }
+
+            small {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                color: $color4;
+            }
+
+            .contact-list-item-information {
+                /*text-align: right;*/
+                background-color: rgba(255, 255, 255, 0.6);
+                border-radius: 19px;
+            }
+
+            .contact-image {
+                background-image: url("images/empty_contact.png");
+                height: 64px;
+                width: 64px;
+                background-repeat: no-repeat;
+                background-position: 50%;
+                background-position-y: 50%;
+                background-color: grey;
+                background-size: 106% 172%;
+                border-radius: 50% 50%;
+            }
         }
 
         .list-group-item {
             padding-left: 8px;
             padding-right: 8px;
-        }
-        /*.contact-list-item:nth-child(2n) {
-            background-color: $color2;
-            color: $color1;
 
-            a {
-                color: $color4;
+            &:first-child {
+                border-radius: 0px;
             }
-        }*/
+        }
+
         .list-group {
             padding-bottom: 30px;
-        }
-
-        .contact-list-item h4 {
-            color: $color1;
+            border-radius: 0px;
         }
 
         .glyphicon.glyphicon-th-large.meph-color-white {
@@ -363,7 +375,7 @@ $space-between-fields: 50px;
         }
 
         .meph-activity-view-body {
-            padding-top: 45px;
+            padding-top: $meph-activity-view-body-padding-top;
         }
 
         .createcontact {
@@ -477,8 +489,20 @@ $space-between-fields: 50px;
             background-size: contain;
             background-color: white;
             border-radius: 50%;
+            position: relative;
             background-position-x: 50%;
             /*@include meph-image-background($file: 'empty_contact.png');*/
+        }
+
+        .contact-view-header {
+            background-color: $color7;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .contact-view-body {
+            background-color: transparentize($color6, .5);
+            padding-top: 5px;
         }
 
         [editrelationship] .row.relationshiplistitem {
@@ -513,10 +537,491 @@ $space-between-fields: 50px;
             }
         }
 
-        ;
+        .color2, .color3, .color4, .color5, .color6, .color7, .color1 {
+            width: 100%;
+            min-height: 40px;
+
+            & > *:nth-child(2n) {
+                color: white;
+            }
+        }
+
+        .color1 {
+            background-color: $color1;
+        }
+
+        .color2 {
+            background-color: $color2;
+        }
+
+        .color3 {
+            background-color: $color3;
+        }
+
+        .color4 {
+            background-color: $color4;
+        }
+
+        .color5 {
+            background-color: $color5;
+        }
+
+        .color6 {
+            background-color: $color6;
+        }
+
+        .color7 {
+            background-color: $color7;
+        }
     }
 }
 
-@include pallette($palette:"mea-culpa", $color1: #191919, $color2: #DFE2DB, $color4: #FFF056, $color3: #FFFFFF);
+@mixin font-pallette($palette, $font, $alternate: 'sans-serif') {
 
-@include pallette($palette:"big-top", $color1: #C63D0F, $color2: #7E8F7C, $color4: #3B3738, $color3: #FDF3E7);
+    body[font-palette='#{$palette}'] {
+        font-family: $font, $alternate;
+    }
+}
+
+@include font-pallette($palette:'roboto',$font:'Roboto Slab');
+@include font-pallette($palette:'oswald',$font:'Oswald');
+
+@include font-pallette($palette: 'Droid Sans',$font: 'Droid Sans');
+@include font-pallette($palette: 'Lato', $font: 'Lato');
+@include font-pallette($palette: 'Arvo', $font: 'Arvo');
+@include font-pallette($palette: 'Average', $font: 'Average');
+@include font-pallette($palette: 'Gravitas One', $font: 'Gravitas One', $alternate: 'cursive');
+@include font-pallette($palette: 'Ubuntu', $font: 'Ubuntu', $alternate: 'sans-serif');
+@include font-pallette($palette: 'Gentium Basic', $font: 'Gentium Basic', $alternate: 'serif');
+@include font-pallette($palette: 'Kreon', $font: 'Kreon', $alternate: 'serif');
+@include font-pallette($palette: 'Josefin Slab', $font: 'Josefin Slab', $alternate: 'serif');
+@include font-pallette($palette: 'EB Garamond', $font: 'EB Garamond', $alternate: 'serif');
+@include font-pallette($palette: 'Open Sans Condensed',$font: 'Open Sans Condensed', $alternate: 'sans-serif');
+@include font-pallette($palette: 'Actor', $font: 'Actor', $alternate: 'sans-serif');
+@include font-pallette($palette: 'Jura', $font: 'Jura', $alternate: 'sans-serif');
+@include font-pallette($palette: 'Forum', $font: 'Forum', $alternate: 'cursive');
+@include font-pallette($palette: 'Crimson Text', $font: 'Crimson Text', $alternate: 'serif');
+@include font-pallette($palette: 'Rosario', $font: 'Rosario', $alternate: 'sans-serif');
+
+@include font-pallette($palette: 'Poly', $font: 'Poly', $alternate: 'serif');
+@include font-pallette($palette: 'Signika', $font: 'Signika', $alternate: 'sans-serif');
+@include font-pallette($palette: 'Old Standard TT', $font: 'Old Standard TT', $alternate: 'serif');
+@include font-pallette($palette: 'Vollkorn', $font: 'Vollkorn', $alternate: 'serif');
+@include font-pallette($palette: 'Italiana', $font: 'Italiana', $alternate: 'serif');
+@include font-pallette($palette: 'Fjord One', $font: 'Fjord One', $alternate: 'serif');
+@include font-pallette($palette: 'Bevan', $font: 'Bevan', $alternate: 'cursive');
+@include font-pallette($palette: 'Amaranth', $font: 'Amaranth', $alternate: 'sans-serif');
+@include font-pallette($palette: 'Roboto Slab', $font: 'Roboto Slab', $alternate: 'serif');
+@include font-pallette($palette: 'Open Sans', $font: 'Open Sans', $alternate: 'sans-serif');
+@include font-pallette($palette: 'Ledger', $font: 'Ledger', $alternate: 'serif');
+
+$palettes: ( /**/
+( /**/
+palette:"secretkey", /**/
+color1: #3F2860, /*header*/
+color2: #ef6d3b, /*selection color*/
+color4: #fa8b60, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #90C5A9, /*alternating list item*/
+color7: #7a9a95 /*list item background*/
+), /**/
+( /**/
+palette:"scd", /**/
+color1: #ec583a, /*header*/
+color2: #93b1c6, /*selection color*/
+color4: #ff7148, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #C7D0D5, /*alternating list item*/
+color7: #93b1c6 /* list item background*/
+), /**/
+( /**/
+palette:"eldisgno", /**/
+color1: #342800, /*header*/
+color2: #e2da99, /*selection color*/
+color4: #2b2301, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #5e9ca0, /*alternating list item*/
+color7: #73afb6 /* list item background*/
+), /**/
+( /**/
+palette:"melonfree", /**/
+color1: #f9a646, /*header*/
+color2: #e3d6c6, /*selection color*/
+color4: #000000, /*text under header*/
+color3: #000000, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #ebe3e0, /*alternating list item*/
+color7: #eed5d1 /* list item background*/
+), /**/
+( /**/
+palette:"gluepro", /**/
+color1: #393939, /*header*/
+color2: #ff9900, /*selection color*/
+color4: #6e6e6e, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #f3843e, /*alternating list item*/
+color7: #ff5a09 /* list item background*/
+), /**/
+( /**/
+palette:"squarefactor", /**/
+color1: #4b4d52, /*header*/
+color2: #b9b1a8, /*selection color*/
+color4: #de8642, /*text under header*/
+color3: #fff2e7, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #b9b1a8, /*alternating list item*/
+color7: #d0cabf /* list item background*/
+), /**/
+( /**/
+palette:"veloster", /**/
+color1: #b81d18, /*header*/
+color2: #b6b6b6, /*selection color*/
+color4: #202020, /*text under header*/
+color3: #f0f0f0, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #004687, /*alternating list item*/
+color7: #f0f0f0 /* list item background*/
+), /**/
+( /**/
+palette:"aromatespixels", /**/
+color1: #ca171b, /*header*/
+color2: #cdcab9, /*selection color*/
+color4: #432f21, /*text under header*/
+color3: #f0f0f0, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #d6d3c4, /*alternating list item*/
+color7: #dfded4 /* list item background*/
+), /**/
+( /**/
+palette:"fitznaughty", /**/
+color1: #ee4b3e, /*header*/
+color2: #e9bc1b, /*selection color*/
+color4: #1fda9a, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #f2f2f3, /*alternating list item*/
+color7: #f5eacd /* list item background*/
+), /**/
+( /**/
+palette:"barnidesign", /**/
+color1: #d9411e, /*header*/
+color2: #e05151, /*selection color*/
+color4: #333333, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #75a3d1, /*alternating list item*/
+color7: #ffd452 /* list item background*/
+), /**/
+( /**/
+palette:"softwaremill", /**/
+color1: #73c5e1, /*header*/
+color2: #5bb12f, /*selection color*/
+color4: #9b539c, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #bccf02, /*alternating list item*/
+color7: #eb65a0 /* list item background*/
+), /**/
+( /**/
+palette:"enterprise", /**/
+color1: #0b99bc, /*header*/
+color2: #fcdf15, /*selection color*/
+color4: #3c3c3c, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #d40e52, /*alternating list item*/
+color7: #3c3c3c /* list item background*/
+), /**/
+( /**/
+palette:"rscollab", /**/
+color1: #639df1, /*header*/
+color2: #3b5998, /*selection color*/
+color4: #293e6a, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #77ba9b, /*alternating list item*/
+color7: #b6a754 /* list item background*/
+), /**/
+( /**/
+palette:"pawstudio", /**/
+color1: #0092d7, /*header*/
+color2: #3ec303, /*selection color*/
+color4: #ee8d09, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #92dce0, /*alternating list item*/
+color7: #b5b5b5 /* list item background*/
+), /**/
+( /**/
+palette:"viximo", /**/
+color1: #a92159, /*header*/
+color2: #bcc747, /*selection color*/
+color4: #57102c, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #4ca8a1, /*alternating list item*/
+color7: #73c2aa /* list item background*/
+), /**/
+( /**/
+palette:"dcnaf", /**/
+color1: #f8dc0b, /*header*/
+color2: #fba827, /*selection color*/
+color4: #3d3c3a, /*text under header*/
+color3: #3d3c3a, /*whitish*/
+color5: #000000, /*blackish*/
+color6: (#707070), /*alternating list item*/
+color7: (#ddd4bc) /* list item background*/
+), /**/
+( /**/
+palette:"bogart", /**/
+color1: #97282c, /*header*/
+color2: #5f6024, /*selection color*/
+color4: #805489, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6:#b08b0d, /*alternating list item*/
+color7:#428f89 /* list item background*/
+), /**/
+( /**/
+palette:"spektrum", /**/
+color1: #2f8f75, /*header*/
+color2: #12f6e9, /*selection color*/
+color4: #58f8ab, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #a0fb71, /*alternating list item*/
+color7: #ebff33 /* list item background*/
+), /**/
+( /**/
+palette:"chevalblanc", /**/
+color1: #48372f, /*header*/
+color2: #766151, /*selection color*/
+color4: #514947, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #fee202, /*alternating list item*/
+color7: #766151 /* list item background*/
+), /**/
+( /**/
+palette:"nasaprospect", /**/
+color1: #a34e24, /*header*/
+color2: #f9df8d, /*selection color*/
+color4: #796e24, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #ea7d24, /*alternating list item*/
+color7: #a34e24 /* list item background*/
+), /**/
+( /**/
+palette:"tvsafety", /**/
+color1: #bd0102, /*header*/
+color2: #72ac93, /*selection color*/
+color4: #98002f, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #699e87, /*alternating list item*/
+color7: #9bce7d /* list item background*/
+), /**/
+( /**/
+palette:"lerenzo", /**/
+color1: #30302f, /*header*/
+color2: #f4f4f2, /*selection color*/
+color4: #1253a4, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #f26964, /*alternating list item*/
+color7: #ffd464 /* list item background*/
+), /**/
+( /**/
+palette:"likethereisnotomorrow", /**/
+color1: #ff8b6c, /*header*/
+color2: #5fa292, /*selection color*/
+color4: #558188, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #ff9c5f, /*alternating list item*/
+color7: #253939 /* list item background*/
+), /**/
+( /**/
+palette:"gubbmackie", /**/
+color1: #003058, /*header*/
+color2: #168a8f, /*selection color*/
+color4: #0330c3, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #f04c40, /*alternating list item*/
+color7: #8d2663 /* list item background*/
+), /**/
+( /**/
+palette:"neilsonphoto", /**/
+color1: #634271, /*header*/
+color2: #ababab, /*selection color*/
+color4: #2d2d2d, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #ababab, /*alternating list item*/
+color7: #2d2d2d /* list item background*/
+), /**/
+( /**/
+palette:"kikkfest", /**/
+color1: #063e53, /*header*/
+color2: #d1c5b7, /*selection color*/
+color4: #856941, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #0193b7, /*alternating list item*/
+color7: #735d41 /* list item background*/
+), /**/
+( /**/
+palette:"thesearethings", /**/
+color1: #e7512d, /*header*/
+color2: #f6f6f6, /*selection color*/
+color4: #cbcbc1, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #b6aea1, /*alternating list item*/
+color7: #72441e /* list item background*/
+), /**/
+( /**/
+palette:"theshihab", /**/
+color1: #ab3334, /*header*/
+color2: #eddab6, /*selection color*/
+color4: #331919, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #eddab6, /*alternating list item*/
+color7: #e8d1a4 /* list item background*/
+), /**/
+( /**/
+palette:"duplos", /**/
+color1: #f4ac42, /*header*/
+color2: #4d505b, /*selection color*/
+color4: #cf4858, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #16a79d, /*alternating list item*/
+color7: #80628b /* list item background*/
+), /**/
+( /**/
+palette:"speedmotion", /**/
+color1: #262c3a, /*header*/
+color2: #ffffff, /*selection color*/
+color4: #517398, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #ff606e, /*alternating list item*/
+color7: #00ddd8 /* list item background*/
+), /**/
+( /**/
+palette:"cuisinesschmidt", /**/
+color1: #d32127, /*header*/
+color2: #78c3ae, /*selection color*/
+color4: #9ca98c, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #aed136, /*alternating list item*/
+color7: #d2c950 /* list item background*/
+), /**/
+( /**/
+palette:"dashag", /**/
+color1: #00cbe9, /*header*/
+color2: #c3dae3, /*selection color*/
+color4: #fd8a33, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #8bc537, /*alternating list item*/
+color7: #E792b5 /* list item background*/
+), /**/
+( /**/
+palette:"sqd", /**/
+color1: #ae9c96, /*header*/
+color2: #a6d8de, /*selection color*/
+color4: #ae9c96, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #dddad6, /*alternating list item*/
+color7: #f9f1b5 /* list item background*/
+), /**/
+( /**/
+palette:"meetinnov", /**/
+color1: #e41a6a, /*header*/
+color2: #6ec1c2, /*selection color*/
+color4: #2eafb0, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #7f2b82, /*alternating list item*/
+color7: #f1831d /* list item background*/
+), /**/
+( /**/
+palette:"mashastudio", /**/
+color1: #25242c, /*header*/
+color2: #32313b, /*selection color*/
+color4: #ec3f8c, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #39b1c6, /*alternating list item*/
+color7: #1fd26a /* list item background*/
+), /**/
+( /**/
+palette:"kavat", /**/
+color1: #f87ab8, /*header*/
+color2: #efefef, /*selection color*/
+color4: #f79b2e, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #e1358d, /*alternating list item*/
+color7: #cccccc /* list item background*/
+), /**/
+( /**/
+palette:"fernando", /**/
+color1: #fbcb15, /*header*/
+color2: #8b1c55, /*selection color*/
+color4: #ff1900, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #159594, /*alternating list item*/
+color7: #1a8cab /* list item background*/
+), /**/
+( /**/
+palette:"josefk", /**/
+color1: #1d2f3e, /*header*/
+color2: #c9e1c1, /*selection color*/
+color4: #152737, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #0f9fb4, /*alternating list item*/
+color7: #0fb493 /* list item background*/
+), /**/
+( /**/
+palette:"activatemedia", /**/
+color1: #665bc4, /*header*/
+color2: #faf9f4, /*selection color*/
+color4: #9c6a8d, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #b6dedc, /*alternating list item*/
+color7: #52b4af /* list item background*/
+), /**/
+( /**/
+palette:"heimplanet", /**/
+color1: #000000, /*header*/
+color2: #ffffff, /*selection color*/
+color4: #7f909a, /*text under header*/
+color3: #ffffff, /*whitish*/
+color5: #000000, /*blackish*/
+color6: #ed6639, /*alternating list item*/
+color7: #385b9f /* list item background*/
+), /**/
+/**/ );
+/*@include pallette($palette:"mea-culpa",
+ $color1: #191919, $color2: #DFE2DB, $color4: #FFF056,
+ $color3: #FFFFFF);
+@include pallette($palette:"big-top", $color1: #C63D0F, $color2: #7E8F7C, $color4: #3B3738, $color3: #FDF3E7);*/
+
+@each $pal in $palettes {
+    @include pallette($palette:map-get($pal, "palette"), $color1:map-get($pal, "color1"), $color2:map-get($pal, "color2"), $color3:map-get($pal, "color3"), $color4:map-get($pal, "color4"), $color5:map-get($pal, "color5"), $color6:map-get($pal, "color6"), $color7:map-get($pal, "color7"))
+}

@@ -405,7 +405,11 @@ MEPH.define('MEPH.control.Control', {
         return new Promise(function (resolve, fail) {
             var timoutRef,
                 animationComplete = function () {
+                    if (timoutRef === null) {
+                        return;
+                    }
                     clearTimeout(timoutRef);
+                    timoutRef = null;
                     me.dun(me, 'webkitTransitionEnd');
                     me.dun(me, 'transitionend');
                     resolve();
@@ -421,9 +425,9 @@ MEPH.define('MEPH.control.Control', {
                 });
             }
             if (options.add) {
-                MEPH.Array(options.add.split(' ')).foreach(function (add) {
-                    view.classList.add(add);
-                });
+                var toadd = MEPH.Array(options.add.split(' ')).where().select();
+                if (toadd.length)
+                    view.classList.add.apply(view.classList, toadd);
             }
         });
     },

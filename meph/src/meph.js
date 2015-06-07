@@ -945,7 +945,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
     meph.defaultReversePrefix = defaultReversePrefix;
     meph.pathDelimiter = pathDelimiter;
     meph.pipeString = pipeString;
-    meph.MaxTransitionTime = 5500;
+    meph.MaxTransitionTime = 200;
     meph.ParameterDelimiter = ',';
     meph.jsync = jsync;
     meph.prefixes = {
@@ -1842,14 +1842,14 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                 if (this.is_paused()) {
                     return this;
                 }
-                meph.Array(this[listenersPropertyKey]).where(function (x) {
+                meph.Array(this[listenersPropertyKey]).filter(function (x) {
                     return x.type === type;
-                }).where(function (x) {
+                }).filter(function (x) {
                     if (x.reference && x.reference.is_paused && x.pausekey) {
                         return !x.reference.is_paused(x.pausekey);
                     }
                     return true;
-                }).foreach(function (x) {
+                }).forEach(function (x) {
                     try {
                         x.func.apply(x.reference || null, args);
                     }

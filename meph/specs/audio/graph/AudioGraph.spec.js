@@ -44,17 +44,17 @@
             ///Assert
             dom = AudioGraph.getDomTemplate()[0];
 
-            AudioGraph.addConvolver();
-            expect(dom).toBeTruthy();
+            return AudioGraph.addConvolver().then(function () {
 
-            return new Promise(function (r) {
-                setTimeout(function () {
+                expect(dom).toBeTruthy();
+
+                return new Promise(function (r) {
                     var d = AudioGraph.graph;
                     if (app) {
                         app.removeSpace();
                     }
                     r();
-                }, 5000)
+                });
             });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
@@ -196,23 +196,20 @@
 
             return Promise.all([AudioGraph.addConvolver()]).then(function () {
                 return new Promise(function (r) {
-                    setTimeout(function () {
-
-                        var d = AudioGraph.graph;
-                        var node = d.getNodes().first();
-                        var zones = node.getZones().subset(0, 2);
-                        var connections = AudioGraph.graphviewport.createConnection(zones);
-                        var result = AudioGraph.save();
-                        var res = JSON.parse(result);
-                        return AudioGraph.loadGraph(result).then(function () {
-                            expect(res).toBeTruthy();
-                            if (app) {
-                                app.removeSpace();
-                            }
-                            r();
-                        });
-                    }, 1000)
-                })
+                    var d = AudioGraph.graph;
+                    var node = d.getNodes().first();
+                    var zones = node.getZones().subset(0, 2);
+                    var connections = AudioGraph.graphviewport.createConnection(zones);
+                    var result = AudioGraph.save();
+                    var res = JSON.parse(result);
+                    return AudioGraph.loadGraph(result).then(function () {
+                        expect(res).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    });
+                });
             });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();

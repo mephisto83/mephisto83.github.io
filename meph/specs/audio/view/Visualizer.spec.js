@@ -21,9 +21,12 @@
             var dropbox = new $class();
 
             dropbox.componentCls = 'cssclass';
-
-            //Assert
-            expect(dropbox.visualizerCls.indexOf('cssclass') !== -1).theTruth('the class wasnt set correctly');
+          return  MEPH.continueWhen(function () {
+                return dropbox.visualizerCls.indexOf('cssclass') !== -1;
+            }).then(function () {
+                //Assert
+                expect(dropbox.visualizerCls.indexOf('cssclass') !== -1).theTruth('the class wasnt set correctly');
+            })
         }).catch(function (error) {
             expect(error).caught();
         }).then(function (x) {

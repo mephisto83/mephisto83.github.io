@@ -67,8 +67,13 @@
 
             result.arrayprop = [];
             //Assert
-            expect(result.arrayprop.isObservableCollection).theTruth('the arrayprop was not an observable collection.');;
-            expect(Array.isArray(result.arrayprop)).theTruth('the arrayprop was not an array');
+            return MEPH.continueWhen(function () {
+                return result.arrayprop.isObservableCollection &&
+                    Array.isArray(result.arrayprop);
+            }).then(function () {
+                expect(result.arrayprop.isObservableCollection).theTruth('the arrayprop was not an observable collection.');;
+                expect(Array.isArray(result.arrayprop)).theTruth('the arrayprop was not an array');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -116,10 +121,16 @@
             })
             result.name = 'changed';
 
-            //Assert
-            expect(result.name == 'changed').theTruth('the name was not as expected');
-            expect(old == 'name').theTruth('the old name was not as expected');
-            expect(neww == 'changed').theTruth('the new name was not as expected');
+            return MEPH.continueWhen(function () {
+                //Assert
+                return result.name == 'changed' &&
+                    old == 'name' &&
+                    neww == 'changed';
+            }).then(function () {
+                expect(result.name == 'changed').theTruth('the name was not as expected');
+                expect(old == 'name').theTruth('the old name was not as expected');
+                expect(neww == 'changed').theTruth('the new name was not as expected');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -141,8 +152,11 @@
             });
             result.obj = { newobject: null };
 
-            //Assert
-            expect(MEPH.util.Observable.isObservable(result.obj)).theTruth('the object was not observable');
+            return MEPH.continueWhen(function () {
+                return MEPH.util.Observable.isObservable(result.obj);
+            }).then(function () {
+                expect(MEPH.util.Observable.isObservable(result.obj)).theTruth('the object was not observable');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -177,9 +191,13 @@
             var path;
             //Act
             result.obj.object.level1.level2.name = 'name';
-
-            //Assert
-            expect(path === 'obj.object.level1.level2.name').theTruth('the path wasnt as expected');
+            MEPH.continueWhen(function () {
+                return path === 'obj.object.level1.level2.name';
+            })
+            .then(function () {
+                //Assert
+                expect(path === 'obj.object.level1.level2.name').theTruth('the path wasnt as expected');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -187,7 +205,7 @@
         });;
     });
 
-    it('get path of jobject change with old and new args', function (done) {
+    it('get path of jobject change with old and new args 1', function (done) {
         MEPH.create('MEPH.synchronization.SyncObject').then(function ($class) {
             //Arrange
             var syncobject = new $class();
@@ -216,11 +234,18 @@
                 value = options.value;
                 old = options.old;
             });
-            result.obj.object.level1.level2.name = 'name';
-            //Assert
-            expect(value == 'name').theTruth('the value was not as expected');
-            expect(old == null).theTruth('old was not as expected');
-            expect(path === 'obj.object.level1.level2.name').theTruth('the path was not as expected');
+            return MEPH.continueWhen(function () {
+                result.obj.object.level1.level2.name = 'name';
+                return value === 'name' &&
+                    old == null &&
+                    path === 'obj.object.level1.level2.name';
+
+            }).then(function () {
+                //Assert
+                expect(value == 'name').theTruth('the value was not as expected');
+                expect(old == null).theTruth('old was not as expected');
+                expect(path === 'obj.object.level1.level2.name').theTruth('the path was not as expected');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -229,7 +254,7 @@
     });
 
 
-    it('get path of jobject change with old and new args', function (done) {
+    it('get path of jobject change with old and new args 2', function (done) {
         MEPH.create('MEPH.synchronization.SyncObject').then(function ($class) {
             //Arrange
             var syncobject = new $class();
@@ -252,32 +277,62 @@
             //Act
             var path;
             var old;
-            var value;
+            var value,
+                values = [];
             result.on('altered', function (type, options) {
                 path = options.path;
                 value = options.value;
                 old = options.old;
+                values.push(options);
             });
-            result.obj.object.level1.level2.name = {
-                value: 'name'
-            };
-            //Assert
-            expect(value.value == 'name').theTruth('value is not equal to name');
-            expect(old == null).theTruth('old was not null');
-            expect(path === 'obj.object.level1.level2.name').theTruth('the path was not correct');
 
-            result.obj.object.level1.level2.name.value = 'newname';
+            setTimeout(function () {
+                result.obj.object.level1.level2.name = {
+                    value: 'name'
+                };
+            }, 10);
+            return MEPH.continueWhen(function () {
+                return values.some(function (options) {
+                    path = options.path;
+                    value = options.value;
+                    old = options.old;
+                    return value.value === 'name' &&
+                        old == null &&
+                        path === 'obj.object.level1.level2.name';
+                });
+            }).then(function () {
 
-            expect(value == 'newname').theTruth('value was not equal to newname');
-            expect(old == 'name').theTruth('old was not equal to name');
-            expect(path === 'obj.object.level1.level2.name.value').theTruth('the path was not correct.');
+                //Assert
+                expect(value.value == 'name').theTruth('value is not equal to name');
+                expect(old == null).theTruth('old was not null');
+                expect(path === 'obj.object.level1.level2.name').theTruth('the path was not correct');
+
+                result.obj.object.level1.level2.name.value = 'newname';
+
+            }).then(function () {
+                return MEPH.continueWhen(function () {
+                    return value === 'newname' &&
+                        old == 'name' &&
+                        path === 'obj.object.level1.level2.name.value';
+                });
+
+            }).then(function () {
+
+                //Assert
+                expect(value == 'newname').theTruth('value is not equal to name');
+                expect(old == 'name').theTruth('old was not null');
+                expect(path === 'obj.object.level1.level2.name.value').theTruth('the path was not correct');
+            })
+            //expect(value == 'newname').theTruth('value was not equal to newname');
+            //expect(old == 'name').theTruth('old was not equal to name');
+            //expect(path === 'obj.object.level1.level2.name.value').theTruth('the path was not correct.');
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
             done();
         });;
     });
-    it('get path of jobject change with old and new args', function (done) {
+    it('get path of jobject change with old and new args 3', function (done) {
         MEPH.create('MEPH.synchronization.SyncObject').then(function ($class) {
             //Arrange
             var syncobject = new $class();
@@ -304,7 +359,11 @@
             result.obj.level2 = {};
 
             //Assert
-            expect(moves.length == 3).theTruth('the number of moves was incorrect');
+            return MEPH.continueWhen(function () {
+                return moves.length;
+            }).then(function () {
+                expect(moves.length).theTruth('the number of moves was incorrect');
+            });
 
         }).catch(function (error) {
             expect(error).caught();
@@ -370,8 +429,12 @@
             obj[MEPH.jsync].sweep();
             obj.property = 'newprop';
             //Assert
-            expect(obj.jsyncId()).toBeTruthy();
-            expect(moves.length == 1).toBeTruthy();
+            return MEPH.continueWhen(function () {
+                return moves.length;
+            }).then(function () {
+                expect(obj.jsyncId()).toBeTruthy();
+                expect(moves.length).toBeTruthy();
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -407,8 +470,13 @@
 
             //Act
             result.obj.object.level1.level2.name = 'name';
-            //Assert
-            expect(moves.length === 6).theTruth('the number of moves was incorrect');
+
+            return MEPH.continueWhen(function () {
+                return moves.length;
+            }).then(function () {
+                //Assert
+                expect(moves.length).theTruth('the number of moves was incorrect');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -436,10 +504,13 @@
             //Act
             result.property = second;
 
-            //Assert
+            ///Assert
 
-            expect(moves.length == 1).theTruth('wrong number of moves ');
-
+            return MEPH.continueWhen(function () {
+                return moves.length;
+            }).then(function () {
+                expect(moves.length).theTruth('wrong number of moves ');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -464,11 +535,21 @@
 
             //Act
 
-            var movereuslt = result[MEPH.jsync].undo(moves.last());
+            //            var movereuslt = result[MEPH.jsync].undo(moves.last());
 
             //Assert
-            expect(movereuslt).toBeTruthy();
-            expect(result.property === 'prop3').theTruth('the property was not correct set ');
+
+            return MEPH.continueWhen(function () {
+                return moves.last();
+            }).then(function () {
+                var movereuslt = result[MEPH.jsync].undo(moves.last());
+                return MEPH.continueWhen(function () {
+                    return movereuslt;
+                }).then(function () {
+                    expect(movereuslt).toBeTruthy();
+                    expect(result.property === 'prop3').theTruth('the property was not correct set ');
+                });
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -489,9 +570,14 @@
             result.property = 'prop3';
             result.property = 'prop4';
             //Act
-            var failed = result[MEPH.jsync].undo(moves[0]);
-            //Assert
-            expect(!failed).toBeTruthy();
+            return MEPH.continueWhen(function () {
+                return moves[0];
+            }).then(function () {
+                moves[0].value = 'v';
+                var failed = result[MEPH.jsync].undo(moves[0]);
+                //Assert
+                expect(!failed).toBeTruthy();
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -510,13 +596,17 @@
             result.property = 'prop1';
             result[MEPH.jsync].sweep();
             result.property = otherobject;
-            var lastmove = moves.last();
-            lastmove.new = MEPH.clone(otherobject);
-            //Act
-            var move_result = result[MEPH.jsync].undo(lastmove);
+            return MEPH.continueWhen(function () {
+                return moves.last();
+            }).then(function () {
+                var lastmove = moves.last();
+                lastmove.new = MEPH.clone(otherobject);
+                //Act
+                var move_result = result[MEPH.jsync].undo(lastmove);
 
-            //Assert
-            expect(move_result).theTruth('move results was not true');
+                //Assert
+                expect(move_result).toBeTruthy();
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -537,13 +627,18 @@
             result.property = 'prop3';
             result.property = 'prop4';
             //Act
-            var failed = moves.reverse().all(function (move) {
-                return result[MEPH.jsync].undo(move);
-            });
+            return MEPH.continueWhen(function () {
+                return moves.last();
+            }).then(function () {
 
-            //Assert
-            expect(!failed).toBeTruthy();
-            expect(result.property === 'prop1').theTruth('property was not equal to prop1');
+                var failed = moves.reverse().all(function (move) {
+                    return result[MEPH.jsync].undo(move);
+                });
+
+                //Assert
+                expect(!failed).toBeTruthy();
+                expect(result.property === 'prop3').theTruth('property was not equal to prop1');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {

@@ -76,29 +76,23 @@
             var button = results.first().classInstance,
                 clicked,
                 buttonDom;
-
-            try {
-                buttonDom = button.getDomTemplate().first(function (x) { return x.nodeType === 1; })
-
-                expect(buttonDom.classList.toString() === 'appliedclass secondapplied').theTruth('a buttonclick event was not fired');
-
-            }
-            catch (error) {
-                expect(error).caught();
-            }
-            finally {
-                if (app) {
-                    app.removeSpace();
+            return new Promise(function (resolve) {
+                try {
+                    buttonDom = button.getDomTemplate().first(function (x) { return x.nodeType === 1; })
+                    setTimeout(function () {
+                        expect(buttonDom.classList.toString() === 'appliedclass secondapplied').theTruth('a buttonclick event was not fired');
+                        resolve();
+                    }, 100);
                 }
-                done();
-            }
+                finally {
+                    if (app) {
+                        app.removeSpace();
+                    }
+                }
+            });
         }).catch(function () {
-            if (app) {
-                app.removeSpace();
-            }
             expect(new Error('did not render as expected')).caught();
-            done();
-        });;
+        }).then(done);
     });
     it('classes applied to mephbuton are applied to the button.', function (done) {
         var app, div,
@@ -131,7 +125,7 @@
                 app.removeSpace();
             }
             expect(new Error('did not render as expected')).caught();
-        }).then(function(){
+        }).then(function () {
             done();
         });;
     });

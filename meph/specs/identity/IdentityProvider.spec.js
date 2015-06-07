@@ -1,4 +1,4 @@
-﻿describe("MEPH/identity/IdentityProvider.spec.js", 'MEPH.identity.IdentityProvider', function () {
+﻿describe("MEPH/identity/IdentityProvider.spec.js", 'MEPH.mobile.providers.identity.FacebookProvider', 'MEPH.identity.IdentityProvider', function () {
     beforeEach(function () {
         jasmine.addMatchers(MEPH.customMatchers);
     });
@@ -28,18 +28,20 @@
                 }
             }]
         });
-        window.FB = {
-            init: function () {
-            },
-            getLoginStatus: function (callback) {
-                callback({ status: 'connected' });
+        MEPH.waitFor(function () {
+            window.FB = {
+                init: function () {
+                },
+                getLoginStatus: function (callback) {
+                    callback({ status: 'connected' });
+                }
             }
-        }
-        MEPH.mobile.providers.identity.FacebookProvider.libraryLoaded = true;
-        ip.ready().then(function (t) {
-            expect(ip.providers.length === 1).toBeTruthy();
-        }).catch(function (e) {
-            expect(e).caught();
-        }).then(done);
+            ip.providers.first().$ready = Promise.resolve().$ready = Promise.resolve();
+            ip.ready().then(function (t) {
+                expect(ip.providers.length === 1).toBeTruthy();
+            }).catch(function (e) {
+                expect(e).caught();
+            }).then(done);
+        });
     })
 });

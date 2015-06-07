@@ -5,7 +5,7 @@
     });
 
     it('can create a Remoting COntroller.', function (done) {
-        MEPH.define('MEPH.remoting.RemotingController').then(function ($class) {
+        MEPH.create('MEPH.remoting.RemotingController').then(function ($class) {
             var remotingcontroller = new $class();
             expect(remotingcontroller).theTruth('no remoting controller was created');
         }).catch(function (error) {

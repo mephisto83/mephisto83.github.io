@@ -84,6 +84,9 @@ MEPH.define('MEPH.input.Dropdown', {
     },
     onchange: function (index) {
         var me = this;
+        if (!me.source) {
+            return null;
+        }
         me.$selectedObject = me.source[index];
         me.selected = me.$selectedObject;
         if (me.valuefield !== 'null')

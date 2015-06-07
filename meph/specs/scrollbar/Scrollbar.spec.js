@@ -189,16 +189,13 @@
             scrollbar.horizontal = true;
 
             ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
 
-                    expect(scrollbar.handle.clientWidth).toBe(500);
+            MEPH.waitFor(function () {
+                expect(scrollbar.handle.clientWidth).toBeTruthy();
 
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 100);
+                if (app) {
+                    app.removeSpace();
+                }
             });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();

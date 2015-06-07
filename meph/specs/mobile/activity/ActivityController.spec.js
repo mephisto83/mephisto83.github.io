@@ -277,20 +277,23 @@
                                  }
                              }
                          }).then(function () {
-                             MEPH.create('MEPH.mobile.activity.ActivityController').then(function ($class) {
+                             return MEPH.create('MEPH.mobile.activity.ActivityController').then(function ($class) {
                                  var application = new MEPH.application.Application(),
                                     div = document.createElement('div');
 
-                                 var activityController = new $class();
+                                 var activityController = new $class(), called;
                                  activityController.setApplication(application);
                                  activityController.setActivityHolder(div);
                                  expect(activityController).theTruth('The activity controller was not created.');
                                  MEPH.publish(MEPH.Constants.startView, { config: true });
-                                 activityController.startActivity = function (type, options) {
+                                 activityController.startActivity = function (options) {
                                      expect(options.config).theTruth('no options were found when an activity was published');
+                                     called = true;
                                  }
-                                 expect(result).theTruth('An activity is expected to be loaded');
-
+                                 /// expect(result).theTruth('An activity is expected to be loaded');
+                                 return MEPH.continueWhen(function () {
+                                     return called;
+                                 });
                              });
                          });
                      }).catch(function (error) {

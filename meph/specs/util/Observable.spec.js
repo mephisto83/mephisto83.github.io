@@ -1,4 +1,4 @@
-﻿describe("MEPH/util/Observable.spec.js", function () {
+﻿describe("MEPH/util/Observable.spec.js", 'MEPH.util.Observable', function () {
 
     beforeEach(function () {
         jasmine.addMatchers(MEPH.customMatchers);
@@ -69,9 +69,10 @@
                 removed = options.removed[0];
             });
             array.shift();
-            expect(removed === 'value').theTruth('the removed value was incorrect');
-            expect(changed).toBeTruthy();
-
+            return MEPH.waitFor(function () {
+                expect(removed === 'value').theTruth('the removed value was incorrect');
+                expect(changed).toBeTruthy();
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -191,12 +192,22 @@
         MEPH.requires('MEPH.util.Observable').then(function () {
             var object = { prop: null },
                i,
+               resolve,
+               promise = new Promise(function (r) {
+                   resolve = r;
+               }),
                count = 0;
             MEPH.Observable.observable(object);
-            object.on('changed', function () { count++; });
+            object.on('changed', function () {
+                count++;
+                resolve();
+            });
             object.prop = 'newvalue';
-            expect(object[MEPH.nonEnumerablePropertyPrefix + 'isObservable']).toBeTruthy();
-            expect(count).toBeTruthy();
+
+            return promise.then(function () {
+                expect(object[MEPH.nonEnumerablePropertyPrefix + 'isObservable']).toBeTruthy();
+                expect(count).toBeTruthy();
+            });
 
         }).catch(function (error) {
             expect(error).caught();
@@ -231,7 +242,17 @@
             var object = {
                 prop1: null,
                 prop2: null
-            }, newpropertychanged, changedproperty;
+            },
+            resolve2,
+            resolve1,
+            newpropertychanged,
+            changedproperty,
+                promise1 = new Promise(function (r) {
+                    resolve1 = r;
+                }),
+                promise2 = new Promise(function (r) {
+                    resolve2 = r;
+                });;
             MEPH.util.Observable.observable(object);
             MEPH.util.Observable.defineDependentProperty('newproperty', object, ['prop1', 'prop2'], function () {
                 return true;
@@ -239,17 +260,22 @@
             object.on('altered', function (type, args) {
                 if (args.path === 'newproperty') {
                     newpropertychanged = true;
+                    resolve2();
                 }
             });
             object.on('changed', function (type, args) {
                 if (args.new === true) {
                     changedproperty = true;
+                    resolve1();
                 }
             });
-            object.prop1 = 'asdf';
-            expect(changedproperty).theTruth('changed was not fired');
-            expect(newpropertychanged).theTruth('altered was not fired');
 
+            object.prop1 = 'asdf';
+
+            return Promise.all([promise1, promise2]).then(function () {
+                expect(changedproperty).theTruth('changed was not fired');
+                expect(newpropertychanged).theTruth('altered was not fired');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -259,17 +285,25 @@
     it('when a reference object is added to an observable object, it will become observable also', function (done) {
         MEPH.requires('MEPH.util.Observable').then(function () {
             var object = { prop: null, obj: null },
-               count = 0;
+               count = 0,
+               resolve,
+               promise = new Promise(function (r) {
+                   resolve = r;
+               });;
             MEPH.Observable.observable(object);
             object.obj = {
                 newobject: null
             };
-            object.obj.on('changed', function () {
-                count++;
+            setTimeout(function () {
+                object.obj.on('changed', function () {
+                    count++;
+                    resolve();
+                });
+                object.obj.newobject = 'new';
+            }, 100);
+            return promise.then(function () {
+                expect(count === 1).theTruth('referece object didnt report coutn === 1 changed.');
             });
-            object.obj.newobject = 'new';
-            expect(count === 1).theTruth('referece object didnt report coutn === 1 changed.');
-
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -284,7 +318,12 @@
 
             object.prop.subobj.on('changed', function () { count++; });
             object.prop.subobj.value = 'new';
-            expect(count === 1).theTruth('the sub object did not raise a changed event');
+            return new Promise(function (r) {
+                setTimeout(function () {
+                    expect(count === 1).theTruth('the sub object did not raise a changed event');
+                    r();
+                }, 100);
+            });
 
         }).catch(function (error) {
             expect(error).caught();
@@ -305,10 +344,15 @@
             object.prop.on('altered', function (type, options) {
                 path2 = options.path;
             });
+
             object.prop.subobj.value = 'new';
 
-            expect(path === 'prop.subobj.value').theTruth('the altered path was not correct. path: ' + path);
-
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    expect(path === 'prop.subobj.value').theTruth('the altered path was not correct. path: ' + path);
+                    resolve();
+                }, 100);
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -330,8 +374,12 @@
 
             object.prop.subobj.value2 = 'new';
 
-            expect(path === 'prop.subobj.value2').theTruth('the altered path was not correct. path: ' + path);
-
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    expect(path === 'prop.subobj.value2').theTruth('the altered path was not correct. path: ' + path);
+                    resolve();
+                });
+            }, 100);
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -360,5 +408,57 @@
         });
     });
 
+    it('can use Object.observe, when available to handle events', function (done) {
+        var object = { name: null, value: null };
+        MEPH.util.Observable.useObserve = true;
+        MEPH.Observable.observable(object);
+        var count = 0;
+        object.on('changed', function () {
+            count++;
+            expect(count).toBeTruthy();
+            done();
+        });
+        object.name = 'newname';
+        MEPH.util.Observable.useObserve = false;
+    });
+
+    it('can use Object.observe, and still changes will propagate up the tree', function (done) {
+        var object = {
+            outer: {
+                name: null, value: null
+            }
+        };
+        MEPH.util.Observable.useObserve = true;
+        MEPH.Observable.observable(object);
+        var count = 0;
+        object.on('altered', function () {
+            count++;
+            expect(count).toBeTruthy();
+            done();
+        });
+        object.outer.name = 'newname';
+        MEPH.util.Observable.useObserve = false;
+    });
+
+    it(' will only fire altered for the last change in a batch of changes', function (done) {
+        var object = {
+            outer: {
+                name: null, value: null
+            }
+        };
+        MEPH.util.Observable.useObserve = true;
+        MEPH.Observable.observable(object);
+        var count = 0;
+        object.on('altered', function () {
+            count++;
+            expect(object.outer.name === 'newname0').toBeTruthy();
+            if (object.outer.name === 'newname0') {
+                done();
+            }
+        });
+        for (var i = 40; i--;)
+            object.outer.name = 'newname' + i;
+        MEPH.util.Observable.useObserve = false;
+    });
 
 });

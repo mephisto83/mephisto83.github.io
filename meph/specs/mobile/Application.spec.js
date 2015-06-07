@@ -1,4 +1,4 @@
-﻿describe("MEPH/mobile/Application.spec.js", function () {
+﻿describe("MEPH/mobile/Application.spec.js", 'MEPH.mobile.Application', function () {
 
     beforeEach(function () {
         jasmine.addMatchers(MEPH.customMatchers);
@@ -21,11 +21,11 @@
     it('can set the application name of the mobile application', function (done) {
         //Arrange
         MEPH.create('MEPH.mobile.Application').then(function ($class) {
-            var mobileapplication = MEPH.App.mobileApplication({
+            var mobileapplication = MEPH.mobile.Application.mobileApplication({
                 applicationName: 'Agresso Mobile Platform'
             });
 
-            expect(mobileapplication.getApplicationName()).theTruth('The application name was not set correctly: ');
+            expect(mobileapplication.getApplicationName()).toBeTruthy('The application name was not set correctly: ');
 
         }).catch(function (error) {
             expect(error).caught();
@@ -37,11 +37,11 @@
     it('can set the product', function (done) {
         //Arrange
         MEPH.create('MEPH.mobile.Application').then(function ($class) {
-            var mobileapplication = MEPH.App.mobileApplication({
+            var mobileapplication = MEPH.mobile.Application.mobileApplication({
                 product: 'UNIT4'
             });
 
-            expect(mobileapplication.getProduct()).theTruth('The application name was not set correctly: ');
+            expect(mobileapplication.getProduct()).toBeTruthy('The application name was not set correctly: ');
 
         }).catch(function (error) {
             expect(error).caught();
@@ -54,12 +54,12 @@
         MEPH.create('MEPH.mobile.Application').then(function ($class) {
             var div = document.createElement('mobileappspot');
             document.body.appendChild(div);
-            var mobileApp = MEPH.App.mobileApplication({
+            var mobileApp = MEPH.mobile.Application.mobileApplication({
                 product: 'UNIT4'
             });
             mobileApp.applicationSelector = 'mobileappspot';
             mobileApp.injectMobileApp();
-            expect(div.querySelector('mobileapplicationcontainer')).theTruth('The mobile application container was not found');
+            expect(div.querySelector('mobileapplicationcontainer')).toBeTruthy('The mobile application container was not found');
             div.parentElement.removeChild(div);
 
         }).catch(function (error) {
@@ -78,14 +78,14 @@
                    result,
                    mobileAppContainer;
                 document.body.appendChild(div);
-                mobileApp = MEPH.App.mobileApplication({
+                mobileApp = MEPH.mobile.Application.mobileApplication({
                     product: 'UNIT4'
                 });
                 mobileApp.applicationSelector = 'mobileappspot';
                 mobileApp.injectMobileApp();
                 mobileAppContainer = div.querySelector('mobileapplicationcontainer');
                 result = MEPH.util.Dom.tryParseAttributeJson(mobileAppContainer.getAttribute(MEPH.dataObjectReferenceAttribute));
-                expect(result.controller || result.ct$).theTruth('The mobile application container did not have a controller attached.');
+                expect(result.controller || result.ct$).toBeTruthy('The mobile application container did not have a controller attached.');
                 div.parentElement.removeChild(div);
 
             });

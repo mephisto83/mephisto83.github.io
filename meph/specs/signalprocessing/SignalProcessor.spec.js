@@ -1,4 +1,4 @@
-﻿describe("MEPH/signalprocessing/SignalProcessor.spec.js", 'MEPH.signalprocessing.SignalProcessor', function () {
+﻿describe("MEPH/signalprocessing/SignalProcessor.spec.js", 'MEPH.signalprocessing.SignalProcessor', 'MEPH.audio.Audio', function () {
     var SignalProcessor = MEPH.signalprocessing.SignalProcessor;
 
     beforeEach(function () {
@@ -532,7 +532,7 @@
 
     it('it can do fft to ifft ', function (done) {
         var sp = new SignalProcessor(),
-            len = 2048 * 2 * 2 * 2 * 2,
+            len = 1024,
             sampleRate = 44100;
 
         var input = (new Float32Array(len)).select(function (i, x) {
@@ -549,7 +549,7 @@
 
         audio.buffer(audioresult.buffer, { name: 'buffer' }).complete();
         audio.playbuffer();
-        setTimeout(function () {
+        MEPH.waitFor(function () {
             var audio = new MEPH.audio.Audio();
 
             var audioresult = audio.copyToBuffer(getResource(shouldbelikeoriginal.skipEvery(2), sampleRate), 0, len / sampleRate);
@@ -558,10 +558,7 @@
             //audioresult.buffer.start();
             audio.playbuffer();
 
-        }, 5000)
-        setTimeout(function () {
-            done();
-        }, 10000);
+        }).then(done);
 
     });
 
@@ -596,7 +593,7 @@
 
 
     it('can do a isfft', function (done) {
-        var len = 2048 * 2 * 2 * 2 * 2 * 2,
+        var len = 1024,
            w = 512,
            sampleRate = 44100;
 
@@ -619,7 +616,7 @@
         }), 1024, w / 2);
 
         var shouldbelikeoriginal = sp.isfft(res, 1024, w / 2);
-        setTimeout(function () {
+        MEPH.waitFor(function () {
             var audio = new MEPH.audio.Audio();
 
             var audioresult = audio.copyToBuffer(getResource(shouldbelikeoriginal, sampleRate), 0, len / sampleRate);
@@ -628,10 +625,7 @@
 
             audio.playbuffer();
 
-        }, 5000)
-        setTimeout(function () {
-            done()
-        }, 10000)
+        }).then(done);
         expect(res).toBeTruthy();;
         expect(res.length).toBeTruthy();
     });
@@ -1367,7 +1361,7 @@
 
     it('can do time scaling properly ', function () {
         var sp = new SignalProcessor();
-        
+
         var res = sp.timeScaling([].interpolate(0, 100), [{ start: 0, scale: 0 }, { start: 1, scale: 2 }]);
         var tres = sp.timeScaling([].interpolate(0, 100), [{ start: 0, scale: 0 }, { start: 1, scale: .5 }]);
 

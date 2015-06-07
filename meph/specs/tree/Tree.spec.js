@@ -115,9 +115,12 @@
                 return root.children || [];
             });
             tree.treeSource = treeObject;
-
-            sourceInfo = tree.getSourceInfo(treeObject);
-            expect(sourceInfo.depth === 0).theTruth('the wrong source info was found');
+            return MEPH.continueWhen(function () {
+                return tree.getSourceInfo(treeObject)
+            }).then(function () {
+                sourceInfo = tree.getSourceInfo(treeObject);
+                expect(sourceInfo.depth === 0).theTruth('the wrong source info was found');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -131,7 +134,11 @@
                 treeObject = createTreeObject(),
                 results;
             tree.treeSource = treeObject;
-            expect(tree.source.length === 3).theTruth('The treesource was not converted correctly.');
+            return MEPH.continueWhen(function () {
+                return tree.source.length;
+            }).then(function () {
+                expect(tree.source.length === 3).theTruth('The treesource was not converted correctly.');
+            })
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -198,7 +205,7 @@
                         items;
 
                     items = tree.querySelectorAll('.' + tree.$depthPathPrefixCls + 1);
-                    
+
                     expect(items.length === 1).theTruth('The wrong number of items were found in the tree ' + items.length);
                     if (app) {
                         app.removeSpace();

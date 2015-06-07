@@ -47,7 +47,7 @@ MEPH.define('MEPH.mobile.application.menu.ApplicationMenu', {
         var me = this, promise = Promise.resolve();
         promise = promise.then(function () {
             return MEPH.MobileServices.get('applicationMenuProvider').then(function (provider) {
-                return provider.getMenuItemProviders();
+                return provider ? provider.getMenuItemProviders() : [];
             });
         });
         return promise;
@@ -104,14 +104,19 @@ MEPH.define('MEPH.mobile.application.menu.ApplicationMenu', {
             }));
         }).then(function (providersAnItems) {
             me.$providersAndItems = providersAnItems;
-            me.menusource.removeWhere(function () { return true; });
+            me.menusource = me.menusource || MEPH.util.Observable.observable([]);
+            if (me.menusource) {
+                me.menusource.removeWhere(function () { return true; });
+            }
             me.$providersAndItems.foreach(function (x) {
                 x.provider.updateCallback = me.updateCallBack.bind(me, x.provider);
                 x.provider.loadMenu = me.loadMenu.bind(me);
                 x.provider.appMenu = me;
-                x.items.foreach(function (y) {
-                    me.menusource.push(MEPH.util.Observable.observable(y));
-                });
+                if (me.menusource) {
+                    x.items.foreach(function (y) {
+                        me.menusource.push(MEPH.util.Observable.observable(y));
+                    });
+                }
             });
         });
     },

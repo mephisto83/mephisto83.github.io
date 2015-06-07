@@ -119,7 +119,7 @@
         });
 
 
-        it('can get the presets from the soundfontinstrument', function (done) {
+        xit('can get the presets from the soundfontinstrument', function (done) {
             var soundfont = new MEPH.audio.music.instrument.SoundFontInstrument();
             var audio = new MEPH.audio.Audio();
             soundfont.setFontFile('MEPH.audio.music.instrument.trumpet.ReedOrgan');
@@ -201,7 +201,7 @@
             }).then(done);
         });
 
-        it('can create sound processor node ', function (done) {
+        xit('can create sound processor node ', function (done) {
             var soundfont = new MEPH.audio.music.instrument.SoundFontInstrument();
             var audio = new MEPH.audio.Audio();
             soundfont.setFontFile('MEPH.audio.music.instrument.trumpet.EnglishHorn');

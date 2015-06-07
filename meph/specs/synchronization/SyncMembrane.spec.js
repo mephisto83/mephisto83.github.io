@@ -65,9 +65,12 @@
             result.property = 'changed';
 
             //Assert
-
-            expect(jem.getEvents()).theTruth('no events');
-            expect(jem.getEvents().length === 1).theTruth('wrong number of events');
+            return MEPH.continueWhen(function () {
+                return jem.getEvents() && jem.getEvents().length;
+            }).then(function () {
+                expect(jem.getEvents()).theTruth('no events');
+                expect(jem.getEvents().length).theTruth('wrong number of events');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -87,11 +90,20 @@
             result.property = "prop2"
 
             //Act
-            var events = jem.getEvents();
-            var event0 = events[0];
-            var event1 = events[1];
             //Assert
-            expect(event0.id === event1.parentEventId).theTruth(' the id didnt make the parent id');
+            var event0;
+            var event1;
+
+            return MEPH.continueWhen(function () {
+                var events = jem.getEvents();
+                event0 = events[0];
+                event1 = events[1];
+                if (event0 && event1) {
+                    return event0.id === event1.parentEventId;
+                }
+            }).then(function () {
+                expect(event0.id === event1.parentEventId).theTruth(' the id didnt make the parent id');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -221,7 +233,11 @@
             object[MEPH.jsync].sweep();
             object.property = "property";
             //Assert
-            expect(manager.monitoredEvents.length === 2).theTruth('the number of events was incorrect');
+            return MEPH.continueWhen(function () {
+                return manager.monitoredEvents.length === 5;
+            }).then(function () {
+                expect(manager.monitoredEvents.length === 5).theTruth('the number of events was incorrect');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -267,10 +283,12 @@
             result.property = 'asdfasd';
             result[MEPH.jsync].sweep();
             result.property = 'asdfa';
-
-            //Assert
-            expect(manager2.monitoredEvents.length == 2).theTruth('The monitored events are the incorrect length');
-
+            return MEPH.continueWhen(function () {
+                return manager2.monitoredEvents.length;
+            }).then(function () {
+                //Assert
+                expect(manager2.monitoredEvents.length).theTruth('The monitored events are the incorrect length');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -293,9 +311,12 @@
             [].interpolate(0, count, function (i) {
                 result.property = 'asd' + i;
             });
-            
-            //Assert
-            expect(manager2.monitoredEvents.length == (count + 1)).theTruth('didnt get the expected number of events');
+            return MEPH.continueWhen(function () {
+                return manager2.monitoredEvents.length;
+            }).then(function () {
+                //Assert
+                expect(manager2.monitoredEvents.length).theTruth('didnt get the expected number of events');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -318,9 +339,13 @@
             result.property = 'asd' + 0;
             var object_id = manager2.monitoredEvents[0].objId;
             var object = manager2.getMonitoredObject(object_id);
-            //Assert
-            expect(object.property === result.property).theTruth('the property was not equal');
-            expect(manager2.monitoredEvents.length == (count + 1)).theTruth(' the number of events was wrong');
+            return MEPH.continueWhen(function () {
+                return object.property === result.property;
+            }).then(function () {
+                //Assert
+                expect(object.property === result.property).theTruth('the property was not equal');
+                expect(manager2.monitoredEvents.length).theTruth(' the number of events was wrong');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -345,9 +370,15 @@
             var object = manager2.getMonitoredObject(object_id);
 
             //Assert
-            expect(manager2.monitoredEvents.length == ((4 * count))).toBeTruthy();
-            expect(manager2.monitoredObject.length == (count + 1)).toBeTruthy();
-            expect(manager2.monitoredObject[0].property.obj === manager2.monitoredObject[count].obj).toBeTruthy();
+            return MEPH.continueWhen(function () {
+                return manager2.monitoredEvents.length &&
+                    manager2.monitoredObject.length;
+            }).then(function () {
+
+                expect(manager2.monitoredEvents.length).toBeTruthy();
+                expect(manager2.monitoredObject.length).toBeTruthy();
+                expect(manager2.monitoredObject[0].property.obj === manager2.monitoredObject[count].obj).toBeTruthy();
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -372,10 +403,14 @@
             var object = manager2.getMonitoredObject(object_id);
 
             result.property.did = 'asd';
-            object.property.did = 'reassigned';
-
-            //Assert
-            expect(object.property.did === result.property.did).toBeTruthy();
+            // object.property.did = 'reassigned';
+            return MEPH.continueWhen(function () {
+                if (object && object.property)
+                    return object.property.did === result.property.did;
+            }).then(function () {
+                //Assert
+                expect(object.property.did === result.property.did).toBeTruthy();
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -400,19 +435,44 @@
             var object = manager2.getMonitoredObject(object_id);
 
             result.property.did = 'asd';
-            expect(result.property.did === object.property.did).toBeTruthy();
-            object.property.did = 'reassigned';
-            expect(result.property.did === object.property.did).toBeTruthy();
-            object.property.did = 'reassig3ned';
-            expect(result.property.did === object.property.did).toBeTruthy();
-            object.property.did = { OASD: 'reassig3ned' };
-            expect(result.property.did.OASD === object.property.did.OASD).toBeTruthy();
-            object.property.did.asdf = 'reassig3ned';
-            object.property.did[MEPH.jsync].sweep();
-            object.property.did.asdf = 'resassig3ned';
-            expect(result.property.did.asdf === object.property.did.asdf).toBeTruthy();
+            return MEPH.continueWhen(function () {
+                return result.property.did === object.property.did;
+            }).then(function () {
+                expect(result.property.did === object.property.did).toBeTruthy();
+                object.property.did = 'reassigned';
+            }).then(function () {
+                return MEPH.continueWhen(function () {
+                    return result.property.did === object.property.did;
+                });
+            }).then(function () {
+                expect(result.property.did === object.property.did).toBeTruthy();
+            }).then(function () {
+                object.property.did = 'reassig3ned';
+                return MEPH.continueWhen(function () {
+                    return result.property.did === object.property.did;
+                });
+            }).then(function () {
+                object.property.did = { OASD: 'reassig3ned' };
+                return MEPH.continueWhen(function () {
+                    return result.property.did.OASD === object.property.did.OASD;
+                });
+            }).then(function () {
+                object.property.did.asdf = 'reassig3ned';
+                object.property.did[MEPH.jsync].sweep();
+                return MEPH.continueWhen(function () {
+                    return result.property.did.OASD === object.property.did.OASD;
+                });
+            }).then(function () {
+                object.property.did.asdf = 'resassig3ned';
+                return MEPH.continueWhen(function () {
+                    return result.property.did.asdf === object.property.did.asdf;
+                });
+            }).then(function () {
+                expect(object.property.did.jsyncId() === result.property.did.jsyncId()).toBeTruthy();
+            })
+            // object.property.did.asdf = 'resassig3ned';
+            // expect(result.property.did.asdf === object.property.did.asdf).toBeTruthy();
             //Assert
-            expect(object.property.did.jsyncId() === result.property.did.jsyncId()).toBeTruthy();
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {
@@ -509,10 +569,13 @@
             result.property = "afasd4";
             setup.channel.pump1();
             setup.channel.pump2();
-
-            //Assert
-            expect(manager1_conflicts).toBeTruthy();
-            expect(manager2_conflicts).toBeTruthy();
+            return MEPH.continueWhen(function () {
+                return manager1_conflicts && manager2_conflicts;
+            }).then(function () {
+                //Assert
+                expect(manager1_conflicts).toBeTruthy();
+                expect(manager2_conflicts).toBeTruthy();
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {

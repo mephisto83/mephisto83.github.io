@@ -625,79 +625,62 @@
             dom.setAttribute('data-bind-value', 'c$.value.prop | c$.transform');
             dom.setAttribute('d-binder-tutut', 'c$.value.prop | c$.transform');
             MEPH.create('MEPH.bind.Binder').then(function ($class) {
-                try {
-                    var binder = new $class(),
-                        instructionstring,
-                        errorthrown,
-                        instructions;
-                    instructionstring = 'c$.value.prop | v$.value | c$.transformAgain';
-                    instructions = binder.parseInstructionString(instructionstring);
+                var binder = new $class(),
+                    instructionstring,
+                    errorthrown,
+                    instructions;
+                instructionstring = 'c$.value.prop | v$.value | c$.transformAgain';
+                instructions = binder.parseInstructionString(instructionstring);
 
-                    //Act
-                    binder.executeInstructions(dom, 'value', 'Changed', instructions, object, 'value')
-                        .catch(function (error) {
-                            errorthrown = true;
-                        })
-                        .then(function (result) {
-                            try {
-                                //Assert
-                                expect(errorthrown).toBeTruthy();
-                                expect(object.transformAgain === null).toBeTruthy();
-                                expect(object.value === undefined).toBeTruthy();
-                            }
-                            catch (error) {
-                                expect(false).toBeTruthy();
-                            }
-                            finally {
-                                done();
-                            }
-                        });
-                }
-                catch (error) {
-                    expect(false).toBeTruthy();
-                    done();
-                }
-                finally {
-                }
+                //Act
+                binder.executeInstructions(dom, 'value', 'Changed', instructions, object, 'value')
+                    .catch(function (error) {
+                        errorthrown = true;
+                    })
+                    .then(function (result) {
+                        expect(errorthrown).toBeTruthy();
+                        expect(object.transformAgain === null).toBeTruthy();
+                        expect(object.value === undefined).toBeTruthy();
+
+                    });
             });
-        });
+        }).catch(function (err) {
+            expect(err).caught();
+        }).then(done);;
     });
 
     it('a binder can set the value on a dom object', function (done) {
         //Arrange
         var dom = createDomObjectWithDataBind('div', '"innerHTML":"c$.prop"');
         MEPH.create('MEPH.bind.Binder').then(function ($class) {
-            try {
-                var binder = new $class();
-                binder.setValueOnDom('innerHTML', dom, 'innerHTML');
+            var binder = new $class();
+            binder.setValueOnDom('innerHTML', dom, 'innerHTML');
+            return MEPH.continueWhen(function () {
+                return dom.innerHTML === 'innerHTML';
+            }).then(function () {
                 expect(dom.innerHTML === 'innerHTML').toBeTruthy();
-            }
-            catch (error) {
-                expect(false).toBeTruthy();
-            }
-            finally {
-                done();
-            }
-        });
+            });
+        }).catch(function (err) {
+            expect(err).caught();
+        }).then(done);
     });
 
     it('a binder can set the value on a dom object class', function (done) {
         //Arrange
         var dom = createDomObjectWithDataBind('div', '"innerHTML":"c$.prop"');
         MEPH.create('MEPH.bind.Binder').then(function ($class) {
-            try {
-                var binder = new $class();
-                binder.setValueOnDom('class1 class2', dom, 'class');
+
+            var binder = new $class();
+            binder.setValueOnDom('class1 class2', dom, 'class');
+            MEPH.continueWhen(function () {
+                return dom.classList.contains('class1');
+            }).then(function () {
                 expect(dom.classList.contains('class1')).toBeTruthy();
                 expect(dom.classList.contains('class2')).toBeTruthy();
-            }
-            catch (error) {
-                expect(false).toBeTruthy();
-            }
-            finally {
-                done();
-            }
-        });
+            })
+        }).catch(function (err) {
+            expect(err).caught();
+        }).then(done);
     });
 
 
@@ -714,27 +697,23 @@
         MEPH.requires('MEPH.bind.Binder',
             'MEPHTests.helper.composite.DeepHelperComposite',
             'MEPHTests.helper.composite.HelperComposite').then(function () {
-                try {
-                    var dhc = new MEPHTests.helper.composite.DeepHelperComposite(),
-                    hc = new MEPHTests.helper.composite.HelperComposite();
+                var dhc = new MEPHTests.helper.composite.DeepHelperComposite(),
+                hc = new MEPHTests.helper.composite.HelperComposite();
 
-                    MEPH.Binder.bindControl(dhc, hc, helperCompositeNode);
+                MEPH.Binder.bindControl(dhc, hc, helperCompositeNode);
 
-                    //Act
-                    var teep = dhc.deepHelperProperty = 'prop';
+                //Act
+                var teep = dhc.deepHelperProperty = 'prop';
+                return MEPH.continueWhen(function () {
+                    return hc.helperCompositeProperty === 'prop'
+                })
+                 .then(function () {
+                     expect(hc.helperCompositeProperty === 'prop').theTruth('helperCompositeProperty didnt propogate to the deepHelperProperty');
+                 })
 
-                    //Assert
-                    setTimeout(function () {
-                        expect(hc.helperCompositeProperty === 'prop').theTruth('helperCompositeProperty didnt propogate to the deepHelperProperty');
-                        done();
-                    }, 100);
-                }
-                catch (error) {
-                    expect(error).caught();
-                }
-                finally {
-                }
-            });
+            }).catch(function (err) {
+                expect(err).caught();
+            }).then(done);
     });
 
     it('can parse instructions for subcontrols', function (done) {
@@ -742,37 +721,31 @@
         MEPH.requires('MEPH.bind.Binder',
             'MEPHTests.helper.composite.DeepHelperComposite',
             'MEPHTests.helper.composite.HelperComposite').then(function () {
-                try {
+                var dhc = new MEPHTests.helper.composite.DeepHelperComposite(),
+                    instruction,
+                    parsedInstruction,
+                    hc = new MEPHTests.helper.composite.HelperComposite();
 
-                    var dhc = new MEPHTests.helper.composite.DeepHelperComposite(),
-                        instruction,
-                        parsedInstruction,
-                        hc = new MEPHTests.helper.composite.HelperComposite();
+                hc.setUniqueId(MEPH.GUID());
 
-                    hc.setUniqueId(MEPH.GUID());
+                shorcut = MEPH.getBindPrefixShortCuts().first(function (x) {
+                    return x.type === 'subcontrol';
+                });
 
-                    shorcut = MEPH.getBindPrefixShortCuts().first(function (x) {
-                        return x.type === 'subcontrol';
-                    });
+                instruction = shorcut.prefix + hc.getUniqueId() + '.helperCompositeProperty';
 
-                    instruction = shorcut.prefix + hc.getUniqueId() + '.helperCompositeProperty';
+                //Act    
+                parsedInstruction = MEPH.Binder.parseInstructionString(instruction)[0]
 
-                    //Act    
-                    parsedInstruction = MEPH.Binder.parseInstructionString(instruction)[0]
+                //Assert
+                expect(parsedInstruction.shortCut.prefix === shorcut.prefix);
+                expect(parsedInstruction.path.join('.') === shorcut.prefix + '.helperCompositeProperty');
+                expect(parsedInstruction.uniqueId === hc.getUniqueId());
 
-                    //Assert
-                    expect(parsedInstruction.shortCut.prefix === shorcut.prefix);
-                    expect(parsedInstruction.path.join('.') === shorcut.prefix + '.helperCompositeProperty');
-                    expect(parsedInstruction.uniqueId === hc.getUniqueId());
 
-                }
-                catch (error) {
-                    expect(error).caught();
-                }
-                finally {
-                    done();
-                }
-            });
+            }).catch(function (err) {
+                expect(err).caught();
+            }).then(done);;
     });
     it(' can parse push instructions from dom objects', function (done) {
         //Arrange

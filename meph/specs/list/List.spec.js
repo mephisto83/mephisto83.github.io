@@ -112,12 +112,15 @@
             return app.loadViewObject([results], dom);
         }).then(function (results) {
             var list = results.first().classInstance,
-                promise = Promise.resolve(),
+                promise = new Promise(function (res) {
+                    resolve = res;
+                }),
+                resolve,
                 source,
                 templates;
             list.on('render', function (type, options) {
-                promise = options.renderComplete.then(function () {
-                    return list;
+                options.renderComplete.then(function () {
+                    resolve(list);
                 });
             });
             source = [].interpolate(0, 10, function (index) {
@@ -128,7 +131,11 @@
 
             list.source = source;
 
-            return promise;
+            return promise.then(function (res) {
+                return MEPH.waitFor(function () {
+                    return res;
+                })
+            });
 
         }).then(function (list) {
             expect(list.boundSource.length === 10).theTruth('The bound source wasnt connected to the list. ' + list.boundSource.length);
@@ -157,7 +164,10 @@
             return app.loadViewObject([results], dom);
         }).then(function (results) {
             var list = results.first().classInstance,
-                promise = Promise.resolve(),
+                promise = new Promise(function (res) {
+                    resolve = res;
+                }),
+                resolve,
                 source,
                 templates;
             source = MEPH.util.Observable.observable([].interpolate(0, 10, function (index) {
@@ -167,8 +177,8 @@
             }));
 
             list.on('render', function (type, options) {
-                promise = options.renderComplete.then(function () {
-                    return list;
+                options.renderComplete.then(function () {
+                    resolve(list);
                 });
             }, 1);
 
@@ -193,14 +203,19 @@
                 }
             });
             list.source.pop();
-            return promise;
+            return MEPH.waitFor(function () {
+
+                return promise;
+            });
 
         }).catch(function (error) {
+
+            expect(error).caught();
+        }).then(function (x) {
+
             if (app) {
                 app.removeSpace();
             }
-            expect(error).caught();
-        }).then(function (x) {
             done();
         });
     });
@@ -217,7 +232,10 @@
             return app.loadViewObject([results], dom);
         }).then(function (results) {
             var list = results.first().classInstance,
-                promise = Promise.resolve(),
+                promise = new Promise(function (res) {
+                    resolve = res;
+                }),
+                resolve,
                 source,
                 templates;
             source = MEPH.util.Observable.observable([].interpolate(0, 10, function (index) {
@@ -227,8 +245,8 @@
             }));
 
             list.on('render', function (type, options) {
-                promise = options.renderComplete.then(function () {
-                    return list;
+                options.renderComplete.then(function () {
+                    return resolve(list);
                 });
             }, 1);
 
@@ -242,12 +260,15 @@
             //    done();
             return list;
         }).then(function (list) {
-            var promise = Promise.resolve(),
+            var promise = new Promise(function (res) {
+                resolve = res;
+            }), resolve,
                 newobject = { prop: 1 };
             MEPH.util.Observable.observable(newobject);;
             list.un(null, 1);
             list.on('render', function (type, options) {
-                promise = options.renderComplete.then(function () {
+                options.renderComplete.then(function () {
+
                 });
             }, 1);
             list.on('updatecomplete', function () {
@@ -255,6 +276,9 @@
                 var boundInfo = list.getBoundSourceInfo(newobject);
 
                 expect(list.getBoundSourceIndex(newobject) === 4).theTruth('The item in the list wasnt in the right place.');
+
+                resolve();
+
                 if (app) {
                     app.removeSpace();
                 }
@@ -263,9 +287,6 @@
             return promise;
 
         }).catch(function () {
-            if (app) {
-                app.removeSpace();
-            }
             expect(new Error('did not render as expected')).caught();
         }).then(function (x) {
             done();
@@ -285,12 +306,15 @@
         }).then(function (results) {
             var list = results.first().classInstance,
                 source,
-                promise = Promise.resolve(),
+                promise = new Promise(function (res) {
+                    resolve = res;
+                }),
+                resolve,
                 templates;
 
             list.on('render', function (type, options) {
-                promise = options.renderComplete.then(function () {
-                    return list;
+                options.renderComplete.then(function () {
+                    return resolve(list);
                 });
             });
 

@@ -644,14 +644,14 @@ MEPH.define('MEPH.table.SpreadSheet', {
         var me = this,
             u = 0;
         if (offset == 'left') {
-            me.columnHeaderOffsets.subset(me.startLeftColumn, cell.column).first(function (x) {
+            (me.columnHeaderOffsets || []).subset(me.startLeftColumn, cell.column).first(function (x) {
                 u += x;
             });
         }
         else {
             if (me.columnPositions)
                 return me.columnPositions[cell.column] - me.columnPositions[me.startColumn];
-            me.columnOffsets.subset(me.startColumn, cell.column).first(function (x) {
+            (me.columnOffsets || []).subset(me.startColumn, cell.column).first(function (x) {
                 u += x;
             });
         }
@@ -665,14 +665,14 @@ MEPH.define('MEPH.table.SpreadSheet', {
         var me = this;
         var t = 0;
         if (offset == 'top') {
-            me.rowHeaderOffsets.subset(me.startTopRow, cell.row).first(function (x) {
+            (me.rowHeaderOffsets || []).subset(me.startTopRow, cell.row).first(function (x) {
                 t += x;
             });
         }
         else {
             if (me.rowPositions)
                 return me.rowPositions[cell.row] - me.rowPositions[me.startRow];
-            me.rowOffsets.subset(me.startRow, cell.row).first(function (x) {
+            (me.rowOffsets || []).subset(me.startRow, cell.row).first(function (x) {
                 t += x;
             });
         }
@@ -732,7 +732,7 @@ MEPH.define('MEPH.table.SpreadSheet', {
             var voffset = vs * percentage;;
             var t = 0;
             var index = 0;
-            offsets.first(function (x, i) {
+            (offsets || []).first(function (x, i) {
                 t += x;
                 index = i;
                 return t > voffset;
@@ -749,7 +749,7 @@ MEPH.define('MEPH.table.SpreadSheet', {
     getRelativeRow: function (relativeX, offset) {
         var me = this,
             startrow = me.startRow,
-            offsets = me.rowPositions;
+            offsets = me.rowPositions || [];
         switch (offset) {
             case 'top':
                 offsets = me.rowHeaderPositions;
@@ -767,7 +767,7 @@ MEPH.define('MEPH.table.SpreadSheet', {
      ***/
     getRelativeColum: function (relativeY, offset) {
         var me = this, columnwidth = me.defaultColumnWidth,
-           offsets = me.columnPositions;
+           offsets = me.columnPositions || [];
         switch (offset) {
             case 'left':
                 columnwidth = me.defaultHeaderColumnWidth;
@@ -780,12 +780,15 @@ MEPH.define('MEPH.table.SpreadSheet', {
     },
     calculateVertical: function () {
         var me = this;
-        me.verticalSize = me.verticalSize || me.rowOffsets.summation(function (x, t) { return t += x; });
+        me.verticalSize = me.verticalSize || (me.rowOffsets || []).summation(function (x, t) { return t += x; });
         return me.verticalSize;
     },
     calculateHorizontal: function () {
         var me = this;
-        me.horizontalSize = me.horizontalSize || me.columnOffsets.summation(function (x, t) { return t += x; });
+        me.horizontalSize = me.horizontalSize || (me.columnOffsets || [])
+            .summation(function (x, t) {
+                return t += x;
+            });
         return me.horizontalSize;
     },
     update: function () {
@@ -830,9 +833,9 @@ MEPH.define('MEPH.table.SpreadSheet', {
                         //}, canvas)
                     })
                 }
-                else if (me.enablehtml) {
+                else if (me.enablehtml && me.svgrenderer) {
                     me.svgrenderer.clear();
-                    var res = me.svgrenderer.draw(headerInstructions.where(function(x){
+                    var res = me.svgrenderer.draw(headerInstructions.where(function (x) {
                         switch (x.shape) {
                             case MEPH.util.SVG.shapes.bezier:
                             case MEPH.util.SVG.shapes.line:
@@ -842,14 +845,16 @@ MEPH.define('MEPH.table.SpreadSheet', {
                     }));
                     me.htmlrenderer.clear();
                     var res = me.htmlrenderer.draw(headerInstructions);
-                    res.foreach(function (item) {
-                        me.dun(item.shape);
-                        me.don('mouseover', item.shape, function (item) {
-                            me.dispatchEvent('mouseoveritem', {
-                                items: [item.options.relObj], header: null
-                            }, me.canvas)
-                        }.bind(me, item), item.shape);
-                    })
+                    if (res) {
+                        res.foreach(function (item) {
+                            me.dun(item.shape);
+                            me.don('mouseover', item.shape, function (item) {
+                                me.dispatchEvent('mouseoveritem', {
+                                    items: [item.options.relObj], header: null
+                                }, me.canvas)
+                            }.bind(me, item), item.shape);
+                        });
+                    }
                 }
                 else {
                     me.rendererContent.clear();
@@ -1098,7 +1103,7 @@ MEPH.define('MEPH.table.SpreadSheet', {
         var me = this, result;
         count = count || 0;
         cstart = cstart || start;
-
+        offsets = offsets || [];
         end = end || (offsets.length - 1);
         var mid = Math.floor((end - cstart) / 2) + cstart;
         var tempWidth = offsets[mid] - offsets[start];

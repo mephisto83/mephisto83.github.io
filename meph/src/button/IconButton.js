@@ -79,8 +79,10 @@ MEPH.define('MEPH.button.IconButton', {
     iconBtnClassChanged: function () {
         var me = this, iconbtn;
         iconbtn = me.querySelector(me.$iconbuttoncls);
-        iconbtn.className = '';
-        iconbtn.className = me.iconButtonCls;
+        if (iconbtn) {
+            iconbtn.className = '';
+            iconbtn.className = me.iconButtonCls;
+        }
     },
     defineDependentProperties: function () {
         var me = this;

@@ -310,8 +310,9 @@
                 var object = manager2.monitoredObject[0];
 
                 //Assert
-                expect(Array.isArray(object.property)).toBeTruthy();
-
+                return MEPH.waitFor(function () {
+                    expect(Array.isArray(object.property)).toBeTruthy();
+                });
             })
         }).catch(function (error) {
             expect(error).caught();
@@ -339,10 +340,11 @@
                 var object = manager2.monitoredObject[0];
 
                 //Assert
-                expect(Array.isArray(object.property)).toBeTruthy();
-                expect((object.property[0] === 'a')).toBeTruthy();
-                expect((object.property[1] === 'b')).toBeTruthy();
-
+                return MEPH.waitFor(function () {
+                    expect(Array.isArray(object.property)).toBeTruthy();
+                    expect((object.property[0] === 'a')).toBeTruthy();
+                    expect((object.property[1] === 'b')).toBeTruthy();
+                });
             })
         }).catch(function (error) {
             expect(error).caught();
@@ -367,13 +369,14 @@
                 result.property = ['a', { value: 'b' }];
                 result.property.push({ value: 'c' });
                 var object = manager2.monitoredObject[0];
+                return MEPH.waitFor(function () {
 
-                //Assert
-                expect(Array.isArray(object.property)).toBeTruthy();
-                expect((object.property[0] === 'a')).toBeTruthy();
-                expect((object.property[1].value === 'b')).toBeTruthy();
-                expect((object.property[2].value === 'c')).toBeTruthy();
-
+                    //Assert
+                    expect(Array.isArray(object.property)).toBeTruthy();
+                    expect((object.property[0] === 'a')).toBeTruthy();
+                    expect((object.property[1].value === 'b')).toBeTruthy();
+                    expect((object.property[2].value === 'c')).toBeTruthy();
+                });
             })
         }).catch(function (error) {
             expect(error).caught();
@@ -399,13 +402,14 @@
                 result.property.push({ value: 'c' });
                 result.property.pop();
                 var object = manager2.monitoredObject[0];
+                return MEPH.waitFor(function () {
 
-                //Assert
-                expect(Array.isArray(object.property)).toBeTruthy();
-                expect((object.property[0] === 'a')).toBeTruthy();
-                expect((object.property[1].value === 'b')).toBeTruthy();
-                expect(object.property.length === 2).toBeTruthy();
-
+                    //Assert
+                    expect(Array.isArray(object.property)).toBeTruthy();
+                    expect((object.property[0] === 'a')).toBeTruthy();
+                    expect((object.property[1].value === 'b')).toBeTruthy();
+                    expect(object.property.length === 2).toBeTruthy();
+                });
             })
         }).catch(function (error) {
             expect(error).caught();
@@ -432,13 +436,14 @@
                 result.property.push({ value: 'c' });
                 result.property.pop();
                 var object = manager2.monitoredObject[0];
+                return MEPH.waitFor(function () {
 
-                //Assert
-                expect(Array.isArray(object.property)).toBeTruthy();
-                expect((object.property[0] === 'a')).toBeTruthy();
-                expect((object.property[1].value === 'b')).toBeTruthy();
-                expect(object.property.length === 2).toBeTruthy();
-
+                    //Assert
+                    expect(Array.isArray(object.property)).toBeTruthy();
+                    expect((object.property[0] === 'a')).toBeTruthy();
+                    expect((object.property[1].value === 'b')).toBeTruthy();
+                    expect(object.property.length === 2).toBeTruthy();
+                });
             })
         }).catch(function (error) {
             expect(error).caught();
@@ -519,18 +524,18 @@
                 //Act
                 manager1.heartBeat();
                 manager2.heartBeat();
-                setup.channel.pump1();
-                setup.channel.pump2();
-                setup.channel.pump1();
-                setup.channel.pump2();
-                setup.channel.pump1();
-                setup.channel.pump2();
+                [].interpolate(0, 10, function () {
+                    setup.channel.pump1();
+                    setup.channel.pump2();
+                });
+                manager1.heartBeat();
+                manager2.heartBeat();
                 var object = manager2.monitoredObject[2];
-
-                //Assert
-                expect(negotiator1.state === MEPH.synchronization.SyncConflictNegotiator.states.idle).toBeTruthy();
-                expect(negotiator2.state === MEPH.synchronization.SyncConflictNegotiator.states.idle).toBeTruthy();
-
+                      //Assert
+                    expect(negotiator1.state === MEPH.synchronization.SyncConflictNegotiator.states.idle).toBeTruthy();
+                    expect(negotiator2.state === MEPH.synchronization.SyncConflictNegotiator.states.idle).toBeTruthy();
+                    return MEPH.waitFor(function () {
+                    });
             })
         }).catch(function (error) {
             expect(error).caught();
@@ -574,7 +579,7 @@
                     setup.channel.pump1();
                     setup.channel.pump2();
                 }
-                
+
                 //Assert
                 expect(negotiator1.state === MEPH.synchronization.SyncConflictNegotiator.states.idle).toBeTruthy();
                 expect(negotiator2.state === MEPH.synchronization.SyncConflictNegotiator.states.idle).toBeTruthy();

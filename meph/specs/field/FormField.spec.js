@@ -1,6 +1,6 @@
 ﻿describe("MEPH/field/FormField.spec.js", function () {
 
-      beforeEach(function () {
+    beforeEach(function () {
         jasmine.addMatchers(MEPH.customMatchers);
     });
 
@@ -26,11 +26,13 @@
 
         MEPH.create('MEPH.field.FormField').then(function ($class) {
             var input = new $class();
-            
+
             input.componentCls = 'cssclass';
 
-            //Assert
-            expect(input.formFieldCls === 'form-control cssclass').theTruth('the class wasnt set correctly');
+            return MEPH.waitFor(function () {
+                expect(input.formFieldCls.indexOf('cssclass') !== -1).theTruth('the class wasnt set correctly');
+            });
+
         }).catch(function (error) {
             expect(error).caught();
         }).then(function (x) {

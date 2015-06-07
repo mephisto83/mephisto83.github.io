@@ -14,7 +14,12 @@
                 }
             }]);
             obj.prop = 'newvalue';
-            expect(called).theTruth('the validatoin rule wasnt called');
+            return MEPH.continueWhen(function () {
+                return called;
+            }).then(function () {
+                expect(called).theTruth('the validatoin rule wasnt called');
+            });
+
         }).catch(function (error) {
             expect(error).caught();
         }).then(function () {

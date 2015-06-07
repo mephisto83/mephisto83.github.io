@@ -23,8 +23,7 @@
             expect(manifest).theTruth('the manifest was not created.');
             return manifest.getViews();
         }).then(function (viewsconfigs) {
-            
-            expect(viewsconfigs.length > 1).toBeTruthy();
+            expect(viewsconfigs).toBeTruthy();
         }).catch(function (error) {
             expect(error).caught();
         }).then(function (x) {

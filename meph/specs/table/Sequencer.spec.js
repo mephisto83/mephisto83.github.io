@@ -35,7 +35,7 @@
         })
     });
 
-    it('a sequencer requires data, that have certain properties, e.g. length, time, accessing them will be in the inheriting class', function () {
+    it('a sequencer requires data, that have certain properties, e.g. length, time, accessing them will be in the inheriting class', function (done) {
         var sequencer = new Sequencer();
         sequencer.time = {
             'function': function (x) {
@@ -54,10 +54,17 @@
             }
         })
         sequencer.source = MEPH.Observable.observable([{ time: 0, length: 1 }]);
-        expect(called).toBeTruthy();
+
+        MEPH.continueWhen(function () { return called; })
+            .then(function () {
+                expect(called).toBeTruthy();
+            })
+            .catch(function (err) {
+                expect(err).caught();
+            }).then(done);
     });
 
-    it('when the source is altered the sequencer will update the screen', function () {
+    it('when the source is altered the sequencer will update the screen', function (done) {
         var sequencer = new Sequencer();
         sequencer.time = {
             'function': function (x) {
@@ -74,7 +81,13 @@
             called = true;
         };
         sequencer.source = MEPH.Observable.observable([{ time: 0, length: 1 }]);
-        expect(called).toBeTruthy();
+        MEPH.continueWhen(function () { return called; })
+            .then(function () {
+                expect(called).toBeTruthy();
+            })
+            .catch(function (err) {
+                expect(err).caught();
+            }).then(done);
     });
 
     it('the sequencer must have a time, length and lane function to get enough information for sequencing', function () {
@@ -209,10 +222,9 @@
         var sequence = new Sequencer(),
 
             called = 0;
-
         sequence.updateCells = function () {
-            called++;
         }
+
         sequence.setActiveCell = function () { };;
 
         var item = { prop: 'p' };
@@ -223,14 +235,22 @@
         item.prop = '2';
 
         sequence.source = null;
+        sequence.updateCells = function () {
+            called++;
+        }
         item.prop = '3';
-        setTimeout(function (x) {
-            expect(called).toBe(3);
-            done();
-        }, 1);
+        MEPH.continueWhen(function () {
+            return called && item && sequence;
+        })
+            .then(function () {
+                expect(called).toBeTruthy();
+            })
+            .catch(function (err) {
+                expect(err).caught();
+            }).then(done);
     });
 
-    it('can get the item which the mouse is over', function () {
+    it('can get the item which the mouse is over', function (done) {
         var sequence = new Sequencer();
         sequence.time = { 'function': function (x) { return 0; } }
         sequence.length = { 'function': function (x) { return 1; } };
@@ -256,9 +276,15 @@
             cells: [{ row: 0, column: 0 }],
             position: { x: 1, y: 1 }
         });
+        MEPH.continueWhen(function () {
+            return type === 'mouseoveritem';
+        }).then(function () {
 
-        expect(type).toBe('mouseoveritem');
-        expect(args.items.contains(item)).toBeTruthy();
+            expect(type).toBe('mouseoveritem');
+            expect(args.items.contains(function (x) { return x === item })).toBeTruthy();
+        }).catch(function (err) {
+            expect(err).caught();
+        }).then(done);
     });
 
 
@@ -454,7 +480,7 @@
         });
     });
 
-    it('can ungrab an item', function () {
+    it('can ungrab an item', function (done) {
 
         MEPH.render('MEPH.table.Sequencer', 'sequencer').then(function (r) {
             var results = r.res;

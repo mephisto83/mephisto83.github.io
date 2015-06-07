@@ -63,10 +63,16 @@
         oscillator.frequency.value = initialFreq; // value in hertz
         oscillator.start();
         expect(oscillatornode).toBeTruthy();
-        setTimeout(function () {
-            audio.disconnect();
+        new Promise(function (res) {
+            setTimeout(function () {
+                audio.disconnect();
+                res();
+            }, 10);
+        }).catch(function (e) {
+            expect(e).caught();
+        }).then(function () {
             done();
-        }, 10);
+        });
     });
 
     it('it can create biquad filter', function () {
@@ -141,8 +147,11 @@
         audio.load('../specs/data/The_Creek.mp3', 'mp3').then(function (resource) {
 
             expect(resource.buffer).toBeTruthy();
+        }).catch(function (e) {
+            expect(e).caught();
+        }).then(function () {
             done();
-        });
+        });;
     });
 
     it('loaded resources are cached globally.', function (done) {
@@ -150,9 +159,11 @@
 
         audio.load('../specs/data/The_Creek.mp3', 'mp3').then(function (resource) {
             expect(resource.buffer).toBeTruthy();
-
-        }).then(function () {
             expect((new MEPH.audio.Audio()).getBufferSources().length).toBeTruthy();
+
+        }).catch(function (e) {
+            expect(e).caught();
+        }).then(function () {
             done();
         });
     });
@@ -165,11 +176,16 @@
 
             // start the source playing
             //resource.buffer.start();
-            setTimeout(function () {
-                audio.disconnect();
+            new Promise(function (resolve) {
+                setTimeout(function () {
+                    audio.disconnect();
+                    resolve();
+                }, 2000)
+            }).catch(function (e) {
+                expect(e).caught();
+            }).then(function () {
                 done();
-
-            }, 2000)
+            });
         });
     });
 
@@ -265,9 +281,11 @@
             var res = MEPH.audio.Audio.updatePitch(resource.buffer.buffer.getChannelData(0), resource.buffer.buffer.sampleRate);
 
             expect(res).toBeTruthy();
-
-        }).then(function () {
             expect((new MEPH.audio.Audio()).getBufferSources().length).toBeTruthy();
+
+        }).catch(function (e) {
+            expect(e).caught();
+        }).then(function () {
             done();
         });
     })
@@ -329,12 +347,17 @@
 
             // start the source playing
             // result.buffer.start();
-            setTimeout(function () {
-                audio.disconnect();
-                done();
-            }, 2000)
-
-        })
+            new Promise(function (res) {
+                setTimeout(function () {
+                    audio.disconnect();
+                    res();
+                }, 2000);
+            })
+        }).catch(function (e) {
+            expect(e).caught();
+        }).then(function () {
+            done();
+        });
 
     });
 
@@ -368,7 +391,10 @@
         var audio = new MEPH.audio.Audio();
 
         audio.load(audiofile, audiofiletyp, {}).then(function (resource) {
-
+            var resolve,
+                promise = new Promise(function (res) {
+                    resolve = res;
+                });
             var result = audio.copyToBuffer(resource, 50, 50.1, {});
             MEPH.audio.Audio.OfflineMode = true;
             MEPH.audio.Audio.OfflineAudioContext = new (window.OfflineAudioContext)(32, 10000, 44100)
@@ -378,7 +404,7 @@
                 sampleRate: resource.buffer.buffer.sampleRate,
                 oncomplete: function (res) {
                     audio.disconnect();
-                    done();
+                    resolve();
                 },
                 start: true
             });
@@ -387,6 +413,11 @@
             result.buffer.start();
             MEPH.audio.Audio.OfflineAudioContext.startRendering();
             MEPH.audio.Audio.OfflineMode = false;
+            return promise;
+        }).catch(function (e) {
+            expect(e).caught();
+        }).then(function () {
+            done();
         });
     });
 

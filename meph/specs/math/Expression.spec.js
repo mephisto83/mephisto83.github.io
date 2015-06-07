@@ -1,4 +1,4 @@
-﻿describe("MEPH/math/Expression.spec.js", function () {
+﻿describe("MEPH/math/Expression.spec.js", 'MEPH.math.Expression', function () {
     beforeEach(function () {
         jasmine.addMatchers(MEPH.customMatchers);
     });
@@ -12,7 +12,7 @@
             expect(expression).theTruth('a quaternion was not created');
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -26,7 +26,7 @@
             expect(latexp === 'a').toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -38,10 +38,10 @@
             var Expression = MEPH.math.Expression;
             var expression = Expression.integral(Expression.variable('f(x)'), 'x', Expression.variable('a'), Expression.variable('b'));
             var latexp = '\\int_a^b \\! f(x) \\, \\mathrm{d}x';
-            
+
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -54,7 +54,7 @@
             var latexp = '\\int_ \\! f(x) \\, \\mathrm{d}x';
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -67,7 +67,7 @@
             var latexp = 'f(x) + x';
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -86,7 +86,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -105,7 +105,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -124,7 +124,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -143,7 +143,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -162,7 +162,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -177,7 +177,7 @@
             expect(Expression.requiresParenthesis(Expression.type.multiplication)).toBeTruthy();
             expect(Expression.requiresParenthesis(Expression.type.division)).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -192,7 +192,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -206,7 +206,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -229,7 +229,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -243,7 +243,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -257,7 +257,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -271,7 +271,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -286,7 +286,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -300,7 +300,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -314,7 +314,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -328,7 +328,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -342,7 +342,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -358,7 +358,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -372,7 +372,7 @@
 
             expect(expression.equals(exp2)).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -386,7 +386,7 @@
 
             expect(expression.equals(exp2)).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -401,7 +401,7 @@
 
             expect(expression.equals(exp2)).toBeFalsy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -417,7 +417,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -432,7 +432,7 @@
 
             expect(latexp === expression.latex()).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -455,7 +455,7 @@
             });
             expect(r).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -482,7 +482,7 @@
             });
             expect(r).toBeFalsy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -498,7 +498,7 @@
 
             expect(rule).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -514,7 +514,7 @@
 
             expect(!rule).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -537,7 +537,7 @@
 
             expect(rule).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -563,7 +563,7 @@
 
             expect(!rule).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -610,7 +610,7 @@
 
             expect(rule).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -625,7 +625,7 @@
 
             expect(rule).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -647,7 +647,7 @@
 
             expect(rule).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -683,7 +683,7 @@
                     Expression.variable('n'))
                 , 'x');
 
-            
+
             var rule = Expression.matchRule(expression, Expression.Rules.Integration.Power());
 
             expect(!rule).toBeTruthy();
@@ -734,7 +734,7 @@
 
             expect(rule).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -777,7 +777,7 @@
 
             expect(rule).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -797,7 +797,7 @@
             expect(variable.mark() === 'B').toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -814,7 +814,7 @@
             expect(marks.I).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -831,7 +831,7 @@
             expect(marks.x).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -848,7 +848,7 @@
             expect(marks.x).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -865,7 +865,7 @@
             expect(marks.I).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -882,7 +882,7 @@
             expect(marks.I).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -900,7 +900,7 @@
             expect(marks.I).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -919,7 +919,7 @@
             expect(marks.C).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -937,7 +937,7 @@
             expect(marks.f).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -956,7 +956,7 @@
             expect(copy.parts.length === expression.parts.length).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -986,7 +986,7 @@
             expect(expression.parent()).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -1005,7 +1005,7 @@
             expect(I.getMark('A')).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -1043,7 +1043,7 @@
             console.log(rule1.latex());
             expect(rule1.latex() === 'Ax + #C').toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -1068,7 +1068,7 @@
             console.log(result.latex());
             expect(result).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -1085,7 +1085,7 @@
             console.log(result.latex());
             expect(result).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -1110,7 +1110,7 @@
             console.log(result.latex());
             expect(result).toBeTruthy();
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });
@@ -1139,7 +1139,7 @@
             expect(marks.A === anything).toBeTruthy();
 
         }).catch(function (e) {
-            expect(e.message? e : new Error(e)).caught();
+            expect(e.message ? e : new Error(e)).caught();
         }).then(function (x) {
             done();
         });

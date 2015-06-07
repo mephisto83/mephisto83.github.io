@@ -101,7 +101,7 @@ complement-5" nr="5" rgb="CCFF66" r="204" g="255" b="102"/>
 * @mixin
 * Mixin for standard U4 bold font
 * @param {number} $font-size Size of font
-*/ /** Creates a tree layout. */ /** Mobile header top bar height. */ /**/ /*!
+*/ /** Creates a tree layout. */ /* The animation code */ /** Mobile header top bar height. */ /**/ /*!
  *  Font Awesome 4.3.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
  */ /* FONT PATH -------------------------- */ /* makes the font 33% larger relative to the icon container */ /* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen readers do not read off random characters that represent icons */ /* Social Buttons for Bootstrap  Copyright 2013-2014 Panayiotis Lipiridis Licensed under the MIT License  https://github.com/lipis/bootstrap-social */ }
@@ -3303,6 +3303,15 @@ a.list-group-item.active > [mephplatform] .badge, .nav-pills > .active > a > [me
 [mephplatform] .overlay.removed i { font-size: 2em; top: 20%; }
 /* line 1, ../sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
 [mephplatform] .meph-mobile-application-container, [mephplatform] .meph-application-container { width: 100%; height: 100%; position: relative; }
+/* line 8, ../sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
+[mephplatform] .meph-mobile-application-container { perspective: 1000; -webkit-perspective: 1000; }
+/* line 9, ../sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
+[mephplatform] .meph-mobile-application-container > div { transform-style: preserve-3d; transition: all 1.0s linear; }
+@keyframes page-transition { 0% { transform: rotateY(0deg); }
+  50% { left: 0; transform: rotateY(180deg); }
+  100% { left: 100%; } }
+/* line 36, ../sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
+[mephplatform] .meph-remove-home-page, [mephplatform] .meph-view-remove { animation-name: page-transition; animation-duration: 1s; }
 /* line 8, ../sass/meph-default/mobile/application/header/_mobileapplicationheader.scss */
 [mephplatform] .meph-application-header { position: absolute; background-color: #101010; height: 50px; width: 100%; font-family: dagny-bold, dagny, arial, tahoma, verdana, sans-serif; color: #ffffff; }
 /* line 17, ../sass/meph-default/mobile/application/header/_mobileapplicationheader.scss */

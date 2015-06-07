@@ -40,7 +40,7 @@
         var res = MEPH.util.Dom.getBestOverlap({ top: 0, left: 0, right: 100, bottom: 100 }, dom);
         expect(res).toBeTruthy()
         expect(res.dom).toBeTruthy()
-        expect(res.best).toBeTruthy()
+        expect(res.best !== undefined).toBeTruthy()
         dom.parentNode.removeChild(dom);
     });
 

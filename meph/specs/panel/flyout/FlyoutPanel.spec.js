@@ -294,15 +294,17 @@
             var flyoutPanel = results.first().classInstance;
             ///Assert
             flyoutPanel.opened = true;
-            return flyoutPanel.$flyoutPanelPromise.then(function () {
-                expect(flyoutPanel.isOpen() === true).theTruth('the flyout panel was not opend');
+            return MEPH.waitFor(function () {
+                return flyoutPanel.$flyoutPanelPromise.then(function () {
+                    expect(flyoutPanel.isOpen() === true).theTruth('the flyout panel was not opend');
+                });
             });
-            if (app) {
-                app.removeSpace();
-            }
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
+            if (app) {
+                app.removeSpace();
+            }
             done();
         })
     });

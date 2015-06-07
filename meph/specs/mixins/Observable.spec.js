@@ -63,7 +63,9 @@
             MEPH.undefine(fakeObservableNAME);
 
             //Assert
-            expect(path === 'property').theTruth('the path on the altered event options was not "property"');
+            return MEPH.waitFor(function () {
+                expect(path === 'property').theTruth('the path on the altered event options was not "property"');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function (x) {
@@ -142,12 +144,17 @@
 
             //Act
             instance.property = { property: null };
-            instance.property.property = 'prop';
+            return MEPH.waitFor(function () {
 
-            //Assert
-            expect(path === 'property.property').theTruth('the path on the altered event options was not "property"');
+                instance.property.property = 'prop';
 
-            MEPH.undefine(fakeObservableNAME);
+                //Assert
+                return MEPH.waitFor(function () {
+                    expect(path === 'property.property').theTruth('the path on the altered event options was not "property"');
+
+                    MEPH.undefine(fakeObservableNAME);
+                });
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function (x) {
@@ -156,6 +163,8 @@
     });
     it('fires altered events on the class when a property is changed, and not ', function (done) {
         //Arrange
+        var oldobserve = MEPH.util.Observable.useObserve;
+        MEPH.util.Observable.useObserve = false;
         var fakeObservableNAME = 'Fake.Observable.Class',
            config = {
                initialize: function () {
@@ -172,7 +181,7 @@
                }
            }
         MEPH.undefine(fakeObservableNAME);
-        MEPH.define(fakeObservableNAME, config).then(function ($class) {
+        return MEPH.define(fakeObservableNAME, config).then(function ($class) {
             var instance = new $class(),
                 old,
                 path;
@@ -186,14 +195,16 @@
             old = instance.property;
             instance.property = 'prop';
 
-            //Assert
-            MEPH.undefine(fakeObservableNAME);
-            expect(old[MEPH.listenersPropertyKey].length === 0).theTruth('');
-            expect(path === 'property').theTruth('the path on the altered event options was not "property"');
-
+            return MEPH.waitFor(function () {
+                //Assert
+                MEPH.undefine(fakeObservableNAME);
+                expect(old[MEPH.listenersPropertyKey].length === 0).theTruth('');
+                expect(path === 'property').theTruth('the path on the altered event options was not "property"');
+            });
         }).catch(function (error) {
             expect(error).caught();
         }).then(function (x) {
+            MEPH.util.Observable.useObserve = oldobserve;
             done();
         });
     });

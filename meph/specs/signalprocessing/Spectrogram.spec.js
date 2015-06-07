@@ -43,11 +43,13 @@
                 called = true;
             }
             spectrogram.data = data;
-            expect(called).toBeTruthy();
-            expect(dom).toBeTruthy();
-            if (app) {
-                app.removeSpace();
-            }
+            return MEPH.waitFor(function () {
+                expect(called).toBeTruthy();
+                expect(dom).toBeTruthy();
+                if (app) {
+                    app.removeSpace();
+                }
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {

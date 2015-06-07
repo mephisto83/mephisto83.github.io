@@ -116,10 +116,13 @@
         var scheduler = new MEPH.audio.Scheduler();
         scheduler.on('tick', function () {
             tikked++;
-            if (tikked > 4) {
-                expect(true).toBeTruthy();
+            if (tikked > 1) {
+                
+
                 scheduler.stop();
                 scheduler.terminate();
+                scheduler.un();
+                expect(true).toBeTruthy();
                 done();
             }
         });

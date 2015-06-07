@@ -184,10 +184,12 @@ MEPH.define('MEPH.mobile.providers.identity.FacebookProvider', {
         me.$ready = me.when.injected.then(function () {
             MEPH.Log('setup api, and return key');
             me.isReady = true;
-            me.api = me.$inj.rest.clear().addPath('graph.facebook.com/v2.3').absolute();
-            return me.online().then(function () {
-                return MEPH.mobile.providers.identity.FacebookProvider.key;
-            });
+            if (me.$inj.rest) {
+                me.api = me.$inj.rest.clear().addPath('graph.facebook.com/v2.3').absolute();
+                return me.online().then(function () {
+                    return MEPH.mobile.providers.identity.FacebookProvider.key;
+                });
+            }
         });
 
         return me.$ready;

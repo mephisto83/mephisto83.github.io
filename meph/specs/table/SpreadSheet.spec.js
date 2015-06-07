@@ -47,22 +47,26 @@
             scrollingtable.columnheaders = "1";
             scrollingtable.columns = "26";
             scrollingtable.rows = "1000";
-            var cells;
-            scrollingtable.body.addEventListener('cellclicked', function (e) {
+            var cells; scrollingtable.body.addEventListener('cellclicked', function (e) {
                 cells = e.cells;
-            })
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('click', { pageX: 10, pageY: 10 }));
+            });
+            return MEPH.waitFor(function () {
 
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(cells).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+            }).then(function () {
+                return MEPH.waitFor(function () {
+                    scrollingtable.canvas.dispatchEvent(MEPH.createEvent('click', { pageX: 10, pageY: 10 }));
+                }).then(function () {
+                    ///Assert
+                    return MEPH.continueWhen(function () {
+                        return cells;
+                    }).then(function () {
+                        expect(cells).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                    });
+                });
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -86,18 +90,20 @@
             scrollingtable.body.addEventListener('topheadercellclicked', function (e) {
                 cells = e.cells;
             })
-            scrollingtable.topheader.dispatchEvent(MEPH.createEvent('click', { pageX: 10, pageY: 10 }));
-
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(cells).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+            return MEPH.waitFor(function () {
+                scrollingtable.topheader.dispatchEvent(MEPH.createEvent('click', { pageX: 10, pageY: 10 }));
+            }).then(function () {
+                ///Assert
+                return MEPH.continueWhen(function () {
+                    return cells;
+                })
+               .then(function () {
+                   expect(cells).toBeTruthy();
+                   if (app) {
+                       app.removeSpace();
+                   }
+               });
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -121,18 +127,22 @@
             scrollingtable.body.addEventListener('leftheadercellclicked', function (e) {
                 cells = e.cells;
             })
-            scrollingtable.leftheader.dispatchEvent(MEPH.createEvent('click', { pageX: 10, pageY: 10 }));
 
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(cells).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
+            MEPH.waitFor(function () {
+                scrollingtable.leftheader.dispatchEvent(MEPH.createEvent('click', { pageX: 10, pageY: 10 }));
             })
+            return MEPH.continueWhen(function () { return cells; })
+                .then(function () {
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(cells).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    });
+
+                })
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -156,18 +166,20 @@
             scrollingtable.body.addEventListener('mousemovecell', function (e) {
                 cells = e.cells;
             })
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
-
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
+            MEPH.waitFor(function () {
+                scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
+            })
+            return MEPH.continueWhen(function () { return cells; })
+            .then(function () {
+                ///Assert
+                return new Promise(function (r) {
                     expect(scrollingtable.hovercells).toBeTruthy();
                     expect(cells).toBeTruthy();
                     if (app) {
                         app.removeSpace();
                     }
                     r();
-                }, 150);
+                });
             })
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
@@ -193,18 +205,21 @@
             scrollingtable.body.addEventListener('mouseovercell', function (e) {
                 cells = e.cells;
             })
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
-
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(cells).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+            return MEPH.waitFor(function () {
+                scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
+            }).then(function () {;
+                return MEPH.continueWhen(function () { return cells; })
+                .then(function () {
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(cells).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    })
+                });
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -229,18 +244,22 @@
             scrollingtable.body.addEventListener('mousemovetopheader', function (e) {
                 cells = e.cells;
             })
-            scrollingtable.topheader.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
+            return MEPH.waitFor(function () {
+                scrollingtable.topheader.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
+            }).then(function () {
+                return MEPH.continueWhen(function () { return cells; }).then(function () {
 
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(cells).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(cells).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    })
+                });
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -264,18 +283,21 @@
             scrollingtable.body.addEventListener('mouseoverheadertop', function (e) {
                 cells = e.cells;
             })
-            scrollingtable.topheader.dispatchEvent(MEPH.createEvent('mouseover', { pageX: 10, pageY: 10 }));
+            return MEPH.waitFor(function () {
+                scrollingtable.topheader.dispatchEvent(MEPH.createEvent('mouseover', { pageX: 10, pageY: 10 }));
+            }).then(function () {
+                return MEPH.continueWhen(function () { return cells; }).then(function () {
 
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(cells).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(cells).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    })
+                })
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -299,18 +321,20 @@
             scrollingtable.body.addEventListener('mouseoverheaderleft', function (e) {
                 cells = e.cells;
             })
-            scrollingtable.leftheader.dispatchEvent(MEPH.createEvent('mouseover', { pageX: 10, pageY: 10 }));
-
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(cells).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+            return MEPH.waitFor(function () {
+                scrollingtable.leftheader.dispatchEvent(MEPH.createEvent('mouseover', { pageX: 10, pageY: 10 }));
+            }).then(function () {
+                return MEPH.continueWhen(function () { return cells; }).then(function () {
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(cells).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    })
+                })
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -335,18 +359,21 @@
             scrollingtable.body.addEventListener('mousemoveleftheader', function (e) {
                 cells = e.cells;
             })
-            scrollingtable.leftheader.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
 
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(cells).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+            return MEPH.waitFor(function () {
+                scrollingtable.leftheader.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
+            }).then(function () {
+                return MEPH.continueWhen(function () { return cells; }).then(function () {
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(cells).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    });
+                });
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -370,18 +397,21 @@
             scrollingtable.body.addEventListener('mousemovetopheader', function (e) {
                 cells = e.cells;
             })
-            scrollingtable.topheader.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
+            return MEPH.waitFor(function () {
+                scrollingtable.topheader.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
+            }).then(function () {
+                return MEPH.continueWhen(function () { return cells; }).then(function () {
 
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(cells).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(cells).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    })
+                })
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -468,21 +498,23 @@
             scrollingtable.canvas.addEventListener('selectstart', function () {
                 selectingstarted = true;
             });
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('keypress', { which: 'S'.charCodeAt(0) }));
-
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(scrollingtable.selecting).toBeTruthy();
-                    expect(scrollingtable.state === MEPH.table.SpreadSheet.states.Selecting).toBeTruthy();
-                    expect(selectingstarted).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+            return MEPH.waitFor(function () {
+                scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 10, pageY: 10 }));
+                scrollingtable.canvas.dispatchEvent(MEPH.createEvent('keypress', { which: 'S'.charCodeAt(0) }));
+            }).then(function () {
+                return MEPH.continueWhen(function () { return selectingstarted; }).then(function () {
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(scrollingtable.selecting).toBeTruthy();
+                        expect(scrollingtable.state === MEPH.table.SpreadSheet.states.Selecting).toBeTruthy();
+                        expect(selectingstarted).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    })
+                })
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -505,20 +537,22 @@
             scrollingtable.canvas.addEventListener('selectstart', function () {
                 selectingstarted = true;
             });
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousedown', { pageX: 10, pageY: 10 }));
-
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(scrollingtable.selecting).toBeTruthy();
-                    expect(scrollingtable.state === MEPH.table.SpreadSheet.states.Selecting).toBeTruthy();
-                    expect(selectingstarted).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+            return MEPH.waitFor(function () {
+                scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousedown', { pageX: 10, pageY: 10 }));
+            }).then(function () {
+                return MEPH.continueWhen(function () { return selectingstarted; }).then(function () {
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(scrollingtable.selecting).toBeTruthy();
+                        expect(scrollingtable.state === MEPH.table.SpreadSheet.states.Selecting).toBeTruthy();
+                        expect(selectingstarted).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    })
+                })
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -578,19 +612,22 @@
                 selectingstarted = true;
             });
 
-            scrollingtable.leftheader.dispatchEvent(MEPH.createEvent('mousedown', { pageX: 10, pageY: 10 }));
+            return MEPH.waitFor(function () {
+                scrollingtable.leftheader.dispatchEvent(MEPH.createEvent('mousedown', { pageX: 10, pageY: 10 }));
+            }).then(function () {
+                return MEPH.continueWhen(function () { return selectingstarted; }).then(function () {
 
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(scrollingtable.selecting).toBeTruthy();
-                    expect(scrollingtable.state === MEPH.table.SpreadSheet.states.Selectingleft).toBeTruthy();
-                    expect(selectingstarted).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(scrollingtable.selecting).toBeTruthy();
+                        expect(scrollingtable.state === MEPH.table.SpreadSheet.states.Selectingleft).toBeTruthy();
+                        expect(selectingstarted).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    })
+                })
             })
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
@@ -611,22 +648,24 @@
             scrollingtable.columnheaders = "1";
             scrollingtable.columns = "26";
             scrollingtable.rows = "1000";
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousedown', { pageX: 10, pageY: 10 }));
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 100, pageY: 100 }));
-
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(scrollingtable.selecting).toBeTruthy();
-                    expect(scrollingtable.selecting.start).toBeTruthy();
-                    expect(scrollingtable.selecting.end).toBeTruthy();
-                    expect(scrollingtable.state === MEPH.table.SpreadSheet.states.Selecting).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+            return MEPH.waitFor(function () {
+                scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousedown', { pageX: 10, pageY: 10 }));
+                scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 100, pageY: 100 }));
+            }).then(function () {
+                return MEPH.continueWhen(function () { return scrollingtable.selecting; }).then(function () {
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(scrollingtable.selecting).toBeTruthy();
+                        expect(scrollingtable.selecting.start).toBeTruthy();
+                        expect(scrollingtable.selecting.end).toBeTruthy();
+                        expect(scrollingtable.state === MEPH.table.SpreadSheet.states.Selecting).toBeTruthy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    });
+                });
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -647,23 +686,34 @@
             scrollingtable.columns = "26";
             scrollingtable.rows = "1000";
             scrollingtable.selected = [];
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousedown', { pageX: 10, pageY: 10 }));
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 100, pageY: 100 }));
-            scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mouseup', {}));
+            return MEPH.waitFor(function () {
+                scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousedown', { pageX: 10, pageY: 10 }));
+            }).then(function () {
+                return MEPH.waitFor(function () {
+                    scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mousemove', { pageX: 100, pageY: 100 }));
+                })
+            }).then(function () {
+                return MEPH.waitFor(function () {
+                    scrollingtable.canvas.dispatchEvent(MEPH.createEvent('mouseup', {}));
+                })
+            }).then(function () {
+                return MEPH.continueWhen(function () {
+                    return !scrollingtable.selecting && scrollingtable.selectedrange;
+                }).then(function () {
 
-            ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(scrollingtable.selecting).toBeFalsy();
-                    expect(scrollingtable.selectedrange).toBeTruthy();
-                    expect(scrollingtable.selected.length > 1).toBeTruthy();
-                    expect(scrollingtable.state).toBeFalsy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 150);
-            })
+                    ///Assert
+                    return new Promise(function (r) {
+                        expect(scrollingtable.selecting).toBeFalsy();
+                        expect(scrollingtable.selectedrange).toBeTruthy();
+                        expect(scrollingtable.selected.length > 1).toBeTruthy();
+                        expect(scrollingtable.state).toBeFalsy();
+                        if (app) {
+                            app.removeSpace();
+                        }
+                        r();
+                    })
+                })
+            });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -680,17 +730,29 @@
         expect(t === 3).toBeTruthy();
     });
 
-    it('can use an svg to draw content instead of a canvas ', function () {
+    it('can use an svg to draw content instead of a canvas ', function (done) {
         var spreadsheet = new MEPH.table.SpreadSheet();
         spreadsheet.enablesvg = true;
-        expect(spreadsheet.svgrenderer).toBeTruthy();
+        MEPH.continueWhen(function () {
+            return spreadsheet.svgrenderer;
+        }).then(function () {
+            expect(spreadsheet.svgrenderer).toBeTruthy();
+        }).catch(function (x) {
+            expect(x).caught();
+        }).then(done)
     });
 
-    it('can use an div to draw content instead of a canvas', function () {
+    it('can use an div to draw content instead of a canvas', function (done) {
         var spreadsheet = new MEPH.table.SpreadSheet();
         spreadsheet.enablehtml = true;
-        expect(spreadsheet.htmlrenderer).toBeTruthy();
-        expect(spreadsheet.svgrenderer).toBeTruthy();
+        MEPH.continueWhen(function () {
+            return spreadsheet.htmlrenderer;
+        }).then(function () {
+            expect(spreadsheet.htmlrenderer).toBeTruthy();
+            expect(spreadsheet.svgrenderer).toBeTruthy();
+        }).catch(function (x) {
+            expect(x).caught();
+        }).then(done)
     });
 
     it('calls the html renderer when in html model for content', function (done) {
@@ -714,18 +776,27 @@
                     called = true;
                 }
             }
+            scrollingtable.svgrenderer = {
+                clear: function () {
+                },
+                draw: function () {
+                }
+            };
 
             scrollingtable.updateCells();
             ///Assert
-            return new Promise(function (r) {
-                setTimeout(function () {
-                    expect(called).toBeTruthy();
-                    if (app) {
-                        app.removeSpace();
-                    }
-                    r();
-                }, 550);
+            return MEPH.continueWhen(function () {
+                return called;
             })
+              .then(function () {
+                  return new Promise(function (r) {
+                      expect(called).toBeTruthy();
+                      if (app) {
+                          app.removeSpace();
+                      }
+                      r();
+                  })
+              });
         }).catch(function (error) {
             expect(error || new Error('did not render as expected')).caught();
         }).then(function () {
@@ -752,9 +823,10 @@
                 },
                 draw: function () {
                     called = true;
+                    return [];
                 }
             }
-            
+
             scrollingtable.updateCells();
             ///Assert
             return new Promise(function (r) {

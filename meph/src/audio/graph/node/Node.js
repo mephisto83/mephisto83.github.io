@@ -79,13 +79,17 @@ MEPH.define('MEPH.audio.graph.node.Node', {
     getRelPosition: function (el) {
         var me = this;
         // viewport.connectionFlow.zone
-        var top = me.svg;
-        var transform = me.svg.getTransformToElement(el)
-        var result = {
-            x: transform.e,
-            y: transform.f
+        if (me.svg) {
+            var top = me.svg;
+
+            var transform = me.svg.getTransformToElement(el)
+            var result = {
+                x: transform.e,
+                y: transform.f
+            }
+            return result;
         }
-        return result;
+        return null;
     },
     /**
      * Setup the active control zones.
@@ -338,7 +342,8 @@ MEPH.define('MEPH.audio.graph.node.Node', {
         });
 
         me.don('mousedown', [me.body, me.container, me.inputs], function () {
-            me.svg.parentNode.appendChild(me.svg);
+            if (me.svg)
+                me.svg.parentNode.appendChild(me.svg);
         }, me);
         me.don('close', [me.svg], function (e) {
         });
@@ -387,7 +392,8 @@ MEPH.define('MEPH.audio.graph.node.Node', {
             })
             result += (me.controlverticalpadding || 0) * me.nodecontrols.length;
             result += (me.inputoutputverticalpadding || 0);
-            Style.height(me.svg, result);
+            if (me.svg)
+                Style.height(me.svg, result);
             return result;
         });
         MEPH.util.Observable.defineDependentProperty('inputoutputposition', me, ['headerbuffer'], function () {
@@ -497,7 +503,9 @@ MEPH.define('MEPH.audio.graph.node.Node', {
 
         MEPH.util.Observable.defineDependentProperty('bodywidth', me, ['inputradius', 'nodewidth', 'bodystrokewidth'], function () {
             var result = me.nodewidth - (me.bodystrokewidth * 2 || 0);
-            Style.width(me.svg, (parseFloat(me.nodewidth) || 0) + (parseFloat(me.inputradius) * 2 || 0));
+            if (me.svg) {
+                Style.width(me.svg, (parseFloat(me.nodewidth) || 0) + (parseFloat(me.inputradius) * 2 || 0));
+            }
             return result;
         });
     },

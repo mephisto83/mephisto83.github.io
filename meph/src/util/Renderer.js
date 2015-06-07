@@ -15,8 +15,9 @@ MEPH.define('MEPH.util.Renderer', {
         return me.$canvas;
     },
     getContext: function () {
-        var me = this;
-        me.$context = me.$context || me.getCanvas().getContext('2d');
+        var me = this,
+            canvas = me.getCanvas();
+        me.$context = me.$context || (canvas ? canvas.getContext('2d') : null);
         return me.$context;
     },
     draw: function (args) {
@@ -25,47 +26,52 @@ MEPH.define('MEPH.util.Renderer', {
         if (!Array.isArray(args)) {
             args = [args];
         }
-        args.foreach(function (options, index) {
-            context.save();
-            options = me.applyDefaults(options);
-            if (options.opacity !== undefined && !isNaN(parseFloat(options.opacity))) {
-                context.globalAlpha = options.opacity;
-            }
-            switch (options.shape) {
-                case MEPH.util.Renderer.shapes.rectangle:
-                    me.drawRectangle(options);
-                    break;
-                case MEPH.util.Renderer.shapes.circle:
-                    me.drawCircle(options);
-                    break;
-                case MEPH.util.Renderer.shapes.text:
-                    me.drawText(options);
-                    break;
-                case MEPH.util.Renderer.shapes.quadratic:
-                    me.drawQuadratic(options);
-                    break;
-                case MEPH.util.Renderer.shapes.line:
-                    me.drawLine(options);
-                    break;
-                case MEPH.util.Renderer.shapes.canvas:
-                case MEPH.util.Renderer.shapes.image:
-                    me.drawCanvas(options);
-                    break;
-                case MEPH.util.Renderer.shapes.polygon:
-                    me.drawPolygon(options);
-                    break;
-                case MEPH.util.Renderer.shapes.none:
-                    break;
-                default:
-                    throw 'undefined shape type';
+        if (context) {
+            args.foreach(function (options, index) {
+                context.save();
+                options = me.applyDefaults(options);
+                if (options.opacity !== undefined && !isNaN(parseFloat(options.opacity))) {
+                    context.globalAlpha = options.opacity;
+                }
+                switch (options.shape) {
+                    case MEPH.util.Renderer.shapes.rectangle:
+                        me.drawRectangle(options);
+                        break;
+                    case MEPH.util.Renderer.shapes.circle:
+                        me.drawCircle(options);
+                        break;
+                    case MEPH.util.Renderer.shapes.text:
+                        me.drawText(options);
+                        break;
+                    case MEPH.util.Renderer.shapes.quadratic:
+                        me.drawQuadratic(options);
+                        break;
+                    case MEPH.util.Renderer.shapes.line:
+                        me.drawLine(options);
+                        break;
+                    case MEPH.util.Renderer.shapes.canvas:
+                    case MEPH.util.Renderer.shapes.image:
+                        me.drawCanvas(options);
+                        break;
+                    case MEPH.util.Renderer.shapes.polygon:
+                        me.drawPolygon(options);
+                        break;
+                    case MEPH.util.Renderer.shapes.none:
+                        break;
+                    default:
+                        throw 'undefined shape type';
 
-            }
-            if (options.opacity !== undefined && !isNaN(parseFloat(options.opacity))) {
-                context.globalAlpha = 1;
-            }
-            context.restore();
-        });
+                }
+                if (options.opacity !== undefined && !isNaN(parseFloat(options.opacity))) {
+                    context.globalAlpha = 1;
+                }
+                context.restore();
+            });
 
+        }
+        else {
+            return false;
+        }
         return true;
     },
     clear: function () {
@@ -73,7 +79,10 @@ MEPH.define('MEPH.util.Renderer', {
             var me = this,
                 canvas = me.getCanvas(),
                 context = me.getContext();
-            context.clearRect(0, 0, canvas.width, canvas.height);
+            if (context) {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            else return false;
         }
         catch (e) {
             return false;
@@ -188,7 +197,7 @@ MEPH.define('MEPH.util.Renderer', {
         context.fill();
     },
     drawImage: function (context, img, options) {
-        
+
         if (options.center) {
             context.translate(options.x, options.y);
             if (options.scale) {
@@ -197,7 +206,7 @@ MEPH.define('MEPH.util.Renderer', {
             if (options.rotation) {
                 context.rotate(options.rotation);
             }
-           
+
             context.drawImage(img, 0, 0,
                                      img.width,
                                      img.height,

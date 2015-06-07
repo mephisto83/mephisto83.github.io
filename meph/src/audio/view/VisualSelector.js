@@ -98,9 +98,12 @@ MEPH.define('MEPH.audio.view.VisualSelector', {
             height = me.height || 0,
             st = me.silenceThreshold || 0, stheight = height * st;
 
-        Style.top(me.silenceThresholdDiv, (height / 2) - (stheight / 2));
-        Style.height(me.silenceThresholdDiv, stheight);
-        Style.width(me.silenceThresholdDiv, me.width);
+        if (me.silenceThresholdDiv) {
+            Style.top(me.silenceThresholdDiv, (height / 2) - (stheight / 2));
+            Style.height(me.silenceThresholdDiv, stheight);
+            Style.width(me.silenceThresholdDiv, me.width);
+
+        }
         return stheight;
     },
     addMark: function () {
@@ -567,9 +570,11 @@ MEPH.define('MEPH.audio.view.VisualSelector', {
 
             me.markerBtns.foreach(function (x) {
                 var rel = me.getRelativeMarkPosition(x.marker.position, me.magnification, me.timeScroll);
-                x.dom.style.left = (rel) + 'px';
-                x.dom.style.top = (me.height - me.offsetbtnheight) + 'px';
-            })
+                if (x.dom) {
+                    x.dom.style.left = (rel) + 'px';
+                    x.dom.style.top = (me.height - me.offsetbtnheight) + 'px';
+                }
+            });
             //
         }
     },

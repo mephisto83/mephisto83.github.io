@@ -17,8 +17,10 @@
             //Assert
             expect(dom === document.body);
             MEPH.undefine('MEPHTests.application.Application');
-            done();
-        });
+
+        }).catch(function (err) {
+            expect(err).caught();
+        }).then(done);
     });
 
     it('an application will have a activitycontroller', function (done) {
@@ -33,12 +35,10 @@
             //Assert
             expect(result.getActivityController()).theTruth('The application doesnt have an activity controller');
             MEPH.undefine('MEPHTests.application.Application');
-            done();
         }).catch(function () {
             MEPH.undefine('MEPHTests.application.Application');
             expect(new Error('Couldnt get the activity controller')).caught();
-            done();
-        });
+        }).then(done);
     });
 
     it(' if an application has a homepage it will tell the activity controller to start it', function (done) {
@@ -53,20 +53,18 @@
 
             result.homeView = { viewId: 'MEPH001' };
             result.activityController = {
-                startActivity: function (config) { startedConfig = config; }
+                startHome: function (config) { startedConfig = config; }
             }
 
             return result.startHomePage().then(function () {;
                 //Assert
                 expect(startedConfig).theTruth('The application didnt start anything.');
                 MEPH.undefine('MEPHTests.application.Application');
-                done();
             });
         }).catch(function () {
             MEPH.undefine('MEPHTests.application.Application');
             expect(new Error('Couldnt get the activity controller')).caught();
-            done();
-        });
+        }).then(done);;
     });
 
     it('applications can create controls', function (done) {
@@ -89,15 +87,13 @@
                 dom.parentNode.removeChild(dom);
             }
             MEPH.undefine('MEPHTests.application.Application');
-            done();
         }).catch(function () {
             expect(new Error('something went wrong')).caught();
             MEPH.undefine('MEPHTests.application.Application');
             if (dom && dom.parentNode) {
                 dom.parentNode.removeChild(dom);
             }
-            done();
-        });
+        }).then(done);;
     });
 
     it('when a control is added to the application an event will be fired', function (done) {
@@ -118,15 +114,14 @@
             expect(instanceadded).theTruth('instance was not added to the application');
             expect(instanceadded instanceof MEPH.control.Control).theTruth('the instance object was not a Control');
             MEPH.undefine('MEPHTests.application.Application');
-            done();
-        }).catch(function () {
-            expect(new Error('something went wrong')).caught();
-            MEPH.undefine('MEPHTests.application.Application');
             if (dom && dom.parentNode) {
                 dom.parentNode.removeChild(dom);
             }
-            done();
-        });
+        }).catch(function () {
+            expect(new Error('something went wrong')).caught();
+            MEPH.undefine('MEPHTests.application.Application');
+
+        }).then(done);;
     });
 
     it('when applications start they will retrieve all the application view objects', function (done) {
@@ -143,17 +138,15 @@
         }).then(function ($class) {
             //Act
             var application = new $class();
-            application.start().then(function () {
+            return application.start().then(function () {
                 //Assert
-                try {
-                    expect(application.getAppViewObjects().length === 1).toBeTruthy();
-                }
-                finally {
-                    div.parentNode.removeChild(div);
-                    done();
-                }
-            })
-        });
+                expect(application.getAppViewObjects().length === 1).toBeTruthy();
+                div.parentNode.removeChild(div);
+
+            });
+        }).catch(function (err) {
+            expect(err).caught();
+        }).then(done);
     });
     it('applications will add ioc configs to the IOC.Container', function (done) {
         //Arrange
@@ -176,28 +169,18 @@
                 }
             });
 
-            application.start().then(function () {
+            return application.start().then(function () {
                 //Assert
-                try {
-                    called = true;
-                    var service = MEPH.IOC.getServices().first(function (x) { return x.type === 'servicetype'; });
-                    expect(service.name).theTruth('The service was not in the IOC');
-                    MEPH.IOC.unregister('service');
-                }
-                finally {
-                    div.parentNode.removeChild(div);
-                    MEPH.undefine('MEPHTests.application.Application');
-                    done();
-                }
+                called = true;
+                var service = MEPH.IOC.getServices().first(function (x) { return x.type === 'servicetype'; });
+                expect(service.name).theTruth('The service was not in the IOC');
+                MEPH.IOC.unregister('service');
+                div.parentNode.removeChild(div);
+
             });
-            setTimeout(function () {
-                if (!called) {
-                    MEPH.undefine('MEPHTests.application.Application');
-                    expect(false).theTruth('The application never raised an app ready event');
-                    done();
-                }
-            }, 1000);
-        });
+        }).catch(function (err) {
+            expect(err).caught();
+        }).then(done);
     });
 
     it('application if there is a session manager, it will check if it requires a login', function (done) {
@@ -212,7 +195,7 @@
             applicationSelector: '[meph-app]'
         }).then(function ($class) {
             //Act
-            
+
             var application = new $class({
                 ioc: {
                     sessionManager: {
@@ -249,34 +232,34 @@
         document.body.appendChild(div);
         MEPH.define('MEPHTests.application.Application', {
             extend: 'MEPH.application.Application',
-            requires: ['MEPH.input.Input', 'MEPH.Constants'],
-            applicationSelector: '[meph-app2]'
+            requires: ['MEPH.input.Input', 'MEPH.Constants']
         }).then(function ($class) {
             //Act
-            var application = new $class();
+            var application = new $class({
+
+                applicationSelector: '[meph-app2]'
+            });
             application.on(MEPH.Constants.applicationReady, function () {
                 called = true;
-                expect(called).toBeTruthy();
-                MEPH.undefine('MEPHTests.application.Application');
-                done();
             });
-            application.start().then(function () {
+            return application.start().then(function () {
                 //Assert
-                try {
-                    expect(application.getAppViewObjects().length === 1).toBeTruthy();
-                }
-                finally {
-                    MEPH.undefine('MEPHTests.application.Application');
-                    div.parentNode.removeChild(div);
-                }
+                return MEPH.continueWhen(function () {
+                    return application.getAppViewObjects().length && called;
+                })
+                .then(function () {
+                    try {
+                        expect(application.getAppViewObjects().length === 1).toBeTruthy();
+                        expect(called).toBeTruthy();
+                    }
+                    finally {
+                        MEPH.undefine('MEPHTests.application.Application');
+                        div.parentNode.removeChild(div);
+                    }
+                });
             });
-            setTimeout(function () {
-                if (!called) {
-                    MEPH.undefine('MEPHTests.application.Application');
-                    expect(false).theTruth('The application never raised an app ready event');
-                    done();
-                }
-            }, 1000);
-        });
+        }).catch(function (err) {
+            expect(err).caught();
+        }).then(done);;
     });
 });

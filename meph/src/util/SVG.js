@@ -67,7 +67,7 @@ MEPH.define('MEPH.util.SVG', {
         args.foreach(function (options, index) {
             options = me.applyDefaults(options);
             switch (options.shape) {
-                case MEPH.util.Renderer.shapes.rectangle:
+                case MEPH.util.SVG.shapes.rectangle:
                     var res = pool.removeFirstWhere(function (x) {
                         x.options.shape === options.shape;
                     }).first();

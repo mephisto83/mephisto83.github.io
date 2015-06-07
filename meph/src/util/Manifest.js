@@ -20,6 +20,9 @@ MEPH.define('MEPH.util.Manifest', {
     getViews: function () {
         var me = this;
         return MEPH.MobileServices.get('viewProvider').then(function (viewProvider) {
+            if (!viewProvider) {
+                return [];
+            }
             return viewProvider.getViews();
         });
     },

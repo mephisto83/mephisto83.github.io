@@ -7,8 +7,38 @@
          * Custom Matchers
          */
         var jasmineDescribe = describe;
-        jasmine.getEnv().defaultTimeoutInterval = 15000;
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+        jasmine.getEnv().defaultTimeoutInterval = 10000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+        MEPH.waitFor = function (func) {
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    resolve(func());
+                }, 50)
+            });
+        };
+
+        MEPH.continueWhen = function (func) {
+            var resolve,
+                fail,
+                promise = new Promise(function (res, f) {
+                    resolve = res;
+                    fail = f;
+                });
+            var count = 0;
+            var interval = setInterval(function () {
+                if (func()) {
+                    clearInterval(interval);
+                    resolve();
+                    return;
+                }
+                count++;
+                if (count > 200) {
+                    clearInterval(interval);
+                }
+            }, 50);
+
+            return promise;
+        };
         window.describe = function () {
             var args = MEPH.util.Array.convert(arguments);
             var name = args.first();
@@ -248,7 +278,8 @@
                 promise = Promise.resolve();
                 for (i = 0 ; i < tests.length ; i++) {
                     promise = promise.then(function () {
-                        return MEPH.Loader.loadScript(tests[this]);
+                        return MEPH.Loader.loadScript(tests[this]).catch(function () {
+                        });
                     }.bind(i));
                 }
                 promise.then(function () {

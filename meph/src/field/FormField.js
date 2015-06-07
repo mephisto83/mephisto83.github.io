@@ -29,7 +29,7 @@ MEPH.define('MEPH.field.FormField', {
          * @property {String} baseComponentCls
          * CSS class to apply for this node.
          */
-        baseComponentCls: null,
+        baseComponentCls: 'form-group',
         /**
          * @property {String/Array} labelClsComponent
          * Base Css classes to apply to the label field.
@@ -39,7 +39,7 @@ MEPH.define('MEPH.field.FormField', {
          * @property {String/Array} inputCls
          * Css classes to apply to the input field.
          */
-        inputCls: null,
+        inputCls: 'form-control',
         inputCssClass: '',
         /**
          * Value of the input field

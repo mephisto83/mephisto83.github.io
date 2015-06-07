@@ -59,11 +59,17 @@
                 var reult = JSON.stringify(message);
                 var finalmessage = JSON.parse(reult);
                 jem1messages.push(finalmessage);
+                if (channel.auto) {
+                    channel.pump1();
+                }
             },
             send1: function (message) {
                 var reult = JSON.stringify(message);
                 var finalmessage = JSON.parse(reult);
                 jem2messages.push(finalmessage);
+                if (channel.auto) {
+                    channel.pump2();
+                }
             },
             pump1: function (random) {
                 if (random) {
@@ -123,22 +129,23 @@
     });
     it('negotiators are in an idle state when no conflicts are present.', function (done) {
         MEPH.requires('MEPH.synchronization.SyncMembrane').then(function () {
-            return MEPH.create('MEPH.synchronization.SyncConflictNegotiator').then(function ($class) {
-                var negotiator = new $class();
+            return MEPH.create('MEPH.synchronization.SyncConflictNegotiator')
+                .then(function ($class) {
+                    var negotiator = new $class();
 
-                //Arrange
-                var setup = createSyncGroupWithSendControl();
+                    //Arrange
+                    var setup = createSyncGroupWithSendControl();
 
-                //Act
-                var nogotiator = setup.negotiators[0];
+                    //Act
+                    var nogotiator = setup.negotiators[0];
 
-                //Assert
-                expect(nogotiator.state == 'idle').theTruth('the state is not idle');
-            }).catch(function (error) {
-                expect(error).caught();
-            }).then(function () {
-                done();
-            });
+                    //Assert
+                    expect(nogotiator.state == 'idle').toBeTruthy();
+                });
+        }).catch(function (error) {
+            expect(false).toBeTruthy();
+        }).then(function () {
+            done();
         });
     });
 
@@ -188,6 +195,7 @@
                 manager2.heartBeat();
                 setup.channel.pump1();
                 setup.channel.pump2();
+                setup.channel.auto = true;
                 var wasconflicaquired;
                 //Act
                 evnts.foreach(function (x) {
@@ -195,7 +203,11 @@
                 });
 
                 //Assert
-                expect(wasconflicaquired).theTruth('no conflict aquired');;
+                return MEPH.continueWhen(function () {
+                    return wasconflicaquired;
+                }).then(function () {
+                    expect(wasconflicaquired).toBeTruthy();
+                });
             }).catch(function (error) {
                 expect(error).caught();
             }).then(function () {
@@ -226,13 +238,17 @@
 
 
                 //Assert
-                expect(negotiator1.currentReport).theTruth('negotiators report is not truthy.');
 
-            }).catch(function (error) {
-                expect(error).caught();
-            }).then(function () {
-                done();
-            });
+                return MEPH.continueWhen(function () {
+                    return negotiator1.currentReport
+                }).then(function () {
+                    expect(negotiator1.currentReport).toBeTruthy();
+                });
+            })
+        }).catch(function (error) {
+            expect(error).caught();
+        }).then(function () {
+            done();
         });
     });
     it('conflict reports should contain a list of managers that are to start negotiations.', function (done) {
@@ -257,7 +273,10 @@
 
 
                 //Assert
-                expect(negotiator1.currentReport.managers.length === 2).toBeTruthy();
+
+                return MEPH.waitFor(function () {
+                    expect(negotiator1.currentReport.managers.length === 2).toBeTruthy();
+                });
             }).catch(function (error) {
                 expect(error).caught();
             }).then(function () {
@@ -287,7 +306,10 @@
 
 
                 //Assert
-                expect(negotiator1.currentReport.managers.length === 2).toBeTruthy();
+
+                return MEPH.waitFor(function () {
+                    expect(negotiator1.currentReport.managers.length === 2).toBeTruthy();
+                });
             }).catch(function (error) {
                 expect(error).caught();
             }).then(function () {
@@ -317,7 +339,10 @@
 
 
                 //Assert
-                expect(negotiator1.currentReport.conflictTarget).toBeTruthy();
+
+                return MEPH.waitFor(function () {
+                    expect(negotiator1.currentReport.conflictTarget).toBeTruthy();
+                });
             }).catch(function (error) {
                 expect(error).caught();
             }).then(function () {
@@ -353,7 +378,10 @@
 
 
                 //Assert
-                expect(conflictAssesmentAndAgreementState).toBeTruthy();
+
+                return MEPH.waitFor(function () {
+                    expect(conflictAssesmentAndAgreementState).toBeTruthy();
+                });
             }).catch(function (error) {
                 expect(error).caught();
             }).then(function () {
@@ -432,7 +460,10 @@
                             negotiator1.receive(report);
 
                             //Assert
-                            expect(statewasInActiveNegotiation).toBeTruthy();
+
+                            return MEPH.waitFor(function () {
+                                expect(statewasInActiveNegotiation).toBeTruthy();
+                            });
                         }).catch(function (error) {
                             expect(error).caught();
                         }).then(function () {
@@ -585,7 +616,10 @@
                 });
 
                 //Assert
-                expect(stateCoordinateLeaderShip1).toBeTruthy();
+
+                return MEPH.waitFor(function () {
+                    expect(stateCoordinateLeaderShip1).toBeTruthy();
+                });
             }).catch(function (error) {
                 expect(error).caught();
             }).then(function () {
@@ -659,31 +693,49 @@
                 setup.channel.pump2();
                 object.property = "asdf";
                 result.property = "afasd4";
-                while (setup.channel.jem1Messages.length || setup.channel.jem2Messages.length) {
+                var c = 0;
+                var superPump = function () {
+                    while (setup.channel.jem1Messages.length || setup.channel.jem2Messages.length) {
 
-                    setup.channel.pump1();
-                    setup.channel.pump2();
+                        setup.channel.pump1();
+                        setup.channel.pump2();
+                    }
                 }
-
                 //Assert
-                expect(stateCoordinateLeaderShip2).toBeTruthy();
-                expect(leadershipsReceived2).toBeTruthy();
-                expect(confirmedFollower).toBeTruthy();
-                expect(confirmedLeaderShip).toBeTruthy();
-                expect(conflictsReceived).toBeTruthy();
-                expect(conflictResolved).toBeTruthy();
-                expect(waitingforesolutationAck).toBeTruthy();
-                expect(negotiator1.state === MEPH.synchronization.SyncConflictNegotiator.states.idle).toBeTruthy();
-                expect(negotiator2.state === MEPH.synchronization.SyncConflictNegotiator.states.idle).toBeTruthy();
+                superPump()
+                return MEPH.continueWhen(function () {
+                    superPump();
+                    return stateCoordinateLeaderShip2
+                        && leadershipsReceived2
+                        && confirmedFollower
+                        && confirmedLeaderShip
+                        && conflictsReceived
+                        && conflictResolved
+                        && waitingforesolutationAck;
+                }).then(function () {
+                    expect(stateCoordinateLeaderShip2).toBeTruthy();
+                    expect(leadershipsReceived2).toBeTruthy();
+                    expect(confirmedFollower).toBeTruthy();
+                    expect(confirmedLeaderShip).toBeTruthy();
+                    expect(conflictsReceived).toBeTruthy();
+                    expect(conflictResolved).toBeTruthy();
+                    expect(waitingforesolutationAck).toBeTruthy();
 
-            }).catch(function (error) {
-                expect(error).caught();
-            }).then(function () {
-                done();
+                    return MEPH.waitFor(function () {
+                        superPump();
+                        return negotiator1.state === MEPH.synchronization.SyncConflictNegotiator.states.idle &&
+                        negotiator2.state === MEPH.synchronization.SyncConflictNegotiator.states.idle;
+                    }).then(function () {
+                        // expect(negotiator1.state === MEPH.synchronization.SyncConflictNegotiator.states.idle).toBeTruthy();
+                        // expect(negotiator2.state === MEPH.synchronization.SyncConflictNegotiator.states.idle).toBeTruthy();
+                    });
+                })
             });
-        });
+        }).catch(function (error) {
+        }).then(function () {
+            done();
+        });;
     });
-
 
     it('when a evnt is not received, it should be requested.', function (done) {
         MEPH.requires('MEPH.synchronization.SyncMembrane').then(function () {
@@ -721,12 +773,16 @@
                     left2 = 0;
                 result.property = "afasd5";
                 result.property = "afasd6";
-                do {
-                    left1 = setup.channel.pump1(true);
-                    left2 = setup.channel.pump2(true);
-                } while (left2 || left1)
-                expect(evntmissed).toBeTruthy();
+                return MEPH.continueWhen(function () {
+                    do {
+                        left1 = setup.channel.pump1(true);
+                        left2 = setup.channel.pump2(true);
+                    } while (left2 || left1)
+                    return evntmissed;
 
+                }).then(function () {
+                    expect(evntmissed).toBeTruthy();
+                });
             }).catch(function (error) {
                 expect(error).caught();
             }).then(function () {
@@ -762,7 +818,7 @@
                     left2 = 0;
                 result.property = "afasd5";
                 result.property = "afasd6";
-                do{
+                do {
                     left1 = setup.channel.pump1(true);
                     left2 = setup.channel.pump2(true);
                 } while (left2 || left1)
@@ -771,7 +827,16 @@
                 var object_id = manager2.monitoredEvents[0].objId;
                 var object = manager2.getMonitoredObject(object_id);
 
-                expect(result.property === object.property).toBeTruthy();
+                return MEPH.continueWhen(function () {
+                    do {
+                        left1 = setup.channel.pump1(true);
+                        left2 = setup.channel.pump2(true);
+                    } while (left2 || left1)
+
+                    return result.property === object.property;
+                }).then(function () {
+                    expect(result.property === object.property).toBeTruthy();
+                });
             }).catch(function (error) {
                 expect(error).caught();
             }).then(function () {
@@ -803,8 +868,16 @@
                 //setup.channel.pump2();
                 var object_id = manager2.monitoredEvents[0].objId;
                 var object = manager2.getMonitoredObject(object_id);
+                return MEPH.continueWhen(function () {
+                    do {
+                        left1 = setup.channel.pump1(true);
+                        left2 = setup.channel.pump2(true);
+                    } while (left2 || left1)
 
-                expect(result.property === object.property).toBeTruthy();
+                    return result.property === object.property;
+                }).then(function () {
+                    expect(result.property === object.property).toBeTruthy();
+                });
             }).catch(function (error) {
                 expect(error).caught();
             }).then(function () {

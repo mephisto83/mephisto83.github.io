@@ -468,7 +468,7 @@ MEPH.define('MEPH.control.Control', {
      **/
     getDomTemplate: function () {
         var me = this;
-        return me.$domTemplate;
+        return me.$domTemplate || [];
     },
     getFirstElement: function () {
         var me = this;
@@ -533,7 +533,7 @@ MEPH.define('MEPH.control.Control', {
      **/
     querySelector: function (selector) {
         var me = this;
-        return (me.getDomTemplate()).selectFirst(function (x) {
+        return (me.getDomTemplate() || []).selectFirst(function (x) {
             var temp,
                 dom = x;
 

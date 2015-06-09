@@ -25,7 +25,7 @@ MEPH.define('MEPH.dom.ControlReader', {
             results = results.concat(MEPH.util.Array.convert(dom.querySelectorAll(x)));
         });
 
-        return MEPH.util.Array.create(results);
+        return results;
     },
     getChildViewObjects: function (dom) {
         var me = this,
@@ -40,6 +40,6 @@ MEPH.define('MEPH.dom.ControlReader', {
                 });
             }
         });
-        return MEPH.util.Array.create(results);
+        return results;
     }
 });

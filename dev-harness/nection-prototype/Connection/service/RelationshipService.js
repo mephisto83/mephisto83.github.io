@@ -282,10 +282,10 @@
     },
     sortCards: function (x, y) {
         var res;
-        if (x.match && (!y.match || y.match.indexOf('<b>') === -1)) {
+        if (x.match && (!y.match || y.match.indexOf('<b>') !== -1)) {
             return -1;
         }
-        else if (x.match && (!y.match || x.match.indexOf('<b>') === -1)) {
+        else if (y.match && (!x.match || x.match.indexOf('<b>') !== -1)) {
             return 1;
         }
         ['name', 'firstname', 'lastname', 'middlename', 'email1'].some(function (t) {
@@ -523,14 +523,14 @@
         var me = this,
             result = (cards || []).select();
 
-        var toaddcoverted = me.convertedContactCards && !cards ? me.convertedContactCards.where(function (x) {
+        var toaddcoverted = me.convertedContactCards && !cards ? me.convertedContactCards.filter(function (x) {
             return x.quick_search.indexOf(search) !== -1;
         }) : [];
-        toaddcoverted = toaddcoverted.concat(me.serverCachedSearchResults.where(function (x) {
+        toaddcoverted = toaddcoverted.concat(me.serverCachedSearchResults.filter(function (x) {
             return x.quick_search.indexOf(search) !== -1;
         }));
         if (me.relationshipsContacts) {
-            toaddcoverted.unshift.apply(toaddcoverted, me.relationshipsContacts.where(function (x) {
+            toaddcoverted.unshift.apply(toaddcoverted, me.relationshipsContacts.filter(function (x) {
                 if (!me.serverCachedSearchResults.some(function (t) {
                        return t.contactId === x.contactId;
                 })) {
@@ -540,9 +540,9 @@
             }));
         }
 
-        toaddcoverted = toaddcoverted.orderBy(me.sortCards);
+        toaddcoverted.sort(me.sortCards);
 
-        result = result.concat(toaddcoverted.where(function (x) {
+        result = result.concat(toaddcoverted.filter(function (x) {
             return !result.contains(function (y) {
                 return x.card === y.card;
             });
@@ -715,12 +715,28 @@
         }
         return null;
     },
-    getRelationShip: function (contactData) {
+    getRelationShip: function (contactData, callback, cancel) {
         var me = this;
+        if (me.myRelationshipsContacts) {
+            try {
+                callback(me.myRelationshipsContacts.some(function (x) {
+                    return x.cards.some(function (card) {
+                        return card.cardid === contactData.cardid;
+                    });
+                }));
+            } catch (E) { }
+        }
+
 
         return me.ready.then(function () {
             if (contactData && contactData.card !== 'device-card') {
-                return me.$inj.rest.addPath('relationship/get/{id}').get({ id: contactData.contact }).then(function (res) {
+                var rest = me.$inj.rest.addPath('relationship/get/{id}');
+                if (cancel) {
+                    cancel.abort = function () {
+                        rest.out.http.abort();
+                    }
+                }
+                return rest.get({ id: contactData.contact }).then(function (res) {
                     return me.processRelationshipResult(res);
                 });
             }

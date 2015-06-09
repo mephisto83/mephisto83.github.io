@@ -33,7 +33,7 @@ MEPH.define('MEPH.bind.Binder', {
             bindingInformation = {};
 
         doms = me.getDomObjectsForBinding(dom);
-        doms.foreach(function (dom) {
+        doms.forEach(function (dom) {
             var mephid = dom.getAttribute(me.MEPHId);
             if (mephid) {
                 Object.defineProperty(object, mephid, {
@@ -77,7 +77,7 @@ MEPH.define('MEPH.bind.Binder', {
             bindingInformation = me.parseDomAttributes(dom, null, null, controlPackage.classInstance);
 
         if (bindingInformation && controlPackage.classInstance.isReferrerable) {
-            controlPackage.classInstance.getReferenceConnections().foreach(function (reference) {
+            controlPackage.classInstance.getReferenceConnections().forEach(function (reference) {
                 if (reference.type !== 'control' && reference.type !== 'subcontrol') {
                     trimmedInstrutions = me.trimInstructions(bindingInformation, reference.type);
                     if (trimmedInstrutions) {
@@ -94,7 +94,7 @@ MEPH.define('MEPH.bind.Binder', {
             //for (i in eventBindingInformation) {
             //    controlPackage.classInstance.getDomTemplate().where(function (x) {
             //        return x.nodeType === Dom.elementType;
-            //    }).foreach(function (dom) {
+            //    }).forEach(function (dom) {
             //        if (dom.addEventListener) {
             //            dom.addEventListener(i, function (eventType, evnt) {
             //                evnt.stopPropagation();
@@ -269,7 +269,7 @@ MEPH.define('MEPH.bind.Binder', {
         for (i in eventBindingInformation) {
             subcontrolPackage.templateNode.where(function (dom) {
                 return dom.nodeType === MEPH.util.Dom.elementType;
-            }).foreach(function (dom) {
+            }).forEach(function (dom) {
                 dom.addEventListener(i, function (eventType, evnt) {
                     evnt.stopPropagation();
                     if (!evnt.cancelled) {
@@ -348,7 +348,7 @@ MEPH.define('MEPH.bind.Binder', {
         if (objectsToList.length === 0) {
             objectsToList.push({ ref: obj, bindingInformation: bindingInformation });
         }
-        objectsToList.foreach(function (temp) {
+        objectsToList.forEach(function (temp) {
             //var obj = temp.ref;
             //var bindingInformation = temp.bindingInformation;
             temp.ref.on(altered, function (bindingInformation, eventType, args) {
@@ -429,7 +429,7 @@ MEPH.define('MEPH.bind.Binder', {
             return value;
         });
 
-        instructions.foreach(function (instruction, index) {
+        instructions.forEach(function (instruction, index) {
             var target = me.getConnection(obj, instruction.shortCut.type, instruction.shortCut.prefix),
                 value;
             promise = promise.then(function (target, index, result) {
@@ -494,7 +494,7 @@ MEPH.define('MEPH.bind.Binder', {
                                 return x.trim();
                             }).where(function (x) {
                                 return x;
-                            }).foreach(function (val) {
+                            }).forEach(function (val) {
                                 dom.classList.add(val);
                             });
                         }
@@ -748,7 +748,7 @@ MEPH.define('MEPH.bind.Binder', {
                         myStr = x.name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
                         return t === myStr;//x.name.toLowerCase();
                     });
-                }).foreach(function (x) {
+                }).forEach(function (x) {
                     prefixAndProperties.push({
                         prefix: '',
                         property: x.name
@@ -758,7 +758,7 @@ MEPH.define('MEPH.bind.Binder', {
             if (instance.getAutoBindProperties && instance.getAutoBindPropertyPath) {
                 instance.getAutoBindProperties().where(function (x) {
                     return attributes.some(function (t) { return t === x.property.toLowerCase(); });
-                }).foreach(function (x) {
+                }).forEach(function (x) {
                     //return [{ property: 'customAttr', path: ' isValidatable.value', autoProperty: 'invalid' }];
                     dom.setAttribute(x.autoProperty, instance.getAutoBindPropertyPath(x.property, x.autoProperty));
                     prefixAndProperties.push({
@@ -768,7 +768,7 @@ MEPH.define('MEPH.bind.Binder', {
                 });
             }
         }
-        prefixAndProperties.foreach(function (prefixAndProperty) {
+        prefixAndProperties.forEach(function (prefixAndProperty) {
             var attributeName, attribute;
             attributeName = prefixAndProperty.prefix ?
                             (prefixAndProperty.prefix + MEPH.bindPrefixDelimiter + prefixAndProperty.property) :

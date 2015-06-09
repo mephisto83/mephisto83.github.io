@@ -207,15 +207,18 @@ MEPH.define('MEPH.control.Control', {
             }
 
             if (value !== null) {
-                me.getDomTemplate().where(function (x) { return x.nodeType === Dom.elementType; }).foreach(function (dom) {
+                me.getDomTemplate().filter(function (x) {
+                    return x.nodeType === Dom.elementType;
+                }).forEach(function (dom) {
                     var options = transferrableConfig.options;
                     if (options.selector) {
                         if (dom.parentNode) {
-                            MEPH.Array(dom.parentNode.querySelectorAll(options.selector)).where(function (otherdom) {
-                                return otherdom == dom;
-                            }).foreach(function (subdom) {
-                                subdom.setAttribute(transferrableConfig.name, value)
-                            });
+                            MEPH.Array(dom.parentNode.querySelectorAll(options.selector))
+                                .where(function (otherdom) {
+                                    return otherdom == dom;
+                                }).forEach(function (subdom) {
+                                    subdom.setAttribute(transferrableConfig.name, value)
+                                });
                         }
                         MEPH.Array(dom.querySelectorAll(options.selector)).foreach(function (subdom) {
                             subdom.setAttribute(transferrableConfig.name, value)
@@ -224,7 +227,7 @@ MEPH.define('MEPH.control.Control', {
                     else if (options.object && options.path) {
                         isShortCut = false;
                         if (value) {
-                            type = MEPH.Array(value.split(MEPH.pathDelimiter)).first();
+                            type = value.split(MEPH.pathDelimiter).first();
 
                             if (MEPH.getBindPrefixShortCut(type)) {
                                 isShortCut = true
@@ -272,11 +275,13 @@ MEPH.define('MEPH.control.Control', {
     },
     initDataBinding: function () {
         var me = this;
-        me.getReferenceConnections().where(function (x) { return x.creator; }).foreach(function (x) {
-            if (x.obj[MEPH.isObservablePropertyKey]) {
-                x.obj.fire('altered', { path: '', references: [] });
-            }
-        });
+        me.getReferenceConnections()
+            .filter(function (x) { return x.creator; })
+            .forEach(function (x) {
+                if (x.obj[MEPH.isObservablePropertyKey]) {
+                    x.obj.fire('altered', { path: '', references: [] });
+                }
+            });
     },
     initComponent: function () {
     },
@@ -425,7 +430,7 @@ MEPH.define('MEPH.control.Control', {
                 });
             }
             if (options.add) {
-                var toadd = MEPH.Array(options.add.split(' ')).where().select();
+                var toadd = options.add.split(' ').where().select();
                 if (toadd.length)
                     view.classList.add.apply(view.classList, toadd);
             }
@@ -495,16 +500,16 @@ MEPH.define('MEPH.control.Control', {
                 dom = x;
 
             if (dom.parentNode) {
-                MEPH.Array(dom.parentNode.querySelectorAll(selector)).where(function (otherdom) {
+                MEPH.Array(dom.parentNode.querySelectorAll(selector)).filter(function (otherdom) {
                     return otherdom === dom;
-                }).foreach(function (subdom) {
+                }).forEach(function (subdom) {
                     if (subdom) {
                         result.push(subdom);
                     }
                 });
             }
             if (x.nodeType === Dom.elementType) {
-                MEPH.Array((x.querySelectorAll(selector))).foreach(function (x) {
+                MEPH.Array((x.querySelectorAll(selector))).forEach(function (x) {
                     if (x) {
                         result.push(x);
                     }
@@ -520,7 +525,8 @@ MEPH.define('MEPH.control.Control', {
             if (t) {
                 Style.hide(t);
             }
-        })
+        });
+        return Promise.resolve();
     },
     show: function () {
         var me = this;
@@ -528,7 +534,8 @@ MEPH.define('MEPH.control.Control', {
             if (t) {
                 Style.show(t);
             }
-        })
+        });
+        return Promise.resolve();
     },
     /**
      * Gets the dom element which meet the selector specification.

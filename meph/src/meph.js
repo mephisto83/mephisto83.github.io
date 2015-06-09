@@ -72,7 +72,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
             requiredClasses = getRequiredClasses(config);
             requiredTemplates = getRequiredTemplates(config, className);
             if (requiredClasses.length > 0) {
-                undefinedClasses = requiredClasses.where(function (x) {
+                undefinedClasses = requiredClasses.filter(function (x) {
                     return getDefinedClass(x) === null;
                 }).select(function (x) {
                     return {
@@ -83,7 +83,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                 });
             }
             if (requiredTemplates.length > 0) {
-                undefinedTemplates = requiredTemplates.where(function (x) {
+                undefinedTemplates = requiredTemplates.filter(function (x) {
                     return getDefinedTemplate(x) === null;
                 }).select(function (x) {
                     return {
@@ -108,7 +108,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                 var addNoTemplateInfo = false;
                 if (results.results && results.results[0]) {
                     meph.Array(results.results)
-                        .where(function (x) {
+                        .filter(function (x) {
                             if (!x || !x.details) {
                                 addNoTemplateInfo = true;
                             }
@@ -120,7 +120,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
 
                             return x.details;
                         })
-                        .foreach(function (templateInfo) {
+                        .forEach(function (templateInfo) {
                             addTemplateInformation(templateInfo);
                             meph.fire(meph.events.definedClass + templateInfo.classifiedName + templateInfo.type, templateInfo);
                         });
@@ -204,7 +204,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
         if (!Array.isArray(events)) {
             events = [events];
         }
-        events.foreach(function (event) {
+        events.forEach(function (event) {
             pubsubevents.push({ event: event, func: func, reference: guid });
         })
         return guid;
@@ -254,7 +254,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
      */
     meph.unsubscribe = function (ids) {
         ids = Array.isArray(ids) ? ids : [ids];
-        meph.Array(ids).foreach(function (id) {
+        meph.Array(ids).forEach(function (id) {
             meph.Array(pubsubevents).removeWhere(function (x) { return x === id || (x && x.reference === id); });
         });
     }
@@ -266,9 +266,9 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
      **/
     meph.publish = function (event) {
         var args = arguments;
-        meph.Array(pubsubevents).where(function (x) {
+        pubsubevents.filter(function (x) {
             return x.event === event;
-        }).foreach(function (x) {
+        }).forEach(function (x) {
             try {
                 x.func.apply(null, args);
             }
@@ -676,7 +676,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                                 key: x.split('=')[0],
                                 value: x.split('=')[1]
                             }
-                        }).foreach(function (x) {
+                        }).forEach(function (x) {
                             options[x.key.replace('#', '')] = x.value;
                         });
                     if (options.access_token) {
@@ -1188,8 +1188,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
     meph.getRequiredTemplates = function (config, className) {
         var result;
         if ((config.templates && config.templates.length > 0)) {
-            result = meph.Array(config.templates)
-                        .where(function (x) { return x; });
+            result = config.templates.filter(function (x) { return x; });
         }
         else if (config.templates === true) {
             result = meph.Array([className]);
@@ -1197,7 +1196,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
         else
             result = [];
         if (config.scripts && config.scripts.length) {
-            config.scripts.foreach(function (x) {
+            config.scripts.forEach(function (x) {
                 result.push(x);
             })
         }
@@ -1396,7 +1395,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
      * @returns {Array}
      */
     meph.getAllAliases = function (alias) {
-        return meph.Array(templates).select(function (x) { return x.alias; }).where(function (x) { return x; });
+        return meph.Array(templates).select(function (x) { return x.alias; }).filter(function (x) { return x; });
     }
 
     /**
@@ -1451,7 +1450,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
     meph.addDefinedClassInformation = function (classInformation) {
         var info = getDefinedClassInformation(classInformation.alias);
         if (!info) {
-            meph.Array(classInformation.alternateNames).foreach(function (name) {
+            meph.Array(classInformation.alternateNames).forEach(function (name) {
                 var info = createClassPath(name);
                 info.previous[info.name] = getDefinedClass(classInformation.classifiedName);
             });
@@ -1492,7 +1491,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
     meph.generateCustomVisualStudioTags = function () {
         var newline = '\r\n';
         var result = '<xsd:group name="flowContent">' + newline + '\t\t<xsd:choice>' + newline;
-        meph.Array(classes).where(function (x) { return x.alias; }).select(function (x) {
+        classes.filter(function (x) { return x.alias; }).select(function (x) {
             if (x.alias.indexOf('.') === -1 && x.alias.indexOf('-') === -1) {
                 result += '\t\t\t<xsd:element ref="' + x.alias + '" />' + newline;
             }
@@ -1500,7 +1499,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
         result += '\t\t</xsd:choice>' + newline;
         result += '</xsd:group>' + newline;
 
-        meph.Array(classes).where(function (x) { return x.alias; }).select(function (x) {
+        classes.filter(function (x) { return x.alias; }).select(function (x) {
             if (x.alias.indexOf('.') === -1 && x.alias.indexOf('-') === -1) {
                 result += '\t\t\t<xsd:element name="' + x.alias + '" type="simpleFlowContentElement" />' + newline;
             }
@@ -1723,8 +1722,8 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                     $dom = dom;
                 }
                 var me = this;
-                $type.foreach(function (type) {
-                    $dom.foreach(function (dom) {
+                $type.forEach(function (type) {
+                    $dom.forEach(function (dom) {
                         dom.addEventListener(type, func);
                         meph.Array(me[domListenersPropertyKey]).push({
                             type: type,
@@ -1763,7 +1762,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                         return x.reference === reference;
                     }
                     return true;
-                }).foreach(function (ops) {
+                }).forEach(function (ops) {
                     ops.dom.removeEventListener(ops.type, ops.func, ops.capture);
                 })
             }.bind(object)
@@ -1903,7 +1902,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
             }
             else if (prop.mixins && Array.isArray(prop.mixins)) {
                 meph.Array(prop.mixins);
-                prop.mixins.foreach(function (mixin) {
+                prop.mixins.forEach(function (mixin) {
                     var definedMixin = getDefinedClass(mixin);
                     if (definedMixin) {
                         var funcs = extractPropsAndFunc(definedMixin);
@@ -2078,7 +2077,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                     observables.push(i);
                 }
                 prototype.$__observables = prototype.$__observables || [];
-                observables.foreach(function (x) {
+                observables.forEach(function (x) {
                     if (!prototype.$__observables.contains(function (y) {
                         return x == y;
                     })) {
@@ -2189,8 +2188,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
             //}
         }).then(function () {
             window.SingleFileMode = false;
-
-            meph.Array(meph.connectableTypes).foreach(function (x) {
+            meph.connectableTypes.forEach(function (x) {
                 meph.addBindPrefixShortCuts(x.shortCut, x.type);
             });
         }).then(function () {

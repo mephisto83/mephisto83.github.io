@@ -1,31 +1,33 @@
-﻿<div headerpadding>
+﻿<div headerpadding class="contact-view-body">
     <div class="col-md-12 col-xs-12">
-          <div data-bind='"style.backgroundImage" : "c$.data.profileimageurl"' class="center-block profile"></div>
+        <div data-bind='"style.backgroundImage" : "c$.data.profileimageurl"' class="center-block profile"></div>
     </div>
     <div class="col-md-12 col-xs-12">
-        <h3 data-bind='"innerHTML":"c$.data.name"'></h3>
-        <i class="fa fa-at"></i>&nbsp; &nbsp;    <small data-bind='"innerHTML":"c$.data.occupation"'></small>
-        <i class="fa fa-cicogs"></i>&nbsp; &nbsp;  <small data-bind='"innerHTML":"c$.data.company"'></small>
+        <div class="contact-view-body-details">
+            <h1 data-bind='"innerHTML":"c$.data.name"'></h1>
+            <h2 data-bind='"innerHTML":"c$.data.occupation"'></h2>
+            <h3 data-bind='"innerHTML":"c$.data.company"'></h3>
+            <h4 data-bind='"innerHTML":"c$.data.addressline1"'></h4>
+            <h4 data-bind='"innerHTML":"c$.data.addressline2"'></h4>
+            <h4>
+                <span data-bind='"innerHTML":"c$.data.city"'></span>,
+                <span data-bind='"innerHTML":"c$.data.stateprovince"'></span>
+                <span data-bind='"innerHTML":"c$.data.zipcode"'></span>
+            </h4>
+
+
+        </div>
         <br />
-        <small data-bind='"innerHTML":"c$.data.addressline1"'></small>
+        <contactlink value="c$.data.phone1" dead-link="fa-dead" fa-icon="fa-phone" type="phone"></contactlink>
         <br />
-        <small data-bind='"innerHTML":"c$.data.addressline2"'></small>
-        <br />
-        <small data-bind='"innerHTML":"c$.data.city"'></small>,
-        <small data-bind='"innerHTML":"c$.data.stateprovince"'></small>
-        <small data-bind='"innerHTML":"c$.data.zipcode"'></small>
+        <contactlink value="c$.data.phone2" dead-link="fa-dead" fa-icon="fa-phone" type="phone"></contactlink>
+
 
         <br />
-        <i class="fa fa-envelope-o"></i>&nbsp; &nbsp;   <small data-bind='"innerHTML":"c$.data.email1"'></small>
+        <contactlink value="c$.data.email1" dead-link="fa-dead" fa-icon="fa-envelope-o" type="email"></contactlink>
 
         <br />
-        <i class="fa fa-envelope-o"></i>&nbsp; &nbsp;    <small data-bind='"innerHTML":"c$.data.email2"'></small>
-
-        <br />
-        <i class="fa fa-phone"></i>&nbsp; &nbsp;   <small data-bind='"innerHTML":"c$.data.phone1"'></small>
-
-        <br />
-        <i class="fa fa-phone"></i>&nbsp; &nbsp;   <small data-bind='"innerHTML":"c$.data.phone2"'></small>
+        <contactlink value="c$.data.email2" dead-link="fa-dead" fa-icon="fa-envelope-o" type="email"></contactlink>
 
     </div>
 </div>

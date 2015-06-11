@@ -139,7 +139,7 @@ MEPH.define('MEPH.panel.flyout.FlyoutPanel', {
                     remove: me.flyoutPanelCls,
                     maxTime: me.$maxTransitionTime
                 });
-            }).then(function () {
+            }).catch(function () { }).then(function () {
                 me.isOpening = false;
                 me.isOpened = true;
             });

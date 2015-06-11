@@ -64,6 +64,7 @@ $profile_list_width: 100px;
 
 .meph-view.login-view,
 .listwrapper,
+.meph-view.mainview .meph-activity-view-body,
 .meph-view.meph-edit-contact .meph-activity-view-body,
 .meph-view.main-contact .meph-activity-view-body {
     @include phones() {
@@ -230,14 +231,29 @@ $space-between-fields: 50px;
 
 
 
+            .overlay.relegated {
+                right: 0px;
+                bottom: 0px;
+                top: initial;
+                z-index: 1110000;
+                left: initial;
+                background-color: transparent;
+
+                .fa {
+                    color: $color3;
+                }
+            }
+
             .connecton-application-header {
 
                 [flyoutpanel].meph-flyout-panel-right {
                     background-color: transparent;
                     height: auto;
                     margin-top: 0px;
+                    opacity: 1;
 
                     .application-menu-list {
+                        border: 1px transparent;
                         background-color: $color1;
 
                         @include mobilescreen() {
@@ -517,6 +533,10 @@ $space-between-fields: 50px;
 
         .fa {
             color: $color1;
+        }
+
+        .row.contactlink.fa-dead {
+            pointer-events: none;
         }
 
         .meph-application-header {

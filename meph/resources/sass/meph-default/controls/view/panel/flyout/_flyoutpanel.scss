@@ -17,7 +17,8 @@ $meph-application-menu-categories-item-width: 290px;
 
 .meph-flyout-panel-right {
     right: 0;
-    transform: translateX(100%);
+    transform: translateX($meph-flyout-panel-width);
+    -webkit-transform: translate($meph-flyout-panel-width,0px);
 }
 
 .meph-flyout-panel.meph-flyout-panel-open-right {

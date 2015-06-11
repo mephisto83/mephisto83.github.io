@@ -7,6 +7,8 @@
         faCls: 'fa',
         faIcon: 'fa-envelope-o',
         faSize: 'fa-2x',
+        defaultCls: 'row contactlink',
+        deadLink: false,
         type: null,
         value: null
     },
@@ -19,7 +21,8 @@
     },
     defineDependentProperties: function () {
         var me = this;
-        me.combineClsIntoDepenendProperty('iconCls', ['faCls', 'faIcon']);
+        me.combineClsIntoDepenendProperty('contactLinkCls', ['deadLink', 'defaultCls']);
+        me.combineClsIntoDepenendProperty('iconCls', ['faCls', 'faIcon', 'deadLink']);
         MEPH.util.Observable.defineDependentProperty('valueCls', me, ['value'], me.valueChanged.bind(me));
         MEPH.util.Observable.defineDependentProperty('typeCls', me, ['type'], me.typeChanged.bind(me));
     },
@@ -88,5 +91,11 @@
             asValue: true,
             path: 'faIcon'
         });
+        me.addTransferableAttribute('deadLink', {
+            object: me,
+            asValue: true,
+            path: 'deadLink'
+        });
+
     }
 });

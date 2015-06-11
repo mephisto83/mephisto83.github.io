@@ -3826,17 +3826,17 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; background
 .meph-flyout-panel-left { transform: translateX(-300px); -webkit-transform: translate(-300px, 0px); }
 
 /* line 18, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
-.meph-flyout-panel-right { right: 0; transform: translateX(100%); }
+.meph-flyout-panel-right { right: 0; transform: translateX(300px); -webkit-transform: translate(300px, 0px); }
 
-/* line 23, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+/* line 24, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
 .meph-flyout-panel.meph-flyout-panel-open-right { right: 0; opacity: 1.0; transform: translateX(0%); -webkit-transform: translate(0px, 0px); }
 
-/* line 30, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+/* line 31, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
 .meph-flyout-panel-open-left { opacity: 1.0; transform: translateX(0px); -webkit-transform: translate(0px, 0px); }
 
-/* line 36, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+/* line 37, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
 [flyoutpanel] .meph-application-menu-categories-item { width: 100%; margin-left: 0px; margin-right: 0px; }
-@media screen and (min-width: 800px) { /* line 36, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+@media screen and (min-width: 800px) { /* line 37, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
   [flyoutpanel] .meph-application-menu-categories-item { width: 290px; } }
 
 /* line 7, ../sass/meph-default/controls/view/panel/_panel.scss */

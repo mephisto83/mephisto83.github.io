@@ -6,7 +6,7 @@ MEPH.define('MEPH.notification.Service', {
     requires: ['MEPH.notification.Notification'],
     properties: {
         messages: null,
-        timeout: 5000
+        timeout: 3000
     },
     initialize: function (config) {
         var me = this;

@@ -4,7 +4,7 @@
     requires: ['Connection.constant.Constants',
         'MEPH.util.Observable',
         'MEPH.util.Style'],
-    injections: ['userService', 'connectionMenuProvider'],
+    injections: ['userService', 'connectionMenuProvider', 'notificationService'],
     alias: 'connectionapplicationheader',
     properties: {
         secondarymenusource: null
@@ -28,8 +28,8 @@
             me.applicationmenu.open();
         }
         me.secondarypanel.close();
-        me.secondarypanel.onClickOutSideOf(me.secondarypanel.getFirstElement(), function () {
-            me.secondarypanel.closeIfOpen();
+        me.secondarypanel.onClickOutSideOf([me.headerdom, me.secondarypanel.getFirstElement()], function () {
+            me.secondarypanel.close();
         })
         if (me.$inj && me.$inj.userService) {
             if (me.$inj.userService.isLoggedIn()) {
@@ -51,10 +51,14 @@
     onOpenSecondaryMenu: function (type, options) {
         var me = this;
         me.secondarymenusource.dump();
-        if (options && options.elements && options.elements.length) {
-            me.secondarymenusource.push.apply(me.secondarymenusource, options.elements);
-            me.secondarypanel.open();
+        if (me.secondarypanel.isOpen()) {
+            me.secondarypanel.close();
         }
+        else
+            if (options && options.elements && options.elements.length) {
+                me.secondarymenusource.push.apply(me.secondarymenusource, options.elements);
+                me.secondarypanel.open();
+            }
     },
     gotoCreateContact: function () {
         MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'CreateContact', path: 'main/create/contact' });

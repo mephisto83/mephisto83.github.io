@@ -124,7 +124,7 @@
                     x.using = false;
                     MEPH.util.Observable.observable(x);
                     if (x.online) {
-                        me.accountOnline();
+                        me.accountOnline(x);
                     }
                     return (x);
                 }));

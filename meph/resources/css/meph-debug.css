@@ -3819,18 +3819,24 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; background
 /* line 33, ../sass/meph-default/controls/view/_classes.scss */
 .visualizer { overflow: hidden; }
 
-/* line 3, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+/* line 4, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
 .meph-flyout-panel { width: 300px; position: fixed; top: 0px; z-index: 10000; /* For Safari 3.1 to 6.0 */ -webkit-transition-property: all; -webkit-transition-duration: 0.2s; -webkit-transition-timing-function: ease; -webkit-transition-delay: 0s; /* Standard syntax */ transition-property: all; transition-duration: 0.2s; transition-timing-function: ease; transition-delay: 0s; opacity: 0; }
 
 /* line 13, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
 .meph-flyout-panel-left { transform: translateX(-300px); -webkit-transform: translate(-300px, 0px); }
 
 /* line 18, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+.meph-flyout-panel-right { right: 0; transform: translateX(100%); }
+
+/* line 23, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+.meph-flyout-panel.meph-flyout-panel-open-right { right: 0; opacity: 1.0; transform: translateX(0%); -webkit-transform: translate(0px, 0px); }
+
+/* line 30, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
 .meph-flyout-panel-open-left { opacity: 1.0; transform: translateX(0px); -webkit-transform: translate(0px, 0px); }
 
-/* line 24, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+/* line 36, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
 [flyoutpanel] .meph-application-menu-categories-item { width: 100%; margin-left: 0px; margin-right: 0px; }
-@media screen and (min-width: 800px) { /* line 24, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
+@media screen and (min-width: 800px) { /* line 36, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
   [flyoutpanel] .meph-application-menu-categories-item { width: 290px; } }
 
 /* line 7, ../sass/meph-default/controls/view/panel/_panel.scss */

@@ -19,7 +19,7 @@ MEPH.define('MEPH.mobile.providers.identity.view.Handler', {
     },
     afterShow: function () {
         var me = this;
-
+        var search = location.search;
         me.when.injected.then(function () {
             var pathname = location.pathname;
             return me.$inj.identityProvider.ready().then(function (x) {
@@ -27,8 +27,12 @@ MEPH.define('MEPH.mobile.providers.identity.view.Handler', {
                     return pathname === '/login/' + x.key;
                 });
                 if (provider) {
-                    return provider.p.handleRedirection().then(function (res) {
+                    return provider.p.handleRedirection(search).then(function (res) {
                         return me.handleResults(res)
+                    }).catch(function () {
+                        debugger
+
+                        MEPH.Log('Something went wronge in the handler.')
                     });
                 }
                 else {

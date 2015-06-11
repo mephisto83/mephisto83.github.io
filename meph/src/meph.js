@@ -22,7 +22,10 @@ if (document) {
 
         window.runningInCordova = true;
     }, false);
-    // document.addEventListener("touchstart", function () { }, true); // iOS Buttons Fix
+    var iOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);
+    if (iOS) {
+        document.addEventListener("touchstart", function () { }, true); // iOS Buttons Fix
+    }
 }
 
 var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {

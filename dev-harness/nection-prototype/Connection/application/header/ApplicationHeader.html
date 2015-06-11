@@ -1,10 +1,20 @@
 ﻿<div class="meph-application-header connecton-application-header" mephid="headerdom">
     <applicationmenu mephid="applicationmenu"></applicationmenu>
-    <applicationlogo></applicationlogo> 
-    <!--<mephbutton type="button" class="btn btn-passive btn-lg connection-app-add-contact hearbeat "  meph-event-click="c$.heartBeat">
-        <i class="fa fa-heart fa-2x"></i> 
-    </mephbutton>
-    <mephbutton type="button" class="btn btn-passive btn-lg connection-app-add-contact " meph-event-click="c$.gotoCreateContact" mephid="addContactBtn">
-        <i class="fa fa-plus fa-2x"></i>
-    </mephbutton>-->
+    <applicationlogo></applicationlogo>
+
+    <flyoutpanel mephid="secondarypanel"
+                 data-events='"itemclicked": "c$.menuItemClicked"'
+                 data-bind='"list.source": "c$.secondarymenusource"'
+                 cls="meph-flyout-panel-noble"
+                 position="right">
+        <list mephid="list">
+            <template name="u4m_application_secondary_menuitem">
+                <li class="application-menu-list list-group-item">
+                    <div>
+                        <i data-bind='"class":"c$.data.cls"'></i>    <span data-bind='"innerHTML": "c$.data.name"'></span>
+                    </div>
+                </li>
+            </template>
+        </list>
+    </flyoutpanel>
 </div>

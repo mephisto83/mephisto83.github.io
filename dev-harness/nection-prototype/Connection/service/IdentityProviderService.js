@@ -12,7 +12,9 @@
         var me = this;
         me.$promise = Promise.resolve();
         me.mixins.injectable.init.apply(me);
-        me.providers = [{ type: 'facebook', name: 'Facebook', $iconclass: 'facebook' },
+        me.providers = [
+            { type: 'bridge', name: 'Bridge', $iconclass: 'bridge' },
+            { type: 'facebook', name: 'Facebook', $iconclass: 'facebook' },
         { type: 'google', name: 'Google', $iconclass: 'google-plus' },
         //{ type: 'twitter', name: 'Twitter', $iconclass: 'twitter' },
         //{ type: 'paypal', name: 'Paypal' },

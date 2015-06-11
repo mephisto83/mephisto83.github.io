@@ -48,18 +48,24 @@
             if (me.$inj.relationshipService) {
                 me.$inj.overlayService.open('connection-contact');
                 me.$inj.overlayService.relegate('connection-contact');
-
-                return me.$inj.relationshipService.getRelationShip(me.contact).then(function (relation) {
-                    //if (me.$activityview.relationshipdescription) {
-                    //    me.$activityview.relationshipdescription.relationship = relation
-                    //}
+                var callback = function (relation) {
                     if (relation) {
                         MEPH.util.Style.show(me.$activityview.removeRelationshipBtn);
+                        MEPH.util.Style.hide(me.$activityview.addRelationshipBtn);
                     }
                     else {
                         MEPH.util.Style.show(me.$activityview.addRelationshipBtn);
+                        MEPH.util.Style.hide(me.$activityview.removeRelationshipBtn);
                     }
+                };
+                if (me.cancel && me.cancel.abort) {
+                    me.cancel.abort();
+                }
+                me.cancel = {};
 
+                return me.$inj.relationshipService.getRelationShip(me.contact, callback, me.cancel).then(function (relation) {
+
+                    callback(relation);
                     me.relationship = relation;
                 }).catch(function () {
                     MEPH.Log('GetRelationship error.')
@@ -69,6 +75,17 @@
             }
         })
     },
+    displayResult: function () {
+        var me = this;
+        if (me.relationship) {
+            MEPH.util.Style.show(me.$activityview.removeRelationshipBtn);
+            MEPH.util.Style.hide(me.$activityview.addRelationshipBtn);
+        }
+        else {
+            MEPH.util.Style.show(me.$activityview.addRelationshipBtn);
+            MEPH.util.Style.hide(me.$activityview.removeRelationshipBtn);
+        }
+    },
     editRelationship: function () {
         var me = this;
 
@@ -77,12 +94,12 @@
 
     createIfNonExistent: function () {
         var me = this;
-        Promise.all([me.when.loaded, me.when.injected]).then(function () {
+        return Promise.all([me.when.loaded, me.when.injected]).then(function () {
             if (me.$inj.relationshipService) {
                 if (!me.relationship) {
                     me.$inj.overlayService.open('connection-contact-create-releationship');
                     me.$inj.overlayService.relegate('connection-contact-create-releationship');
-                    me.$inj.relationshipService.createRelationship(me.contact).then(function (relationship) {
+                    return me.$inj.relationshipService.createRelationship(me.contact).then(function (relationship) {
                         me.relationship = relationship;
                         //  me.$activityview.relationshipdescription.relationship = relationship;
                     }).catch(function () {

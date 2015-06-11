@@ -27,7 +27,7 @@ MEPH.ready().then(function () {
             },
             ioc: {
                 stateService: {
-                    
+
                     'static': true,
                     type: 'Connection.service.StateService',
                     config: {}
@@ -59,13 +59,26 @@ MEPH.ready().then(function () {
                     type: 'Connection.provider.IdentityProvider',
                     config: {
                         providers: [{
+                            type: 'MEPH.mobile.providers.identity.ActiveDirectoryProvider',
+                            args: {
+                                http: protocol,
+                                key: 'bridge',
+                                authPath: redirecturl + '/api/provider/getcred',
+                                tenant: '6732b01c-705e-4903-b357-e21bbdd16355',
+                                clientId: '091c5acd-2eb7-4ce9-a479-41649b521f07',
+                                origin: '*',
+                                resource: 'https://bridgetest01.onmicrosoft.com/bridgetest01',
+                                redirect_uri: window.location.protocol + '//' + redirecturl + '/login/bridge',
+                                response_type: 'code',
+                                scope: 'user_impersonation'
+                            }
+                        }, {
                             type: 'MEPH.mobile.providers.identity.FacebookProvider',
                             args: {
                                 appId: '414352408719933',
                                 loginbtn: '#facebooklogin'
                             }
-                        },
-                        {
+                        },  {
                             type: 'MEPH.mobile.providers.identity.GoogleProvider',
                             args: {
                                 authPath: 'localhost/api/provider/getcred',

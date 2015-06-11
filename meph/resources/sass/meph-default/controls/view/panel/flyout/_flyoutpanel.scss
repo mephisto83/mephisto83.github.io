@@ -1,31 +1,44 @@
 ﻿$meph-flyout-panel-width: 300px;
 $meph-application-menu-categories-item-width: 290px;
-.meph-flyout-panel{
-    
-	width: $meph-flyout-panel-width;
-	position: fixed;
-	top: 0px;
-	z-index: 10000;
-    @include mephtransition();
-    opacity:0;
-} 
 
-.meph-flyout-panel-left
-{
+.meph-flyout-panel {
+    width: $meph-flyout-panel-width;
+    position: fixed;
+    top: 0px;
+    z-index: 10000;
+    @include mephtransition();
+    opacity: 0;
+}
+
+.meph-flyout-panel-left {
     transform: translateX(-$meph-flyout-panel-width);
     -webkit-transform: translate(-$meph-flyout-panel-width,0px);
 }
-.meph-flyout-panel-open-left
-{
+
+.meph-flyout-panel-right {
+    right: 0;
+    transform: translateX(100%);
+}
+
+.meph-flyout-panel.meph-flyout-panel-open-right {
+    right: 0;
+    opacity: 1.0;
+    transform: translateX(0%);
+    -webkit-transform: translate(0px, 0px);
+}
+
+.meph-flyout-panel-open-left {
     opacity: 1.0;
     transform: translateX(0px);
-    -webkit-transform: translate(0px , 0px);
+    -webkit-transform: translate(0px, 0px);
 }
+
 [flyoutpanel] .meph-application-menu-categories-item {
-	width:  100%;
-	margin-left:0px;
-	margin-right:0px;
-	@include big-screen {
-		width:  ($meph-application-menu-categories-item-width);
-	}
-} 
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+
+    @include big-screen {
+        width: ($meph-application-menu-categories-item-width);
+    }
+}

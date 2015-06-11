@@ -1,18 +1,25 @@
 ﻿MEPH.define('Connection.application.header.ApplicationHeader', {
     extend: 'MEPH.mobile.application.header.MobileApplicationHeader',
     templates: true,
-    requires: ['Connection.constant.Constants', 'MEPH.util.Style'],
-    injections: ['userService'],
+    requires: ['Connection.constant.Constants',
+        'MEPH.util.Observable',
+        'MEPH.util.Style'],
+    injections: ['userService', 'connectionMenuProvider'],
     alias: 'connectionapplicationheader',
+    properties: {
+        secondarymenusource: null
+    },
     initialize: function () {
         var me = this;
         me.great()
         MEPH.subscribe(Connection.constant.Constants.ConnectionLogIn, me.onloggedIn.bind(me));
         MEPH.subscribe(Connection.constant.Constants.ConnectionLogOut, me.onloggedOut.bind(me));
+        MEPH.subscribe(Connection.constant.Constants.SECONDARY_MENU, me.onOpenSecondaryMenu.bind(me))
     },
     onLoaded: function () {
         var me = this;
         me.applicationmenu.hide();
+        me.secondarymenusource = MEPH.util.Observable.observable([]);
         if (me.addContactBtn)
             me.addContactBtn.hide();
         if (document.body.classList.contains('mobile-bottom-menu')) {
@@ -20,12 +27,34 @@
             me.applicationmenu.setAlwaysOpen(true);
             me.applicationmenu.open();
         }
+        me.secondarypanel.close();
+        me.secondarypanel.onClickOutSideOf(me.secondarypanel.getFirstElement(), function () {
+            me.secondarypanel.closeIfOpen();
+        })
         if (me.$inj && me.$inj.userService) {
             if (me.$inj.userService.isLoggedIn()) {
                 me.onloggedIn();
             }
         }
         me.showMenu();
+    },
+    menuItemClicked: function () {
+        var me = this;
+
+        var data = me.getDomEventArg(arguments);
+
+        if (data && data.viewId) {
+            MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: data.viewId, path: data.path });
+            me.secondarypanel.close();
+        }
+    },
+    onOpenSecondaryMenu: function (type, options) {
+        var me = this;
+        me.secondarymenusource.dump();
+        if (options && options.elements && options.elements.length) {
+            me.secondarymenusource.push.apply(me.secondarymenusource, options.elements);
+            me.secondarypanel.open();
+        }
     },
     gotoCreateContact: function () {
         MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'CreateContact', path: 'main/create/contact' });

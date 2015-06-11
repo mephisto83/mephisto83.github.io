@@ -472,6 +472,9 @@ MEPH.define('MEPH.control.Control', {
         var me = this;
         me.$domTemplate = MEPH.Array(dom);
     },
+    getDomEventArg: function (args) {
+        return MEPH.util.Array.create(args).last().domEvent.data;
+    },
     /**
      * Gets the dom template for the instance.
      **/

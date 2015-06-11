@@ -146,6 +146,12 @@ MEPH.define('MEPH.panel.flyout.FlyoutPanel', {
             return me.$flyoutPanelPromise;
         }
     },
+    closeIfOpen: function () {
+        var me = this;
+        if (me.isOpened) {
+            me.close();
+        }
+    },
     close: function () {
         var me = this, toremove,
             flyoutpanel = me.querySelector(me.$flyoutPanelSelector);

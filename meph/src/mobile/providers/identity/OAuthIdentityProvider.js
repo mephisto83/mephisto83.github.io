@@ -161,7 +161,7 @@
 
         return me.credential || null;
     },
-    handleRedirection: function () {
+    handleRedirection: function (search) {
         var me = this,
             handle;
         handle = function (url, resolving, failing) {
@@ -210,10 +210,53 @@
                 return true;
             }
         };
-        var url = window.location.search;
+        var url = search || window.location.search;
         return new Promise(function (r, f) {
             handle(url, r, f)
         }).then(me.authorizeResult.bind(me));
+    },
+    proxyContact: function () {
+        var me = this;
+        return (!me.isReady ? me.ready() : Promise.resolve()).then(function () {
+            if (me.cachedResponse) {
+                return me.cachedResponse;
+            }
+            if (!me.credential) {
+                return null;
+            }
+            MEPH.Log('contact : ')
+            MEPH.Log('me.credential.access_token: ' + me.credential.access_token);
+            var request = me.$inj.rest.nocache().addPath('proxy/call').post({
+                oauth2_access_token: me.credential.access_token,
+                access_token: me.credential.access_token,
+                method: 'contact',
+                provider: me.constructor.key
+            });
+
+            //var request = me.api.addPath('/people/~')
+            //    .withCredentials(true)
+            //    .header('Authorization', 'Bearer ' + me.credential.access_token)
+            //    .absolute().get();
+
+            MEPH.Log('created the request ')
+            return request.then(function (res) {
+                MEPH.Log('Got contact info', 3);
+                if (res) {
+                    try {
+                        res = JSON.parse(res.jsonResult);
+                    }
+                    catch (e) {
+                        res = null;
+                    }
+                }
+                me.cachedResponse = res || null;
+
+                return res;
+            }).catch(function (e) {
+                MEPH.Log('Failed to get contact info', 3);
+                return Promise.reject(e);
+            });
+        })
     },
     authorizeResult: function (res) {
         var me = this;
@@ -270,7 +313,23 @@
                                  scope: me.args.scope,
                                  state: MEPH.GUID()
                              }).absolute();
+        rest = me.getAuthRest(rest);
         return rest.path();
+    },
+    getAuthRest: function (res) {
+        return res;
+    },
+    getRestInstance: function () {
+        var me = this;
+        return me.$inj.rest.clear().addPath(me.oauthpath)
+                                .addPath({
+                                    client_id: me.args.clientId,
+                                    response_type: me.args.response_type,
+                                    redirect_uri: me.args.redirect_uri,
+                                    scope: me.args.scope,
+                                    state: MEPH.GUID()
+                                }).absolute();
+
     },
     login: function () {
         var me = this,
@@ -295,14 +354,8 @@
 
                     MEPH.Log('ready');
                     if (me.$inj && me.$inj.rest) {
-                        var rest = me.$inj.rest.clear().addPath(me.oauthpath)
-                                .addPath({
-                                    client_id: me.args.clientId,
-                                    response_type: me.args.response_type,
-                                    redirect_uri: me.args.redirect_uri,
-                                    scope: me.args.scope,
-                                    state: MEPH.GUID()
-                                }).absolute();
+                        var rest = me.getRestInstance();
+                        rest = me.getAuthRest(rest);
                         return new Promise(function (resolve, fail) {
                             var authUrl = rest.path(),
                                 code,

@@ -50,10 +50,12 @@ MEPH.define('MEPH.list.View', {
         var me = this;
         me.don('click', me.listelement, function (evt) {
             var listItemEl = me.getListElement(evt);
-            var index = parseFloat(listItemEl.getAttribute('data-item-index'));
-            var element = me.getFirstElement();
-            element.dispatchEvent(MEPH.createEvent('itemclick', { data: me.source[index], index: index }));
-            me.fire('itemclick', { data: me.source[index], index: index });
+            if (listItemEl) {
+                var index = parseFloat(listItemEl.getAttribute('data-item-index'));
+                var element = me.getFirstElement();
+                element.dispatchEvent(MEPH.createEvent('itemclick', { data: me.source[index], index: index }));
+                me.fire('itemclick', { data: me.source[index], index: index });
+            }
         });
         me.great();
     },

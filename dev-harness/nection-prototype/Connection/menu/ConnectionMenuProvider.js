@@ -45,6 +45,32 @@
             }
         })
     },
+    getSecondaryMenuItems: function () {
+        var me = this, res = [];
+        res.push({
+            connectionmenu: true,
+            viewId: 'CreateContact',
+            cls: 'fa fa-user-plus',
+            path: 'main/create/contact',
+            name: 'New Contact'
+        }, {
+            connectionmenu: true,
+            name: 'Accounts',
+            viewId: 'Accounts',
+            cls: 'fa fa-university',
+            path: 'accounts'
+        });
+
+        res.push({
+            connectionmenu: true,
+            name: 'Style',
+            viewId: 'styleOptions',
+            cls: 'fa fa-diamond',
+            path: 'temporary/style/options'
+        });
+
+        return res;
+    },
     onloggedIn: function () {
         var me = this;
         me.loggedIn = true;
@@ -84,19 +110,6 @@
                 cls: 'fa fa-user',
                 path: 'main/me'
             })
-            res.push({
-                connectionmenu: true,
-                viewId: 'CreateContact',
-                cls: 'fa fa-user-plus',
-                path: 'main/create/contact',
-                name: 'New Contact'
-            }, {
-                connectionmenu: true,
-                name: 'Accounts',
-                viewId: 'Accounts',
-                cls: 'fa fa-university',
-                path: 'accounts'
-            });
         }
         if (me.mode === 'edit') {
 
@@ -134,15 +147,41 @@
         }
         res.push({
             connectionmenu: true,
-            name: 'Style',
-            viewId: 'styleOptions',
-            cls: 'fa fa-diamond',
-            path: 'temporary/style/options'
+            name: 'More',
+            openSideMenu: true,
+            cls: 'fa fa-bars'
         });
 
         res.foreach(function (x) {
             if (x.cls.indexOf('fa-2x') === -1)
                 x.cls += ' fa-2x';
+        });
+        return res;
+    },
+    getSecondardMenuItems: function () {
+        var me = this,
+            res = [];
+        if (me.loggedIn) {
+            res.push({
+                connectionmenu: true,
+                viewId: 'CreateContact',
+                cls: 'fa fa-user-plus',
+                path: 'main/create/contact',
+                name: 'New Contact'
+            }, {
+                connectionmenu: true,
+                name: 'Accounts',
+                viewId: 'Accounts',
+                cls: 'fa fa-university',
+                path: 'accounts'
+            });
+        }
+        res.push({
+            connectionmenu: true,
+            name: 'Style',
+            viewId: 'styleOptions',
+            cls: 'fa fa-diamond',
+            path: 'temporary/style/options'
         });
         return res;
     },
@@ -165,6 +204,9 @@
                 return me.appMenu.close().then(function () { return true; });
             }
             return true;
+        }
+        else if (data.openSideMenu) {
+            MEPH.publish(Connection.constant.Constants.SECONDARY_MENU, { elements: me.getSecondardMenuItems() });
         }
         return true;
     }

@@ -2,6 +2,7 @@
 $tiny-text-size: 10px;
 $connection-box-border-radius: 20px;
 $profile-item-height: 75px;
+$fat-finger-height: 40px;
 
 $connection-list-profile-details-padding: 55px;
 $connection-list-profile-image-width: $connection-list-profile-details-padding - 5px;
@@ -26,7 +27,7 @@ $rgba-primary-4: rgba( 246, 110, 0,1);
     }
 }
 
-s .connection-application-logo {
+.connection-application-logo {
 }
 
 $meph-activity-view-body-padding-top: 43px;
@@ -76,7 +77,6 @@ $view-header-top-padding: $view-header-body-height;
 [footerpadding] {
     padding-bottom: $view-header-body-height + 20px;
 }
-
 /*[headerpadding] {
     padding-top: $view-header-top-padding;
 }*/
@@ -228,48 +228,91 @@ $space-between-fields: 50px;
                 bottom: 50px;
             }
 
+
+
+            .connecton-application-header {
+
+                [flyoutpanel].meph-flyout-panel-right {
+                    background-color: transparent;
+                    height: auto;
+                    margin-top: 0px;
+
+                    .application-menu-list {
+                        background-color: $color1;
+
+                        @include mobilescreen() {
+                            min-height: $fat-finger-height;
+                        }
+
+                        color: $color3;
+
+
+
+                        &:active {
+                            background-color: $color4;
+
+                            i {
+                                color: $color7;
+                            }
+                        }
+                    }
+                    /*.fa {
+                        color: $color4;
+                    }*/
+                    .connection-menu-template {
+                        color: $color5;
+                    }
+
+                    .connection-menu-template.list-group-item:last-child {
+                        border-radius: 0px;
+                    }
+                }
+            }
+
+
             .meph-application-header {
                 bottom: 0;
                 z-index: $top-zindex;
 
-                .meph-flyout-panel {
-                    width: 100%;
-                }
+                .meph-application-menu {
+                    .meph-flyout-panel {
+                        width: 100%;
+                    }
 
-                [flyoutpanel] {
-                    height: $view-header-body-height;
-                    bottom: 0px;
-                    top: initial;
-                    background-color: transparent;
-                    margin-top: 0px;
+                    [flyoutpanel] {
+                        height: $view-header-body-height;
+                        bottom: 0px;
+                        top: initial;
+                        background-color: transparent;
+                        margin-top: 0px;
 
-                    ul {
-                        margin: 0px;
+                        ul {
+                            margin: 0px;
 
-                        .listitem {
-                            float: left;
-                            text-align: center;
-                            background-color: transparent;
-                            /*width: 25%;*/
-                            border: 0;
-
-                            .fa {
-                                margin-top: -6px;
+                            .listitem {
+                                float: left;
                                 text-align: center;
-                            }
+                                background-color: transparent;
+                                border: 0;
 
-                            h4 {
-                                display: block;
-                                font-size: $tiny-text-size;
-                                margin: 0;
-                                color: $color3;
-                            }
+                                .fa {
+                                    margin-top: -6px;
+                                    text-align: center;
+                                }
 
-                            &:active {
-                                background-color: $color4;
+                                h4 {
+                                    display: block;
+                                    font-size: $tiny-text-size;
+                                    margin: 0;
+                                    color: $color3;
+                                }
 
-                                i {
-                                    color: $color7;
+                                &:active {
+                                    background-color: $color4;
+
+                                    i {
+                                        color: $color7;
+                                    }
                                 }
                             }
                         }
@@ -1162,7 +1205,6 @@ color7: #385b9f /* list item background*/
  $color1: #191919, $color2: #DFE2DB, $color4: #FFF056,
  $color3: #FFFFFF);
 @include pallette($palette:"big-top", $color1: #C63D0F, $color2: #7E8F7C, $color4: #3B3738, $color3: #FDF3E7);*/
-
 @each $pal in $palettes {
     @include pallette($palette:map-get($pal, "palette"), $color1:map-get($pal, "color1"), $color2:map-get($pal, "color2"), $color3:map-get($pal, "color3"), $color4:map-get($pal, "color4"), $color5:map-get($pal, "color5"), $color6:map-get($pal, "color6"), $color7:map-get($pal, "color7"))
 }

@@ -11,6 +11,7 @@
         serviceObj: null,
         selectedobject: null,
         showempty: false,
+        alwayshow: false,
         selectedindex: null,
         injectControls: {
             location: 'listtemplate'
@@ -133,9 +134,9 @@
         var me = this,
             field = me.field;
         me.listsource = [];
-        if (args.value || me.showempty) {
+        if (args.value || me.showempty || me.alwayshow) {
             var toadd = me.source.where(function (x) {
-                if (!args.value && me.showempty) {
+                if ((!args.value && me.showempty) || me.alwayshow) {
                     return true;
                 }
                 return x[field] ? x[field].indexOf(args.value) != -1 : 1;

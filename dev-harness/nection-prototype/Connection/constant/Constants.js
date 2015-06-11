@@ -5,6 +5,7 @@
         ConnectionLogIn: 'Connection + log in',
         ConnectionLogOut: 'Connection log out',
         CurrentCard: 'Current card',
-        MultipleLogins: 'Multiple logins from different providers'
+        MultipleLogins: 'Multiple logins from different providers',
+        SECONDARY_MENU: 'SECONDARY_MENU'
     }
 })

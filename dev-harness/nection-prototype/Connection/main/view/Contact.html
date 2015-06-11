@@ -9,9 +9,13 @@
                     <i class="fa fa-link fa-2x col-md-12"></i>
                     <div>Connected</div>
                 </div>
-                <div mephid="addRelationshipBtn" style="display:none;" meph-event-click="v$.createIfNonExistent | v$.editRelationship">
+                <div mephid="addRelationshipBtn" style="display:none;" meph-event-click="v$.createIfNonExistent | v$.displayResult">
                     <i class="fa fa-chain-broken fa-2x col-md-12"></i>
                     <div>Connect</div>
+                </div>
+                <div mephid="checkingRelationship" style="display:none;">
+                    <i class="fa fa-sprocket fa-2x col-md-12 spinning"></i>
+                    <div>Connected</div>
                 </div>
             </div>
         </div>

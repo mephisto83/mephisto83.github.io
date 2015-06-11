@@ -137,45 +137,7 @@ MEPH.define('MEPH.mobile.providers.identity.LinkedInProvider', {
     },
     contact: function () {
         var me = this;
-        return (!me.isReady ? me.ready() : Promise.resolve()).then(function () {
-            if (me.cachedResponse) {
-                return me.cachedResponse;
-            }
-            if (!me.credential) {
-                return null;
-            }
-            MEPH.Log('contact : ')
-            MEPH.Log('me.credential.access_token: ' + me.credential.access_token);
-            var request = me.$inj.rest.addPath('proxy/call').post({
-                oauth2_access_token: me.credential.access_token,
-                method: 'contact',
-                provider: me.constructor.key
-            });
-
-            //var request = me.api.addPath('/people/~')
-            //    .withCredentials(true)
-            //    .header('Authorization', 'Bearer ' + me.credential.access_token)
-            //    .absolute().get();
-
-            MEPH.Log('created the request ')
-            return request.then(function (res) {
-                MEPH.Log('Got contact info', 3);
-                if (res) {
-                    try {
-                        res = JSON.parse(res.jsonResult);
-                    }
-                    catch (e) {
-                        res = null;
-                    }
-                }
-                me.cachedResponse = res || null;
-
-                return res;
-            }).catch(function (e) {
-                MEPH.Log('Failed to get contact info', 3);
-                return Promise.reject(e);
-            });
-        })
+        return me.proxyContact();
     },
     getClientId: function (res) {
         if (!res)

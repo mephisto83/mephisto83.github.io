@@ -19,6 +19,7 @@
         ON_SHOW: 'ON_SHOW',
         ON_HIDE: 'ON_HIDE',
         START_ACTIVITY: 'START_ACTIVITY',
+        LOGOUT: 'meph LOGOUT of all registered identity providers',
         provider: {
             PROVIDERONLINE: 'PROVIDERONLINE',
             IDENTITY_STATUS_CHANGE: 'IDENTITY_STATUS_CHANGE'

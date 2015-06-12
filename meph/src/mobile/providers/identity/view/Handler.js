@@ -19,7 +19,7 @@ MEPH.define('MEPH.mobile.providers.identity.view.Handler', {
     },
     afterShow: function () {
         var me = this;
-        var search = location.search;
+        var search = me.location || location.search;
         me.when.injected.then(function () {
             var pathname = location.pathname;
             return me.$inj.identityProvider.ready().then(function (x) {

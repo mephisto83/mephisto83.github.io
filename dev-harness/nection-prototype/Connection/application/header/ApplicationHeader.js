@@ -12,8 +12,7 @@
     initialize: function () {
         var me = this;
         me.great()
-        MEPH.subscribe(Connection.constant.Constants.ConnectionLogIn, me.onloggedIn.bind(me));
-        MEPH.subscribe(Connection.constant.Constants.ConnectionLogOut, me.onloggedOut.bind(me));
+
         MEPH.subscribe(Connection.constant.Constants.SECONDARY_MENU, me.onOpenSecondaryMenu.bind(me))
     },
     onLoaded: function () {
@@ -45,6 +44,10 @@
 
         if (data && data.viewId) {
             MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: data.viewId, path: data.path });
+            me.secondarypanel.close();
+        }
+        else if (data.logout) {
+            MEPH.publish(MEPH.Constants.LOGOUT, {});
             me.secondarypanel.close();
         }
     },

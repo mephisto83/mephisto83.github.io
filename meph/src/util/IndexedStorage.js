@@ -8,7 +8,11 @@ MEPH.define('MEPH.util.IndexedStorage', {
         var me = this;
         me.initLocal();
         me.dbconfig = me.config({ data: config });
-
+        MEPH.subscribe(MEPH.Constants.LOGOUT, function () {
+            me.open().then(function () {
+                me.clear();
+            })
+        });
     },
     initLocal: function () {
         var key = 'meph-util-indexedStorage',
@@ -142,6 +146,21 @@ MEPH.define('MEPH.util.IndexedStorage', {
 
             req.onsuccess = function (evt) {
                 r(obj);
+            };
+            req.onerror = function (evt) {
+                // console.error("deletePublication:", evt.target.errorCode);
+                f(new Error(evt.target.errorCode));
+            };
+        });
+    },
+    clear: function () {
+        var me = this;
+        return new Promise(function (r, f) {
+            var store = me.getObjectStore('readwrite'),
+                req = store.clear();
+
+            req.onsuccess = function (evt) {
+                r(true);
             };
             req.onerror = function (evt) {
                 // console.error("deletePublication:", evt.target.errorCode);

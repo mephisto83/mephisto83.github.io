@@ -18,8 +18,22 @@ MEPH.define('MEPH.notification.Service', {
         me.$queue = Promise.resolve();
     },
     notify: function (options) {
-        var me = this, el;
-        me.messages.push(options);
+        var me = this, e;
+
+        if (options && options.message) {
+
+            if (!me.messages.some(function (x) {
+            return x.message === options.message;
+            })) {
+                if (!me.currentOption || me.currentOption.message !== options.message)
+                    me.messages.push(options);
+            }
+        }
+        else {
+            if (!me.currentOption || me.currentOption.message !== options.message)
+                me.messages.push(options);
+        }
+
         if (me.messages.length === 1) {
             var notif = function () {
                 me.$queue = me.$queue.then(function () {
@@ -27,22 +41,26 @@ MEPH.define('MEPH.notification.Service', {
                         var template = MEPH.getTemplate('MEPH.notification.Notification');
 
                         var options = me.messages.shift();
-                        var html = MEPH.util.Template.bindTemplate(template.template, options);
-                        me.div.innerHTML = html;
-                        el = me.div.firstElementChild;
-                        document.body.appendChild(el);
-                        setTimeout(function (el) {
-                            el.classList.add('remove-notification');
-                            setTimeout(function () {
-                                if (el.parentNode) {
-                                    el.parentNode.removeChild(el);
+                        me.currentOption = options;
+                        if (options) {
+                            var html = MEPH.util.Template.bindTemplate(template.template, options);
+                            me.div.innerHTML = html;
+                            el = me.div.firstElementChild;
+                            document.body.appendChild(el);
+                            setTimeout(function (el) {
+                                el.classList.add('remove-notification');
+                                setTimeout(function () {
+                                    if (el.parentNode) {
+                                        el.parentNode.removeChild(el);
+                                    }
+                                    resolve();
+                                }, 300);
+                                me.currentOption = null;
+                                if (me.messages.length) {
+                                    notif();
                                 }
-                                resolve();
-                            }, 300);
-                            if (me.messages.length) {
-                                notif();
-                            }
-                        }.bind(me, el), me.timeout);
+                            }.bind(me, el), me.timeout);
+                        }
                     })
                 });
             };

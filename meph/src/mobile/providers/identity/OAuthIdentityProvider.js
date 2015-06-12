@@ -1,6 +1,8 @@
 ﻿MEPH.define('MEPH.mobile.providers.identity.OAuthIdentityProvider', {
     requires: ['MEPH.util.Style', 'MEPH.mixins.Injections'],
-    injections: ['rest', 'storage', 'popup', 'overlayService'],
+    injections: ['rest', 'storage',
+        'system',
+        'popup', 'overlayService'],
     mixins: {
         injectable: 'MEPH.mixins.Injections'
     },
@@ -509,6 +511,25 @@
                     }
                 });
             });
+    },
+    logout: function () {
+        var me = this;
+        return me.ready().then(function () {
+            return me.when.injected.then(function () {
+                me.credentials(false);
+                return me.$inj.storage.set(me.storagekey, null);
+            }).then(function () {
+                if (me.$inj.system) {
+                    me.$inj.system.deleteCookie();
+                }
+                if (me.$inj.storage) {
+                    me.$inj.storage.clear();
+                }
+                return me.$inj.rest
+                .addPath(me.args.logout_endpoint || 'logout')
+                .addPath(me.constructor.key).get();
+            });
+        });
     },
     getClientId: function (res) {
         if (!res)

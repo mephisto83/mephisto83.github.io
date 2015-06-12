@@ -15,6 +15,16 @@
                 Style.hide(b);
             }
         },
+        clearPosition: function (dom) {
+            if (dom) {
+                dom.style.left = '';
+                dom.style.top = '';
+                dom.style.right = '';
+                dom.style.bottom = '';
+                dom.style.webkitTransform = '';
+                dom.style.transform = '';
+            }
+        },
         setPosition: function (dom, x, y) {
             Style.left(dom, x);
             Style.top(dom, y);

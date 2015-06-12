@@ -409,6 +409,28 @@ MEPH.define('MEPH.mobile.providers.identity.ActiveDirectoryProvider', {
         }
         return res;
     },
+    logout: function () {
+        var me = this, 
+            wasonline = me.isonline,
+            res = me.great();
+        
+        return res.then(function () {
+            
+            //post_logout_redirect_uri
+            if (!wasonline) {
+                return false;
+            }
+            var rest = me.$inj.rest.clear()
+                .addPath('login.microsoftonline.com/')
+                .addPath(me.args.tenant)
+                .addPath('oauth2/logout')
+                .addPath({ post_logout_redirect_uri: me.args.redirect_logout })
+                .absolute();
+            window.location.replace(rest.path());
+        }).catch(function () {
+            MEPH.Log('Something wen wrong while logging out');
+        });
+    },
     ready: function () {
         var me = this;
         MEPH.Log('google provider : ready');

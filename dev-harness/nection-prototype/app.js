@@ -54,65 +54,77 @@ MEPH.ready().then(function () {
                     'static': true,
                     type: 'Connection.provider.local.CustomProvider'
                 },
+                system: {
+                    'static': true,
+                    type: 'MEPH.system.System',
+
+                    config: {
+                        cookie_name: 'mvc-connection.ticket'
+                    }
+                },
                 identityProvider: {
                     'static': true,
                     type: 'Connection.provider.IdentityProvider',
                     config: {
-                        providers: [{
-                            type: 'MEPH.mobile.providers.identity.ActiveDirectoryProvider',
-                            args: {
-                                http: protocol,
-                                key: 'bridge',
-                                authPath: redirecturl + '/api/provider/getcred',
-                                tenant: '6732b01c-705e-4903-b357-e21bbdd16355',
-                                clientId: '091c5acd-2eb7-4ce9-a479-41649b521f07',
-                                origin: '*',
-                                resource: 'https://bridgetest01.onmicrosoft.com/bridgetest01',
-                                redirect_uri: window.location.protocol + '//' + redirecturl + '/login/bridge',
-                                response_type: 'code',
-                                scope: 'user_impersonation'
-                            }
-                        }, {
-                            type: 'MEPH.mobile.providers.identity.FacebookProvider',
-                            args: {
-                                appId: '414352408719933',
-                                loginbtn: '#facebooklogin'
-                            }
-                        },  {
+                        providers: [
+                            {
+                                type: 'MEPH.mobile.providers.identity.ActiveDirectoryProvider',
+                                args: {
+                                    http: protocol,
+                                    key: 'bridge',
+                                    authPath: redirecturl + '/api/provider/getcred',
+                                    tenant: '6732b01c-705e-4903-b357-e21bbdd16355',
+                                    clientId: '091c5acd-2eb7-4ce9-a479-41649b521f07',
+                                    origin: '*',
+                                    resource: 'https://bridgetest01.onmicrosoft.com/bridgetest01',
+                                    redirect_uri: window.location.protocol + '//' + redirecturl + '/login/bridge',
+                                    redirect_logout: window.location.protocol + '//' + redirecturl + '/logout/bridge',
+                                    logout_endpoint: 'logout',
+                                    response_type: 'code',
+                                    scope: 'openid'
+                                }
+                            },
+                            {
+                                type: 'MEPH.mobile.providers.identity.FacebookProvider',
+                                args: {
+                                    http: protocol,
+                                    authPath: redirecturl + '/api/provider/getcred',
+                                    clientId: '414352408719933',
+                                    origin: '*',
+                                    // apiKey: 'AIzaSyCadw9tvscBUS4g3PTGe7P1i8qNfpLpsZc',
+                                    redirect_uri: window.location.protocol + '//' + redirecturl + '/login/facebook',
+                                    response_type: 'code',
+                                    logout_endpoint: 'logout',
+                                    scope: 'email,public_profile,user_friends'
+                                }
+                            },
+                        {
                             type: 'MEPH.mobile.providers.identity.GoogleProvider',
                             args: {
-                                authPath: 'localhost/api/provider/getcred',
+                                http: protocol,
+                                authPath: redirecturl + '/api/provider/getcred',
                                 clientId: '517106140753-3vmlkec7jhi5s0bmv89tkc8kho1u21e3.apps.googleusercontent.com',
-                                clientsecret: 'Kf2BwHPkUh2SPnhoB9Rf9ZxS',
                                 origin: '*',
                                 apiKey: 'AIzaSyCadw9tvscBUS4g3PTGe7P1i8qNfpLpsZc',
-                                redirect_uri: 'http://localhost',
+                                redirect_uri: window.location.protocol + '//' + redirecturl + '/login/google',
                                 response_type: 'code',
+                                logout_endpoint: 'logout',
                                 scope: 'https://www.googleapis.com/auth/plus.login'
                             }
-                        },
-                        //{
-                        //    type: 'MEPH.mobile.providers.identity.GooglePlusProvider',
-                        //    args: {
-                        //        clientId: '517106140753-3vmlkec7jhi5s0bmv89tkc8kho1u21e3.apps.googleusercontent.com',
-                        //        clientsecret: 'Kf2BwHPkUh2SPnhoB9Rf9ZxS',
-                        //        script: '<script src="https://apis.google.com/js/client:platform.js" async defer></script>'
-                        //    }
-                        //},
-                        {
+                        }, {
                             type: 'MEPH.mobile.providers.identity.LinkedInProvider',
                             args: {
-                                //Application Details
-                                Company: 'Nection',
-
-                                'Application Name': 'Nection',
-                                'API Key': '78fhoxc30y05b7',
-                                'Secret Key': 'IPKMnGBTbB8tNY41',
-                                'OAuth User Token': 'd728c483-a2b5-4d74-afb9-cbeb6727673b',
-                                'OAuth User Secret': '1deb0c26-26f5-48cd-ac16-52237d9542a6'
+                                http: protocol,
+                                authPath: redirecturl + '/api/provider/getcred',
+                                clientId: '78fhoxc30y05b7',
+                                origin: '*',
+                                apiKey: '78fhoxc30y05b7',
+                                redirect_uri: window.location.protocol + '//' + redirecturl + '/login/linkedin',
+                                response_type: 'code',
+                                logout_endpoint: 'logout',
+                                scope: 'r_emailaddress'
                             }
-                        }
-                        ]
+                        }]
                     }
                 },
                 notificationService: {

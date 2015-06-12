@@ -24,14 +24,19 @@
         me.ready = me.when.injected;
         MEPH.subscribe(Connection.constant.Constants.ConnectionLogIn, me.loadContactsAndMerge.bind(me));
     },
-    afterShow: function () {
+    onLoaded: function () {
         var me = this;
         me.name = 'Main';
         MEPH.Log('Loaded Main.');
         if (!me.listsource) {
             me.listsource = MEPH.util.Observable.observable([]);
-            me.loadRelationshipContacts();
+            me.ready.then(function () {
+                return me.$inj.relationshipService.afterServerCachedLoaded(function () {
+                    return me.search('', true);
+                });
+            });
         }
+        me.great();
     },
     loadRelationshipContacts: function () {
         var me = this;

@@ -5,6 +5,12 @@
 MEPH.define('MEPH.util.Storage', {
     properties: {
     },
+    clear: function () {
+        var me = this;
+        if (window.localStorage && window.localStorage.clear) {
+            window.localStorage.clear();
+        }
+    },
     set: function (name, object) {
         var me = this;
         if (window.localStorage) {

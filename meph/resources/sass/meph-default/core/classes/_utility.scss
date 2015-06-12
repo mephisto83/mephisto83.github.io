@@ -11,6 +11,10 @@
     cursor: move;
 }
 
+.meph-draggable-bungy {
+    position: absolute;
+}
+
 .stretchable-handle:hover {
     cursor: nesw-resize;
 }

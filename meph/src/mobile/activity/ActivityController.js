@@ -94,7 +94,10 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
                         return me.startActivity(view).then(function (result) {
                             if (replacestate) {
                                 var activity = result.classInstance;
-                                me.pushState(me.$window, { activityId: activity.getActivityId(), path: activity.getPath() }, '', me.getCombinedPath(activity.getPath()))
+                                me.pushState(me.$window, {
+                                    activityId: activity.getActivityId(),
+                                    path: activity.getPath()
+                                }, '', me.getCombinedPath(activity.getPath()))
                             }
                             return result;
                         });
@@ -304,10 +307,17 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
      * @param {Object} activityConfig.viewId
      **/
     startHome: function (activityConfig) {
+        var me = this;
+
+        return me.getViewCurrentLocationDefinition().then(function (view) {
+            return me.startActivity(view || activityConfig, null, { skip: true });
+        });
+
+    },
+    getViewCurrentLocationDefinition: function () {
         var me = this,
             pathname = location.pathname,
             ac = MEPH.mobile.activity.ActivityController;
-
         return MEPH.MobileServices.get(ac.viewProvider).then(function (viewProvider) {
 
             MEPH.Log('got view Provider');
@@ -323,9 +333,7 @@ MEPH.define('MEPH.mobile.activity.ActivityController', {
                     view.path = pathname;
                 }
                 return view;
-            }).then(function (view) {
-                return me.startActivity(view || activityConfig, null, { skip: true });
-            });
+            })
         });
     },
     /**

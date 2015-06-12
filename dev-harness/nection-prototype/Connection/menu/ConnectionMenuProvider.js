@@ -12,7 +12,7 @@
     initialize: function () {
         var me = this;
         MEPH.subscribe(Connection.constant.Constants.ConnectionLogIn, me.onloggedIn.bind(me));
-        // MEPH.subscribe(Connection.constant.Constants.LoggedIn, me.onloggedIn.bind(me));
+        MEPH.subscribe(MEPH.Constants.LOGOUT, me.onLogout.bind(me));
         me.mixins.injectable.init.apply(me);
 
         MEPH.subscribe(MEPH.Constants.ON_SHOW, function (type, args) {
@@ -74,6 +74,13 @@
     onloggedIn: function () {
         var me = this;
         me.loggedIn = true;
+        if (me.loadMenu) {
+            me.loadMenu();
+        }
+    },
+    onLogout: function () {
+        var me = this;
+        me.loggedIn = false;
         if (me.loadMenu) {
             me.loadMenu();
         }
@@ -174,6 +181,11 @@
                 viewId: 'Accounts',
                 cls: 'fa fa-university',
                 path: 'accounts'
+            }, {
+                connectionmenu: true,
+                name: 'Log out',
+                logout: true,
+                cls: 'fa fa-sign-out'
             });
         }
         res.push({
@@ -207,6 +219,9 @@
         }
         else if (data.openSideMenu) {
             MEPH.publish(Connection.constant.Constants.SECONDARY_MENU, { elements: me.getSecondardMenuItems() });
+        }
+        else if (data.logout) {
+            MEPH.publish(MEPH.Constants.LOGOUT, {});
         }
         return true;
     }

@@ -9,14 +9,57 @@
 MEPH.define('MEPH.mobile.activity.container.Container', {
     extend: 'MEPH.control.Control',
     mixins: ['MEPH.mobile.mixins.Activity'],
-    requires: ['MEPH.mobile.activity.view.ActivityView'],
+    requires: ['MEPH.mobile.activity.view.ActivityView',
+        'MEPH.util.Draggable'],
     properties: {
-        $removeHomePageCls: 'meph-view-remove'
+        $removeHomePageCls: 'meph-view-remove',
+        percentageForDrag: 0.7
     },
     initialize: function () {
         var me = this;
         me.callParent.apply(me, arguments);
         me.on('afterload', me.activityLoaded.bind(me));
+        me.on('afterload', me.fullscreenMode.bind(me));
+    },
+
+    fullscreenMode: function () {
+        var me = this,
+            stretchMargin = 10,
+            percentageForDrag = me.percentageForDrag;
+        //If in standalone mode, handle swipes
+        me.when.injected.then(function () {
+            if (("standalone" in window.navigator) && window.navigator.standalone) {
+                var firstel = me.getFirstElement();
+                var scope = MEPH.util.Draggable.draggable(firstel, null, {
+                    restrict: 'x',
+                    translate: true,
+                    bungy: true,
+                    must: function (start) {
+                        return start.x < stretchMargin || start.x > document.body.getBoundingClientRect().width - stretchMargin;
+                    }
+                });
+                MEPH.util.Dom.onSwipe(firstel, function (direction, distance) {
+                    var size = MEPH.util.Style.size(document.body);
+                    console.info('distance ' + distance);
+                    console.info('screen  ' + size.width);
+                    console.info('should be at least ' + (size.width * percentageForDrag));
+                    if (size.width * percentageForDrag < distance) {
+                        MEPH.Log('Swipe ' + direction);
+                        if (window.history && window.history.back && window.history.forward) {
+                            switch (direction) {
+                                case 'left':
+                                    window.history.forward();
+                                    break;
+                                case 'right':
+                                    window.history.back();
+                                    break;
+                            }
+                        }
+                    }
+                }, { horizontal: true, enforceSideStart: true, stretchMargin: stretchMargin },
+                null, null, 2000)
+            }
+        });
     },
     /**
      * Shows the container.

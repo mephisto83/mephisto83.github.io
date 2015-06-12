@@ -15,6 +15,10 @@ MEPH.define('MEPH.mobile.providers.identity.IdentityProvider', {
         var me = this;
         me.args = args;
         me.$providerpromise = Promise.resolve();
+
+        MEPH.subscribe(MEPH.Constants.LOGOUT, function () {
+            me.logout();
+        });
     },
     source: function (array) {
         MEPH.Log('source function not implemented', 8);
@@ -34,6 +38,9 @@ MEPH.define('MEPH.mobile.providers.identity.IdentityProvider', {
     },
     login: function () {
 
+        throw new Error('Not implemented');
+    },
+    logout: function () {
         throw new Error('Not implemented');
     },
     $online: function () {

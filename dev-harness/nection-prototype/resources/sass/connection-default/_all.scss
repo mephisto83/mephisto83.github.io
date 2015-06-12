@@ -3,6 +3,13 @@ $tiny-text-size: 10px;
 $connection-box-border-radius: 20px;
 $profile-item-height: 75px;
 $fat-finger-height: 40px;
+$margin-stardard: 0px;
+$padding-standard: 0px;
+$contact-list-item-height: 100px;
+
+$profile-image-border-width: 2px;
+$padding-size: $padding-standard;
+$button-dim: 58px;
 
 $connection-list-profile-details-padding: 55px;
 $connection-list-profile-image-width: $connection-list-profile-details-padding - 5px;
@@ -19,11 +26,9 @@ $rgba-primary-2: rgba(241,89,78,1);
 $rgba-primary-3: rgba(233, 176, 0,1);
 $rgba-primary-4: rgba( 246, 110, 0,1);
 
-
 .fa-bridge {
     &:before {
-        background-image: url('../../css/images/Bridge.png');
-        background-size: 20px;
+        content: 'B';
     }
 }
 
@@ -41,8 +46,10 @@ $profile_width: 200px;
 $profile_height_sm: 100px;
 $profile_width_sm: 100px;
 
-$profile_list_height: 100px;
-$profile_list_width: 100px;
+$profile_list_height: 95px;
+$profile_list_width: 95px;
+$profile-image-margin-top: ($contact-list-item-height - $profile_list_height)/2;
+$profile-image-margin-left: $profile-image-margin-top;
 
 .mainview {
     .meph-activity-view-body {
@@ -108,7 +115,7 @@ $space-between-fields: 50px;
 
 .connection-list-profile-item {
     list-style: none;
-    padding: 3px;
+    padding: $padding-standard;
     margin-top: 8px;
     margin-bottom: 8px;
     height: $profile-item-height;
@@ -143,6 +150,8 @@ $space-between-fields: 50px;
 .connection-list-profile-image {
     position: absolute;
     width: 50px;
+    margin-top: $profile-image-margin-top;
+    margin-left: $profile-image-margin-left;
 }
 
 .connection-list-profile-image + .meph-application-menu-categories-item-details {
@@ -151,7 +160,7 @@ $space-between-fields: 50px;
 }
 
 .meph-application-menu-categories-item-details hr {
-    margin: 1px;
+    margin: $margin-stardard;
     border: 0;
     height: 1px;
     background-image: -webkit-linear-gradient(left, transparent, rgba(255, 255, 255, 0.75), transparent);
@@ -162,8 +171,8 @@ $space-between-fields: 50px;
 
 
 .meph-application-body.container-fluid {
-    padding: 2px;
-    margin: 0;
+    padding: $padding-standard;
+    margin: $margin-stardard;
 }
 
 .meph-application-body {
@@ -185,14 +194,14 @@ $space-between-fields: 50px;
 }
 
 .relationshiplistitem .relationshiptext {
-    padding-top: 11px;
+    padding-top: $padding-standard;
 }
 
 
 .connecton-application-header [flyoutpanel] {
     background-color: white;
     margin-top: $view-header-body-height;
-    padding-top: 0px;
+    padding-top: $padding-standard;
     height: 100%;
 
     .connection-menu-template {
@@ -231,6 +240,11 @@ $space-between-fields: 50px;
 
 
 
+            .btn-bridge {
+                background-color: $color1;
+                color: $color3;
+            }
+
             .overlay.relegated {
                 right: 0px;
                 bottom: 0px;
@@ -249,7 +263,7 @@ $space-between-fields: 50px;
                 [flyoutpanel].meph-flyout-panel-right {
                     background-color: transparent;
                     height: auto;
-                    margin-top: 0px;
+                    margin-top: $margin-stardard;
                     opacity: 1;
 
                     .application-menu-list {
@@ -300,10 +314,10 @@ $space-between-fields: 50px;
                         bottom: 0px;
                         top: initial;
                         background-color: transparent;
-                        margin-top: 0px;
+                        margin-top: $margin-stardard;
 
                         ul {
-                            margin: 0px;
+                            margin: $margin-stardard;
 
                             .listitem {
                                 float: left;
@@ -319,7 +333,7 @@ $space-between-fields: 50px;
                                 h4 {
                                     display: block;
                                     font-size: $tiny-text-size;
-                                    margin: 0;
+                                    margin: $margin-stardard;
                                     color: $color3;
                                 }
 
@@ -343,12 +357,12 @@ $space-between-fields: 50px;
 
         [editrelationship] {
             h2 {
-                margin: 0px;
+                margin: $margin-stardard;
             }
 
             .row {
                 margin-right: -10px;
-                margin-left: 0px;
+                margin-left: $margin-stardard;
             }
         }
 
@@ -359,30 +373,32 @@ $space-between-fields: 50px;
 
 
         .contact-list-item {
+            background-color: $color3;
+            color: $color1;
+
+
+            border: none;
+            padding: 0px;
+            height: $contact-list-item-height;
+
             .col-xs-4 {
                 //Iphone 4 + 5
-                width: 115px;
+                width: $profile_list_height + $profile-image-border-width + 4px;
                 position: absolute;
             }
 
             .col-xs-7 {
                 position: relative;
-                border-left: solid 115px;
+                border-left: solid ($profile_list_height + $profile-image-border-width + 20px) transparent;
                 width: 99%;
-                border-left-color: $color7;
-                padding-left: 0;
-                margin-left: 0;
+                padding-left: $padding-standard;
+                margin-left: $margin-stardard;
             }
 
             &:nth-child(2n) {
-                background-color: $color6;
+                background-color: transparentize($color6, 0.78);
 
                 .col-xs-7 {
-                    border-left-color: $color6;
-
-                    &:active {
-                        border-left-color: $color2;
-                    }
                 }
             }
 
@@ -390,15 +406,16 @@ $space-between-fields: 50px;
                 color: $color1;
                 /*white-space: nowrap;
                 text-overflow: ellipsis;*/
-                margin: 0;
+                margin: $margin-stardard;
+                padding-top: 5px;
             }
 
-            background-color: $color7;
-            color: $color1;
-            border: none;
-
+            
+            .connection-contact-name {
+                color: $color2;
+            }
             a {
-                color: $color4;
+                color: $color1;
 
                 i.fa {
                     color: $color1;
@@ -406,9 +423,7 @@ $space-between-fields: 50px;
             }
 
             div {
-                padding-right: 0px;
-                border-top-right-radius: 0px;
-                border-bottom-right-radius: 0px;
+                padding-right: $padding-standard;
             }
 
             & > div,
@@ -418,20 +433,20 @@ $space-between-fields: 50px;
 
             .contact-list-item-information {
                 /*text-align: right;*/
-                background-color: $color3;
+                /*background-color: $color3;*/
                 border-radius: 19px;
-                padding-left: 5px;
+                padding-left: $padding-standard;
                 height: $profile_list_height;
                 overflow: hidden;
 
                 h3 {
                     position: relative;
-                    padding-top: 5px;
-                    padding-bottom: 5px;
-                    padding-left: 0;
+                    color: $color4;
+                    padding-bottom: $padding-standard;
+                    padding-left: $padding-standard;
                 }
 
-                padding-bottom: 5px;
+                padding-bottom: $padding-standard;
                 border-top-left-radius: 0px;
                 border-bottom-left-radius: 0px;
             }
@@ -450,9 +465,9 @@ $space-between-fields: 50px;
         }
 
         .list-group-item {
-            padding-left: 8px;
+            padding-left: $padding-standard;
             /*padding-right: 8px;*/
-            padding-right: 20px;
+            padding-right: $padding-standard;
 
             &:first-child {
                 border-radius: 0px;
@@ -460,7 +475,7 @@ $space-between-fields: 50px;
         }
 
         .list-group {
-            padding-bottom: 30px;
+            padding-bottom: $padding-standard;
             border-radius: 0px;
         }
 
@@ -473,16 +488,16 @@ $space-between-fields: 50px;
             background-color: $color1;
 
             h2 {
-                margin: 0px;
+                margin: $margin-stardard;
             }
         }
 
         .meph-activity-view-body,
         .meph-application-body.container-fluid {
-            padding: 0px;
+            padding: $padding-standard;
         }
 
-        .meph-activity-view-body {
+        .removed-meph-activity-view-body {
             $pos-split: 17%;
             background: $color6; /* Old browsers */
             background: -moz-linear-gradient(top, $color6 $pos-split, $color7 $pos-split, $color7 100%); /* FF3.6+ */
@@ -496,7 +511,7 @@ $space-between-fields: 50px;
 
         .accounts {
             .meph-activity-view-body {
-                padding-bottom: 50px;
+                padding-bottom: $padding-standard;
             }
         }
 
@@ -506,14 +521,14 @@ $space-between-fields: 50px;
 
         .createcontact {
             .meph-activity-view-body {
-                padding-top: 0px;
+                padding-top: $padding-standard;
             }
         }
 
         .meph-view.main-contact,
         .mainview.accounts {
             .meph-activity-view-body {
-                padding-top: 0px;
+                padding-top: $padding-standard;
             }
         }
 
@@ -526,8 +541,8 @@ $space-between-fields: 50px;
 
         .mainview.accounts {
             .meph-activity-view-body .listwrapper {
-                margin-top: 0px;
-                margin-bottom: 0px;
+                margin-top: $margin-stardard;
+                margin-bottom: $margin-stardard;
             }
         }
 
@@ -590,17 +605,11 @@ $space-between-fields: 50px;
 
             .meph-application-menu-button-container {
                 button {
-                    padding: 0;
-                    padding-left: 15px;
-                    padding-top: 6px;
+                    padding: $padding-standard;
                     outline: none;
                 }
             }
         }
-
-        $profile-image-border-width: 6px;
-        $padding-size: 10px;
-        $button-dim: 58px;
 
         .profile {
             height: $profile_height;
@@ -636,12 +645,12 @@ $space-between-fields: 50px;
             }*/
             background-repeat: no-repeat;
             background-size: contain;
-            background-color: white;
+            /*background-color: white;*/
             border-radius: 50%;
             position: relative;
             background-position-x: 50%;
             z-index: 100;
-            border: solid $profile-image-border-width $color3;
+            border: solid $profile-image-border-width $color7;
             /*@include meph-image-background($file: 'empty_contact.png');*/
         }
 
@@ -653,7 +662,7 @@ $space-between-fields: 50px;
 
         .contact-view-body {
             /*background-color: transparentize($color6, .1);*/
-            padding-top: 5px;
+            padding-top: $padding-standard;
 
             .contact-view-body-details {
                 background-color: $color3;
@@ -674,9 +683,9 @@ $space-between-fields: 50px;
             .row.contactlink {
                 background-color: $color3;
                 border-radius: 10px;
-                margin-left: 0px;
-                margin-right: 0px;
-                padding: 5px;
+                margin-left: $margin-stardard;
+                margin-right: $margin-stardard;
+                padding: $padding-standard;
 
                 span {
                     color: $color5;
@@ -687,7 +696,7 @@ $space-between-fields: 50px;
 
                 button {
                     background-color: $color1;
-                    padding: 10px;
+                    padding: $padding-standard;
                     border-radius: 50%;
                     width: $button-dim;
                     height: $button-dim;
@@ -712,16 +721,24 @@ $space-between-fields: 50px;
         [editrelationship] .row.relationshiplistitem {
             /* padding: 0; */
             border: 0;
-            margin: 0;
+            margin: $margin-stardard;
         }
 
         .main-view-search-button {
-            padding-right: 0px;
+            padding-right: $padding-standard;
 
             button {
-                padding-left: 0;
+                padding-left: $padding-standard;
                 /*padding-right: 0;*/
             }
+        }
+
+        .connection-account-list-container {
+            background-color: $color3;
+            padding: $padding-standard;
+            padding-top: $padding-standard;
+            margin: $margin-stardard;
+            border-radius: $connection-box-border-radius;
         }
 
         .connection-box {
@@ -729,7 +746,7 @@ $space-between-fields: 50px;
             top: 0px;
             background-color: $color1;
             color: $color3;
-            padding: 10px;
+            padding: $padding-standard;
             border-radius: $connection-box-border-radius;
 
             div {

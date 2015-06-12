@@ -22,8 +22,14 @@
         me.ready = new Promise(function (r) {
             me.injectionsResolve = r;
         });
-        me.when.injected.then(function () {
-            me.$inj.storage.get(me.$storageServerCached).then(function (res) {
+        MEPH.subscribe(MEPH.Constants.LOGOUT, function () {
+            me.when.injected.then(function () {
+                me.$inj.storage.set(me.$storageKey, null);
+                me.$inj.storage.set(me.$storageServerCached, null);
+            })
+        })
+        me.loadedServerCachedContacts = me.when.injected.then(function () {
+            return me.$inj.storage.get(me.$storageServerCached).then(function (res) {
                 me.serverCachedSearchResults = res || me.serverCachedSearchResults;
             }).then(function () {
                 setInterval(function () {
@@ -33,6 +39,10 @@
                 }, 1000 * 60);
             });
         });
+    },
+    afterServerCachedLoaded: function (callback) {
+        var me = this;
+        me.loadedServerCachedContacts.then(function () { return callback(); })
     },
     onInjectionsComplete: function () {
         var me = this;

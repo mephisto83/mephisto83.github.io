@@ -3013,14 +3013,16 @@ a.list-group-item.active > [mephplatform] .badge, .nav-pills > .active > a > [me
 /* line 10, ../sass/meph-default/core/classes/_utility.scss */
 [mephplatform] .meph-draggable .panel-heading { cursor: move; }
 /* line 14, ../sass/meph-default/core/classes/_utility.scss */
-[mephplatform] .stretchable-handle:hover { cursor: nesw-resize; }
+[mephplatform] .meph-draggable-bungy { position: absolute; }
 /* line 18, ../sass/meph-default/core/classes/_utility.scss */
+[mephplatform] .stretchable-handle:hover { cursor: nesw-resize; }
+/* line 22, ../sass/meph-default/core/classes/_utility.scss */
 [mephplatform] .meph-noselect { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-/* line 28, ../sass/meph-default/core/classes/_utility.scss */
+/* line 32, ../sass/meph-default/core/classes/_utility.scss */
 [mephplatform] .meph-stretchable .panel .panel-default { height: 100%; margin-bottom: 0; }
-/* line 33, ../sass/meph-default/core/classes/_utility.scss */
+/* line 37, ../sass/meph-default/core/classes/_utility.scss */
 [mephplatform] .meph-stretchable .panel-body { height: 100%; padding: 0; position: absolute; width: 100%; top: 0; margin: 0; margin-top: 49px; }
-/* line 43, ../sass/meph-default/core/classes/_utility.scss */
+/* line 47, ../sass/meph-default/core/classes/_utility.scss */
 [mephplatform] .meph-stretchable .panel-footer { margin: 0px; position: absolute; border-radius: 0; padding: 9px; bottom: -59px; border-bottom-right-radius: 11px; border-bottom-left-radius: 10px; }
 /* line 2, ../sass/meph-default/controls/view/_classes.scss */
 [mephplatform] .meph-view, [mephplatform] .meph-home-page-view { position: absolute; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; height: 100%; width: 100%; transform: translateX(0%); -webkit-transform: perspective(600px) translate(0%, 0px); }

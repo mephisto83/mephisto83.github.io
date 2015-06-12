@@ -29,6 +29,13 @@
             "path": "login/{provider}"
         },
         {
+            "viewId": "LogOutHandler",
+            "view": "Connection.session.Handler",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "logout/{provider}"
+        },
+        {
             "viewId": "SyncPage",
             "view": "Connection.sync.view.SyncContacts",
             "singleton": true,

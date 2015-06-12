@@ -9,10 +9,14 @@ MEPH.define('MEPH.application.Application', {
                 'MEPH.mobile.services.MobileServices',
                 'MEPH.mixins.Observable',
                 'MEPH.mobile.activity.ActivityController',
+                'MEPH.util.Style',
+                'MEPH.util.Dom', 'MEPH.mixins.Injections',
                 'MEPH.bind.Binder',
                 'MEPH.dom.ControlLoader'],
+    injections: ['notificationService'],
     mixins: {
-        observable: 'MEPH.mixins.Observable'
+        observable: 'MEPH.mixins.Observable',
+        injections: 'MEPH.mixins.Injections'
     },
     properties: {
         /**
@@ -350,6 +354,7 @@ MEPH.define('MEPH.application.Application', {
         me.controlReader = new ControlReader();
         me.controlLoader = new ControlLoader();
         me.activityController = new ActivityController();
+
 
         MEPH.MobileServices.add(me.activityController, {
             'static': true,

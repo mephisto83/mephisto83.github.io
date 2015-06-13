@@ -21,21 +21,32 @@ MEPH.define('MEPH.util.Draggable', {
                     }
                     function clearPosition() {
                         if (following && moved) {
-                            dom.classList.remove('meph-draggable-bungy');
-                            MEPH.util.Style.clearPosition(dom);
+                            if (dom.classList.contains('meph-draggable-bungy'))
+                                dom.classList.remove('meph-draggable-bungy');
+                            MEPH.util.Style.clearPosition(dom, true);
                         }
                     }
                     ['mousedown', 'touchstart'].foreach(function (evt) {
                         handle.addEventListener(evt, function (e) {
                             if (scope.canDrag) {
-                                following = true;
-                                document.body.classList.add('meph-noselect');
-                                start = MEPH.util.Dom.getScreenEventPositions(e, dom).first();
-                                startEventPosition = MEPH.util.Dom.getRelativePosition(dom, dom.parentNode || dom.parentElement);
-
-                                if (options.bungy) {
-                                    dom.classList.add('meph-draggable-bungy');
+                                if (request) {
+                                    cancelAnimationFrame(request);
+                                    request = null;
                                 }
+                                request = requestAnimationFrame(function () {
+                                    start = MEPH.util.Dom.getScreenEventPositions(e, dom).first();
+                                    if (options.canReact && !options.canReact(start)) {
+                                        return;
+                                    }
+                                    following = true;
+                                    if (!scope.selectOn)
+                                        document.body.classList.add('meph-noselect');
+                                    startEventPosition = MEPH.util.Dom.getRelativePosition(dom, dom.parentNode || dom.parentElement);
+
+                                    if (options.bungy) {
+                                        dom.classList.add('meph-draggable-bungy');
+                                    }
+                                });
                             }
                         });
                     });
@@ -71,43 +82,49 @@ MEPH.define('MEPH.util.Draggable', {
                     ['mouseup', 'touchend', 'touchcancel'].foreach(function (evt) {
                         handle.addEventListener(evt, function (e) {
 
-                            if (options.bungy) {
-                                clearPosition();
-                            }
-                            if (request) {
-                                cancelAnimationFrame(request);
-                                request = null;
-                            }
-                            if (scope.canDrag) {
-                                if (moved) {
-                                    handle.dispatchEvent(MEPH.createEvent('dragged', {}));
+                            requestAnimationFrame(function () {
+                                if (following && options.bungy) {
+                                    clearPosition();
                                 }
-                                moved = false;
-                                following = false;
-                                document.body.classList.remove('meph-noselect');
-                            }
+                                if (request) {
+                                    cancelAnimationFrame(request);
+                                    request = null;
+                                }
+                                if (scope.canDrag) {
+                                    if (moved) {
+                                        handle.dispatchEvent(MEPH.createEvent('dragged', {}));
+                                    }
+                                    moved = false;
+                                    following = false;
+                                    if (!scope.selectOn)
+                                        document.body.classList.remove('meph-noselect');
+                                }
 
+                            });
                         });
                     });
                     ['touchcancel', 'mouseup'].foreach(function (evt) {
                         document.body.addEventListener(evt, function (e) {
 
-                            if (options.bungy) {
-                                clearPosition();
-                            }
-
-                            if (request) {
-                                cancelAnimationFrame(request);
-                                request = null;
-                            }
-                            if (scope.canDrag) {
-                                if (moved) {
-                                    handle.dispatchEvent(MEPH.createEvent('dragged', {}));
+                            requestAnimationFrame(function () {
+                                if (following && options.bungy) {
+                                    clearPosition();
                                 }
-                                moved = false;
-                                following = false;
-                                document.body.classList.remove('meph-noselect');
-                            }
+
+                                if (request) {
+                                    cancelAnimationFrame(request);
+                                    request = null;
+                                }
+                                if (scope.canDrag) {
+                                    if (moved) {
+                                        handle.dispatchEvent(MEPH.createEvent('dragged', {}));
+                                    }
+                                    moved = false;
+                                    following = false;
+                                    if (!scope.selectOn)
+                                        document.body.classList.remove('meph-noselect');
+                                }
+                            });
                         });
                     });
                     return scope;

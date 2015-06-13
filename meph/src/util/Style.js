@@ -15,14 +15,18 @@
                 Style.hide(b);
             }
         },
-        clearPosition: function (dom) {
+        clearPosition: function (dom, onlytransform) {
             if (dom) {
-                dom.style.left = '';
-                dom.style.top = '';
-                dom.style.right = '';
-                dom.style.bottom = '';
-                dom.style.webkitTransform = '';
-                dom.style.transform = '';
+                requestAnimationFrame(function () {
+                    if (!onlytransform) {
+                        dom.style.left = '';
+                        dom.style.top = '';
+                        dom.style.right = '';
+                        dom.style.bottom = '';
+                    }
+                    dom.style.webkitTransform = '';
+                    dom.style.transform = '';
+                });
             }
         },
         setPosition: function (dom, x, y) {

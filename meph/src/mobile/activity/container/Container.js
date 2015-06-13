@@ -24,11 +24,11 @@ MEPH.define('MEPH.mobile.activity.container.Container', {
 
     fullscreenMode: function () {
         var me = this,
-            stretchMargin = 10,
+            stretchMargin = 50,
             percentageForDrag = me.percentageForDrag;
         //If in standalone mode, handle swipes
         me.when.injected.then(function () {
-            if (("standalone" in window.navigator) && window.navigator.standalone) {
+            if (true || ("standalone" in window.navigator) && window.navigator.standalone) {
                 var firstel = me.getFirstElement();
                 var scope = MEPH.util.Draggable.draggable(firstel, null, {
                     restrict: 'x',
@@ -38,13 +38,15 @@ MEPH.define('MEPH.mobile.activity.container.Container', {
                         return start.x < stretchMargin || start.x > document.body.getBoundingClientRect().width - stretchMargin;
                     }
                 });
+                scope.selectOn = true;
+                var size = MEPH.util.Style.size(document.body);
+
                 MEPH.util.Dom.onSwipe(firstel, function (direction, distance) {
-                    var size = MEPH.util.Style.size(document.body);
-                    console.info('distance ' + distance);
-                    console.info('screen  ' + size.width);
-                    console.info('should be at least ' + (size.width * percentageForDrag));
-                    if (size.width * percentageForDrag < distance) {
-                        MEPH.Log('Swipe ' + direction);
+                    //console.info('distance ' + distance);
+                    //console.info('screen  ' + size.width);
+                    //console.info('should be at least ' + (size.width * percentageForDrag));
+                    if ((size.width - stretchMargin) * percentageForDrag < distance) {
+                        //MEPH.Log('Swipe ' + direction);
                         if (window.history && window.history.back && window.history.forward) {
                             switch (direction) {
                                 case 'left':
@@ -56,7 +58,14 @@ MEPH.define('MEPH.mobile.activity.container.Container', {
                             }
                         }
                     }
-                }, { horizontal: true, enforceSideStart: true, stretchMargin: stretchMargin },
+                }, {
+                    horizontal: true,
+                    enforceSideStart: true,
+                    stretchMargin: stretchMargin,
+                    canReact: function (start) {
+                        return start.x < stretchMargin || start.x > document.body.getBoundingClientRect().width - stretchMargin;
+                    }
+                },
                 null, null, 2000)
             }
         });

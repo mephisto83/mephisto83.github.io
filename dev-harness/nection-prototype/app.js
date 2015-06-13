@@ -66,7 +66,7 @@ MEPH.ready().then(function () {
                     'static': true,
                     type: 'Connection.provider.IdentityProvider',
                     config: {
-                        providers: [
+                        providers: [ 
                             {
                                 type: 'MEPH.mobile.providers.identity.ActiveDirectoryProvider',
                                 args: {

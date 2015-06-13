@@ -4,6 +4,9 @@
             <div data-bind='"style.backgroundImage" : "v$.contact.profileimageurl"'
                  mephid="profileimage"
                  class="center-block empty_contact profile"></div>
+            <div title="Common contacts" class="common-contacts common-position-right" data-bind='"data-attr":"v$.contact.commonRelationshipCount"'>
+                <span data-bind='"innerHTML":"v$.contact.commonRelationshipCount"'></span>
+            </div>
             <div style="position:absolute; top:0px;" class="connection-box">
                 <div mephid="removeRelationshipBtn" style="display:none;">
                     <i class="fa fa-link fa-2x col-md-12"></i>
@@ -24,6 +27,8 @@
                 <h1 data-bind='"innerHTML":"v$.contact.name"'></h1>
                 <h2 data-bind='"innerHTML":"v$.contact.occupation"'></h2>
                 <h3 data-bind='"innerHTML":"v$.contact.company"'></h3>
+                <h5 data-bind='"innerHTML":"v$.contact.company"'></h5>
+
                 <small data-bind='"innerHTML":"v$.contact.addressline1"'></small>
                 <br />
                 <small data-bind='"innerHTML":"v$.contact.addressline2"'></small>

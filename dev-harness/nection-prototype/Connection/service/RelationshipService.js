@@ -557,6 +557,15 @@
                 return x.card === y.card;
             });
         }));
+        result.forEach(function (card) {
+
+            if (card.commonRelationshipCount && parseInt(card.commonRelationshipCount)) {
+
+            }
+            else {
+                card.nocommoncontacts = 'nocommoncontacts';
+            }
+        });
         return result;
     },
     searchContacts: function (index, count, initial, search, source, cancel, useSearch) {
@@ -625,9 +634,17 @@
                         return x.card === y.card
                     });
                     me.serverCachedSearchResults.push.apply(me.serverCachedSearchResults, cards.where(function (x) {
-                        return !me.serverCachedSearchResults.contains(function (t) {
+                        var found = me.serverCachedSearchResults.contains(function (t) {
+
                             return t.card === x.card;
                         });
+                        if (found) {
+                            for (var i in x) {
+                                if (i !== 'card' && i !== 'contact')
+                                    found[i] = x[i];
+                            }
+                        }
+                        return found;
                     }));
                     me.serverCachedSearchResults = me.serverCachedSearchResults.subset(0, 10000);
                     cards.forEach(function (x) {

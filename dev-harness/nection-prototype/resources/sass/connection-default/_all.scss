@@ -6,7 +6,7 @@ $fat-finger-height: 40px;
 $margin-stardard: 0px;
 $padding-standard: 0px;
 $contact-list-item-height: 100px;
-
+$common-contacts-badge-size: 30px;
 $profile-image-border-width: 2px;
 $padding-size: $padding-standard;
 $button-dim: 58px;
@@ -67,6 +67,10 @@ $profile-image-margin-left: $profile-image-margin-top;
     .meph-activity-view-header {
         height: auto;
     }
+}
+
+.nocommoncontacts {
+    display: none;
 }
 
 .meph-view.login-view,
@@ -238,6 +242,46 @@ $space-between-fields: 50px;
                 bottom: 50px;
             }
 
+            .common-position-right {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+            }
+
+
+            .common-contacts {
+                height: $common-contacts-badge-size;
+                width: $common-contacts-badge-size;
+                border-radius: 50%;
+                background-color: $color1;
+                text-align: center;
+                color: $color3;
+
+                &[data-attr="0"],
+                &[data-attr="null"] {
+                    display: none;
+                }
+
+                &.common-contacts-list-item {
+                    $cc-list-item-size: $common-contacts-badge-size / 1.1;
+                    $cc-font-size: $cc-list-item-size - 8;
+                    height: $cc-list-item-size;
+                    width: $cc-list-item-size;
+                    font-size: $cc-font-size;
+                    position: absolute;
+                    z-index: 100;
+                    bottom: 2px;
+                    left: 2px + $cc-list-item-size;
+                    vertical-align: middle;
+                    text-align: center;
+                }
+
+                span {
+                    vertical-align: middle;
+                    font-size: $common-contacts-badge-size - 10;
+                }
+            }
+
 
 
             .btn-bridge {
@@ -375,8 +419,6 @@ $space-between-fields: 50px;
         .contact-list-item {
             background-color: $color3;
             color: $color1;
-
-
             border: none;
             padding: 0px;
             height: $contact-list-item-height;
@@ -410,10 +452,11 @@ $space-between-fields: 50px;
                 padding-top: 5px;
             }
 
-            
+
             .connection-contact-name {
                 color: $color2;
             }
+
             a {
                 color: $color1;
 

@@ -42,11 +42,7 @@ MEPH.define('MEPH.mobile.activity.container.Container', {
                 var size = MEPH.util.Style.size(document.body);
 
                 MEPH.util.Dom.onSwipe(firstel, function (direction, distance) {
-                    //console.info('distance ' + distance);
-                    //console.info('screen  ' + size.width);
-                    //console.info('should be at least ' + (size.width * percentageForDrag));
                     if ((size.width - stretchMargin) * percentageForDrag < distance) {
-                        //MEPH.Log('Swipe ' + direction);
                         if (window.history && window.history.back && window.history.forward) {
                             switch (direction) {
                                 case 'left':

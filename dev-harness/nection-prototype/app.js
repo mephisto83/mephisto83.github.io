@@ -32,6 +32,11 @@ MEPH.ready().then(function () {
                     type: 'Connection.service.StateService',
                     config: {}
                 },
+                messageService: {
+                    'static': true,
+                    type: 'Connection.service.MessageService',
+                    config: {}
+                },
                 sessionManager: {
                     'static': true,
                     type: 'Connection.session.SessionManager',
@@ -66,7 +71,7 @@ MEPH.ready().then(function () {
                     'static': true,
                     type: 'Connection.provider.IdentityProvider',
                     config: {
-                        providers: [ 
+                        providers: [
                             {
                                 type: 'MEPH.mobile.providers.identity.ActiveDirectoryProvider',
                                 args: {

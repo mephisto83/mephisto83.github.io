@@ -183,6 +183,12 @@
                 path: 'accounts'
             }, {
                 connectionmenu: true,
+                name: 'Chat',
+                viewId: 'chat',
+                cls: 'fa fa-weixin',
+                path: 'chat'
+            }, {
+                connectionmenu: true,
                 name: 'Log out',
                 logout: true,
                 cls: 'fa fa-sign-out'

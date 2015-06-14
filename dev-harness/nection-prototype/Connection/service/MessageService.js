@@ -23,6 +23,12 @@
             });
         });
     },
+    searchConversations: function (data, conversations) {
+        var me = this;
+        me.when.injected.then(function () {
+            
+        });
+    },
     createConversation: function (cards) {
         var me = this;
         me.when.injected.then(function () {

@@ -50,6 +50,13 @@
             "path": "/main"
         },
         {
+            "viewId": "chat",
+            "view": "Connection.messaging.view.Conversations",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/messaging"
+        },
+        {
             "viewId": "accountresolution",
             "view": "Connection.account.view.AccountResolution",
             "singleton": true,

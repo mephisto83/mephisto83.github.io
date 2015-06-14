@@ -1,10 +1,10 @@
-﻿MEPH.define('Connection.main.view.Main', {
+﻿MEPH.define('Connection.messaging.view.Conversations', {
     alias: 'main_conversations',
     templates: true,
     extend: 'MEPH.mobile.activity.container.Container',
     mixins: ['MEPH.mobile.mixins.Activity'],
     injections: ['messageService', 'stateService'],
-    requires: [],
+    requires: ['Connection.main.view.mainview.MainView'],
     properties: {
         conversations: null
     },
@@ -29,6 +29,13 @@
         var data = me.getDomEventArg(arguments);
         me.when.injected.then(function () {
             me.$inj.stateService.set('CurrentConversation', { data: data });
+        })
+    },
+    searchDynChanged: function () {
+        var me = this,
+            data = me.getDomEventArg(arguments);
+        me.when.injected.then(function () {
+            me.$inj.messageService.searchConversations(data, me.conversations);
         })
     }
 });

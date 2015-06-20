@@ -129,11 +129,25 @@
 
             return me.$inj.rest.nocache().addPath('account/merge').post($providers).then(function (res) {
                 debugger
-
+                if (res.success) {
+                    MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'main', path: '/main' });
+                }
             }).catch(function (error) {
                 debugger;
             })
         });
+    },
+    scheduleTokenRefresh: function (response) {
+        var me = this;
+        if (me.$tokenResfresh) {
+            clearTimeout(me.$tokenResfresh);
+            me.$tokenResfresh = null;
+        }
+        me.$tokenResfresh = setTimeout(function () {
+            me.$inj.rest.nocache().addPath('refresh/token').get().then(function (result) {
+                me.scheduleTokenRefresh(result);
+            })
+        }, response.expiration * .7)
     },
     /**
      * Checks the users credentials.
@@ -151,9 +165,14 @@
             return me.$inj.rest.nocache().addPath('login/{provider}').post({
                 provider: provider.name.toLowerCase()
             }, $provider && $provider.p && $provider.p.credentials ? $provider.p.credentials() : null).then(function (res) {
-
+                
                 MEPH.Log('Got check results');
                 if (res && res.authorized) {
+                    me.$inj.rest.setHeader('mvc-connection.ticket', res.token);
+                    me.$inj.rest.setHeader('contactId', res.contactId);
+                    //Expires 
+                    // new Date(Date.now()+res.expiration)
+                    me.scheduleTokenRefresh(res);
                     provider.online = res.success;
                     if (provider.online && !me.hasLoggedIn) {
                         MEPH.publish(Connection.constant.Constants.ConnectionLogIn, { provider: provider });

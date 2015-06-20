@@ -1,15 +1,26 @@
 ﻿$top-zindex: 1000000;
 $tiny-text-size: 10px;
-$connection-box-border-radius: 20px;
+$connection-box-border-radius: 50%;
 $profile-item-height: 75px;
 $fat-finger-height: 40px;
 $margin-stardard: 0px;
 $padding-standard: 0px;
 $contact-list-item-height: 100px;
+$contact-list-item-typeahead-height: 35px;
 $common-contacts-badge-size: 30px;
 $profile-image-border-width: 2px;
 $padding-size: $padding-standard;
 $button-dim: 58px;
+$connection-box-indicator-padding: 7px;
+$conversation-row-horizontal-margin: -10px;
+$conversation-row-bottom-margin: 4px;
+$chatview-input-textarea-height: 50px;
+$connection-chat-view-font-size: 17px;
+$connection-chat-view-members: 40px;
+$chatview-input-row-height: 80px;
+$profile-conversation-message-width: 50px;
+$profile-conversation-message-height: 50px;
+$chatview-bottom-padding: 49px;
 
 $connection-list-profile-details-padding: 55px;
 $connection-list-profile-image-width: $connection-list-profile-details-padding - 5px;
@@ -48,6 +59,10 @@ $profile_width_sm: 100px;
 
 $profile_list_height: 95px;
 $profile_list_width: 95px;
+
+$profile-list-width-small: 35px;
+$profile-list-height-small: 35px;
+
 $profile-image-margin-top: ($contact-list-item-height - $profile_list_height)/2;
 $profile-image-margin-left: $profile-image-margin-top;
 
@@ -238,6 +253,8 @@ $space-between-fields: 50px;
 
     body[color-palette='#{$palette}'] {
         &.mobile-bottom-menu[color-palette='#{$palette}'] {
+
+
             .meph-activity-view-footer {
                 bottom: 50px;
             }
@@ -415,6 +432,40 @@ $space-between-fields: 50px;
             color: $color4;
         }
 
+        .contact-list-item div.conversation-message-message {
+            padding-right: 15px;
+        }
+
+        .conversation-row {
+            margin-left: $conversation-row-horizontal-margin;
+            margin-right: $conversation-row-horizontal-margin;
+            margin-bottom: $conversation-row-bottom-margin;
+        }
+
+        .connection-chat-view {
+            font-size: $connection-chat-view-font-size;
+            color: $color3;
+        }
+
+        .conversation-profile-image {
+            background-size: contain;
+            background-repeat: no-repeat;
+            height: 57px;
+            display: inline-block;
+            font-size: 32px;
+            padding-left: 50px;
+        }
+
+        .single-row-text,
+        .connection-members-name {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .connection-members-name {
+            height: $connection-chat-view-members;
+        }
 
         .contact-list-item {
             background-color: $color3;
@@ -422,6 +473,15 @@ $space-between-fields: 50px;
             border: none;
             padding: 0px;
             height: $contact-list-item-height;
+
+            &.conversation-list-item {
+                height: auto;
+                min-height: $profile-conversation-message-height;
+            }
+
+            &.contact-list-typeahead {
+                height: $contact-list-item-typeahead-height;
+            }
 
             .col-xs-4 {
                 //Iphone 4 + 5
@@ -467,6 +527,7 @@ $space-between-fields: 50px;
 
             div {
                 padding-right: $padding-standard;
+                margin: 0;
             }
 
             & > div,
@@ -481,6 +542,10 @@ $space-between-fields: 50px;
                 padding-left: $padding-standard;
                 height: $profile_list_height;
                 overflow: hidden;
+
+                &.conversation-message {
+                    height: auto;
+                }
 
                 h3 {
                     position: relative;
@@ -582,6 +647,51 @@ $space-between-fields: 50px;
             }
         }
 
+        .chatview.mainview .meph-activity-view-body {
+            padding-bottom: $chatview-bottom-padding;
+
+            .listwrapper {
+                padding-bottom: $chatview-input-row-height;
+            }
+
+            .chatview-input-row {
+                height: $chatview-input-textarea-height;
+                position: absolute;
+                bottom: $chatview-bottom-padding;
+                width: 100%;
+                z-index: 100;
+                background-color: $color3;
+
+                texarea,
+                label {
+                    padding: 0px;
+                    margin: 0px;
+                }
+
+                button {
+                    width: 100%;
+                    height: 100%;
+                    /*margin-top: 50%;
+                    margin-bottom: 50%;*/
+                }
+
+                .chatview-input-row-input {
+                    height: 100%;
+                    padding: 3px;
+                }
+            }
+
+            .chatview-text-area {
+                height: 100%;
+                margin-left: 15px;
+            }
+
+            textarea {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
         .mainview.accounts {
             .meph-activity-view-body .listwrapper {
                 margin-top: $margin-stardard;
@@ -672,6 +782,11 @@ $space-between-fields: 50px;
         .connection-list-profile-image {
             height: $profile_list_height;
             width: $profile_list_width;
+
+            &.conversation-message {
+                height: $profile-conversation-message-height;
+                width: $profile-conversation-message-width;
+            }
             /*@include iphone5() {
                 height: 100px;
                 width: 100px;
@@ -694,6 +809,11 @@ $space-between-fields: 50px;
             background-position-x: 50%;
             z-index: 100;
             border: solid $profile-image-border-width $color7;
+
+            &.contact-typeahead {
+                width: $profile-list-width-small;
+                height: $profile-list-height-small;
+            }
             /*@include meph-image-background($file: 'empty_contact.png');*/
         }
 
@@ -791,6 +911,13 @@ $space-between-fields: 50px;
             color: $color3;
             padding: $padding-standard;
             border-radius: $connection-box-border-radius;
+            height: $button-dim;
+            width: $button-dim;
+
+            .connection-box-indicator {
+                text-align: center;
+                padding-top: $connection-box-indicator-padding;
+            }
 
             div {
                 font-size: 11px;

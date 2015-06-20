@@ -76,6 +76,17 @@ MEPH.define('MEPH.util.Rest', {
         copy._header.push({ header: header, value: value });
         return copy;
     },
+    setHeader: function (header, value) {
+        var me = this;
+        var headerObj = me._header.first(function (x) { return x.header === header; });
+        if (headerObj) {
+            headerObj.value = value;
+        }
+        else {
+            headerObj = { header: header, value: value };
+            me._header.push(headerObj);
+        }
+    },
     clear: function () {
         var me = this, copy = me.copy();
         copy._path = [];

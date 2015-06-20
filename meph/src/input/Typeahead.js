@@ -11,8 +11,10 @@
         serviceObj: null,
         selectedobject: null,
         showempty: false,
+        showeverything: false,
         alwayshow: false,
         selectedindex: null,
+        maxVisible: 7,
         injectControls: {
             location: 'listtemplate'
         }
@@ -25,7 +27,7 @@
         me.listsource = MEPH.util.Observable.observable([]);
         me.on('altered', me.onAltered.bind(me));
         me.on('keypressed', me.onchanged.bind(me));
-        me.on('blurred', function () {
+        me.on('total-blur', function () {
             me.$blurr = setTimeout(function () {
                 if (me.suggestions)
                     MEPH.util.Style.hide(me.suggestions);
@@ -71,16 +73,21 @@
             }
             if (me.source && me.source.isObservable) {
                 me.source.on('changed', function () {
+
+                    if (me.source && me.source.pump
+                        && me.source.length < me.maxVisible) {
+                        me.source.pump(me.source.length, me.maxVisible)
+                    }
                     me.source.foreach(function (obj, index) {
                         if (typeof obj === 'object') {
                             MEPH.util.Observable.observable(obj);
                             obj.un(me.source);
                             obj.on('changed', function () {
-                                me.updateDomElements();
+                                // me.reloadItems();
                             }, me.source);
                         }
-                    })
-                    me.updateDomElements();
+                    });
+                    me.reloadItems();
                 }, me.source);
 
             }
@@ -90,7 +97,7 @@
         else if (args.property === 'value') {
 
             me.$selectedObject = me.value;
-            me.updateDomElements();
+            me.refreshItems({ value: me.value });
         }
     },
     onLoaded: function () {
@@ -98,44 +105,37 @@
         me.callParent.apply(me, arguments);
         me.baseComponentCls = 'typehead';
         MEPH.util.Style.hide(me.suggestions);
+
     },
     onchanged: function (evnt, args) {
         var me = this,
             field = me.field;
-        //me.baseComponentCls = 'typehead';
-        //me.listsource.clear();
-        //if (args.value || me.showempty) {
-        //    me.source.where(function (x) {
-        //        return x[field] ? x[field].indexOf(args.value) != -1 : 0;
-        //    }).foreach(function (t) {
-        //        me.listsource.push(t);
-        //    });
-        //    var item = me.source.first(function (x) {
-        //        return x[field] === (args.value);
-        //    });
-        //    me.selectedindex = me.source.indexOf(data);
-        //    me.selectedobject = item;
-        //}
+
+
         me.refreshItems(args);
         if (args.event.keyCode === 27) {
             me.hideSuggestions();
         }
         else {
             var el = me.getFirstElement();
-            //if (el.scrollIntoView) {
-            //    el.scrollIntoView({ block: "end", behavior: "smooth" });
-            //}
             el.dispatchEvent(MEPH.createEvent('change', {}));
         }
 
 
     },
-    refreshItems: function (args) {
+    reloadItems: function (args) {
         var me = this,
-            field = me.field;
-        me.listsource = [];
-        if (args.value || me.showempty || me.alwayshow) {
-            var toadd = me.source.where(function (x) {
+         source = (me.source || []),
+         field = me.field;
+        me.listsource = MEPH.util.Observable.observable([]);
+
+        if (me.showempty || me.alwayshow) {
+            var toadd = source.where(function (x) {
+                if (me.showeverything) {
+                    return me.showeverything;
+                }
+                if (!args) return true;
+
                 if ((!args.value && me.showempty) || me.alwayshow) {
                     return true;
                 }
@@ -143,14 +143,33 @@
             }).foreach(function (t) {
                 return t;
             });
-
+            me.listsource.dump();
             me.listsource.push.apply(me.listsource, toadd);
+        }
+    },
+    refreshItems: function (args) {
+        var me = this,
+            source = (me.source || []),
+            field = me.field;
+        if (args.value || me.showempty || me.alwayshow) {
+            var toadd = source.where(function (x) {
+                if (me.showeverything) {
+                    return me.showeverything;
+                }
+                if ((!args.value && me.showempty) || me.alwayshow) {
+                    return true;
+                }
+                return x[field] ? x[field].indexOf(args.value) != -1 : 1;
+            }).foreach(function (t) {
+                return t;
+            });
+            me.reloadItems(args);
 
-            var item = me.source.first(function (x) {
+            var item = source.first(function (x) {
                 return x[field] === (args.value);
             });
 
-            me.selectedindex = me.source.indexOf(item);
+            me.selectedindex = source.indexOf(item);
             me.selectedobject = item;
         }
     },
@@ -167,6 +186,12 @@
             me.value = data[me.field];
             if (changed) {
                 me.getFirstElement().dispatchEvent(MEPH.createEvent('changed', {}));
+                if (data) {
+                    me.getFirstElement().dispatchEvent(MEPH.createEvent('selected-item', {
+                        data: data,
+                        value: data[me.field]
+                    }))
+                }
             }
 
             me.inputfield.focus();

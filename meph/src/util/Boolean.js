@@ -10,6 +10,23 @@
                 return t === x;
             });
         },
+        IsTrue: function () {
+            var args = MEPH.util.Array.create(arguments);
+            var t = args[0];
+            var instructions = MEPH.util.Boolean.Parameters(args);
+            var paramcount = MEPH.util.Boolean.ParamaterCount(args)
+
+            if (args.length >= paramcount) {
+                if (typeof arguments[0] === 'function') {
+                    var paramFunc = arguments[0];
+                    var parameters = args.subset(1, paramcount - 1).concat([arguments[arguments.length - 1]]);
+                    return paramFunc.apply(arguments[paramcount - 1], parameters);
+                }
+                else {
+                    return arguments[0];
+                }
+            }
+        },
         IsLikeEqual: function () {
             var args = MEPH.util.Array.create(arguments);
             var t = args[0];

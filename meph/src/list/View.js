@@ -685,31 +685,33 @@ MEPH.define('MEPH.list.View', {
             boundSource = me.boundSource.select();
 
         return me.templateCreationPromise.then(function () {
-            var promise = Promise.resolve();
-            MEPH.Array(me.source)
-                .where(function (t) {
-                    return !boundSource.contains(function (x) {
-                        return x.dataItem === t;
-                    });
-                })
-                .foreach(function (item) {
+            me.clearList();
+            me.updateList('', { removed: { length: 0 }, added: me.source.select() });
+            //var promise = Promise.resolve();
+            //Promise.all([MEPH.Array(me.source)
+            //         .where(function (t) {
+            //             return !boundSource.contains(function (x) {
+            //                 return x.dataItem === t;
+            //             });
+            //         })
+            //         .select(function (item) {
 
-                    me.getTemplate(item);
-                    promise = promise.then(function () {
-                        return me.renderItem(item);
-                    });
-                });
+            //             // me.getTemplate(item);
+            //             //      promise = promise.then(function () {
+            //             return me.renderItem(item);
+            //             //    });
+            //         })]).then(function (result) {
+            //         });
 
-            MEPH.Array(me.source).where(function (t) {
-                return !boundSource.contains(function (x) {
-                    return x.dataItem === t;
-                });
-            }).foreach(function (item) {
-                promise = promise.then(function (item) {
-                    return me.positionAddDataItem(item);
-                });;
-            });
-            return promise;
+            //MEPH.Array(me.source).where(function (t) {
+            //    return !boundSource.contains(function (x) {
+            //        return x.dataItem === t;
+            //    });
+            //}).foreach(function (item) {
+            //    promise = promise.then(function (item) {
+            //        return me.positionAddDataItem(item, true);
+            //    });;
+            //});
         });
     },
     /**

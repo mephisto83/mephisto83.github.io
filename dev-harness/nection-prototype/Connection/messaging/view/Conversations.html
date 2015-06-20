@@ -1,6 +1,5 @@
 ﻿<div class="meph-view meph-view-remove mainview">
-    <h3>Conversations</h3>
-    <mainview data-bind='"activityName": "c$.name"' mephid="mainview">
+    <conversationview data-bind='"activityName": "c$.name"' mephid="mainview">
         <listview data-bind='"source": "v$.conversations"'
                   prevent-bounce="true"
                   meph-event-itemclick="v$.openConversation"
@@ -8,5 +7,5 @@
             <template name="Connection.template.Conversation">
             </template>
         </listview>
-    </mainview>
+    </conversationview>
 </div>

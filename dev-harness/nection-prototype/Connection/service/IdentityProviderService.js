@@ -87,13 +87,6 @@
                 return identityProvider.ready().then(function () {
                     MEPH.Log('Identity provider ready');
                     var providers = identityProvider.getProviders();
-                    // Nice flutter effect for testing .
-                    //me.providers.foreach(function (prov) {
-                    //    setInterval(function (prov) {
-                    //        prov.online = !prov.online;
-                    //    }.bind(me, prov), Math.random() * 10000 + 2000);
-                    //})
-                    MEPH.Log('Provider(s)');
                     return Promise.all(providers.select(function (obj) {
                         var prov = me.providers.first(function (x) { return x.type === obj.key; });
                         if (prov) {
@@ -102,7 +95,6 @@
                             }
                             return obj.p.ready().then(function () {
                                 prov.online = prov.online || false;
-
                                 prov.login = function (toggle) {
                                     MEPH.Log('Login attempting')
                                     if (!prov.online || !toggle) {

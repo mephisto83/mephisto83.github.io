@@ -25,11 +25,12 @@ MEPH.define('MEPH.field.FormField', {
          * CSS class to apply for this node.
          */
         cls: null,
+        css: null,
         /**
          * @property {String} baseComponentCls
          * CSS class to apply for this node.
          */
-        baseComponentCls: 'form-group',
+        baseComponentCls: '',//'form-group',
         /**
          * @property {String/Array} labelClsComponent
          * Base Css classes to apply to the label field.
@@ -107,6 +108,24 @@ MEPH.define('MEPH.field.FormField', {
         me.fire(event, { value: me.inputfield.value, event: MEPH.util.Array.convert(arguments).last().domEvent });
         return event;
     },
+    onLoaded: function () {
+        var me = this;
+        me.great();
+
+        me.don(['blurred', 'blur', 'keyup'], me.formBody, function () {
+            if (me.$blurrBuffer) {
+                clearTimeout(me.$blurrBuffer);
+                me.$blurrBuffer = null;
+            }
+            me.$blurrBuffer = setTimeout(function () {
+                var source = document.activeElement;
+                if (!MEPH.util.Dom.isDomDescendant(source, me.formBody) ||
+                    !MEPH.util.Dom.isDomDescendant(source, me.$window.document.body)) {
+                    me.raiseEvent('total-blur');
+                }
+            }, 1000);
+        }, null, true)
+    },
     /**
      * Gets the auto bind property paths.
      * @param {String} path
@@ -139,7 +158,7 @@ MEPH.define('MEPH.field.FormField', {
     addTransferables: function () {
         var me = this, properties = (['inputCls',
                                                 'descriptionText',
-                                                'cls',
+
                                                 'labelText',
                                                 'descriptionCls',
                                                 'baseComponentCls',
@@ -155,11 +174,15 @@ MEPH.define('MEPH.field.FormField', {
                 path: prop
             });
         });
-
+        me.addTransferableAttribute('cls', {
+            object: me,
+            path: 'cls',
+            asValue: true
+        });
     },
     defineDependentProperties: function () {
         var me = this;
-        me.combineClsIntoDepenendProperty('formFieldCls', ['cls', 'inputCssClass', 'baseComponentCls', 'componentCls', 'internalHiddenCls']);
+        me.combineClsIntoDepenendProperty('formFieldCls', ['cls', 'css', 'inputCssClass', 'baseComponentCls', 'componentCls', 'internalHiddenCls']);
         me.combineClsIntoDepenendProperty('labelCls', ['labelClsBase', 'labelClsComponent']);
         Observable.defineDependentProperty('validationCls', me, ['validationError'], me.validationErrorChange.bind(me));
     },

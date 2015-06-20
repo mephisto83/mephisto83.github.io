@@ -5,7 +5,7 @@
     mixins: {
         injectable: 'MEPH.mixins.Injections'
     },
-    injections: ['userService'],
+    injections: ['userService', 'stateService'],
     properties: {
         appMenu: null
     },
@@ -30,6 +30,15 @@
                 }
                 if (me.loadMenu) {
                     me.loadMenu();
+                }
+            }
+            else if (args.viewId) {
+                if (me.mode !== args.viewId) {
+                    me.mode = args.viewId;
+
+                    if (me.loadMenu) {
+                        me.loadMenu();
+                    }
                 }
             }
             else if (me.mode) {
@@ -60,6 +69,7 @@
             cls: 'fa fa-university',
             path: 'accounts'
         });
+
 
         res.push({
             connectionmenu: true,
@@ -118,6 +128,19 @@
                 path: 'main/me'
             })
         }
+
+        if (me.mode === 'chat') {
+            res.push({
+                connectionmenu: true,
+                name: 'New Message',
+                viewId: 'chatmessage',
+                cls: 'fa fa-weixin',
+                path: 'chatmessage',
+                newchat: true
+            });
+
+        }
+
         if (me.mode === 'edit') {
 
             res.unshift({
@@ -181,13 +204,17 @@
                 viewId: 'Accounts',
                 cls: 'fa fa-university',
                 path: 'accounts'
-            }, {
-                connectionmenu: true,
-                name: 'Chat',
-                viewId: 'chat',
-                cls: 'fa fa-weixin',
-                path: 'chat'
-            }, {
+            });
+            if (me.mode !== 'chat') {
+                res.push({
+                    connectionmenu: true,
+                    name: 'Chat',
+                    viewId: 'chat',
+                    cls: 'fa fa-weixin',
+                    path: 'chat'
+                });
+            }
+            res.push({
                 connectionmenu: true,
                 name: 'Log out',
                 logout: true,
@@ -216,18 +243,21 @@
     itemClicked: function (data, getparentdata) {
         var me = this;
 
+        if (data.openSideMenu) {
+            MEPH.publish(Connection.constant.Constants.SECONDARY_MENU, { elements: me.getSecondardMenuItems() });
+        }
+        if (data.logout) {
+            MEPH.publish(MEPH.Constants.LOGOUT, {});
+        }
+        if (data.newchat) {
+            me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, { data: null });
+        }
         if (data.viewId) {
             MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: data.viewId, path: data.path });
             if (me.appMenu) {
                 return me.appMenu.close().then(function () { return true; });
             }
             return true;
-        }
-        else if (data.openSideMenu) {
-            MEPH.publish(Connection.constant.Constants.SECONDARY_MENU, { elements: me.getSecondardMenuItems() });
-        }
-        else if (data.logout) {
-            MEPH.publish(MEPH.Constants.LOGOUT, {});
         }
         return true;
     }

@@ -373,17 +373,29 @@ MEPH.define('MEPH.control.Control', {
         //    }.bind(me, 'click'));
         //}
     },
+    onBlurOf: function (dom, callback) {
+        var me = this;
+        me.onOutsideOf(['blur', 'blurred'], dom, callback, true, true);
+    },
+    onFocusOf: function (dom, callback) {
+        var me = this;
+        me.onOutsideOf(['focus'], dom, callback, true, true);
+    },
+    onClickInsideOf: function (dom, callback) {
+        var me = this;
+        me.onOutsideOf(['click', 'touchend'], dom, callback, true);
+    },
     onInsideOf: function (events, dom, callback) {
         var me = this;
         me.onOutsideOf(events, dom, callback, true);
     },
-    onOutsideOf: function (events, dom, callback, negate) {
+    onOutsideOf: function (events, dom, callback, negate, useActiveElement) {
         if (events && callback) {
             events = Array.isArray(events) ? events : [events];
             dom = Array.isArray(dom) ? dom : [dom];
             var me = this, Dom = MEPH.util.Dom;
-            me.don(events, me.$window.document.body, function (type, evnt) {
-                var source = Dom.getEventSource(evnt),
+            me.don(events, me.$window.document.body, function (evnt) {
+                var source = useActiveElement ? document.activeElement : Dom.getEventSource(evnt),
                     anscestor,
                     domTemplate = dom;
                 if (domTemplate) {
@@ -394,7 +406,7 @@ MEPH.define('MEPH.control.Control', {
                 if (!anscestor || (negate && anscestor)) {
                     callback();
                 }
-            }.bind(me, 'click'));
+            }.bind(me));
         }
     },
     /**

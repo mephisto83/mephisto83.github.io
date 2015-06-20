@@ -1,5 +1,16 @@
 ﻿<li class="list-group-item conversation-list-item">
-    <a href="avascript:void(0);">
-        <h3>Conversation Item</h3>
+    <a href="javascript:void(0);" tabindex="0">
+        <div class="conversation-profile-image" style="background-image:url('{{card1.profileimage}}')">
+        </div>
+        <div class="conversation-profile-image" style="background-image:url('{{card2.profileimage}}')">
+        </div>
+        <div class="conversation-profile-image" style="background-image:url('{{card3.profileimage}}')">
+        </div>
+        <div>
+            <span class="connection-members-name">
+                {{card1.name}} {{card2.name}}
+                {{card3.name}}
+            </span>
+        </div>
     </a>
 </li>

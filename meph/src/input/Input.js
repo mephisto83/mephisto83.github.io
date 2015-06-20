@@ -35,6 +35,26 @@ MEPH.define('MEPH.input.Input', {
             });
         });
     },
+    focus: function () {
+        var me = this;
+        if (me.inputfield) {
+            me.inputfield.focus();
+        }
+    },
+    getRawValue: function () {
+        var me = this;
+
+        if (me.inputfield) {
+            return me.inputfield.value;
+        }
+        return null;
+    },
+    clear: function () {
+        var me = this;
+        if (me.inputfield) {
+            me.inputfield.value = '';
+        }
+    },
     onLoaded: function () {
         var me = this;
         me.callParent.apply(me, arguments);

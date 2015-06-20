@@ -29,6 +29,7 @@ MEPH.define('MEPH.list.List', {
         source: null,
         updateQueue: null,
         updatePromise: null,
+        intelligentScroll: false,
         renderingInProgress: false,
         ondemandbuffer: 1000,
         preventBounce: false
@@ -50,6 +51,11 @@ MEPH.define('MEPH.list.List', {
             asValue: true,
             path: 'preventBounce'
         });
+        me.addTransferableAttribute('intelligentScroll', {
+            object: me,
+            asValue: true,
+            path: 'intelligentScroll'
+        });
     },
     onLoaded: function () {
         var me = this;
@@ -59,7 +65,7 @@ MEPH.define('MEPH.list.List', {
             }
         }
 
-      //  me.don(['touchstart'], me.listwrapper, stopScrolling);
+        //  me.don(['touchstart'], me.listwrapper, stopScrolling);
 
         me.callParent.apply(arguments);
     },

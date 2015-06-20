@@ -14,7 +14,7 @@
             "namespace": "Connection",
             "path": "/fake/login"
         },
-{
+        {
             "viewId": "styleOptions",
             "view": "MEPH.mobile.pages.style.StyleOptions",
             "singleton": true,
@@ -55,6 +55,13 @@
             "singleton": true,
             "namespace": "Connection",
             "path": "/messaging"
+        },
+        {
+            "viewId": "chatmessage",
+            "view": "Connection.messaging.view.Chat",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/chatmessage"
         },
         {
             "viewId": "accountresolution",

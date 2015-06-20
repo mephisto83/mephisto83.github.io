@@ -88,7 +88,7 @@
         me.ready = me.when.injected;
 
         MEPH.subscribe(Connection.constant.Constants.CurrentCard, function (type, options) {
-            me.initMe(options)
+            me.initMe(me.$inj.stateService.get(Connection.constant.Constants.CurrentCard));
         });
         me.when.injected.then(function () {
             var handler = function () {
@@ -98,7 +98,7 @@
             me.$inj.stateService.on(Connection.constant.Constants.CurrentCard, handler);
         });
         MEPH.subscribe([Connection.constant.Constants.LoggedOut, Connection.constant.Constants.LoggedIn], function () {
-            me.initMe();
+            me.initMe(me.$inj.stateService.get(Connection.constant.Constants.CurrentCard));
         });
     },
     onLoaded: function () {
@@ -263,6 +263,8 @@
     applyProperty: function (provider, property, value, override) {
         var me = this;
         return me.ready.then(function () {
+            var res = me.$inj.stateService.get(Connection.constant.Constants.CurrentCard);
+            me.currentcardid = res.selectedCardId;
             var res = me.$inj.contactService.set(provider, property, value, me.currentcardid).then(function () {
                 var obj = me[property + 'source'].first(function (t) {
                     return t.provider === provider || t.provider === 'custom';

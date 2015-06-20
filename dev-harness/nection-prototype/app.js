@@ -32,6 +32,11 @@ MEPH.ready().then(function () {
                     type: 'Connection.service.StateService',
                     config: {}
                 },
+                tokenService: {
+                    'static': true,
+                    type: 'Connection.service.TokenService',
+                    config: {}
+                },
                 messageService: {
                     'static': true,
                     type: 'Connection.service.MessageService',

@@ -529,13 +529,14 @@
             }
         }
     },
-    collectSearchItems: function (search, cards) {
+    collectSearchItems: function (search, cards, skiplocalcontacts) {
         var me = this,
             result = (cards || []).select();
 
-        var toaddcoverted = me.convertedContactCards && !cards ? me.convertedContactCards.filter(function (x) {
-            return x.quick_search.indexOf(search) !== -1;
-        }) : [];
+        var toaddcoverted = me.convertedContactCards && !cards && !skiplocalcontacts ?
+            me.convertedContactCards.filter(function (x) {
+                return x.quick_search.indexOf(search) !== -1;
+            }) : [];
         toaddcoverted = toaddcoverted.concat(me.serverCachedSearchResults.filter(function (x) {
             return x.quick_search.indexOf(search) !== -1;
         }));
@@ -557,7 +558,9 @@
                 return x.card === y.card;
             });
         }));
-        result.forEach(function (card) {
+        result.unique(function (x) {
+            return x.card;
+        }).forEach(function (card) {
 
             if (card.commonRelationshipCount && parseInt(card.commonRelationshipCount)) {
 
@@ -568,7 +571,7 @@
         });
         return result;
     },
-    searchContacts: function (index, count, initial, search, source, cancel, useSearch) {
+    searchContacts: function (index, count, initial, search, source, cancel, useSearch, skiplocalcontacts) {
         var me = this, toaddcoverted = [];
         search = search || '';
         search = search.toLowerCase().trim()
@@ -578,7 +581,7 @@
         if (!me.$source) {
             return;
         }
-        var toaddcoverted = me.collectSearchItems(search);
+        var toaddcoverted = me.collectSearchItems(search, null, skiplocalcontacts);
         toaddcoverted = toaddcoverted.orderBy(me.sortCards);
         toaddcoverted.foreach(function (x) {
             x.match = x.name;
@@ -634,7 +637,7 @@
                         return x.card === y.card
                     });
                     me.serverCachedSearchResults.push.apply(me.serverCachedSearchResults, cards.where(function (x) {
-                        var found = me.serverCachedSearchResults.contains(function (t) {
+                        var found = me.serverCachedSearchResults.first(function (t) {
 
                             return t.card === x.card;
                         });
@@ -644,7 +647,7 @@
                                     found[i] = x[i];
                             }
                         }
-                        return found;
+                        return !found;
                     }));
                     me.serverCachedSearchResults = me.serverCachedSearchResults.subset(0, 10000);
                     cards.forEach(function (x) {

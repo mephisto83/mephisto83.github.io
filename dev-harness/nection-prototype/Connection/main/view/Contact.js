@@ -38,9 +38,11 @@
         var arguments = me.activityArguments;
         MEPH.util.Style.hide(me.$activityview.removeRelationshipBtn);
         MEPH.util.Style.hide(me.$activityview.addRelationshipBtn);
+        MEPH.util.Style.show(me.$activityview.checkingRelationship);
         if (arguments.data) {
             me.contact = arguments.data;
         }
+        me.checkingResult();
 
         me.setupQrCodes();
 
@@ -57,14 +59,15 @@
                         MEPH.util.Style.show(me.$activityview.addRelationshipBtn);
                         MEPH.util.Style.hide(me.$activityview.removeRelationshipBtn);
                     }
+                    MEPH.util.Style.hide(me.$activityview.checkingRelationship);
                 };
+
                 if (me.cancel && me.cancel.abort) {
                     me.cancel.abort();
                 }
                 me.cancel = {};
 
                 return me.$inj.relationshipService.getRelationShip(me.contact, callback, me.cancel).then(function (relation) {
-
                     callback(relation);
                     me.relationship = relation;
                 }).catch(function () {
@@ -85,6 +88,16 @@
             MEPH.util.Style.show(me.$activityview.addRelationshipBtn);
             MEPH.util.Style.hide(me.$activityview.removeRelationshipBtn);
         }
+
+        MEPH.util.Style.hide(me.$activityview.checkingRelationship);
+    },
+    checkingResult: function () {
+        var me = this;
+
+        MEPH.util.Style.hide(me.$activityview.removeRelationshipBtn);
+        MEPH.util.Style.hide(me.$activityview.addRelationshipBtn);
+        MEPH.util.Style.show(me.$activityview.checkingRelationship);
+
     },
     editRelationship: function () {
         var me = this;
@@ -94,6 +107,8 @@
 
     createIfNonExistent: function () {
         var me = this;
+
+
         return Promise.all([me.when.loaded, me.when.injected]).then(function () {
             if (me.$inj.relationshipService) {
                 if (!me.relationship) {

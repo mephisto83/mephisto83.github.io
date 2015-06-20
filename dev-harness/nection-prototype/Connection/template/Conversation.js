@@ -1,5 +1,5 @@
 ﻿MEPH.define('Connection.template.Conversation', {
-    alias: 'connection_conversation',
+    alias: 'conversation_list_item',
     templates: true,
     extend: 'MEPH.control.Control'
 });

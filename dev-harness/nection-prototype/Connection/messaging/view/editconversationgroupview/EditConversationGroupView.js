@@ -58,6 +58,16 @@
         var me = this;
         MEPH.util.Style.show(me.typeaheadHolder);
     },
+    goBack: function () {
+        var me = this;
+        history.back();
+    },
+    focus: function () {
+        var me = this;
+        MEPH.util.Style.show(me.typeaheadHolder);
+        MEPH.util.Style.hide(me.nameDisplay);
+        me.focusTypeahead();
+    },
     focusTypeahead: function () {
         var me = this;
         if (me.typeahead)

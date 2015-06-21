@@ -82,6 +82,17 @@ MEPH.define('MEPH.util.Dom', {
                                       navigator.msGetUserMedia);
             return navigator.getUserMedia && true;
         },
+        generatePath: function (evnt) {
+            if (evnt)
+                if (!evnt.path && (evnt.target || evnt.currentTarget)) {
+                    evnt.path = [];
+                    var target = (evnt.target || evnt.currentTarget);
+                    while (target != null) {
+                        evnt.path.push(target);
+                        target = target.parentNode;
+                    }
+                }
+        },
         /**
          * Dom element is anscenstor a descendent of descendent.
          * @param {Object} ancestor

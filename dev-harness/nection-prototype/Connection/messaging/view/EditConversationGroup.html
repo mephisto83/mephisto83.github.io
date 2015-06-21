@@ -1,8 +1,20 @@
-﻿<div class="meph-view meph-view-remove mainview">
+﻿<div class="meph-view meph-view-remove mainview editconversationgroupview">
     <ediconversationgroupview data-bind='"activityName": "c$.name"' meph-event-selected-contact="v$.addContact" mephid="mainview">
+        <div class="row">
+            <div class="col-xs-12">
+                <mephbutton class="row-button">
+                    <i class="fa fa-bell"><b class="pad-left">Notifications</b></i>
+                </mephbutton>
+            </div>
+            <div class="col-xs-12">
+                <mephbutton class="row-button" meph-event-click="b$.apply, v$.mainview.focus, v$.mainview">
+                    <i class="fa fa-plus"><b class="pad-left">Add People</b></i>
+                </mephbutton>
+            </div>
+        </div>
         <listview data-bind='"source": "v$.groupContacts"'
-                  prevent-bounce="true"
-                  meph-data-renderondemand="true">
+                  meph-event-exclamation="v$.onOpenContactPage"
+                  meph-event-remove="v$.removeContactFromList">
             <template name="Connection.template.EditConversationGroupItem">
             </template>
         </listview>

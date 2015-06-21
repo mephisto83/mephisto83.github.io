@@ -6,6 +6,7 @@
     injections: ['messageService',
         'relationshipService',
         'overlayService',
+        'dialogService',
         'stateService'],
     requires: ['Connection.messaging.view.editconversationgroupview.EditConversationGroupView',
         'Connection.template.EditConversationGroupItem', ,
@@ -22,38 +23,9 @@
     },
     onLoaded: function () {
         var me = this;
-
-        me.canchange = true;
         me.contacts = MEPH.util.Observable.observable([]);
     },
-    enterText: function () {
-        var me = this;
-        if (me.chatSession.contacts.length && me.inputValue) {
-            var input = me.inputValue;
-            me.inputValue = '';
-            me.canchange = false;
 
-            me.sendToChatSession(input);
-        }
-    },
-    sendToChatSession: function (val) {
-        var me = this;
-
-        me.when.injected.then(function () {
-            return me.$inj.messageService.send(val, me.chatSession);
-        }).then(function (conversation) {
-            if (conversation && conversation.messages) {
-                me.messages = conversation.messages;
-            }
-        });
-    },
-
-    canChangeContacts: function () {
-        var me = this;
-        if (!me.canchange) {
-            throw new Error('no error');
-        }
-    },
     onContactsChange: function () {
         var me = this;
         if (me.groupContacts) {
@@ -102,40 +74,59 @@
         }
         return false;
     },
-    selectionChanged: function () {
-        var me = this,
-            data = me.getDomEventArg(arguments);
-
-        if (!me.chatSession.contacts.some(function (x) {
-            return x.card === data.card;
-        })) {
-            me.chatSession.contacts.push(data);
-            me.selectedContact = null;
-            me.selectedCardValue = null;
-        }
-    },
-
     addContact: function () {
         var me = this,
-            domEvent = me.getDomEventArg(arguments);
-        var data = domEvent.data;
+            data = me.getDomEventArg(arguments);
         if (data) {
-            if (!me.chatSession.contacts.some(function (x) {
+            if (!me.groupContacts.some(function (x) {
                return x.card === data.card;
             })) {
-                me.chatSession.contacts.push(data);
+                return me.when.injected.then(function () {
+                    me.$inj.overlayService.open('adding editconversationgroup');
+                    me.$inj.overlayService.relegate('adding editconversationgroup');
+                    return me.$inj.messageService.addContactToConversation(data, me.currentGroupId, me.groupContacts);
+                }).catch(function () {
+                }).then(function () {
+                    me.$inj.overlayService.close('adding editconversationgroup');
+                });
             }
         }
     },
-
+    onOpenContactPage: function () {
+        var me = this,
+            domEvent = me.getDomEventArg(arguments);
+        me.when.injected.then(function () {
+            return me.$inj.stateService.set(Connection.constant.Constants.CurrentConversationContact, { data: domEvent });
+        }).then(function () {
+            MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'contactconversationgroup', path: 'contactconversationgroup' });
+        });
+    },
+    removeContactFromList: function () {
+        var me = this,
+            data = me.getDomEventArg(arguments);
+        return me.when.injected.then(function () {
+            return me.$inj.dialogService.confirm({
+                title: 'Remove This Person?',
+                message: 'They won\'t be able to keep chatting with this group.',
+                yes: 'Remove',
+                no: 'Cancel'
+            });
+        }).then(function (remove) {
+            MEPH.Log('Removing');
+            return me.$inj.messageService.removeContactFromConversation(data, me.currentGroupId, me.groupContacts);
+        }).catch(function () {
+            MEPH.Log('Not removing');
+        }).then(function () {
+        });
+    },
     setupGroupContacts: function () {
         var me = this,
             currentContacts;
         return me.when.injected.then(function () {
-            me.canchange = false;
-            me.$inj.overlayService.open('openining conversation');
-            currentContacts = me.$inj.stateService.get(Connection.constant.Constants.CurrentContacts);//, { data: data }
+            me.$inj.overlayService.open('openining editconversationgroup');
+            currentContacts = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversationContacts);//, { data: data }
             if (currentContacts && currentContacts.data) {
+                me.currentGroupId = currentContacts.groupId;
                 if (me.groupContacts) {
                     me.groupContacts.un(me);
                 }
@@ -143,13 +134,12 @@
                 me.groupContacts = MEPH.util.Observable.observable(currentContacts.data);
                 // me.messages = MEPH.util.Observable.observable([]);
                 me.groupContacts.on('changed', me.onContactsChange.bind(me), me);
-                me.canchange = true;
             }
             me.onContactsChange();
 
         }).catch(function () {
         }).then(function () {
-            me.$inj.overlayService.close('openining conversation');
+            me.$inj.overlayService.close('openining editconversationgroup');
         });
     }
 });

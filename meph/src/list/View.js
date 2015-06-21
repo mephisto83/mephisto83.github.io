@@ -19,6 +19,7 @@ MEPH.define('MEPH.list.View', {
     requires: ['MEPH.util.Dom', 'MEPH.util.Template'],
     templates: false,
     alias: 'listview',
+    injections: ['notificationService'],
     properties: {
     },
     initialize: function () {
@@ -48,11 +49,26 @@ MEPH.define('MEPH.list.View', {
     },
     onLoaded: function () {
         var me = this;
-        me.don('click', me.listelement, function (evt) {
+        me.don(['click'], me.listelement, function (evt) {
             var listItemEl = me.getListElement(evt);
             if (listItemEl) {
                 var index = parseFloat(listItemEl.getAttribute('data-item-index'));
                 var element = me.getFirstElement();
+                if (!evt.path) {
+                    MEPH.util.Dom.generatePath(evt);
+                }
+                var potentialEvent = MEPH.Array(evt.path).first(function (x) {
+                    return x && x.getAttribute ? x.getAttribute('template-event') : null;
+                });
+                if (potentialEvent && element && MEPH.util.Dom.isDomDescendant(potentialEvent, element)) {
+                    me.when.injected.then(function () {
+                        me.$inj.notificationService.notify({ message: potentialEvent.getAttribute('template-event') });
+                    })
+                    element.dispatchEvent(MEPH.createEvent(potentialEvent.getAttribute('template-event'), {
+                        data: me.source[index],
+                        index: index
+                    }));
+                }
                 element.dispatchEvent(MEPH.createEvent('itemclick', { data: me.source[index], index: index }));
                 me.fire('itemclick', { data: me.source[index], index: index });
             }
@@ -253,7 +269,7 @@ MEPH.define('MEPH.list.View', {
                 var res = me.renderItem(t, index);
                 div.innerHTML = res.html;
                 var ch = div.firstElementChild;
-                ch.setAttribute('data-item-index', me.source.length - options.added.length + index)
+                ch.setAttribute('data-item-index', me.source.indexOf(t))
                 // me.listelement.appendChild(ch);
                 return div.innerHTML;
             }).join('');
@@ -269,7 +285,7 @@ MEPH.define('MEPH.list.View', {
                 var res = me.renderItem(t);
                 div.innerHTML = res.html;
                 var ch = div.firstElementChild;
-                ch.setAttribute('data-item-index', me.source.length - options.added.length + index)
+                ch.setAttribute('data-item-index', me.source.indexOf(t))
                 me.listelement.appendChild(ch);
             });
         }

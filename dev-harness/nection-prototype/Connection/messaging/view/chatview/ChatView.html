@@ -1,25 +1,9 @@
 ﻿  <!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "activityheader", "before" : true -->
 
-<div class="col-xs-12"
-     style="display:none"
-     mephid="typeaheadHolder">
-    <typeahead meph-data-source="v$.contacts"
-               meph-data-showempty="true"
-               mephid="typeahead"
-               meph-data-showeverything="c$.showEverything"
-               meph-event-selected-item="v$.selectionChanged | style.hide, c$.typeaheadHolder | style.show, c$.nameDisplay | b$.apply, c$.typeahead.clear, c$.typeahead"
-               meph-event-keypressed="v$.searchContacts, v$.typeahead.value"
-               meph-event-total-blur="style.hide, c$.typeaheadHolder | style.show, c$.nameDisplay"
-               meph-data-selectedobject="v$.selectedContact"
-               meph-data-value="v$.selectedCardValue">
-        <template name="Connection.template.ContactListItem">
-        </template>
-    </typeahead>
-</div>
 <div tabindex="0"
      class="col-xs-12 connection-chat-view connection-members-name"
      meph-event-keyup="boolean.IsTrue, v$.isReturnHit, v$.view | boolean.Then, style.show, c$.typeaheadHolder | boolean.Then, style.hide, c$.nameDisplay | c$.focusTypeahead "
-     meph-event-click="boolean.IsLikeEqual, v$.canchange, v$.changePossible | boolean.Then, style.show, c$.typeaheadHolder | boolean.Then, style.hide, c$.nameDisplay | c$.focusTypeahead"
+     meph-event-click="v$.gotoEditGroupView"
      mephid="nameDisplay"
      data-bind='"innerHTML":"v$.memberNames"'>
 </div>

@@ -32,6 +32,11 @@ MEPH.ready().then(function () {
                     type: 'Connection.service.StateService',
                     config: {}
                 },
+                dialogService: {
+                    'static': true,
+                    type: 'MEPH.dialog.Service',
+                    config: {}
+                },
                 tokenService: {
                     'static': true,
                     type: 'Connection.service.TokenService',

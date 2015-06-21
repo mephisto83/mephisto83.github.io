@@ -74,6 +74,50 @@
 
         }
     },
+    addContactToConversation: function (contact, id, groupContacts) {
+        var me = this;
+        return me.when.injected.then(function () {
+            if (id) {
+                return me.$inj.rest.addPath('messages/add/to/group').post({
+                    cards: [contact.card],
+                    group: id
+                }).then(function (result) {
+                    if (result.success && result.authorized) {
+                        if (groupContacts) {
+                            groupContacts.push(contact);
+                        }
+                    }
+                });
+            }
+            else {
+                if (groupContacts) {
+                    groupContacts.push(contact);
+                }
+            }
+        });
+    },
+    removeContactFromConversation: function (contact, id, groupContacts) {
+        var me = this;
+        return me.when.injected.then(function () {
+            if (id) {//If saved in the server
+                return me.$inj.rest.addPath('messages/remove/from/group').post({
+                    cards: [contact.card],
+                    group: id
+                }).then(function (result) {
+                    if (result.success && result.authorized) {
+                        groupContacts.removeWhere(function (x) {
+                            return x.card === contact.card;
+                        });
+                    }
+                });
+            }
+            else {// If not saved just remove from the conversations.
+                groupContacts.removeWhere(function (x) {
+                    return x.card === contact.card;
+                });
+            }
+        });
+    },
     monitorConversation: function (conversation) {
         var me = this;
         if (me.monitoredConversations.some(function (x) { return x.id === conversation.id; })) {

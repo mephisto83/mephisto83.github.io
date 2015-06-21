@@ -20,7 +20,7 @@
 * U4Styles.private contain themeable variables & resources exposed by the current release of the U4UX framework. 
 * These variables might change inbetween each release, so they should in general __not__ be used by module developers.
 * Internally, the variables are exposed so that we can make a theme on top of the default MEPH styleset.
-*/
+*/ 
 
 
 $image-search-path: './' !default;

@@ -3296,13 +3296,25 @@ a.list-group-item.active > [mephplatform] .badge, .nav-pills > .active > a > [me
 [mephplatform] .overlay { position: fixed; top: 0px; height: 100%; z-index: 10000; width: 100%; background-color: rgba(201, 201, 201, 0.4); transition: width .2s, height .2s, background-color .2s, transform .2s, top .2s; }
 /* line 367, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay i { font-size: 14em; position: relative; text-align: center; width: 100%; top: 20%; -webkit-animation-name: spin; -webkit-animation-duration: 4000ms; -webkit-animation-iteration-count: infinite; -webkit-animation-timing-function: linear; -moz-animation-name: spin; -moz-animation-duration: 4000ms; -moz-animation-iteration-count: infinite; -moz-animation-timing-function: linear; -ms-animation-name: spin; -ms-animation-duration: 4000ms; -ms-animation-iteration-count: infinite; -ms-animation-timing-function: linear; animation-name: spin; animation-duration: 4000ms; animation-iteration-count: infinite; animation-timing-function: linear; }
-/* line 392, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .overlay.relegated { height: 50px; width: 40px; left: 50%; }
-/* line 397, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .overlay.relegated i { font-size: 2em; top: 20%; }
-/* line 403, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .overlay.removed { top: -100%; }
+/* line 391, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.dialog { z-index: 10001; text-align: center; }
+/* line 395, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.dialog .dialog-message { margin-top: 50%; font-size: 2.3em; }
+/* line 400, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.dialog .dialog-message, [mephplatform] .overlay.dialog .dialog-row { padding: 8px; background-color: white; }
 /* line 406, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.dialog i { font-size: 1.5em; }
+/* line 409, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.dialog i[button] { display: inline; }
+/* line 416, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.no-animation i { -webkit-animation-name: none; -ms-animation-name: none; -moz-animation-name: none; animation-name: none; }
+/* line 425, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.relegated { height: 50px; width: 40px; left: 50%; }
+/* line 430, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.relegated i { font-size: 2em; top: 20%; }
+/* line 436, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.removed { top: -100%; }
+/* line 439, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay.removed i { font-size: 2em; top: 20%; }
 /* line 1, ../sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
 [mephplatform] .meph-mobile-application-container, [mephplatform] .meph-application-container { width: 100%; height: 100%; position: relative; }

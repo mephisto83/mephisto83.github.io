@@ -387,6 +387,39 @@ $notificationHeight: 50px;
         animation-iteration-count: infinite;
         animation-timing-function: linear;
     }
+
+    &.dialog {
+        z-index: 10001;
+        text-align: center;
+
+        .dialog-message {
+            margin-top: 50%;
+            font-size: 2.3em;
+        }
+
+        .dialog-message,
+        .dialog-row {
+            padding: 8px;
+            background-color: white;
+        }
+
+        i {
+            font-size: 1.5em;
+
+            &[button] {
+                display: inline;
+            }
+        }
+    }
+
+    &.no-animation {
+        i {
+            -webkit-animation-name: none;
+            -ms-animation-name: none;
+            -moz-animation-name: none;
+            animation-name: none;
+        }
+    }
 }
 
 .overlay.relegated {

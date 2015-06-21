@@ -12,6 +12,7 @@ $profile-image-border-width: 2px;
 $padding-size: $padding-standard;
 $button-dim: 58px;
 $connection-box-indicator-padding: 7px;
+$padding-to-the-left: $connection-box-indicator-padding;
 $conversation-row-horizontal-margin: -10px;
 $conversation-row-bottom-margin: 4px;
 $chatview-input-textarea-height: 50px;
@@ -66,6 +67,7 @@ $profile-list-height-small: 35px;
 
 $profile-image-margin-top: ($contact-list-item-height - $profile_list_height)/2;
 $profile-image-margin-left: $profile-image-margin-top;
+$row-button-font-size: 2em;
 
 .mainview {
     .meph-activity-view-body {
@@ -78,7 +80,41 @@ $profile-image-margin-left: $profile-image-margin-top;
             overflow-x: hidden;
         }
     }
+    ///Package Button Search //////////////////////////////////////////
+    .button-search-combo-search {
+        padding-left: 60px;
+        padding-bottom: 4px;
+    }
 
+    .button-search-combo-button {
+        position: absolute;
+        padding-top: 4px;
+        z-index: 11;
+
+        button {
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
+    }
+    /////////////////////////////////////////////
+    .pad-left {
+        padding-left: $padding-to-the-left;
+    }
+
+    button.row-button {
+        width: 100%;
+        border: 0;
+        text-align: left;
+        font-size: $row-button-font-size;
+    }
+
+    &.editconversationgroupview {
+        .meph-activity-view-body {
+            .listwrapper {
+                height: auto;
+            }
+        }
+    }
 
     .meph-activity-view-header {
         height: auto;

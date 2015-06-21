@@ -27,6 +27,7 @@
     },
     getSearchValue: function () {
         var me = this;
-        return me.typeahead.getRawValue();
+        if (me.typeahead)
+            return me.typeahead.getRawValue();
     }
 });

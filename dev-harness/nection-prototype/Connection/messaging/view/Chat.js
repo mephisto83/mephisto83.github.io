@@ -9,6 +9,7 @@
         'stateService'],
     requires: ['Connection.messaging.view.chatview.ChatView',
         'Connection.template.ConversationMessage',
+        'Connection.constant.Constants',
         'MEPH.input.MultilineText',
         'MEPH.list.View'],
     properties: {
@@ -76,24 +77,6 @@
             me.openConversation();
         }, 500);
     },
-    searchContacts: function () {
-        var me = this,
-            val = me.mainview.getSearchValue();
-        if (me.$lastValue === val || !val) return;
-        me.$lastValue = val;
-        me.searchThrottle = me.searchThrottle || MEPH.throttle(function () {
-            me.when.injected.then(function () {
-
-                if (me.cancel && me.cancel.abort) {
-                    me.cancel.abort();
-                }
-                me.cancel = {};
-                me.$inj.relationshipService.searchContacts(0, 10, true, val, me.contacts, me.cancel, false, true);
-
-            })
-        }, 500);
-        me.searchThrottle();
-    },
     isReturnHit: function (domData) {
         var me = this;
         if (domData) {
@@ -148,6 +131,20 @@
         }).then(function () {
             me.$inj.overlayService.close('openining conversation');
         });
+    },
+    gotoEditGroupView: function () {
+        var me = this;
+        //editconversationgroup
+        if (me.chatSession && me.chatSession.contacts) {
+            me.when.injected.then(function () {
+                me.$inj.stateService.set(Connection.constant.Constants.CurrentConversationContacts, {
+                    groupId: me.chatSession.id,
+                    data: me.chatSession.contacts
+                });
+            }).then(function () {
+                MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'editconversationgroup', path: 'editconversationgroup' });
+            });
+        }
     },
     searchDynChanged: function () {
         var me = this,

@@ -1,5 +1,5 @@
-﻿MEPH.define('Connection.messaging.view.Chat', {
-    alias: 'main_chat',
+﻿MEPH.define('Connection.messaging.view.EditConversationGroup', {
+    alias: 'main_edit_conversation_group',
     templates: true,
     extend: 'MEPH.mobile.activity.container.Container',
     mixins: ['MEPH.mobile.mixins.Activity'],
@@ -7,8 +7,8 @@
         'relationshipService',
         'overlayService',
         'stateService'],
-    requires: ['Connection.messaging.view.chatview.ChatView',
-        'Connection.template.ConversationMessage',
+    requires: ['Connection.messaging.view.editconversationgroupview.EditConversationGroupView',
+        'Connection.template.EditConversationGroupItem', ,
         'MEPH.input.MultilineText',
         'MEPH.list.View'],
     properties: {
@@ -16,12 +16,9 @@
         memberNames: null,
         inputValue: null,
         messages: null,
+        groupContacts: null,
         changePossible: true,
         chatSession: null
-    },
-    initialize: function () {
-        var me = this;
-        me.great();
     },
     onLoaded: function () {
         var me = this;
@@ -59,8 +56,8 @@
     },
     onContactsChange: function () {
         var me = this;
-        if (me.chatSession && me.chatSession.contacts) {
-            me.memberNames = 'To:' + me.chatSession.contacts.select(function (x) {
+        if (me.groupContacts) {
+            me.memberNames = 'To:' + me.groupContacts.select(function (x) {
                 return x.name;
             }).join(', ');
         }
@@ -73,23 +70,21 @@
             me.$aftershow = null;
         }
         me.$aftershow = setTimeout(function () {
-            me.openConversation();
+            me.setupGroupContacts();
         }, 500);
     },
     searchContacts: function () {
         var me = this,
-            val = me.mainview.getSearchValue();
+            val = me.getSearchValue();
         if (me.$lastValue === val || !val) return;
         me.$lastValue = val;
         me.searchThrottle = me.searchThrottle || MEPH.throttle(function () {
             me.when.injected.then(function () {
-
                 if (me.cancel && me.cancel.abort) {
                     me.cancel.abort();
                 }
                 me.cancel = {};
-                me.$inj.relationshipService.searchContacts(0, 10, true, val, me.contacts, me.cancel, false, true);
-
+                me.$inj.relationshipService.searchContacts(0, 10, true, val, me.groupContacts, me.cancel, false, true);
             })
         }, 500);
         me.searchThrottle();
@@ -120,40 +115,41 @@
         }
     },
 
-    openConversation: function () {
+    addContact: function () {
         var me = this,
-            chatSession;
+            domEvent = me.getDomEventArg(arguments);
+        var data = domEvent.data;
+        if (data) {
+            if (!me.chatSession.contacts.some(function (x) {
+               return x.card === data.card;
+            })) {
+                me.chatSession.contacts.push(data);
+            }
+        }
+    },
+
+    setupGroupContacts: function () {
+        var me = this,
+            currentContacts;
         return me.when.injected.then(function () {
             me.canchange = false;
             me.$inj.overlayService.open('openining conversation');
-            chatSession = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversation);//, { data: data }
-            if (chatSession && chatSession.data) {
-                return me.$inj.messageService.openConversation(chatSession.data).then(function (session) {
-                    me.chatSession = session;
-                    me.messages = MEPH.util.Observable.observable(session.messages);
-                    me.chatSession.contacts = MEPH.util.Observable.observable(me.chatSession.contacts || []);
-                    me.onContactsChange();
-                });
-            }
-            else {
-                me.chatSession = {
-                    contacts: MEPH.util.Observable.observable([])
-                };
-                me.messages = MEPH.util.Observable.observable([]);
-                me.chatSession.contacts.on('changed', me.onContactsChange.bind(me));
+            currentContacts = me.$inj.stateService.get(Connection.constant.Constants.CurrentContacts);//, { data: data }
+            if (currentContacts && currentContacts.data) {
+                if (me.groupContacts) {
+                    me.groupContacts.un(me);
+                }
+
+                me.groupContacts = MEPH.util.Observable.observable(currentContacts.data);
+                // me.messages = MEPH.util.Observable.observable([]);
+                me.groupContacts.on('changed', me.onContactsChange.bind(me), me);
                 me.canchange = true;
-                me.onContactsChange();
             }
+            me.onContactsChange();
+
         }).catch(function () {
         }).then(function () {
             me.$inj.overlayService.close('openining conversation');
         });
-    },
-    searchDynChanged: function () {
-        var me = this,
-            data = me.getDomEventArg(arguments);
-        me.when.injected.then(function () {
-            me.$inj.messageService.searchConversations(data, me.conversations);
-        })
     }
 });

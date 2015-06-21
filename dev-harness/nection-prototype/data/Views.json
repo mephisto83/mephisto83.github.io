@@ -64,6 +64,13 @@
             "path": "/chatmessage"
         },
         {
+            "viewId": "editconversationgroup",
+            "view": "Connection.messaging.view.EditConversationGroup",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/editgroup"
+        },
+        {
             "viewId": "accountresolution",
             "view": "Connection.account.view.AccountResolution",
             "singleton": true,

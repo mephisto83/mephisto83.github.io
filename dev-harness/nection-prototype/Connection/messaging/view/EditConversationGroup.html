@@ -1,0 +1,10 @@
+﻿<div class="meph-view meph-view-remove mainview">
+    <ediconversationgroupview data-bind='"activityName": "c$.name"' meph-event-selected-contact="v$.addContact" mephid="mainview">
+        <listview data-bind='"source": "v$.groupContacts"'
+                  prevent-bounce="true"
+                  meph-data-renderondemand="true">
+            <template name="Connection.template.EditConversationGroupItem">
+            </template>
+        </listview>
+    </ediconversationgroupview>
+</div>

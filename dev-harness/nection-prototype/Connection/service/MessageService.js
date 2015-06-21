@@ -92,6 +92,9 @@
                     }
                 });
             }
+            else if (conversation.messages) {
+                existingConversation.messages = conversation.messages;
+            }
             existingConversation.messages = existingConversation.messages || MEPH.util.Observable.observable([]);
             existingConversation.messages.sort(function (x, y) {
                 return new Date(x.dateCreated).getTime() - new Date(y.dateCreated).getTime();
@@ -197,6 +200,7 @@
 
                     me.collectCards(results.contacts);
                     var toreturn = me.monitorConversation(results);
+                    toreturn.contacts = results.contacts;
                     me.updateMonitoredCards();
                     return toreturn;
                 });

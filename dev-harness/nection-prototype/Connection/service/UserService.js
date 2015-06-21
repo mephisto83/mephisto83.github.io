@@ -1,7 +1,8 @@
 ﻿MEPH.define('Connection.service.UserService', {
     properties: {
         loggedin: false,
-        $promise: null
+        $promise: null,
+        $maxNumberOfRefreshAttempts: 10
     },
     mixins: {
         injectable: 'MEPH.mixins.Injections'
@@ -140,14 +141,29 @@
     scheduleTokenRefresh: function (response) {
         var me = this;
         if (me.$tokenResfresh) {
-            clearTimeout(me.$tokenResfresh);
-            me.$tokenResfresh = null;
+            return;
         }
         me.$tokenResfresh = setTimeout(function () {
             me.$inj.rest.nocache().addPath('refresh/token').get().then(function (result) {
-                me.scheduleTokenRefresh(result);
+                me.$tokenResfresh = null;
+                if (result.success && result.authorized) {
+                    me.$inj.rest.setHeader('mvc-connection.ticket', result.token);
+                    me.$inj.rest.setHeader('contactId', result.contactId);
+                    me.scheduleTokenRefresh(result);
+                    me.$unsuccessfulRefresh = 0;
+                }
+                else {
+                    me.$unsuccessfulRefresh = me.$unsuccessfulRefresh || 0;
+                    me.$unsuccessfulRefresh++;
+                    if (me.$unsuccessfulRefresh < me.$maxNumberOfRefreshAttempts) {
+                        me.scheduleTokenRefresh(response);
+                    }
+                    else {
+                        MEPH.publish(Connection.constant.Constants.ConnectionLost, {});
+                    }
+                }
             })
-        }, response.expiration * .7)
+        }, (response.expiration * .7) || 10000)//
     },
     /**
      * Checks the users credentials.
@@ -165,7 +181,7 @@
             return me.$inj.rest.nocache().addPath('login/{provider}').post({
                 provider: provider.name.toLowerCase()
             }, $provider && $provider.p && $provider.p.credentials ? $provider.p.credentials() : null).then(function (res) {
-                
+
                 MEPH.Log('Got check results');
                 if (res && res.authorized) {
                     me.$inj.rest.setHeader('mvc-connection.ticket', res.token);

@@ -3,7 +3,7 @@
     templates: true,
     extend: 'MEPH.mobile.activity.container.Container',
     mixins: ['MEPH.mobile.mixins.Activity'],
-    injections: ['messageService', 'stateService'],
+    injections: ['messageService', 'overlayService', 'stateService'],
     requires: ['Connection.main.view.mainview.MainView',
         'Connection.template.Conversation',
         'Connection.messaging.view.conversationview.ConversationView'],
@@ -28,10 +28,13 @@
         }
         me.$aftershow = setTimeout(function () {
             return me.when.injected.then(function () {
+                me.$inj.overlayService.open('openining conversations');
+                me.$inj.overlayService.relegate('openining conversations');
                 return me.$inj.messageService.getConversations(me.conversations);
             }).catch(function () {
             }).then(function () {
                 me.$aftershow = null;
+                me.$inj.overlayService.close('openining conversations');
             });
         }, 500);
 

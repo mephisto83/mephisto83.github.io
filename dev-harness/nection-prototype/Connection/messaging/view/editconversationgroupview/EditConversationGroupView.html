@@ -1,0 +1,25 @@
+﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "activityheader", "before" : true -->
+<div class="col-xs-12"
+     style="display:none"
+     mephid="typeaheadHolder">
+    <typeahead meph-data-source="c$.contacts"
+               meph-data-showempty="true"
+               mephid="typeahead"
+               meph-data-showeverything="c$.showEverything"
+               meph-event-selected-item="c$.selectionChanged | style.hide, c$.typeaheadHolder | style.show, c$.nameDisplay | b$.apply, c$.typeahead.clear, c$.typeahead"
+               meph-event-keypressed="c$.searchContacts, c$.typeahead.value"
+               meph-event-total-blur="style.hide, c$.typeaheadHolder | style.show, c$.nameDisplay"
+               meph-data-selectedobject="c$.selectedContact"
+               meph-data-value="c$.selectedCardValue">
+        <template name="Connection.template.ContactListItem">
+        </template>
+    </typeahead>
+</div>
+<div tabindex="0"
+     class="col-xs-12 connection-chat-view connection-members-name"
+     meph-event-keyup="boolean.IsTrue, c$.isReturnHit, c$.view | boolean.Then, style.show, c$.typeaheadHolder | boolean.Then, style.hide, c$.nameDisplay | c$.focusTypeahead "
+     meph-event-click="style.show, c$.typeaheadHolder | style.hide, c$.nameDisplay | c$.focusTypeahead"
+     mephid="nameDisplay"
+     data-bind='"innerHTML":"c$.memberNames"'>
+</div>
+<!-- "instruction": true, "name" : "injectop", "close": true -->

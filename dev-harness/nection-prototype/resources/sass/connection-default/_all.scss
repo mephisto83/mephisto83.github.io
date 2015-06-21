@@ -21,6 +21,7 @@ $chatview-input-row-height: 80px;
 $profile-conversation-message-width: 50px;
 $profile-conversation-message-height: 50px;
 $chatview-bottom-padding: 49px;
+$application-menu-secondary-border-radius: 10px;
 
 $connection-list-profile-details-padding: 55px;
 $connection-list-profile-image-width: $connection-list-profile-details-padding - 5px;
@@ -345,6 +346,18 @@ $space-between-fields: 50px;
                             i {
                                 color: $color7;
                             }
+                        }
+                    }
+
+                    .application-menu-secondary {
+                        padding-left: 10px;
+
+                        &:first-child {
+                            border-top-left-radius: $application-menu-secondary-border-radius;
+                        }
+
+                        &:last-child {
+                            border-bottom-left-radius: $application-menu-secondary-border-radius;
                         }
                     }
                     /*.fa {

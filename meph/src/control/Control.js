@@ -515,7 +515,7 @@ MEPH.define('MEPH.control.Control', {
                 dom = x;
 
             if (dom.parentNode) {
-                MEPH.Array(dom.parentNode.querySelectorAll(selector)).filter(function (otherdom) {
+                MEPH.Array(dom.parentNode.querySelectorAll(selector)).where(function (otherdom) {
                     return otherdom === dom;
                 }).forEach(function (subdom) {
                     if (subdom) {

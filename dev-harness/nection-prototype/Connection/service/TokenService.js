@@ -50,7 +50,7 @@
                     MEPH.Log(Connection.constant.Constants.FAILED_TO_GET_TOKEN_REFRESH);
                 }
             });
-        }, (d.getTime() - Date.now()) * .9);
+        }, (d.getTime() - Date.now()) * .23);
     },
     retrieveToken: function () {
         var me = this;

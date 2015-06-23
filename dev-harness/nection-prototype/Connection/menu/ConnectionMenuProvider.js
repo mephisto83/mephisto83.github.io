@@ -250,7 +250,9 @@
             MEPH.publish(MEPH.Constants.LOGOUT, {});
         }
         if (data.newchat) {
-            me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, { data: null });
+            me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, {
+                data: null
+            });
         }
         if (data.viewId) {
             MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: data.viewId, path: data.path });

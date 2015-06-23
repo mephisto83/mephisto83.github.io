@@ -4,7 +4,8 @@
 */
 MEPH.define('Connection.application.Application', {
     extend: 'MEPH.mobile.Application',
-    requires: ['Connection.application.container.ApplicationContainer'],
+    requires: ['Connection.application.container.ApplicationContainer',
+        'Connection.application.Converters'],
     statics: {
         mobileApplication: function (config) {
             var application = new Connection.application.Application(config);

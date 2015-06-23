@@ -84,6 +84,10 @@ $row-button-font-size: 2em;
     .button-search-combo-search {
         padding-left: 60px;
         padding-bottom: 4px;
+
+        div.connection-members-name {
+            padding-top: 10px;
+        }
     }
 
     .button-search-combo-button {
@@ -483,6 +487,16 @@ $space-between-fields: 50px;
 
         .contact-list-item div.conversation-message-message {
             padding-right: 15px;
+            color: $color5;
+        }
+
+        button.connection-top-menu-button {
+            background-color: transparent;
+            border: none;
+
+            i {
+                color: $color3;
+            }
         }
 
         .conversation-row {
@@ -494,6 +508,10 @@ $space-between-fields: 50px;
         .connection-chat-view {
             font-size: $connection-chat-view-font-size;
             color: $color3;
+        }
+
+        .converation-item-message {
+            padding-left: 2px;
         }
 
         .conversation-profile-image {

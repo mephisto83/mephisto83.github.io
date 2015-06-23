@@ -37,25 +37,25 @@
             });
         });
         ;
+        if (me.head && typeof me.head.stateChanged === 'function') {
+            me.head.stateChanged(me.connectionStateChanged.bind(me));
+            me.head.reconnecting(function () {
+                me.tryingToReconnect = true;
+            });
 
-        me.head.stateChanged(me.connectionStateChanged.bind(me));
-        me.head.reconnecting(function () {
-            me.tryingToReconnect = true;
-        });
+            me.head.reconnected(function () {
+                me.tryingToReconnect = false;
+            });
+            me.head.error(function (error) {
+                MEPH.Error(error);
+            });
 
-        me.head.reconnected(function () {
-            me.tryingToReconnect = false;
-        });
-        me.head.error(function (error) {
-            MEPH.Error(error);
-        });
-
-        me.head.disconnected(function () {
-            if (me.tryingToReconnect) {
-                me.notifyUserOfDisconnect(); // Your function to notify user.
-            }
-        });
-
+            me.head.disconnected(function () {
+                if (me.tryingToReconnect) {
+                    me.notifyUserOfDisconnect(); // Your function to notify user.
+                }
+            });
+        }
     },
     connectionStateChanged: function (state) {
 
@@ -129,14 +129,14 @@
                     MEPH.publish('SIGNALRMESSAGE', { message: message });
                 }
             };
-
-            me.head.start().done(function () {
-                me.started();
-                toresolve();
-            }).fail(function () {
-                me.failed();
-                tofail();
-            });
+            if (me.head)
+                me.head.start().done(function () {
+                    me.started();
+                    toresolve();
+                }).fail(function () {
+                    me.failed();
+                    tofail();
+                });
         }
         else {
             if (tofail)

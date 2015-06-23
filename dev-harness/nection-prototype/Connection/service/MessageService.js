@@ -53,7 +53,9 @@
     },
     getCard: function (id) {
         var me = this;
-        return me.contactCardCollection.first(function (x) { return x.card === id || x.contact === id; });
+        return me.contactCardCollection.first(function (x) {
+            return x.id === id || x.card === id || x.contact === id;
+        });
     },
     collectCards: function (cards) {
         var me = this;
@@ -146,6 +148,10 @@
             return existingConversation;
         }
         else {
+            if (conversation.messages)
+                conversation.messages.sort(function (x, y) {
+                    return new Date(x.dateCreated).getTime() - new Date(y.dateCreated).getTime();
+                });
             me.monitoredConversations.push(conversation);
         }
         return conversation;
@@ -259,13 +265,48 @@
     },
     createConversation: function (cards) {
         var me = this;
-        me.when.injected.then(function () {
-            me.$inj.rest.nocache().addPath('messages/createconversation')
-                .post({ cards: cards })
-                .then(function (res) {
-                    if (res && res.success && res.authorized) {
-                    }
-                });
+        return me.when.injected.then(function () {
+            return me.getMessageToken().then(function (token) {
+                return me.$inj.rest.nocache().addPath('messages/createconversation')
+                        .post({ cards: cards })
+                        .then(function (results) {
+                            if (results &&
+                                results.success &&
+                                results.authorized &&
+                                results.groups) {
+                                var group = results.groups.first();
+                                results.groups.foreach(function (group) {
+                                    group.messages = [];
+                                    me.monitorConversation(group);
+                                    me.sendMessage('addConnection', token, group.userCardId, group.id);
+                                });
+                                return me.getConversationById(group.id);
+                            }
+                        });
+            });
+        });
+    },
+    duolog: function (card) {
+        var me = this;
+        return me.when.injected.then(function () {
+            return me.getMessageToken().then(function (token) {
+                return me.$inj.rest.nocache().addPath('messages/duolog/{card}')
+                        .get()
+                        .then(function (results) {
+                            if (results &&
+                                results.success &&
+                                results.authorized &&
+                                results.groups) {
+                                var group = results.groups.first();
+                                results.groups.foreach(function (group) {
+                                    group.messages = [];
+                                    me.monitorConversation(group);
+                                    me.sendMessage('addConnection', token, group.userCardId, group.id);
+                                });
+                                return me.getConversationById(group.id);
+                            }
+                        });
+            });
         });
     }
 

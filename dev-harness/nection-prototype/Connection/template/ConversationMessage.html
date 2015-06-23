@@ -1,8 +1,9 @@
 ﻿<li class="list-group-item contact-list-item conversation-list-item">
-    <a href="javascript:void(0);" tabindex="0">
+    <div href="javascript:void(0);" tabindex="0">
         <div class="row">
             <div class="col-xs-3 ">
                 <div style="background-image:url('{{profileimage}}');" class="connection-list-profile-image conversation-message"></div>
+                <div class="converation-item-message">{{dateCreated | CC.ConversationDate}}</div>
             </div>
             <div class="col-xs-9 contact-list-item-information conversation-message">
                 <h4 class="col-xs-12">{{name}}</h4>
@@ -11,5 +12,5 @@
                 </div>
             </div>
         </div>
-    </a>
+    </div>
 </li>

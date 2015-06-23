@@ -1,16 +1,17 @@
 ﻿<li class="list-group-item conversation-list-item">
-    <a href="javascript:void(0);" tabindex="0">
+    <div href="javascript:void(0);" tabindex="0">
         <div class="conversation-profile-image" style="background-image:url('{{card1.profileimage}}')">
         </div>
         <div class="conversation-profile-image" style="background-image:url('{{card2.profileimage}}')">
         </div>
         <div class="conversation-profile-image" style="background-image:url('{{card3.profileimage}}')">
         </div>
-        <div>
-            <span class="connection-members-name">
-                {{card1.name}} {{card2.name}}
-                {{card3.name}}
-            </span>
+        <div class="converation-item-message">
+            <h4 class="connection-members-name">
+                {{|CC.Names}}
+            </h4>
         </div>
-    </a>
+        <p class="converation-item-message">{{lastMessage.message}}</p>
+        <div class="converation-item-message">{{lastMessage.dateCreated | CC.ConversationDate}}</div>
+    </div>
 </li>

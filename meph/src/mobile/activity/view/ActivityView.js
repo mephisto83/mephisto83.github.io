@@ -20,6 +20,10 @@
         var me = this;
         Style.hide(me.closeBtn);
     },
+    goBack: function () {
+        var me = this;
+        history.back();
+    },
     hideFooter: function () {
         var me = this;
         Style.hide(me.footer);

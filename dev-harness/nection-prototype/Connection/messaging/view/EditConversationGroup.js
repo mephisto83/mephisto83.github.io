@@ -84,7 +84,24 @@
                 return me.when.injected.then(function () {
                     me.$inj.overlayService.open('adding editconversationgroup');
                     me.$inj.overlayService.relegate('adding editconversationgroup');
-                    return me.$inj.messageService.addContactToConversation(data, me.currentGroupId, me.groupContacts);
+                    return Promise.resolve().then(function () {
+                        if (me.isNewChatSession) {
+                            return me.$inj.messageService.createConversation([data.card])
+                                .then(function (conversation) {
+                                    me.isNewChatSession = false;
+                                    me.currentGroupId = conversation.id;
+                                    me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, {
+                                        data: conversation
+                                    });
+                                    me.$inj.stateService.set(Connection.constant.Constants.CurrentConversationContacts, {
+                                        groupId: conversation.id,
+                                        data: conversation.contacts
+                                    });
+                                });
+                        }
+                    }).then(function () {
+                        return me.$inj.messageService.addContactToConversation(data, me.currentGroupId, me.groupContacts);
+                    });
                 }).catch(function () {
                 }).then(function () {
                     me.$inj.overlayService.close('adding editconversationgroup');
@@ -125,14 +142,16 @@
         return me.when.injected.then(function () {
             me.$inj.overlayService.open('openining editconversationgroup');
             currentContacts = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversationContacts);//, { data: data }
-            if (currentContacts && currentContacts.data) {
+            if (currentContacts && currentContacts.data && currentContacts.groupId) {
                 me.currentGroupId = currentContacts.groupId;
-                if (me.groupContacts) {
-                    me.groupContacts.un(me);
-                }
-
                 me.groupContacts = MEPH.util.Observable.observable(currentContacts.data);
-                // me.messages = MEPH.util.Observable.observable([]);
+            }
+            else {
+                me.groupContacts = MEPH.util.Observable.observable([]);
+                me.isNewChatSession = true;
+            }
+            if (me.groupContacts) {
+                me.groupContacts.un(me);
                 me.groupContacts.on('changed', me.onContactsChange.bind(me), me);
             }
             me.onContactsChange();

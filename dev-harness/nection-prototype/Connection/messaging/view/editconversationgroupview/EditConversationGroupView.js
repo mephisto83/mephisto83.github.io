@@ -56,22 +56,18 @@
     },
     showTypeahead: function () {
         var me = this;
-        MEPH.util.Style.show(me.typeaheadHolder);
-    },
-    goBack: function () {
-        var me = this;
-        history.back();
+        //MEPH.util.Style.show(me.typeaheadHolder);
     },
     focus: function () {
         var me = this;
-        MEPH.util.Style.show(me.typeaheadHolder);
-        MEPH.util.Style.hide(me.nameDisplay);
-        me.focusTypeahead();
+        //MEPH.util.Style.show(me.typeaheadHolder);
+        //MEPH.util.Style.hide(me.nameDisplay);
+        //me.focusTypeahead();
     },
     focusTypeahead: function () {
         var me = this;
-        if (me.typeahead)
-            me.typeahead.focus();
+        //if (me.typeahead)
+        //    me.typeahead.focus();
     },
     getSearchValue: function () {
         var me = this;

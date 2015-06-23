@@ -524,7 +524,7 @@ MEPH.define('MEPH.control.Control', {
                 });
             }
             if (x.nodeType === Dom.elementType) {
-                MEPH.Array((x.querySelectorAll(selector))).forEach(function (x) {
+                MEPH.Array((x.querySelectorAll(selector))).foreach(function (x) {
                     if (x) {
                         result.push(x);
                     }

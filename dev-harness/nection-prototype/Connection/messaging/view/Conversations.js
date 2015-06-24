@@ -43,7 +43,7 @@
         var me = this;
         var data = me.getDomEventArg(arguments);
         me.when.injected.then(function () {
-            me.$inj.stateService.set('CurrentConversation', { data: data });
+            me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, { data: data });
         }).then(function () {
             MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'chatmessage', path: 'chatmessage' });
         });

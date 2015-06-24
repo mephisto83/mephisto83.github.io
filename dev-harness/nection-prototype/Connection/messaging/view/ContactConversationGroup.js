@@ -54,6 +54,17 @@
         }).then(function () {
         });
     },
+    messageContact: function () {
+        var me = this;
+        if (me.currentContact) {
+            return me.$inj.messageService
+                .duolog(me.currentContact)
+                .then(function (conversation) {
+                    me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, { data: conversation });//, { data: data }
+                    MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'chatmessage', path: 'chatmessage' });
+                });
+        }
+    },
     setupGroupContacts: function () {
         var me = this,
             currentContact,
@@ -69,13 +80,10 @@
                 }
 
                 me.groupContacts = MEPH.util.Observable.observable(currentContacts.data);
-                // me.messages = MEPH.util.Observable.observable([]);
-                me.groupContacts.on('changed', me.onContactsChange.bind(me), me);
             }
             if (currentContact && currentContact.data) {
                 me.currentContact = currentContact.data;
             }
-            me.onContactsChange();
 
         }).catch(function () {
         }).then(function () {

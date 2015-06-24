@@ -1,28 +1,34 @@
 ﻿MEPH.define('Connection.service.MessageService', {
-    injections: ['rest', 'signalService', 'stateService', 'tokenService'],
+    injections: ['rest',
+        'signalService',
+        'overlayService',
+        'stateService',
+        'storage',
+        'tokenService'],
     mixins: {
         injectable: 'MEPH.mixins.Injections'
     },
     properties: {
+        serviceStorageKey: 'connection-message-service-storage-key'
     },
     initialize: function () {
         var me = this;
         me.mixins.injectable.init.apply(me);
         me.monitoredConversations = [];
         me.contactCardCollection = [];
-        //MEPH.subscribe('SIGNALRMESSAGE', function (envelope) {
-        //    if (envelope && envelope.message != null) {
 
-        //    }
-        //});
+        setInterval(function (x) {
+            me.updateMonitoredCards();
+        }, 60000);
 
         me.when.injected.then(function () {
             me.$inj.signalService.addCallbackFunction('broadcastMessageGroup', function (message, cardId, group, dateCreated) {
                 var groupConversation = me.monitoredConversations.first(function (x) {
                     return x.id === group;
                 });
-                var themessage = { cardId: cardId, message: message, dateCreated: dateCreated };
+                var themessage = { cardId: cardId, message: message, dateCreated: dateCreated, now: null };
                 me.updateMessage(themessage);
+                MEPH.util.Observable.observable(themessage);
                 groupConversation.messages.push(themessage);
             });
 
@@ -38,8 +44,8 @@
             if (conversation && conversation.messages) {
                 conversation.messages.forEach(function (message) {
                     me.updateMessage(message);
+                    MEPH.util.Observable.observable(message);
                 });
-
             }
         });
     },
@@ -49,6 +55,7 @@
         if (card) {
             message.name = card.name || (card.firstname + ' ' + card.lastname);
             message.profileimage = card.profileimage;
+            message.now = Date.now();
         }
     },
     getCard: function (id) {
@@ -70,6 +77,7 @@
                             return x === contact;
                         });
                     }
+                    MEPH.util.Observable.observable(card);
                     me.contactCardCollection.push(card);
                 }
             });
@@ -86,6 +94,7 @@
                 }).then(function (result) {
                     if (result.success && result.authorized) {
                         if (groupContacts) {
+                            MEPH.util.Observable.observable(contact);
                             groupContacts.push(contact);
                         }
                     }
@@ -93,6 +102,7 @@
             }
             else {
                 if (groupContacts) {
+                    MEPH.util.Observable.observable(contact);
                     groupContacts.push(contact);
                 }
             }
@@ -134,12 +144,29 @@
                         return m.id === message.id;
                     });
                     if (!existingMessage) {
+                        MEPH.util.Observable.observable(message);
                         existingConversation.messages.push(message);
                     }
                 });
             }
             else if (conversation.messages) {
                 existingConversation.messages = conversation.messages;
+            }
+            if (conversation.cards && existingConversation && existingConversation.cards) {
+                conversation.cards.forEach(function (message) {
+                    var existingMessage = existingConversation.cards.first(function (m) {
+                        return m.card === message.card;
+                    });
+                    if (!existingMessage) {
+                        MEPH.util.Observable.observable(message);
+                        existingConversation.cards.push(message);
+                    }
+                });
+                existingConversation.cards.removeWhere(function (contact) {
+                    return conversation.cards.some(function (m) {
+                        return m.card === contact.card;
+                    });
+                });
             }
             existingConversation.messages = existingConversation.messages || MEPH.util.Observable.observable([]);
             existingConversation.messages.sort(function (x, y) {
@@ -152,6 +179,7 @@
                 conversation.messages.sort(function (x, y) {
                     return new Date(x.dateCreated).getTime() - new Date(y.dateCreated).getTime();
                 });
+            MEPH.util.Observable.observable(conversation);
             me.monitoredConversations.push(conversation);
         }
         return conversation;
@@ -165,35 +193,64 @@
         return me.monitoredConversations.first(function (x) { return x.id === id; });
     },
     getConversations: function (conversationList) {
-        var me = this;
+        var me = this, err;
         me.when.injected.then(function () {
-            return me.getMessageToken().then(function (token) {
-                me.$inj.rest.nocache().addPath('messages/groups').get().then(function (res) {
-                    if (res && res.success && res.authorized) {
-                        if (res.groups) {
-                            res.groups.foreach(function (x) {
-                                x.card1 = x.cards.first();
-                                x.card2 = x.cards.nth(2);
-                                x.card3 = x.cards.nth(3);
-                                if (x.userCardId) {
-                                    me.sendMessage('addConnection', token, x.userCardId, x.id);
-                                }
-                                me.collectCards(x.cards);
-                                me.updateMonitoredCards();
-                            });
-                            conversationList.pump(function (skip, take) {
-                                return res.groups.subset(skip, skip + (take || 15));
-                            });
-                            conversationList.unshift.apply(conversationList, res.groups.subset(0, 1));
-
-                            res.groups.foreach(function (x) {
-                                me.monitorConversation(x);
-                            });
+            me.$inj.overlayService.open('get conversationts');
+            return me.$inj.storage.get(me.serviceStorageKey).then(function (res) {
+                if (res && res.groups) {
+                    me.$inj.overlayService.relegate('get conversationts');
+                    res.groups.foreach(function (x) {
+                        me.collectCards(x.cards);
+                        if (x.messages) {
+                            MEPH.util.Observable.observable(x.messages);
                         }
-                        conversationList.dump();
-                    }
+                    });
+                    me.updateMonitoredCards();
+                    res.groups.foreach(function (x) {
+                        me.monitorConversation(x);
+                    });
+                    conversationList.pump(function (skip, take) {
+                        return res.groups.subset(skip, skip + (take || 15));
+                    });
+                    conversationList.unshift.apply(conversationList, res.groups.subset(0, 1));
+                }
+                return me.getMessageToken().then(function (token) {
+                    return me.$inj.rest.nocache().addPath('messages/groups').get().then(function (res) {
+                        if (res && res.success && res.authorized) {
+                            if (res.groups) {
+                                res.groups.foreach(function (x) {
+                                    if (x.userCardId) {
+                                        me.sendMessage('addConnection', token, x.userCardId, x.id);
+                                    }
+                                    me.collectCards(x.cards);
+                                    if (x.messages) {
+                                        MEPH.util.Observable.observable(x.messages);
+                                    }
+                                });
+                                me.updateMonitoredCards();
+
+                                res.groups.foreach(function (x) {
+                                    me.monitorConversation(x);
+                                });
+
+                                conversationList.pump(function (skip, take) {
+                                    return res.groups.subset(skip, skip + (take || 15));
+                                });
+                                conversationList.unshift.apply(conversationList, res.groups.subset(0, 1));
+                                me.$inj.storage.set(me.serviceStorageKey, res);
+                            }
+                            conversationList.dump();
+                        }
+                    });
                 });
             });
+        }).catch(function (error) {
+            err = error;
+        }).then(function () {
+            me.$inj.overlayService.close('get conversationts');
+            if (err) {
+                throw err;
+            }
         });
     },
     sendMessage: function () {
@@ -276,7 +333,7 @@
                                 results.groups) {
                                 var group = results.groups.first();
                                 results.groups.foreach(function (group) {
-                                    group.messages = [];
+                                    group.messages = MEPH.util.Observable.observable([]);
                                     me.monitorConversation(group);
                                     me.sendMessage('addConnection', token, group.userCardId, group.id);
                                 });
@@ -289,24 +346,27 @@
     duolog: function (card) {
         var me = this;
         return me.when.injected.then(function () {
-            return me.getMessageToken().then(function (token) {
-                return me.$inj.rest.nocache().addPath('messages/duolog/{card}')
-                        .get()
-                        .then(function (results) {
-                            if (results &&
-                                results.success &&
-                                results.authorized &&
-                                results.groups) {
-                                var group = results.groups.first();
-                                results.groups.foreach(function (group) {
-                                    group.messages = [];
-                                    me.monitorConversation(group);
-                                    me.sendMessage('addConnection', token, group.userCardId, group.id);
-                                });
-                                return me.getConversationById(group.id);
-                            }
-                        });
-            });
+            if (card) {
+                return me.createConversation([card.card]);
+            }
+            //return me.getMessageToken().then(function (token) {
+            //    return me.$inj.rest.nocache().addPath('messages/duolog/{card}')
+            //            .get()
+            //            .then(function (results) {
+            //                if (results &&
+            //                    results.success &&
+            //                    results.authorized &&
+            //                    results.groups) {
+            //                    var group = results.groups.first();
+            //                    results.groups.foreach(function (group) {
+            //                        group.messages = [];
+            //                        me.monitorConversation(group);
+            //                        me.sendMessage('addConnection', token, group.userCardId, group.id);
+            //                    });
+            //                    return me.getConversationById(group.id);
+            //                }
+            //            });
+            //});
         });
     }
 

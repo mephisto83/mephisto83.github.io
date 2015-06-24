@@ -61,5 +61,6 @@ MEPH.define('MEPH.button.Button', {
             button = me.getButtonDom();
         evnt.stopPropagation();
         button.dispatchEvent(MEPH.createEvent(MEPH.button.Button.buttonClickEvent, { evt: evnt }));
+        button.dispatchEvent(MEPH.createEvent('btn-click', { evt: evnt }));
     }
 });

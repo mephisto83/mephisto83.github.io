@@ -7,19 +7,35 @@ MEPH.define('Connection.application.Converters', {
     statics: {
         Names: function (obj) {
             var res = [];
-            if (obj) {
+            if (obj && obj.cards) {
 
-                for (var i = 0 ; i < 4 ; i++) {
-                    if (obj['card' + i] && obj['card' + i].name) {
-                        res.push(obj['card' + i].name);
-                    }
-                }
+                return obj.cards.select(function (x) { return x.name; }).join();
+                //for (var i = 0 ; i < 4 ; i++) {
+                //    if (obj['card' + i] && obj['card' + i].name) {
+                //        res.push(obj['card' + i].name);
+                //    }
+                //}
             }
             return res.join();
         },
         Hide: function (val) {
             if (val) return '';
             return 'display:none;';
+        },
+        Card1: function (val) {
+            var temp = val.cards.nth(1) || {};
+
+            return temp.profileimage;
+        },
+        Card2: function (val) {
+            var temp = val.cards.nth(2) || {};
+
+            return temp.profileimage;
+        },
+        Card3: function (val) {
+            var temp = val.cards.nth(3) || {};
+
+            return temp.profileimage;
         },
         ConversationDate: function (val) {
             if (val === null) return '';

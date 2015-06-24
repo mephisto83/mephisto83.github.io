@@ -97,6 +97,11 @@ MEPH.define('MEPH.list.View', {
         var me = this;
         if (obj && Array.isArray(obj) && obj.un) {
             obj.un(null, me);
+            obj.forEach(function (x) {
+                if (typeof x === 'object' && x.un) {
+                    x.un(null, me);
+                }
+            });
         }
     },
     /**
@@ -265,6 +270,12 @@ MEPH.define('MEPH.list.View', {
         if (options.removed.length) {
             me.clearList();
 
+            options.removed.forEach(function (x) {
+                if (typeof x === 'object' && x.on) {
+                    x.un(null, me);
+                }
+            });
+
             html = me.source.select(function (t, index) {
                 var res = me.renderItem(t, index);
                 div.innerHTML = res.html;
@@ -281,15 +292,37 @@ MEPH.define('MEPH.list.View', {
         else {
             //var frag = document.createDocumentFragment();
             //frag.appendChild(div)
+            var lastelement;
             options.added.select(function (t, index) {
                 var res = me.renderItem(t);
                 div.innerHTML = res.html;
                 var ch = div.firstElementChild;
                 ch.setAttribute('data-item-index', me.source.indexOf(t))
                 me.listelement.appendChild(ch);
+                lastelement = ch;
+                if (typeof t === 'object' && t.on) {
+                    t.on('altered', me.updateItem.bind(me, t, { el: ch }), me);
+                }
             });
+            if (me.autoScroll && lastelement) {
+                // me.listwrapper.scrollTop = me.listwrapper.clientHeight + me.listwrapper.scrollHeight
+                lastelement.scrollIntoView({ block: "end", behavior: "smooth" })
+            }
         }
         me.onscroll();
+    },
+    updateItem: function (item, elObj, type, options) {
+        var me = this;
+        var index = me.source.indexOf(item);
+        var div = document.createElement('div');
+        var res = me.renderItem(item);
+        div.innerHTML = res.html;
+        var ch = div.firstElementChild;
+        ch.setAttribute('data-item-index', index);
+        MEPH.util.Dom.insertAfter(elObj.el, ch);
+        elObj.el.parentNode.removeChild(elObj.el);
+        elObj.el = ch;
+
     },
     onscroll: function () {
         var me = this,
@@ -332,264 +365,6 @@ MEPH.define('MEPH.list.View', {
             me.source.pump(me.source.length)
         }
     },
-    //addSomeMoreBack: function () {
-    //    var me = this,
-    //        addedDataItem,
-    //        toadd,
-    //        item;
-
-    //    item = me.removedSource.last();
-
-    //    if (item) {
-    //        me.updatePromise = me.updatePromise.then(function () {
-    //            return new Promise(function (r, f) {
-    //                item = me.removedSource.shift()
-
-    //                if (item && me.shouldRenderSomeBack()) {
-
-    //                    Promise.resolve().then(function () {
-    //                        return me.renderItem(item.item);
-    //                    }).then(function () {
-
-    //                        return me.positionAddDataItem(item.item, true);
-    //                    }).then(function () {
-
-    //                        var info = me.getBoundSourceInfo(item.item);
-    //                        if (info) {
-    //                            toadd = item.height;
-    //                            me.ensureListbuffer();
-    //                            me.changeBufferHeight(-toadd);
-    //                        }
-    //                        else {
-    //                            MEPH.Log('should be an object here.');
-    //                        }
-    //                    }).then(function () {
-    //                        r();
-    //                    });
-    //                }
-    //                else {
-    //                    if (item) {
-    //                        me.removedSource.unshift(item);
-    //                    }
-
-    //                    f('skip');
-    //                }
-    //            }).then(function () {
-    //                me.addSomeMoreBack();
-    //            }).catch(function (e) {
-    //                if (e !== 'skip') {
-    //                    MEPH.Log(e);
-    //                }
-    //            });
-    //        })
-    //    }
-    //},
-    //getInfoHeight: function (x) {
-    //    var toadd = 0;
-    //    x.renderResult.foreach(function (y) {
-    //        toadd += y.templateNode.sum(function (x) { return x.clientHeight; });
-    //    });
-    //    return toadd;
-    //},
-    //removeSomeFromBottom: function () {
-    //    var me = this,
-    //        item;
-
-    //    item = me.boundSource.last(function (x) {
-    //        return x.renderResult;
-    //    });
-
-    //    if (item) {
-
-    //        me.updatePromise = me.updatePromise.then(function () {
-    //            return new Promise(function (r, f) {
-    //                var res = me.boundSource.removeWhere(function (x) {
-    //                    return x === item;
-    //                });
-
-    //                if (res.length && me.shouldRemoveBottomItems()) {
-    //                    me.removeItem(item).then(function (x) {
-
-    //                        item.dataItem.un(null, me);
-    //                        item.dataItem.dun(null, me);
-    //                        x.renderResult.foreach(function (y) {
-    //                            y.classInstance.destroy();
-    //                        });
-    //                    }).then(function () {
-    //                        me.renderLater(item.dataItem, true);
-    //                        f('skip');
-    //                    });
-    //                }
-    //                else {
-    //                    me.boundSource.push(item);
-    //                    r();
-    //                }
-    //            }).then(function () {
-    //                me.removeSomeFromBottom();
-    //            }).catch(function (e) {
-    //                if (e !== 'skip') {
-    //                    MEPH.Log(e);
-    //                }
-    //            });
-    //        });
-    //    }
-    //},
-    //removeSomeMore: function () {
-    //    var me = this,
-    //        item;
-
-    //    item = me.boundSource.first(function (x) {
-    //        return x.renderResult;
-    //    });
-
-    //    if (item) {
-    //        me.boundSource.removeWhere(function (x) {
-    //            return x === item;
-    //        });
-
-    //        me.updatePromise = me.updatePromise.then(function () {
-    //            return new Promise(function (r, f) {
-    //                if (me.shouldRemoveItem()) {
-    //                    me.removeItem(item).then(function (x) {
-    //                        var toadd = me.getInfoHeight(x);
-
-    //                        item.dataItem.un(null, me);
-    //                        item.dataItem.dun(null, me);
-    //                        x.renderResult.foreach(function (y) {
-    //                            y.classInstance.destroy();
-    //                        });
-
-    //                        me.removedSource.unshift({
-    //                            item: item.dataItem,
-    //                            height: toadd
-    //                        });
-
-    //                        x.renderResult = null;
-    //                        me.ensureListbuffer();
-    //                        me.changeBufferHeight(toadd);
-
-    //                    }).then(function () {
-    //                        f('skip');
-    //                    });
-    //                }
-    //                else {
-    //                    r();
-    //                }
-    //            }).then(function () {
-    //                me.removeSomeMore();
-    //            }).catch(function (e) {
-    //                if (e !== 'skip') {
-    //                    MEPH.Log(e);
-    //                }
-    //            });
-    //        });
-    //    }
-
-    //},
-    //removeRenderLater: function (item) {
-    //    var me = this;
-    //    return me.renderLaterMagazine.removeWhere(function (x) {
-    //        return x.item === item;
-    //    }).length > 0;
-    //},
-
-    //changeBufferHeight: function (changeby) {
-    //    var me = this;
-    //    var size = MEPH.util.Style.size(me.$list_buffer_item);
-    //    MEPH.util.Style.height(me.$list_buffer_item, size.height + changeby);
-    //},
-    //ensureListbuffer: function () {
-    //    var me = this;
-    //    me.$list_buffer_item = me.$list_buffer_item || me.listelement.querySelector('[list-buffer-item]');
-    //    if (!me.$list_buffer_item) {
-    //        me.$list_buffer_item = document.createElement('li');
-    //        me.$list_buffer_item.setAttribute('list-buffer-item', 'list-buffer-item')
-    //        MEPH.util.Style.height(me.$list_buffer_item, 0);
-    //        MEPH.util.Dom.insertFirst(me.listelement, me.$list_buffer_item);
-    //    }
-    //},
-    //shouldRenderSomeBack: function () {
-    //    var me = this,
-    //          scrollTop,
-    //          clientHeight,
-    //          scrollHeight;
-    //    if (me.renderondemand === 'true') {
-    //        if (me.listelement) {
-    //            me.ensureListbuffer();
-    //            if (me.listwrapper) {
-    //                clientHeight = me.listwrapper.clientHeight;
-    //                scrollHeight = me.listelement.clientHeight - me.ondemandbuffer
-    //                var bufferheight = me.$list_buffer_item.clientHeight;
-
-    //                if (scrollHeight !== 0) {
-
-    //                    scrollTop = me.listwrapper.scrollTop;
-    //                    if (scrollTop < bufferheight + me.ondemandbuffer) {
-    //                        return true;
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //    return false;
-    //},
-    //shouldRemoveBottomItems: function () {
-    //    var me = this,
-    //                scrollTop,
-    //                clientHeight,
-    //                scrollHeight;
-    //    if (me.renderondemand === 'true') {
-    //        if (me.listelement) {
-    //            me.ensureListbuffer();
-    //            if (me.$list_buffer_item) {
-    //                if (me.listwrapper) {
-    //                    clientHeight = me.listwrapper.clientHeight;
-    //                    scrollHeight = me.listelement.clientHeight;
-    //                    var bufferheight = me.$list_buffer_item.clientHeight;
-
-    //                    if (scrollHeight !== 0) {
-
-    //                        scrollTop = me.listwrapper.scrollTop;
-    //                        if (scrollHeight - scrollTop - clientHeight > (me.ondemandbuffer * 2)) {
-    //                            return true;
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    return false;
-    //},
-    //shouldRemoveItem: function () {
-    //    var me = this,
-    //        scrollTop,
-    //        clientHeight,
-    //        scrollHeight;
-    //    if (me.renderondemand === 'true') {
-    //        if (me.listelement) {
-    //            me.ensureListbuffer();
-    //            if (me.$list_buffer_item) {
-    //                if (me.listwrapper) {
-    //                    clientHeight = me.listwrapper.clientHeight;
-    //                    scrollHeight = me.listelement.clientHeight;
-    //                    var bufferheight = me.$list_buffer_item.clientHeight;
-
-    //                    if (scrollHeight !== 0) {
-
-    //                        scrollTop = me.listwrapper.scrollTop;
-    //                        if (scrollTop > clientHeight + bufferheight + (me.ondemandbuffer / 2)) {
-
-    //                            return true;
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    return false;
-    //},
     shouldRenderItem: function () {
         var me = this,
             scrollTop,

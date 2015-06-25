@@ -3,6 +3,8 @@
         <listview data-bind='"source": "v$.conversations"'
                   prevent-bounce="true"
                   meph-event-itemclick="v$.openConversation"
+                  custom-event-prevent="true"
+                  meph-event-remove-conversation="v$.removeMeFromConversation"
                   meph-data-renderondemand="true">
             <template name="Connection.template.Conversation">
             </template>

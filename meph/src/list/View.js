@@ -53,7 +53,7 @@ MEPH.define('MEPH.list.View', {
             var listItemEl = me.getListElement(evt);
             if (listItemEl) {
                 var index = parseFloat(listItemEl.getAttribute('data-item-index'));
-                var element = me.getFirstElement();
+                var element = me.getFirstElement(), prevent;
                 if (!evt.path) {
                     MEPH.util.Dom.generatePath(evt);
                 }
@@ -68,9 +68,12 @@ MEPH.define('MEPH.list.View', {
                         data: me.source[index],
                         index: index
                     }));
+                    prevent = true;
                 }
-                element.dispatchEvent(MEPH.createEvent('itemclick', { data: me.source[index], index: index }));
-                me.fire('itemclick', { data: me.source[index], index: index });
+                if (!(me.customEventPrevent === 'true' && prevent)) {
+                    element.dispatchEvent(MEPH.createEvent('itemclick', { data: me.source[index], index: index }));
+                    me.fire('itemclick', { data: me.source[index], index: index });
+                }
             }
         });
         me.great();

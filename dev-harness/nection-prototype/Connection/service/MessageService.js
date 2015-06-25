@@ -4,6 +4,8 @@
         'overlayService',
         'stateService',
         'storage',
+        'relationshipService',
+        'userService',
         'tokenService'],
     mixins: {
         injectable: 'MEPH.mixins.Injections'
@@ -14,25 +16,85 @@
     initialize: function () {
         var me = this;
         me.mixins.injectable.init.apply(me);
-        me.monitoredConversations = [];
+        me.$healthCheckPromise = Promise.resolve();
+        me.monitoredConversations = MEPH.util.Observable.observable([]);
         me.contactCardCollection = [];
+        me.temporarilyDeleted = [];
+        me.connected = false;
 
         setInterval(function (x) {
             me.updateMonitoredCards();
         }, 60000);
 
         me.when.injected.then(function () {
-            me.$inj.signalService.addCallbackFunction('broadcastMessageGroup', function (message, cardId, group, dateCreated) {
-                var groupConversation = me.monitoredConversations.first(function (x) {
-                    return x.id === group;
-                });
-                var themessage = { cardId: cardId, message: message, dateCreated: dateCreated, now: null };
-                me.updateMessage(themessage);
-                MEPH.util.Observable.observable(themessage);
-                groupConversation.messages.push(themessage);
+            //GroupStatus(string token, string cardId, IEnumerable<Guid> groups)
+            me.$inj.signalService.addCallbackFunction('broadcastGotCard', function (card) {
+                if (card) {
+                    me.collectCards([card]);
+                }
+            });
+            me.$inj.signalService.addCallbackFunction('broadcastConnection', function (connected) {
+                me.connected = connected === 'connected';
+            })
+            me.$inj.signalService.addCallbackFunction('broadcastGroupStatus', function (results) {
+                if (results) {
+                    var deletedGroups = results.where(function (x) {
+                        return x.Deleted;
+                    }).forEach(function (x) {
+                        if (x.Id) {
+                            me.removeFromConversationsById(x.Id);
+                        }
+                    });
+                }
+            });
+            me.$inj.signalService.addCallbackFunction('broadcastUpdates', function (results) {
+                if (results) {
+                    results.forEach(function (update) {
+                        switch (update.Type) {
+                            case "GroupContacts":
+                                me.updateMonitoredGroupCards(update);
+                                break;
+                        }
+                    });
+                }
+            });
+            me.$inj.signalService.addCallbackFunction('broadcastMessageGroup', function (message, cardId, group, dateCreated, clientId) {
+                var groupConversation = me.getConversationById(group);
+                if (groupConversation) {
+                    var themessage = {
+                        clientId: clientId,
+                        cardId: cardId,
+                        message: message,
+                        dateCreated: dateCreated,
+                        now: null
+                    };
+                    var localMessage = groupConversation.messages.first(function (x) {
+                        return x.clientId === themessage.clientId;
+                    });
+                    me.updateMessage(themessage);
+                    MEPH.util.Observable.observable(themessage);
+                    if (localMessage) {
+                        localMessage.dateCreated = dateCreated;
+                        localMessage.message = message;;
+                        localMessage.cardId = cardId;
+                    }
+                    else {
+                        groupConversation.messages.push(themessage);
+                    }
+                }
             });
 
         });
+    },
+    addConnection: function () {
+        var me = this;
+        return me.when.injected.then(function () {
+            return me.$inj.userService.getUserId().then(function (userId) {
+                return me.getMessageToken().then(function (token) {
+                    me.$inj.signalService.send.apply(me.$inj.signalService, ['addConnection', token, userId]);
+                });
+            });
+        })
     },
     makeSignalReady: function () {
         var me = this;
@@ -48,6 +110,33 @@
                 });
             }
         });
+    },
+    getGroupIds: function () {
+        var me = this;
+        return me.monitoredConversations.select(function (x) { return x.id; }).where();
+    },
+    removeFromConversationsById: function (id) {
+        var me = this;
+        var groupConversation = me.getConversationById(id);
+        if (groupConversation) {
+            me.monitoredConversations.removeWhere(function (x) { return x === groupConversation; });
+            me.temporarilyDeleted.removeWhere(function (x) { return x === groupConversation });
+        }
+    },
+    undeleteConversationById: function (id) {
+        var me = this;
+        var res = me.temporarilyDeleted.removeWhere(function (x) { return x.id === id });
+        if (res && res.length) {
+            me.monitoredConversations.push(res.first());
+        }
+    },
+    previewRemoveFromConversationsById: function (id) {
+        var me = this;
+        var groupConversation = me.getConversationById(id);
+        if (groupConversation) {
+            me.monitoredConversations.removeWhere(function (x) { return x === groupConversation; });
+            me.temporarilyDeleted.push(groupConversation);
+        }
     },
     updateMessage: function (message) {
         var me = this;
@@ -67,7 +156,7 @@
     collectCards: function (cards) {
         var me = this;
         if (cards) {
-            cards.foreach(function (card) {
+            cards.forEach(function (card) {
                 if (card) {
                     var contact = me.contactCardCollection.first(function (x) {
                         return x.card == card.card;
@@ -93,20 +182,22 @@
                     group: id
                 }).then(function (result) {
                     if (result.success && result.authorized) {
-                        if (groupContacts) {
-                            MEPH.util.Observable.observable(contact);
-                            groupContacts.push(contact);
-                        }
+                        me.addContactToGroupContactsArray(contact, groupContacts);
                     }
                 });
             }
             else {
-                if (groupContacts) {
-                    MEPH.util.Observable.observable(contact);
-                    groupContacts.push(contact);
-                }
+                me.addContactToGroupContactsArray(contact, groupContacts);
             }
         });
+    },
+    addContactToGroupContactsArray: function (contact, groupContacts) {
+        if (groupContacts) {
+            MEPH.util.Observable.observable(contact);
+            me.collectCards([contact]);
+            groupContacts.removeWhere(function (x) { return x.card === contact.card; });
+            groupContacts.push(contact);
+        }
     },
     removeContactFromConversation: function (contact, id, groupContacts) {
         var me = this;
@@ -130,59 +221,117 @@
             }
         });
     },
-    monitorConversation: function (conversation) {
+    removeMeFromConversation: function (id) {
         var me = this;
-        if (me.monitoredConversations.some(function (x) { return x.id === conversation.id; })) {
-
-            var existingConversation = me.monitoredConversations.first(function (x) {
-                return x.id === conversation.id;
-            });
-
-            if (conversation.messages && existingConversation && existingConversation.messages) {
-                conversation.messages.foreach(function (message) {
-                    var existingMessage = existingConversation.messages.first(function (m) {
-                        return m.id === message.id;
-                    });
-                    if (!existingMessage) {
-                        MEPH.util.Observable.observable(message);
-                        existingConversation.messages.push(message);
+        return me.when.injected.then(function () {
+            me.previewRemoveFromConversationsById(id);
+            if (id) {//If saved in the server
+                return me.$inj.rest.addPath('messages/remove/me/from/{group}').get({
+                    group: id
+                }).then(function (result) {
+                    if (result.success && result.authorized) {
+                        me.removeFromConversationsById(id);
+                    }
+                    else {
+                        me.undeleteConversationById(id);
                     }
                 });
             }
-            else if (conversation.messages) {
-                existingConversation.messages = conversation.messages;
-            }
-            if (conversation.cards && existingConversation && existingConversation.cards) {
-                conversation.cards.forEach(function (message) {
-                    var existingMessage = existingConversation.cards.first(function (m) {
-                        return m.card === message.card;
-                    });
-                    if (!existingMessage) {
-                        MEPH.util.Observable.observable(message);
-                        existingConversation.cards.push(message);
-                    }
-                });
-                existingConversation.cards.removeWhere(function (contact) {
-                    return conversation.cards.some(function (m) {
-                        return m.card === contact.card;
-                    });
+            else {// If not saved just remove from the conversations.
+                groupContacts.removeWhere(function (x) {
+                    return x.card === contact.card;
                 });
             }
-            existingConversation.messages = existingConversation.messages || MEPH.util.Observable.observable([]);
-            existingConversation.messages.sort(function (x, y) {
-                return new Date(x.dateCreated).getTime() - new Date(y.dateCreated).getTime();
+        });
+    },
+    updateMonitoredGroupCards: function (update) {
+        var me = this;
+        var conversation = me.getConversationById(update.Group);
+        var contactsForConversation = update.UpdatedList.select(function (x) {
+            return me.getCard(x) || false;
+        }).where();
+
+        var toFind = update.UpdatedList.where(function (x) {
+            return !me.getCard(x);
+        });
+
+        var all = toFind.select(function (t) {
+            return me.$inj.relationshipService.getCard(t);
+        });
+        if (all.length) {
+
+            Promise.all(all).then(function (res) {
+                me.collectCards(res);
+                if (res.length) {
+                    me.updateMonitoredGroupCards(update);
+                }
             });
-            return existingConversation;
         }
         else {
-            if (conversation.messages)
-                conversation.messages.sort(function (x, y) {
+            conversation.contacts.dump();
+            conversation.contacts.push.apply(conversation.contacts, contactsForConversation);
+        }
+    },
+    monitorConversation: function (conversation) {
+        var me = this, result = [];
+        var res = MEPH.util.Array.convert(arguments).where(function (conversation) {
+            if (me.monitoredConversations.some(function (x) { return x.id === conversation.id; })) {
+
+                var existingConversation = me.monitoredConversations.first(function (x) {
+                    return x.id === conversation.id;
+                });
+
+                if (conversation.messages && existingConversation && existingConversation.messages) {
+                    conversation.messages.foreach(function (message) {
+                        var existingMessage = existingConversation.messages.first(function (m) {
+                            return m.id === message.id;
+                        });
+                        if (!existingMessage) {
+                            MEPH.util.Observable.observable(message);
+                            existingConversation.messages.push(message);
+                        }
+                    });
+                }
+                else if (conversation.messages) {
+                    existingConversation.messages = conversation.messages;
+                }
+                if (conversation.cards && existingConversation && existingConversation.cards) {
+                    conversation.cards.forEach(function (message) {
+                        var existingMessage = existingConversation.cards.first(function (m) {
+                            return m.card === message.card;
+                        });
+                        if (!existingMessage) {
+                            MEPH.util.Observable.observable(message);
+                            existingConversation.cards.push(message);
+                        }
+                    });
+                    existingConversation.cards.removeWhere(function (contact) {
+                        return !conversation.cards.some(function (m) {
+                            return m.card === contact.card;
+                        });
+                    });
+                }
+                existingConversation.messages = existingConversation.messages || MEPH.util.Observable.observable([]);
+                existingConversation.messages.sort(function (x, y) {
                     return new Date(x.dateCreated).getTime() - new Date(y.dateCreated).getTime();
                 });
-            MEPH.util.Observable.observable(conversation);
-            me.monitoredConversations.push(conversation);
-        }
-        return conversation;
+                result.push(existingConversation);
+                return false;
+            }
+            else {
+                if (conversation.messages)
+                    conversation.messages.sort(function (x, y) {
+                        return new Date(x.dateCreated).getTime() - new Date(y.dateCreated).getTime();
+                    });
+                MEPH.util.Observable.observable(conversation);
+                result.push(conversation);
+                return conversation;
+            }
+        });
+
+        me.monitoredConversations.push.apply(me.monitoredConversations, res);
+
+        return result.length > 1 ? result : result[0] || null;
     },
     getMessageToken: function () {
         var me = this;
@@ -196,6 +345,11 @@
         var me = this, err;
         me.when.injected.then(function () {
             me.$inj.overlayService.open('get conversationts');
+            conversationList.pump(function (skip, take) {
+                skip = skip || 0;
+                return me.monitoredConversations.subset(skip, skip + (take || 15));
+            }, me.monitoredConversations);
+
             return me.$inj.storage.get(me.serviceStorageKey).then(function (res) {
                 if (res && res.groups) {
                     me.$inj.overlayService.relegate('get conversationts');
@@ -206,22 +360,14 @@
                         }
                     });
                     me.updateMonitoredCards();
-                    res.groups.foreach(function (x) {
-                        me.monitorConversation(x);
-                    });
-                    conversationList.pump(function (skip, take) {
-                        return res.groups.subset(skip, skip + (take || 15));
-                    });
-                    conversationList.unshift.apply(conversationList, res.groups.subset(0, 1));
+                    me.monitorConversation.apply(me, res.groups);
                 }
                 return me.getMessageToken().then(function (token) {
                     return me.$inj.rest.nocache().addPath('messages/groups').get().then(function (res) {
                         if (res && res.success && res.authorized) {
                             if (res.groups) {
                                 res.groups.foreach(function (x) {
-                                    if (x.userCardId) {
-                                        me.sendMessage('addConnection', token, x.userCardId, x.id);
-                                    }
+
                                     me.collectCards(x.cards);
                                     if (x.messages) {
                                         MEPH.util.Observable.observable(x.messages);
@@ -229,17 +375,10 @@
                                 });
                                 me.updateMonitoredCards();
 
-                                res.groups.foreach(function (x) {
-                                    me.monitorConversation(x);
-                                });
+                                me.monitorConversation.apply(me, res.groups);
 
-                                conversationList.pump(function (skip, take) {
-                                    return res.groups.subset(skip, skip + (take || 15));
-                                });
-                                conversationList.unshift.apply(conversationList, res.groups.subset(0, 1));
                                 me.$inj.storage.set(me.serviceStorageKey, res);
                             }
-                            conversationList.dump();
                         }
                     });
                 });
@@ -256,7 +395,14 @@
     sendMessage: function () {
         var me = this, args = arguments;
         return me.makeSignalReady().then(function () {
-            return me.$inj.signalService.send.apply(me.$inj.signalService, args);
+            if (me.connected) {
+                return me.$inj.signalService.send.apply(me.$inj.signalService, args);
+            }
+            else {
+                return me.addConnection().then(function () {
+                    return me.$inj.signalService.send.apply(me.$inj.signalService, args);
+                });
+            }
         });
     },
     send: function (val, chatSession) {
@@ -285,11 +431,39 @@
                 var session = me.getConversationById(chatSession.id);
                 if (session.userCardId) {
                     me.makeSignalReady().then(function () {
-                        return me.sendMessage('sendGroup', token, val, session.userCardId, chatSession.id);
+                        var clientId = MEPH.GUID();
+                        var themessage = {
+                            clientId: clientId,
+                            cardId: session.userCardId,
+                            message: val,
+                            dateCreated: null,
+                            now: null
+                        };
+                        var convo = me.getConversationById(chatSession.id);
+                        if (convo) {
+
+                            MEPH.util.Observable.observable(themessage);
+                            me.updateMessage(themessage);
+                            convo.messages.push(themessage);
+                        }
+                        return me.sendMessage('sendGroup', token, val, session.userCardId, chatSession.id, clientId);
                     });
                 }
                 session.messages = session.messages || MEPH.util.Observable.observable([]);
             });
+    },
+    healthCheck: function () {
+        var me = this;
+        me.$healthCheckPromise = me.$healthCheckPromise.then(function () {
+            return me.when.injected.then(function () {
+                return me.$inj.userService.getUserId().then(function (userId) {
+                    return me.getMessageToken().then(function (token) {
+                        return me.sendMessage('groupStatus', token, userId, me.getGroupIds());
+                    });
+                });
+            }).catch(function () {
+            });
+        });
     },
     openConversation: function (conversation, fetch, start) {
         var me = this;
@@ -335,7 +509,6 @@
                                 results.groups.foreach(function (group) {
                                     group.messages = MEPH.util.Observable.observable([]);
                                     me.monitorConversation(group);
-                                    me.sendMessage('addConnection', token, group.userCardId, group.id);
                                 });
                                 return me.getConversationById(group.id);
                             }
@@ -349,24 +522,6 @@
             if (card) {
                 return me.createConversation([card.card]);
             }
-            //return me.getMessageToken().then(function (token) {
-            //    return me.$inj.rest.nocache().addPath('messages/duolog/{card}')
-            //            .get()
-            //            .then(function (results) {
-            //                if (results &&
-            //                    results.success &&
-            //                    results.authorized &&
-            //                    results.groups) {
-            //                    var group = results.groups.first();
-            //                    results.groups.foreach(function (group) {
-            //                        group.messages = [];
-            //                        me.monitorConversation(group);
-            //                        me.sendMessage('addConnection', token, group.userCardId, group.id);
-            //                    });
-            //                    return me.getConversationById(group.id);
-            //                }
-            //            });
-            //});
         });
     }
 

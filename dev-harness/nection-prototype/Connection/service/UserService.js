@@ -2,12 +2,14 @@
     properties: {
         loggedin: false,
         $promise: null,
-        $maxNumberOfRefreshAttempts: 10
+        $maxNumberOfRefreshAttempts: 10,
+        refreshTokenKey: 'connectino-service-refresh-token',
+        userIdKey: 'connection-serivce-userid-key'
     },
     mixins: {
         injectable: 'MEPH.mixins.Injections'
     },
-    injections: ['rest', 'identityProvider'],
+    injections: ['rest', 'identityProvider', 'storage'],
     initialize: function () {
         var me = this;
         MEPH.Events(me);
@@ -129,14 +131,23 @@
             });
 
             return me.$inj.rest.nocache().addPath('account/merge').post($providers).then(function (res) {
-                debugger
                 if (res.success) {
                     MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'main', path: '/main' });
+                }
+                else {
+                    debugger
                 }
             }).catch(function (error) {
                 debugger;
             })
         });
+    },
+    setHeaders: function (result) {
+        var me = this;
+        me.$inj.rest.setHeader('mvc-connection.ticket', result.token);
+        me.$inj.rest.setHeader('contactId', result.contactId);
+        me.setUserId(result.contactId);
+        me.$unsuccessfulRefresh = 0;
     },
     scheduleTokenRefresh: function (response) {
         var me = this;
@@ -147,10 +158,8 @@
             me.$inj.rest.nocache().addPath('refresh/token').get().then(function (result) {
                 me.$tokenResfresh = null;
                 if (result.success && result.authorized) {
-                    me.$inj.rest.setHeader('mvc-connection.ticket', result.token);
-                    me.$inj.rest.setHeader('contactId', result.contactId);
+                    me.setHeaders(result);
                     me.scheduleTokenRefresh(result);
-                    me.$unsuccessfulRefresh = 0;
                 }
                 else {
                     me.$unsuccessfulRefresh = me.$unsuccessfulRefresh || 0;
@@ -159,11 +168,54 @@
                         me.scheduleTokenRefresh(response);
                     }
                     else {
-                        MEPH.publish(Connection.constant.Constants.ConnectionLost, {});
+                        me.getUserId().then(function (userid) {
+                            me.getRefreshToken().then(function (refreshtoken) {
+                                me.$inj.rest.nocache().addPath('refresh/token').post({
+                                    id: userid,
+                                    refreshtoken: refreshtoken
+                                }).then(function (result) {
+                                    if (result.success && result.authorized) {
+                                        me.setHeaders(result);
+                                        me.scheduleTokenRefresh(result);
+                                    }
+                                });
+
+                                MEPH.publish(Connection.constant.Constants.ConnectionLost, {});
+                            });
+                        });
                     }
                 }
             })
         }, (response.expiration * .7) || 10000)//
+    },
+    setRefreshToken: function (token) {
+        var me = this;
+        me.$refreshToken = token;
+        me.when.injected.then(function () {
+            me.$inj.storage.set(me.refreshTokenKey, token);
+        })
+    },
+    getRefreshToken: function () {
+        var me = this;
+        if (me.$refreshToken) {
+            return Promise.resolve(me.$refreshToken);
+        }
+        return me.when.injected.then(function () {
+            return me.$inj.storage.get(me.refreshTokenKey);
+        })
+    },
+    setUserId: function (val) {
+        var me = this;
+        me.$userId = val;
+        return me.when.injected.then(function () {
+            return me.$inj.storage.set(me.userIdKey, val);
+        })
+    },
+    getUserId: function () {
+        var me = this;
+        return me.when.injected.then(function () {
+            return me.$inj.storage.get(me.userIdKey);
+        })
     },
     /**
      * Checks the users credentials.
@@ -186,6 +238,8 @@
                 if (res && res.authorized) {
                     me.$inj.rest.setHeader('mvc-connection.ticket', res.token);
                     me.$inj.rest.setHeader('contactId', res.contactId);
+                    me.setUserId(res.contactId);
+                    me.setRefreshToken(res.refreshToken);
                     //Expires 
                     // new Date(Date.now()+res.expiration)
                     me.scheduleTokenRefresh(res);
@@ -193,7 +247,10 @@
                     if (provider.online && !me.hasLoggedIn) {
                         MEPH.publish(Connection.constant.Constants.ConnectionLogIn, { provider: provider });
                         MEPH.Log('openning main view');
-                        MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'main', path: '/main' });
+                        MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
+                            viewId: 'main',
+                            path: '/main'
+                        });
                         me.hasLoggedIn = true;
                         return true;
                     }

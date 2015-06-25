@@ -318,6 +318,31 @@
 
         return res;
     },
+    getCard: function (card) {
+        var me = this;
+        return new Promise(function (resolve, fail) {
+
+            var res = me.convertedContactCards ? me.convertedContactCards.first(function (x) { return x.card === card; }) : false;
+            if (res) {
+                resolve(res);
+            }
+            res = me.serverCachedSearchResults ? me.serverCachedSearchResults.first(function (x) {
+                return x.card === card;
+            }) : false;
+            if (res) {
+                resolve(res);
+            }
+
+            return me.$inj.rest.addPath('relationship/get/card/{id}').get({ id: card }).then(function (res) {
+                if (res.success && res.authorized) {
+                    resolve(res.card);
+                }
+                else { fail() }
+            }).catch(function () {
+                fail();
+            });
+        });
+    },
     composeCards: function (source) {
         var me = this;
 

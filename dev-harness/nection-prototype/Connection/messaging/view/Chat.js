@@ -115,6 +115,8 @@
                     me.chatSession = session;
                     me.messages = MEPH.util.Observable.observable(session.messages);
                     me.chatSession.contacts = MEPH.util.Observable.observable(me.chatSession.contacts || []);
+                    me.chatSession.contacts.un(null, me);
+                    me.chatSession.contacts.on('changed', me.onContactsChange.bind(me), me);
                     me.onContactsChange();
                 });
             }

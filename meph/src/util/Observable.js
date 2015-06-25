@@ -540,6 +540,23 @@ MEPH.define('MEPH.util.Observable', {
                         writable: true,
                         value: function (a, b) {
                             var key = ' $pump';
+                            var me = this;
+                            var c = b;
+                            var key2 = '$ attached array';
+                            if (Array.isArray(b)) {
+                                MEPH.util.Observable.observable(c);
+
+
+                                if (this[key2]) {
+                                    this[key2].un(null, me);
+                                }
+
+                                c.on('changed', function () {
+                                    me.pump(me.length);
+                                }, me);
+
+                                this[key2] = c;
+                            }
                             if (typeof a === 'function') {
                                 //setting pump getter
                                 this[key] = a;

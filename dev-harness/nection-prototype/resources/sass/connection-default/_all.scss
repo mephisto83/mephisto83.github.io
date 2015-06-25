@@ -295,7 +295,13 @@ $space-between-fields: 50px;
     body[color-palette='#{$palette}'] {
         &.mobile-bottom-menu[color-palette='#{$palette}'] {
 
+            .conversation-item-button-panel {
+                right: 15px;
+                position: absolute;
+                top: 0;
+            }
 
+             
             .meph-activity-view-footer {
                 bottom: 50px;
             }
@@ -564,6 +570,7 @@ $space-between-fields: 50px;
                 margin-left: $margin-stardard;
             }
 
+            
             &:nth-child(2n) {
                 background-color: transparentize($color6, 0.78);
 

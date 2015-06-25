@@ -32,6 +32,7 @@ MEPH.define('MEPH.list.List', {
         intelligentScroll: false,
         renderingInProgress: false,
         ondemandbuffer: 1000,
+        customEventPrevent: false,
         preventBounce: false,
         autoScroll: false
     },
@@ -62,6 +63,12 @@ MEPH.define('MEPH.list.List', {
             object: me,
             asValue: true,
             path: 'autoScroll'
+        });
+
+        me.addTransferableAttribute('customEventPrevent', {
+            object: me,
+            asValue: true,
+            path: 'customEventPrevent'
         });
     },
     onLoaded: function () {

@@ -53,7 +53,7 @@ MEPH.define('MEPH.mobile.services.MobileServices', {
                 if (serviceConfig['static']) {
                     result = cache.first(function (x) { return x.name === serviceConfig.name; });
                     if (result) {
-                        return Promise.resolve().then(function () { return result.instance; });
+                        return Promise.resolve(result.instance);
                     }
                 }
                 return MEPH.MobileServices.createInstance(serviceConfig).then(function (instance) {

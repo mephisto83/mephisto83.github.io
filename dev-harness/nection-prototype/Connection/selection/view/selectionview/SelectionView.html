@@ -1,0 +1,20 @@
+﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "activityheader", "before" : true -->
+<div class="row">
+    <div class="col-xs-2 button-search-combo-button">
+        <mephbutton meph-event-click="c$.goBack" class="connection-top-menu-button">
+            <i class="fa fa-backward"></i>
+        </mephbutton>
+    </div>
+    <div class="col-xs-12 button-search-combo-search">
+        <search
+                mephid="search"
+                meph-event-keypressed="c$.searchContacts, c$.search.value"
+                placeholder="Search..."
+                meph-data-value="c$.selectedCardValue">
+            <template name="Connection.template.SelectContactListItem">
+                <div>Select Item</div>
+            </template>
+        </search>
+    </div>
+</div>
+<!-- "instruction": true, "name" : "injectop", "close": true -->

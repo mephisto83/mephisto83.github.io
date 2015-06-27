@@ -95,7 +95,7 @@
                                     });
                                     me.$inj.stateService.set(Connection.constant.Constants.CurrentConversationContacts, {
                                         groupId: conversation.id,
-                                        data: conversation.contacts
+                                        data: conversation.cards
                                     });
                                 });
                         }

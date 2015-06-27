@@ -19,7 +19,6 @@
     },
     onLoaded: function () {
         var me = this;
-        me.conversations = MEPH.util.Observable.observable([]);
 
     },
     afterShow: function () {
@@ -33,7 +32,7 @@
             return me.when.injected.then(function () {
                 me.$inj.overlayService.open('openining conversations');
                 me.$inj.overlayService.relegate('openining conversations');
-                return me.$inj.messageService.getConversations(me.conversations);
+                return me.$inj.messageService.getConversations({ ref: me, property: 'conversations' });
             }).catch(function () {
             }).then(function () {
                 me.$aftershow = null;

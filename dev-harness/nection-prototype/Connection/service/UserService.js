@@ -2,14 +2,18 @@
     properties: {
         loggedin: false,
         $promise: null,
-        $maxNumberOfRefreshAttempts: 10,
         refreshTokenKey: 'connectino-service-refresh-token',
         userIdKey: 'connection-serivce-userid-key'
     },
     mixins: {
         injectable: 'MEPH.mixins.Injections'
     },
-    injections: ['rest', 'identityProvider', 'storage'],
+    injections: [
+        'rest',
+        'identityProvider',
+        'storage',
+        'tokenService'
+    ],
     initialize: function () {
         var me = this;
         MEPH.Events(me);
@@ -142,81 +146,6 @@
             })
         });
     },
-    setHeaders: function (result) {
-        var me = this;
-        me.$inj.rest.setHeader('mvc-connection.ticket', result.token);
-        me.$inj.rest.setHeader('contactId', result.contactId);
-        me.setUserId(result.contactId);
-        me.$unsuccessfulRefresh = 0;
-    },
-    scheduleTokenRefresh: function (response) {
-        var me = this;
-        if (me.$tokenResfresh) {
-            return;
-        }
-        me.$tokenResfresh = setTimeout(function () {
-            me.$inj.rest.nocache().addPath('refresh/token').get().then(function (result) {
-                me.$tokenResfresh = null;
-                if (result.success && result.authorized) {
-                    me.setHeaders(result);
-                    me.scheduleTokenRefresh(result);
-                }
-                else {
-                    me.$unsuccessfulRefresh = me.$unsuccessfulRefresh || 0;
-                    me.$unsuccessfulRefresh++;
-                    if (me.$unsuccessfulRefresh < me.$maxNumberOfRefreshAttempts) {
-                        me.scheduleTokenRefresh(response);
-                    }
-                    else {
-                        me.getUserId().then(function (userid) {
-                            me.getRefreshToken().then(function (refreshtoken) {
-                                me.$inj.rest.nocache().addPath('refresh/token').post({
-                                    id: userid,
-                                    refreshtoken: refreshtoken
-                                }).then(function (result) {
-                                    if (result.success && result.authorized) {
-                                        me.setHeaders(result);
-                                        me.scheduleTokenRefresh(result);
-                                    }
-                                });
-
-                                MEPH.publish(Connection.constant.Constants.ConnectionLost, {});
-                            });
-                        });
-                    }
-                }
-            })
-        }, (response.expiration * .7) || 10000)//
-    },
-    setRefreshToken: function (token) {
-        var me = this;
-        me.$refreshToken = token;
-        me.when.injected.then(function () {
-            me.$inj.storage.set(me.refreshTokenKey, token);
-        })
-    },
-    getRefreshToken: function () {
-        var me = this;
-        if (me.$refreshToken) {
-            return Promise.resolve(me.$refreshToken);
-        }
-        return me.when.injected.then(function () {
-            return me.$inj.storage.get(me.refreshTokenKey);
-        })
-    },
-    setUserId: function (val) {
-        var me = this;
-        me.$userId = val;
-        return me.when.injected.then(function () {
-            return me.$inj.storage.set(me.userIdKey, val);
-        })
-    },
-    getUserId: function () {
-        var me = this;
-        return me.when.injected.then(function () {
-            return me.$inj.storage.get(me.userIdKey);
-        })
-    },
     /**
      * Checks the users credentials.
      **/
@@ -238,11 +167,7 @@
                 if (res && res.authorized) {
                     me.$inj.rest.setHeader('mvc-connection.ticket', res.token);
                     me.$inj.rest.setHeader('contactId', res.contactId);
-                    me.setUserId(res.contactId);
-                    me.setRefreshToken(res.refreshToken);
-                    //Expires 
-                    // new Date(Date.now()+res.expiration)
-                    me.scheduleTokenRefresh(res);
+                    me.$inj.tokenService.start(res);
                     provider.online = res.success;
                     if (provider.online && !me.hasLoggedIn) {
                         MEPH.publish(Connection.constant.Constants.ConnectionLogIn, { provider: provider });

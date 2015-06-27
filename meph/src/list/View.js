@@ -312,7 +312,7 @@ MEPH.define('MEPH.list.View', {
                 lastelement.scrollIntoView({ block: "end", behavior: "smooth" })
             }
         }
-        me.onscroll();
+        me.onscroll(true);
     },
     updateItem: function (item, elObj, type, options) {
         var me = this;
@@ -327,7 +327,7 @@ MEPH.define('MEPH.list.View', {
         elObj.el = ch;
 
     },
-    onscroll: function () {
+    onscroll: function (skipEvents) {
         var me = this,
             scrollTop,
             scrollHeight;
@@ -340,6 +340,23 @@ MEPH.define('MEPH.list.View', {
 
             }, 200);
         }
+        if (skipEvents !== true)
+            if (me.listwrapper.scrollHeight === me.listwrapper.clientHeight + me.listwrapper.scrollTop) {
+                if (!me.$scrolledToTop) {
+                    me.$scrolledToTop = true;
+                    me.listwrapper.dispatchEvent(MEPH.createEvent('scrolled-top', {}));
+                }
+            }
+            else if (me.listwrapper.scrollTop === 0) {
+                if (!me.$scrolledToBottom) {
+                    me.$scrolledToBottom = true;
+                    me.listwrapper.dispatchEvent(MEPH.createEvent('scrolled-bottom', {}));
+                }
+            }
+            else {
+                me.$scrolledToTop = false;
+                me.$scrolledToBottom = false;
+            }
         me.$onscroll();
     },
     renderLater: function (addedDataItem, shift) {

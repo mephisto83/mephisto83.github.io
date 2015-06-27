@@ -7,7 +7,7 @@ MEPH.define('Connection.application.Converters', {
     statics: {
         Names: function (obj) {
             var res = [];
-            if (obj && obj.cards) {
+            if (obj && obj.cards && obj.cards.select) {
 
                 return obj.cards.select(function (x) { return x.name; }).join();
                 //for (var i = 0 ; i < 4 ; i++) {
@@ -16,23 +16,32 @@ MEPH.define('Connection.application.Converters', {
                 //    }
                 //}
             }
-            return res.join();
+            return '';
         },
         Hide: function (val) {
             if (val) return '';
             return 'display:none;';
         },
         Card1: function (val) {
+            if (!val || !val.cards || !val.cards.nth) {
+                return ''
+            }
             var temp = val.cards.nth(1) || {};
 
             return temp.profileimage;
         },
         Card2: function (val) {
+            if (!val || !val.cards || !val.cards.nth) {
+                return ''
+            }
             var temp = val.cards.nth(2) || {};
 
             return temp.profileimage;
         },
         Card3: function (val) {
+            if (!val || !val.cards || !val.cards.nth) {
+                return ''
+            }
             var temp = val.cards.nth(3) || {};
 
             return temp.profileimage;

@@ -21,6 +21,22 @@ if (!String.prototype.capitaliseFirstLetter) {
 }
 
 /**
+ * @method capitaliseFirstLetter
+ * Capitalises the first character of a string.
+ **/
+if (!String.prototype.lowerCaseFirstLetter) {
+    Object.defineProperty(String.prototype, 'lowerCaseFirstLetter', {
+        enumerable: false,
+        writable: true,
+        configurable: true,
+        value: function () {
+            var string = this;
+            return string.charAt(0).toLowerCase() + string.slice(1);
+        }
+    });
+}
+
+/**
  * @method startsWith
  * @returns {Boolean} true if string starts with false if otherwise.
  **/

@@ -34,37 +34,42 @@ MEPH.define('MEPH.notification.Service', {
                 me.messages.push(options);
         }
 
-        if (me.messages.length === 1) {
-            var notif = function () {
-                me.$queue = me.$queue.then(function () {
-                    return new Promise(function (resolve, fail) {
+        //        if (me.messages.length === 1) {
+        var notif = function () {
+            me.$queue = me.$queue.then(function () {
+                return new Promise(function (resolve, fail) {
+                    var options = me.messages.shift();
+                    me.currentOption = options || null;
+                    if (options) {
                         var template = MEPH.getTemplate('MEPH.notification.Notification');
 
-                        var options = me.messages.shift();
-                        me.currentOption = options;
-                        if (options) {
-                            var html = MEPH.util.Template.bindTemplate(template.template, options);
-                            me.div.innerHTML = html;
-                            el = me.div.firstElementChild;
-                            document.body.appendChild(el);
-                            setTimeout(function (el) {
-                                el.classList.add('remove-notification');
-                                setTimeout(function () {
+                        var html = MEPH.util.Template.bindTemplate(template.template, options);
+                        me.div.innerHTML = html;
+                        el = me.div.firstElementChild;
+                        document.body.appendChild(el);
+                        setTimeout(function (el) {
+                            el.classList.add('remove-notification');
+                            setTimeout(function () {
+                                try {
                                     if (el.parentNode) {
                                         el.parentNode.removeChild(el);
                                     }
-                                    resolve();
-                                }, 300);
-                                me.currentOption = null;
-                                if (me.messages.length) {
-                                    notif();
-                                }
-                            }.bind(me, el), me.timeout);
-                        }
-                    })
-                });
-            };
-            notif();
-        }
+                                } catch (e) { }
+                                resolve();
+                            }, 300);
+                            me.currentOption = null;
+                            if (me.messages.length) {
+                                notif();
+                            }
+                        }.bind(me, el), me.timeout);
+                    }
+                    else {
+                        resolve();
+                    }
+                })
+            });
+        };
+        notif();
+        //      }
     }
 });

@@ -37,6 +37,11 @@ MEPH.ready().then(function () {
                     type: 'MEPH.dialog.Service',
                     config: {}
                 },
+                sleepDetectionService: {
+                    'static': true,
+                    type: 'MEPH.service.SleepDetectionService',
+                    config: {}
+                },
                 tokenService: {
                     'static': true,
                     type: 'Connection.service.TokenService',

@@ -11,6 +11,7 @@
         FAILED_TO_GET_TOKEN_REFRESH: 'Failed to get the token refresh from server',
         CurrentConversation: 'CurrentConversation',
         CurrentConversationContact: 'CurrentConversationContact',
-        CurrentConversationContacts: 'CurrentConversationContacts'
+        CurrentConversationContacts: 'CurrentConversationContacts',
+        RefreshedToken: 'RefreshedToken'
     }
 })

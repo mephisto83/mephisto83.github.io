@@ -13,7 +13,7 @@
         'MEPH.input.MultilineText',
         'MEPH.list.View'],
     properties: {
-        contacts: null,
+        cards: null,
         memberNames: null,
         inputValue: null,
         messages: null,
@@ -28,11 +28,11 @@
         var me = this;
 
         me.canchange = true;
-        me.contacts = MEPH.util.Observable.observable([]);
+        me.cards = MEPH.util.Observable.observable([]);
     },
     enterText: function () {
         var me = this;
-        if (me.chatSession.contacts.length && me.inputValue) {
+        if (me.chatSession.cards.length && me.inputValue) {
             var input = me.inputValue;
             me.inputValue = '';
             me.canchange = false;
@@ -60,8 +60,8 @@
     },
     onContactsChange: function () {
         var me = this;
-        if (me.chatSession && me.chatSession.contacts) {
-            me.memberNames = 'To:' + me.chatSession.contacts.select(function (x) {
+        if (me.chatSession && me.chatSession.cards) {
+            me.memberNames = 'To:' + me.chatSession.cards.select(function (x) {
                 return x.name;
             }).join(', ');
         }
@@ -94,10 +94,10 @@
         var me = this,
             data = me.getDomEventArg(arguments);
 
-        if (!me.chatSession.contacts.some(function (x) {
+        if (!me.chatSession.cards.some(function (x) {
             return x.card === data.card;
         })) {
-            me.chatSession.contacts.push(data);
+            me.chatSession.cards.push(data);
             me.selectedContact = null;
             me.selectedCardValue = null;
         }
@@ -114,18 +114,18 @@
                 return me.$inj.messageService.openConversation(chatSession.data).then(function (session) {
                     me.chatSession = session;
                     me.messages = MEPH.util.Observable.observable(session.messages);
-                    me.chatSession.contacts = MEPH.util.Observable.observable(me.chatSession.contacts || []);
-                    me.chatSession.contacts.un(null, me);
-                    me.chatSession.contacts.on('changed', me.onContactsChange.bind(me), me);
+                    me.chatSession.cards = MEPH.util.Observable.observable(me.chatSession.cards || []);
+                    me.chatSession.cards.un(null, me);
+                    me.chatSession.cards.on('changed', me.onContactsChange.bind(me), me);
                     me.onContactsChange();
                 });
             }
             else {
                 me.chatSession = {
-                    contacts: MEPH.util.Observable.observable([])
+                    cards: MEPH.util.Observable.observable([])
                 };
                 me.messages = MEPH.util.Observable.observable([]);
-                me.chatSession.contacts.on('changed', me.onContactsChange.bind(me));
+                me.chatSession.cards.on('changed', me.onContactsChange.bind(me));
                 me.canchange = true;
                 me.onContactsChange();
             }
@@ -137,11 +137,11 @@
     gotoEditGroupView: function () {
         var me = this;
         //editconversationgroup
-        if (me.chatSession && me.chatSession.contacts) {
+        if (me.chatSession && me.chatSession.cards) {
             me.when.injected.then(function () {
                 me.$inj.stateService.set(Connection.constant.Constants.CurrentConversationContacts, {
                     groupId: me.chatSession.id,
-                    data: me.chatSession.contacts
+                    data: me.chatSession.cards
                 });
             }).then(function () {
                 MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'editconversationgroup', path: 'editconversationgroup' });

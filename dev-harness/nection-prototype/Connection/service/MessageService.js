@@ -2,10 +2,11 @@
     injections: ['rest',
         'signalService',
         'overlayService',
+        'sleepDetectionService',
         'stateService',
+        'notificationService',
         'storage',
         'relationshipService',
-        'userService',
         'tokenService'],
     mixins: {
         injectable: 'MEPH.mixins.Injections'
@@ -27,6 +28,26 @@
         }, 60000);
 
         me.when.injected.then(function () {
+
+            me.$inj.notificationService.notify({ message: 'Preparing sleep detection' });
+            me.$inj.sleepDetectionService.on('slept', function (type, args) {
+                var seconds = (Date.now() - args.lastTime) / 1000;
+                me.$inj.notificationService.notify({ message: 'The app fell asleep : ' + seconds + ' seconds' });
+                me.getMessagesInTheLast(seconds);
+            });
+
+            me.$inj.signalService.addCallbackFunction('invalidToken', function () {
+                me.$inj.notificationService.notify({ message: 'Token is invalid : ' + new Date(Date.now()).toLocaleTimeString() });
+                me.refreshToken();
+            });
+
+            MEPH.subscribe(Connection.constant.Constants.RefreshedToken, function () {
+                me.$inj.notificationService.notify({ message: 'Token is refreshed : ' + new Date(Date.now()).toLocaleTimeString() });
+            });
+
+            me.$inj.signalService.addCallbackFunction('broadcastMessages', function (messages) {
+                me.mergeMessagesIntoConversations(messages);
+            });
             //GroupStatus(string token, string cardId, IEnumerable<Guid> groups)
             me.$inj.signalService.addCallbackFunction('broadcastGotCard', function (card) {
                 if (card) {
@@ -58,12 +79,13 @@
                     });
                 }
             });
-            me.$inj.signalService.addCallbackFunction('broadcastMessageGroup', function (message, cardId, group, dateCreated, clientId) {
+            me.$inj.signalService.addCallbackFunction('broadcastMessageGroup', function (message, cardId, group, dateCreated, clientId, nextMessage) {
                 var groupConversation = me.getConversationById(group);
                 if (groupConversation) {
                     var themessage = {
                         clientId: clientId,
                         cardId: cardId,
+                        id: nextMessage.Id,
                         message: message,
                         dateCreated: dateCreated,
                         now: null
@@ -74,6 +96,7 @@
                     me.updateMessage(themessage);
                     MEPH.util.Observable.observable(themessage);
                     if (localMessage) {
+                        localMessage.id = nextMessage.Id;
                         localMessage.dateCreated = dateCreated;
                         localMessage.message = message;;
                         localMessage.cardId = cardId;
@@ -89,9 +112,19 @@
     addConnection: function () {
         var me = this;
         return me.when.injected.then(function () {
-            return me.$inj.userService.getUserId().then(function (userId) {
-                return me.getMessageToken().then(function (token) {
+            return me.$inj.tokenService.getUserId().then(function (userId) {
+                return me.getToken().then(function (token) {
                     me.$inj.signalService.send.apply(me.$inj.signalService, ['addConnection', token, userId]);
+                });
+            });
+        })
+    },
+    getMessagesInTheLast: function (seconds) {
+        var me = this;
+        return me.when.injected.then(function () {
+            return me.$inj.tokenService.getUserId().then(function (userId) {
+                return me.getToken().then(function (token) {
+                    me.$inj.signalService.send.apply(me.$inj.signalService, ['getMessages', token, userId, seconds ? seconds * 2 : 500]);
                 });
             });
         })
@@ -99,6 +132,39 @@
     makeSignalReady: function () {
         var me = this;
         return (me.$inj.signalService.isStarted() ? Promise.resolve() : me.$inj.signalService.start());
+    },
+    mergeMessagesIntoConversations: function (messages) {
+        var me = this;
+        MEPH.Log('Merge messages from being asleep.');
+        if (messages && messages.length) {
+            MEPH.Log(messages);
+
+            messages.forEach(function (message) {
+                var group = message.MessageGroup;
+                message = MEPH.clone(message);
+                var newmessage = {};
+                for (var i in message) {
+                    newmessage[i.lowerCaseFirstLetter()] = message[i];
+                }
+                MEPH.util.Observable.observable(newmessage);
+                var conversation = me.getConversationById(group);
+                if (conversation.messages) {
+                    var foundMessage = conversation.messages.first(function (x) {
+                        return x.id === message.Id;
+                    });
+                    if (!foundMessage) {
+                        conversation.messages.push(newmessage);
+                    }
+                    else {
+                        foundMessage.message = newmessage.message;
+                        foundMessage.dateCreated = newmessage.dateCreated;
+                    }
+                }
+                else {
+                    conversation.messages = MEPH.util.Observable.observable([newmessage]);
+                }
+            });
+        }
     },
     updateMonitoredCards: function () {
         var me = this;
@@ -193,6 +259,7 @@
     },
     addContactToGroupContactsArray: function (contact, groupContacts) {
         if (groupContacts) {
+            var me = this;
             MEPH.util.Observable.observable(contact);
             me.collectCards([contact]);
             groupContacts.removeWhere(function (x) { return x.card === contact.card; });
@@ -268,8 +335,15 @@
             });
         }
         else {
-            conversation.contacts.dump();
-            conversation.contacts.push.apply(conversation.contacts, contactsForConversation);
+            if (conversation.cards) {
+                MEPH.util.Observable.observable(conversation);
+                MEPH.util.Observable.observable(conversation.cards);
+                conversation.cards.dump();
+                conversation.cards.push.apply(conversation.cards, contactsForConversation);
+            }
+            else {
+                debugger
+            }
         }
     },
     monitorConversation: function (conversation) {
@@ -333,45 +407,74 @@
 
         return result.length > 1 ? result : result[0] || null;
     },
-    getMessageToken: function () {
+    refreshToken: function () {
         var me = this;
-        return me.$inj.tokenService.getMessageToken();
+        return me.when.injected.then(function () {
+            return me.$inj.tokenService.refreshToken();
+        })
+    },
+    getToken: function () {
+        var me = this;
+        return me.when.injected.then(function () {
+            return me.$inj.tokenService.getToken();
+        });
     },
     getConversationById: function (id) {
         var me = this;
         return me.monitoredConversations.first(function (x) { return x.id === id; });
     },
-    getConversations: function (conversationList) {
+    getConversations: function (conversationList, start, fetch) {
         var me = this, err;
+        start = start || "0";
+        fetch = fetch || 10;
         me.when.injected.then(function () {
             me.$inj.overlayService.open('get conversationts');
-            conversationList.pump(function (skip, take) {
-                skip = skip || 0;
-                return me.monitoredConversations.subset(skip, skip + (take || 15));
-            }, me.monitoredConversations);
+            conversationList.ref[conversationList.property] = me.monitoredConversations;
+            conversationList = me.monitoredConversations;
+            //conversationList.pump(function (skip, take) {
+            //    skip = skip || 0;
+            //    return me.monitoredConversations.subset(skip, skip + (take || 15));
+            //}, me.monitoredConversations);
 
             return me.$inj.storage.get(me.serviceStorageKey).then(function (res) {
                 if (res && res.groups) {
                     me.$inj.overlayService.relegate('get conversationts');
                     res.groups.foreach(function (x) {
+                        x.cards = MEPH.util.Observable.observable(x.cards || []);
+                        x.cards = MEPH.util.Observable.observable(x.cards || []);
+                        MEPH.util.Observable.observable(x);
+                        x.cards.un(null, me);
+                        x.cards.un(null, me);
+                        x.cards.on('changed', function (x) {
+                            MEPH.Log('contacts updated')
+                            x.fire('altered', { path: 'cards' });
+                        }.bind(me, x), me);
+                        x.cards.on('changed', function (x) {
+                            x.fire('altered', { path: 'cards' });
+                            MEPH.Log('cards updated')
+                        }.bind(me, x), me);
                         me.collectCards(x.cards);
-                        if (x.messages) {
-                            MEPH.util.Observable.observable(x.messages);
-                        }
                     });
                     me.updateMonitoredCards();
                     me.monitorConversation.apply(me, res.groups);
                 }
-                return me.getMessageToken().then(function (token) {
-                    return me.$inj.rest.nocache().addPath('messages/groups').get().then(function (res) {
+                return me.getToken().then(function (token) {
+                    return me.$inj.rest.nocache().addPath('messages/groups/{fetch}/{start}/').get({
+                        fetch: fetch,
+                        start: start
+                    }).then(function (res) {
                         if (res && res.success && res.authorized) {
                             if (res.groups) {
                                 res.groups.foreach(function (x) {
 
+                                    x.cards = MEPH.util.Observable.observable(x.cards || []);
+                                    MEPH.util.Observable.observable(x);
+                                    x.cards.un(null, me);
+                                    x.cards.on('changed', function (x) {
+                                        x.fire('altered', { path: 'cards' });
+                                        MEPH.Log('cards updated')
+                                    }.bind(me, x), me);
                                     me.collectCards(x.cards);
-                                    if (x.messages) {
-                                        MEPH.util.Observable.observable(x.messages);
-                                    }
                                 });
                                 me.updateMonitoredCards();
 
@@ -409,10 +512,10 @@
         var me = this;
         if (chatSession && val)
             me.when.injected.then(function () {
-                return me.$inj.tokenService.getMessageToken().then(function (token) {
+                return me.getToken().then(function (token) {
                     if (!chatSession.id) {
                         return me.$inj.rest.nocache().addPath('messages/createconversation').post({
-                            cards: chatSession.contacts.select(function (x) { return x.card; })
+                            cards: chatSession.cards.select(function (x) { return x.card; })
                         }).then(function (results) {
                             if (results && results.groups) {
                                 results.groups.foreach(function (group) {
@@ -456,8 +559,8 @@
         var me = this;
         me.$healthCheckPromise = me.$healthCheckPromise.then(function () {
             return me.when.injected.then(function () {
-                return me.$inj.userService.getUserId().then(function (userId) {
-                    return me.getMessageToken().then(function (token) {
+                return me.$inj.tokenService.getUserId().then(function (userId) {
+                    return me.getToken().then(function (token) {
                         return me.sendMessage('groupStatus', token, userId, me.getGroupIds());
                     });
                 });
@@ -471,7 +574,7 @@
         start = start || 0;
 
         return me.when.injected.then(function () {
-            return me.getMessageToken().then(function (token) {
+            return me.getToken().then(function (token) {
                 return me.$inj.rest.nocache().addPath('messages/conversations/{group}/{token}/{fetch}/{start}').get({
                     token: token,
                     fetch: fetch,
@@ -479,9 +582,9 @@
                     group: conversation.id
                 }).then(function (results) {
 
-                    me.collectCards(results.contacts);
+                    me.collectCards(results.cards);
                     var toreturn = me.monitorConversation(results);
-                    toreturn.contacts = results.contacts;
+                    toreturn.cards = results.cards;
                     me.updateMonitoredCards();
                     return toreturn;
                 });
@@ -497,7 +600,7 @@
     createConversation: function (cards) {
         var me = this;
         return me.when.injected.then(function () {
-            return me.getMessageToken().then(function (token) {
+            return me.getToken().then(function (token) {
                 return me.$inj.rest.nocache().addPath('messages/createconversation')
                         .post({ cards: cards })
                         .then(function (results) {

@@ -288,6 +288,7 @@ $space-between-fields: 50px;
     }
 }
 
+$meph-activity-view-footer-height: 50px;
 
 @mixin pallette($palette, $color1, $color2, $color3, $color4, $color5, $color6, $color7) {
 
@@ -301,9 +302,9 @@ $space-between-fields: 50px;
                 top: 0;
             }
 
-             
+
             .meph-activity-view-footer {
-                bottom: 50px;
+                bottom: $meph-activity-view-footer-height;
             }
 
             .common-position-right {
@@ -570,7 +571,7 @@ $space-between-fields: 50px;
                 margin-left: $margin-stardard;
             }
 
-            
+
             &:nth-child(2n) {
                 background-color: transparentize($color6, 0.78);
 
@@ -677,6 +678,14 @@ $space-between-fields: 50px;
         .meph-activity-view-body,
         .meph-application-body.container-fluid {
             padding: $padding-standard;
+
+            .listwrapper {
+                bottom: $meph-activity-view-footer-height;
+
+                .list-group {
+                    margin-bottom: $meph-activity-view-footer-height;
+                }
+            }
         }
 
         .removed-meph-activity-view-body {

@@ -9,8 +9,9 @@
         'dialogService',
         'stateService'],
     requires: ['Connection.messaging.view.editconversationgroupview.EditConversationGroupView',
-        'Connection.template.EditConversationGroupItem', ,
+        'Connection.template.EditConversationGroupItem',
         'MEPH.input.MultilineText',
+        'Connection.constant.Constants',
         'MEPH.list.View'],
     properties: {
         contacts: null,
@@ -26,6 +27,15 @@
         me.contacts = MEPH.util.Observable.observable([]);
     },
 
+    goToContactSelection: function () {
+        var me = this;
+        me.when.injected.then(function () {
+            me.$inj.stateService.set(Connection.constant.Constants.CurrentSelectionConfig, {
+                contacts: me.groupContacts
+            });
+            MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'contactSelection', path: 'selection' });
+        });
+    },
     onContactsChange: function () {
         var me = this;
         if (me.groupContacts) {

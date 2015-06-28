@@ -69,6 +69,20 @@ $profile-image-margin-top: ($contact-list-item-height - $profile_list_height)/2;
 $profile-image-margin-left: $profile-image-margin-top;
 $row-button-font-size: 2em;
 
+.space-right {
+    padding-right: 10px;
+}
+
+.connection-account-group-item {
+    padding: 10px;
+}
+
+.account-group-source-title {
+    position: absolute;
+    left: 100px;
+    top: 20px;
+}
+
 .mainview {
     .meph-activity-view-body {
         padding-top: $view-header-body-height;

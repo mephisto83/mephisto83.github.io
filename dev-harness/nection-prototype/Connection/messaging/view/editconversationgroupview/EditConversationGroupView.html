@@ -10,14 +10,15 @@
                    meph-data-showempty="true"
                    mephid="typeahead"
                    meph-data-showeverything="c$.showEverything"
-                   meph-event-selected-item="c$.selectionChanged | b$.apply, c$.typeahead.clear, c$.typeahead"
-                   meph-event-keypressed="c$.searchContacts, c$.typeahead.value"
+                   meph-event-focus="v$.goToContactSelection"
                    meph-data-selectedobject="c$.selectedContact"
                    placeholder="Search..."
                    meph-data-value="c$.selectedCardValue">
             <template name="Connection.template.ContactListItem">
             </template>
         </typeahead>
+        <!--meph-event-selected-item="c$.selectionChanged | b$.apply, c$.typeahead.clear, c$.typeahead"
+        meph-event-keypressed="c$.searchContacts, c$.typeahead.value"-->
     </div>
 </div>
 <!--<div tabindex="0"

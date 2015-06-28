@@ -24,6 +24,7 @@ MEPH.define('MEPH.list.View', {
     },
     initialize: function () {
         var me = this;
+        me.$boundSource = [];
         me.callParent.apply(me, arguments);
     },
     /**
@@ -66,7 +67,8 @@ MEPH.define('MEPH.list.View', {
                     })
                     element.dispatchEvent(MEPH.createEvent(potentialEvent.getAttribute('template-event'), {
                         data: me.source[index],
-                        index: index
+                        index: index,
+                        argument: potentialEvent.getAttribute('template-event-argument') || null
                     }));
                     prevent = true;
                 }
@@ -90,6 +92,7 @@ MEPH.define('MEPH.list.View', {
         var me = this;
         if (obj && Array.isArray(obj) && obj.on) {
             obj.on('changed', me.updateList.bind(me), me);
+            obj.on('synchronized', me.synchronizeList.bind(me), me);
         }
     },
     /**
@@ -256,7 +259,25 @@ MEPH.define('MEPH.list.View', {
 
         return me.getBoundSourceInfo(previous);
     },
+    synchronizeList: function (type, options) {
 
+        var me = this;
+        //me.$boundSource.filter(function (x) {
+        //});
+        var toremove = me.$boundSource.relativeCompliment(me.source, function (x, y) {
+            return x.item === y;
+        });
+        var toadd = me.source.relativeCompliment(me.$boundSource, function (y, x) {
+            return x.item === y;
+        });
+        options = {
+            removed: toremove.select(function (x) {
+                return x.item;
+            }),
+            added: toadd
+        };
+        me.updateList(type, options);
+    },
     /**
      * Updates the list.
      * @param {String} type
@@ -271,28 +292,42 @@ MEPH.define('MEPH.list.View', {
 
         var div = document.createElement('div');
         if (options.removed.length) {
-            me.clearList();
+            if (type !== 'synchronized')
+                me.clearList();
 
             options.removed.forEach(function (x) {
                 if (typeof x === 'object' && x.on) {
                     x.un(null, me);
                 }
+                var removed = me.$boundSource.removeWhere(function (t) {
+                    return t.item === x;
+                });
+
+                if (type === 'synchronized')
+                    removed.forEach(function (t) {
+                        MEPH.util.Dom.removeFromDom(t.el);
+                    });
+
             });
+            if (type === 'synchronized') {
 
-            html = me.source.select(function (t, index) {
-                var res = me.renderItem(t, index);
-                div.innerHTML = res.html;
-                var ch = div.firstElementChild;
-                ch.setAttribute('data-item-index', me.source.indexOf(t))
-                // me.listelement.appendChild(ch);
-                return div.innerHTML;
-            }).join('');
+            }
+            else {
+                html = me.source.select(function (t, index) {
+                    var res = me.renderItem(t, index);
+                    div.innerHTML = res.html;
+                    var ch = div.firstElementChild;
+                    ch.setAttribute('data-item-index', me.source.indexOf(t))
+                    // me.listelement.appendChild(ch);
+                    return div.innerHTML;
+                }).join('');
 
-            if (me.listelement) {
-                me.listelement.innerHTML = html;
+                if (me.listelement) {
+                    me.listelement.innerHTML = html;
+                }
             }
         }
-        else {
+        if (options.added.length) {
             //var frag = document.createDocumentFragment();
             //frag.appendChild(div)
             var lastelement;
@@ -303,16 +338,59 @@ MEPH.define('MEPH.list.View', {
                 ch.setAttribute('data-item-index', me.source.indexOf(t))
                 me.listelement.appendChild(ch);
                 lastelement = ch;
-                if (typeof t === 'object' && t.on) {
-                    t.on('altered', me.updateItem.bind(me, t, { el: ch }), me);
+                if (typeof t === 'object') {
+                    var boundItem = {
+                        el: ch,
+                        item: t
+                    };
+                    me.$boundSource.push(boundItem);
+                    if (t.on)
+                        t.on('altered', me.updateItem.bind(me, t, boundItem), me);
                 }
             });
+            if (options.added.length) {
+                me.sortListElements();
+            }
             if (me.autoScroll && lastelement) {
                 // me.listwrapper.scrollTop = me.listwrapper.clientHeight + me.listwrapper.scrollHeight
                 lastelement.scrollIntoView({ block: "end", behavior: "smooth" })
             }
         }
         me.onscroll(true);
+    },
+    sortListElements: function () {
+        var me = this;
+
+        var mapped = me.$boundSource.map(function (item, i) {
+            return {
+                index: i,
+                value: me.source.indexOf(item.item)
+            };
+        });
+        mapped.sort(function (a, b) {
+            return +(a.value > b.value) || +(a.value === b.value) - 1;
+        });
+
+        me.$boundSource = mapped.map(function (a) {
+            return me.$boundSource[a.index];
+        });
+
+        me.$boundSource.forEach(function (t, index) {
+            if (index) {
+                var prev = me.$boundSource[index - 1];
+                if (prev.el.nextElementSibling !== t.el)
+                    MEPH.util.Dom.insertAfter(prev.el, t.el);
+            }
+            else {
+                if (t.el && t.el.parentNode && t.el.parentNode.firstElementChild !== t.el)
+                    MEPH.util.Dom.insertFirst(t.el.parentNode, t.el);
+            }
+            t.el.setAttribute('data-item-index', index);
+        });
+        //    .forEach(function (x) {
+        //    var index = me.source.indexOf(x.item);
+
+        //});
     },
     updateItem: function (item, elObj, type, options) {
         var me = this;

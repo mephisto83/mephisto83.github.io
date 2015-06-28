@@ -1,30 +1,24 @@
 ﻿<div class="meph-view meph-view-remove mainview accounts">
     <activityview mephid="activityview" data-bind='"activityName": "c$.name"'>
-        <div class="col-md-12">
-            <h4>Would you like to merge these accounts?</h4>
-            <mephbutton meph-event-click="v$.mergeAccounts" class="col-lg-4 col-lg-push-4 col-md-6 col-md-push-2 col-xs-12 col-sm-8 col-sm-push-2">
-                Merge
-            </mephbutton>
-            <list data-bind='"source": "v$.accountgroups"'>
-                <template name="account_groups_template">
-                    <li class="listitem accounttemplate">
-                        <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
-                            <list data-bind='"source": "c$.data.source"'>
-                                <template name="account_sub_groups_template">
-                    <li class="listitem accounttemplate">
-                        <div class="col-md-2 col-sm-3 col-xs-12">
-                            <a data-bind='"class":"c$.data | v$.toBtnCls"'>
-                                <i data-bind='"class":"c$.data| v$.toIconCls"'></i>
-                                <span><b data-bind='"innerHTML": "c$.data"'></b></span>
-                            </a>
-                        </div>
-                    </li>
-                </template>
-            </list>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Would you like to merge these accounts?</h4>
+                <mephbutton meph-event-click="v$.applyAccountSetup" class="col-lg-4 col-lg-push-4 col-md-6 col-md-push-2 col-xs-12 col-sm-8 col-sm-push-2">
+                    Apply Account(s) Setup
+                </mephbutton>
+            </div>
         </div>
-        </li>
-        </template>
-        </list>
-</div>
+        <div class="row">
+            <div class="col-md-12">
+                <listview data-bind='"source": "v$.accountgroups"'
+                          meph-event-move-up="v$.moveAccountUp"
+                          meph-event-move-down="v$.moveAccountDown"
+                          auto-scroll="true"
+                          prevent-bounce="true">
+                    <template name="Connection.template.AccountGroup">
+                    </template>
+                </listview>
+            </div>
+        </div>
     </activityview>
 </div>

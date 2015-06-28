@@ -1,4 +1,12 @@
 ﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "activityheader", "before" : true -->
+<div class="col-xs-12 connection-selected-contacts-list" mephid="selectedContactsSpace">
+    <listview data-bind='"source": "c$.selectedContacts"'
+              meph-event-toggle-selected="c$.removeTouched">
+        <template name="Connection.template.SelectedContactListItem">
+            <span>Selected Contact Item</span>
+        </template>
+    </listview>
+</div>
 <div class="row">
     <div class="col-xs-2 button-search-combo-button">
         <mephbutton meph-event-click="c$.goBack" class="connection-top-menu-button">
@@ -6,8 +14,7 @@
         </mephbutton>
     </div>
     <div class="col-xs-12 button-search-combo-search">
-        <search
-                mephid="search"
+        <search mephid="search"
                 meph-event-keypressed="c$.searchContacts, c$.search.value"
                 placeholder="Search..."
                 meph-data-value="c$.selectedCardValue">

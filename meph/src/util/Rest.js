@@ -185,7 +185,7 @@ MEPH.define('MEPH.util.Rest', {
                     MEPH.Log('storage promise ....', 9);
                     if (completed) {
                         MEPH.Log('storage completed already', 9);
-                        throw new Error('');
+                        return Promise.reject('storage completed already');
                     }
                     return res;
                 }).then(function (res) {

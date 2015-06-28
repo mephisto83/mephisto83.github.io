@@ -19,7 +19,9 @@ MEPH.define('MEPH.util.Dom', {
          * @param {Object} newNode
          */
         insertBefore: function (referenceNode, newNode) {
-            referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+            if (referenceNode && referenceNode.parentNode) {
+                referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+            }
         },
         /**
          * Insert newobject after the dom.
@@ -27,14 +29,16 @@ MEPH.define('MEPH.util.Dom', {
          * @param {Object} newNode
          */
         insertAfter: function (referenceNode, newNode) {
-            referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+            if (referenceNode && referenceNode.parentNode) {
+                referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+            }
         },
         /**
          * Removes a dom object from its tree.
          * @param {Object} domNode
          **/
         removeFromDom: function (domNode) {
-            if (domNode.parentNode) {
+            if (domNode && domNode.parentNode) {
                 domNode.parentNode.removeChild(domNode);
             }
         },

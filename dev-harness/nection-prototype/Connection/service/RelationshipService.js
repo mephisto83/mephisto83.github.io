@@ -554,7 +554,7 @@
             }
         }
     },
-    collectSearchItems: function (search, cards, skiplocalcontacts) {
+    collectSearchItems: function (search, cards, skiplocalcontacts, finalresults, options) {
         var me = this,
             result = (cards || []).select();
 
@@ -583,9 +583,13 @@
                 return x.card === y.card;
             });
         }));
-        result.unique(function (x) {
+        result = result.unique(function (x) {
             return x.card;
-        }).forEach(function (card) {
+        });
+        if (options && options.filter) {
+            result = result.where(options.filter);
+        }
+        result.forEach(function (card) {
 
             if (card.commonRelationshipCount && parseInt(card.commonRelationshipCount)) {
 
@@ -594,7 +598,116 @@
                 card.nocommoncontacts = 'nocommoncontacts';
             }
         });
+        if (finalresults) {
+            finalresults.length = 0;
+            finalresults.push.apply(finalresults, result);
+        }
         return result;
+    },
+    search: function (options) {
+        options = options || {};
+
+        var me = this,
+            index = options.index || 0,
+            count = options.count || 50,
+            source = options.source || [],
+            cancel = options.cancel || null,
+            initial = options.initial || false,
+            useSearch = options.useSearch || false,
+            skipLocalContacts = options.skipLocalContacts || false,
+            search = options.search || '';
+
+        options.source = options.source || [];
+
+        if (!source.$pumpsource) {
+            source.$pumpsource = MEPH.util.Observable.observable([]);
+            source.pump(function (skip, take) {
+                return source.$pumpsource.subset(skip, skip + (take || 15));
+            }, source.$pumpsource);
+        }
+        var toapplytosource = [];
+        me.collectSearchItems(search, null, skipLocalContacts, toapplytosource, options);
+        var tokeep = [];
+        //var toremove = source.$pumpsource.relativeCompliment(toapplytosource, function (x, y) {
+        //    return x.card === y.card;
+        //}, tokeep);
+        toapplytosource.forEach(function (x) {
+            x.match = x.name;
+        });
+        source.$pumpsource.synchronize(toapplytosource, function (x) {
+            return x.card;
+        }, 15);
+        var urlSearch = 'search';
+
+        if (!search) {
+            return;
+        }
+        if (!useSearch)
+            urlSearch = 'suggest';
+
+
+        var guid = search;
+        return me.ready.then(function () {
+            return me.$inj.overlayService.open(guid);
+        }).then(function () {
+            me.$inj.overlayService.relegate(guid);
+        }).then(function () {
+            var rest = me.$inj.rest.addPath('relationship/').addPath(urlSearch);
+            MEPH.Log('Relationship search');
+            MEPH.Log(rest.path());
+            var promise = rest.post({
+                index: index,
+                count: count,
+                initial: initial,
+                search: search
+            });
+            if (cancel) {
+                cancel.abort = function () {
+                    rest.out.http.abort();
+                }
+            }
+            return promise.then(function (res) {
+                if (res && res.results) {
+                    res = res.results;
+
+                    var cards = me.convertContactDTO(res);
+
+                    me.serverCachedSearchResults.push.apply(me.serverCachedSearchResults, cards.where(function (x) {
+                        var found = me.serverCachedSearchResults.first(function (t) {
+                            return t.card === x.card;
+                        });
+                        if (found) {
+                            for (var i in x) {
+                                if (i !== 'card' && i !== 'contact')
+                                    found[i] = x[i];
+                            }
+                        }
+                        else {
+                            MEPH.util.Observable.observable(x);
+                        }
+                        return !found;
+                    }));
+
+                    me.serverCachedSearchResults = me.serverCachedSearchResults.subset(0, 10000);
+
+                    cards.forEach(function (x) {
+                        x.quick_search = (JSON.stringify(x) || '').toLowerCase();
+                    });
+
+                    me.collectSearchItems(search, cards, null, toapplytosource, options);
+
+                    source.$pumpsource.synchronize(toapplytosource, function (x) {
+                        return x.card;
+                    }, 15);
+                }
+            }).then(function () {
+                return me.$inj.overlayService.close(guid);
+            }).catch(function () {
+                me.$inj.overlayService.close(guid);
+                return Promise.reject('Failed to get search results');
+            });
+
+        })
     },
     searchContacts: function (index, count, initial, search, source, cancel, useSearch, skiplocalcontacts) {
         var me = this, toaddcoverted = [];
@@ -608,7 +721,7 @@
         }
         var toaddcoverted = me.collectSearchItems(search, null, skiplocalcontacts);
         toaddcoverted = toaddcoverted.orderBy(me.sortCards);
-        toaddcoverted.foreach(function (x) {
+        toaddcoverted.forEach(function (x) {
             x.match = x.name;
         });
         var toadd = toaddcoverted;
@@ -652,18 +765,8 @@
 
                     var cards = me.convertContactDTO(res);
 
-                    var toremove = toaddcoverted.where(function (x) {
-                        return x.card !== 'device-card'
-                    }).relativeCompliment(cards, function (x, y) {
-                        return x.card === y.card;
-                    });
-
-                    var toadd = cards.relativeCompliment(toaddcoverted, function (x, y) {
-                        return x.card === y.card
-                    });
                     me.serverCachedSearchResults.push.apply(me.serverCachedSearchResults, cards.where(function (x) {
                         var found = me.serverCachedSearchResults.first(function (t) {
-
                             return t.card === x.card;
                         });
                         if (found) {
@@ -674,23 +777,18 @@
                         }
                         return !found;
                     }));
-                    me.serverCachedSearchResults = me.serverCachedSearchResults.subset(0, 10000);
+                    me.serverCachedSearchResults = me.serverCachedSearchResults.subset(0, 1000);
+
                     cards.forEach(function (x) {
                         x.quick_search = (JSON.stringify(x) || '').toLowerCase();
                     });
 
-                    // me.serverCachedSearchResults.push.apply(me.serverCachedSearchResults, cards);
-
-                    //toaddcoverted.unshift.apply(toaddcoverted, toadd)
                     toaddcoverted = me.collectSearchItems(search, cards);
                     source.pump(function (skip, take) {
                         return toaddcoverted.subset(skip, skip + (take || 15));
                     });
                     source.unshift.apply(source, toaddcoverted.subset(0, 1));
                     source.dump();
-                    //source.drop.apply(source, toremove);
-
-                    //source.push.apply(source, toadd);
                 }
             }).then(function () {
                 return me.$inj.overlayService.close(guid);

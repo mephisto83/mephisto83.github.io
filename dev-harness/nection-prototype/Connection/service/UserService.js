@@ -11,6 +11,7 @@
     injections: [
         'rest',
         'identityProvider',
+        'stateService',
         'storage',
         'tokenService'
     ],
@@ -113,8 +114,11 @@
                 }
                 else if (res) {
                     //Go to a page to decide which to use or merge.
-
-                    MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'accountresolution', path: '/', situation: res });
+                    me.when.injected.then(function () {
+                        return me.$inj.stateService.set(Connection.constant.Constants.MergeSituation, { situation: res });
+                    }).then(function () {
+                        MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'accountresolution', path: '/' });
+                    });
                 }
             })
             .catch(function (res) {
@@ -143,7 +147,43 @@
                 }
             }).catch(function (error) {
                 debugger;
-            })
+            });
+        });
+    },
+    applyAccountSetup: function (config) {
+        var me = this;
+        return me.ready.then(function () {
+            if (config) {
+                var $providers = me.$inj.identityProvider.getProviders().where(function ($provider) {
+                    return $provider.p && $provider.p.credentials && $provider.p.credentials();
+                }).select(function ($provider) {
+                    var t = $provider.p.credentials();
+                    t.provider = $provider.key;
+                    return t;
+                });
+                debugger
+                config.forEach(function (c) {
+                    var contactId = c.contactid;
+                    c.source.forEach(function (s) {
+
+                        var $provider = $providers.first(function (x) {
+                            if (x.provider === 'google' && s === 'google-plus') {
+                                return true;
+                            }
+                            return x.provider === s;
+                        });
+                        if ($provider) {
+                            $provider.contactId = contactId;
+                        }
+                    })
+                });
+
+                return me.$inj.rest.nocache().addPath('account/apply').post($providers).then(function (res) {
+                    debugger
+                }).catch(function (error) {
+                    debugger;
+                });
+            }
         });
     },
     /**

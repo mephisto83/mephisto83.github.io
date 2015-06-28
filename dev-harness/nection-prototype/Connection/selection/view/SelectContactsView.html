@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+﻿<div class="meph-view meph-view-remove mainview">
+    <selectionview mephid="mainview">
+        <listview data-bind='"source": "v$.mainview.contacts"'
+                  meph-event-itemclick="b$.apply, v$.mainview.toggleSelected, v$.mainview">
+            <template name="Connection.template.SelectContactListItem">
+            </template>
+        </listview>
+    </selectionview>
+</div>

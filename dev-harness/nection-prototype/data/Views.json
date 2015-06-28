@@ -15,6 +15,13 @@
             "path": "/fake/login"
         },
         {
+            "viewId": "contactSelection",
+            "view": "Connection.selection.view.SelectContactsView",
+            "singleton": true,
+            "namespace": "Connection",
+            "path": "/selection"
+        },
+        {
             "viewId": "styleOptions",
             "view": "MEPH.mobile.pages.style.StyleOptions",
             "singleton": true,

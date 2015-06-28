@@ -487,6 +487,9 @@ MEPH.define('MEPH.control.Control', {
     getDomEventArg: function (args) {
         return MEPH.util.Array.create(args).last().domEvent.data;
     },
+    getDomEventArgument: function (args) {
+        return MEPH.util.Array.create(args).last().domEvent.argument;
+    },
     /**
      * Gets the dom template for the instance.
      **/

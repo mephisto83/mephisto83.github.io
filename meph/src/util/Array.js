@@ -238,13 +238,17 @@ MEPH.define('MEPH.util.Array', {
                     enumerable: false,
                     writable: true,
                     configurable: true,
-                    value: function (othercollection, func) {
+                    value: function (othercollection, func, output) {
                         var collection = this;
                         var result = [];
+
                         func = func || function (x, y) { return x === y; };
                         for (var i = collection.length; i--;/**/) {//function (x) { return x == collection[i]; }
                             if (!othercollection.contains(func.bind(window, collection[i]))) {
                                 result.push(collection[i]);
+                            }
+                            else if (output) {
+                                output.push(collection[i]);
                             }
                         }
                         return result;

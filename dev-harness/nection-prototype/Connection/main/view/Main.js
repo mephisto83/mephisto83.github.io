@@ -125,8 +125,16 @@
                  }).catch(function () {
                      MEPH.Error('Something went wrong composing the cards.');
                  }).then(function () {
-                     if (!me.$hasSearched)
-                         me.$inj.relationshipService.searchContacts(0, me.searchlimit, true, '', me.listsource);
+                     if (!me.$hasSearched) {
+                         //   me.$inj.relationshipService.searchContacts(0, me.searchlimit, true, '', me.listsource);
+                         me.$inj.relationshipService.search({
+                             index: 0,
+                             count: me.searchlimit,
+                             initial: true,
+                             search: '',
+                             source: me.listsource
+                         });
+                     }
                      return me.$inj.overlayService.close('connection-main');
                  });
         });;
@@ -172,8 +180,16 @@
             }
             me.cancel = {};
             me.$hasSearched = true;
-            me.$inj.relationshipService.searchContacts(0, me.searchlimit, true, val, me.listsource, me.cancel, search);
-
+            //  me.$inj.relationshipService.searchContacts(0, me.searchlimit, true, val, me.listsource, me.cancel, search);
+            me.$inj.relationshipService.search({
+                index: 0,
+                count: me.searchlimit,
+                initial: true,
+                search: val,
+                source: me.listsource,
+                cancel: me.cancel,
+                useSearch: search //|| val.length < 4
+            });
         }, 500);
     },
     openContact: function (data) {

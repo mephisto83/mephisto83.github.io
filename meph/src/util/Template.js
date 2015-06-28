@@ -20,16 +20,42 @@
         },
         getCommands: function (str) {
             return (str || '').split('|').select(function (x) {
-                return MEPH.getPathValue(x.trim());
-            }).where();
+                var split = x.split(',');
+                var c = split.first();
+                var args = split.subset(1);
+                return {
+                    command: MEPH.getPathValue(c.trim()),
+                    args: args.select(function (x) {
+                        try {
+                            return MEPH.getPathValue(x) || x
+                        }
+                        catch (e) {
+                        }
+                        return x;
+                    })
+                }
+            }).where(function (t) {
+                return t && t.command;
+            });
         },
         getIntialPath: function (str) {
             return (str || '').split('|')[0];
         },
+        bindArray: function (data, template) {
+            template = template.split('').subset(1, template.length - 1).join('')
+            var templateStr = MEPH.getTemplate(template);
+            if (templateStr && templateStr.template) {
+                return data.select(function (x) {
+                    return MEPH.util.Template.bindTemplate(templateStr.template, x);
+                }).join('');
+            }
+            return '';
+        },
         bindTemplate: function (templateString, data) {
             var $Template = MEPH.util.Template,
                 val;
-            var regex = new RegExp('({{)[A-Za-z0-9_. \|]*(}})', 'g');
+            var singularSymbol = '@';
+            var regex = new RegExp('({{)[A-Za-z0-9_.' + singularSymbol + ' ,\'\|]*(}})', 'g');
             var hasTemplate = regex.test(templateString);
             if (hasTemplate) {
                 var res = templateString.match(regex);
@@ -40,7 +66,7 @@
                     return x.split('').subset(2, x.length - 2).join('');
                 }).foreach(function (t) {
                     var intialPath = $Template.getIntialPath(t, data).trim();
-                    if (intialPath === '') {
+                    if (intialPath === '' || intialPath === singularSymbol) {
                         val = data;
                     }
                     else {
@@ -48,11 +74,11 @@
                     }
                     if ($Template.hasCommands(t)) {
                         var commands = $Template.getCommands(t);
-                        commands.forEach(function (command) {
-                            val = command(val);
+                        commands.forEach(function (commandObj) {
+                            val = commandObj.command.apply(null, [val].concat(commandObj.args));
                         });
                     }
-                    else {
+                    else if (intialPath !== singularSymbol) {
                         val = MEPH.getPathValue(intialPath, data);
                     }
                     t = t.split('|').join('\\|')

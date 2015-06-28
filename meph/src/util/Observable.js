@@ -533,7 +533,48 @@ MEPH.define('MEPH.util.Observable', {
                             return result;
                         }.bind(collection)
                     });
+                    Object.defineProperty(collection, 'synchronize', {
+                        enumerable: false,
+                        configurable: true,
+                        writable: true,
+                        value: function (array, idFunc, num) {
+                            var me = this;
+                            // var arraySubset = array.subset(0, num);
+                            //var mapped = array.map(function (item, i) {
+                            //    var itemId = idFunc(item);
+                            //    return {
+                            //        index: i,
+                            //        value: me.first(function (x) {
+                            //            return idFunc(x) === itemId;
+                            //        }) || item,
+                            //        itemId: itemId
+                            //    };
+                            //});
+                            //mapped.sort(function (a, b) {
+                            //    return +(a.value > b.value) || +(a.value === b.value) - 1;
+                            //});
+                            //var toremove = me.relativeCompliment(arraySubset, function (x, y) {
+                            //    return idFunc(x) === idFunc(y);
+                            //});
+                            //var toadd = arraySubset.relativeCompliment(me, function (y, x) {
+                            //    return idFunc(x) === idFunc(y);
+                            //});
+                            //me._pause();
+                            //me.length = 0;
+                            //   me.removeWhere(function (x) { return toremove.indexOf(x) !== -1; });
+                            //me._start();
+                            //pushFunc.apply(me, mapped.select(function (x) {
+                            //    return x.value;
+                            //}));
+                            me.length = 0;
+                            pushFunc.apply(me, array);
 
+                            me.fire('synchronized', {
+                                //added: toadd,
+                                //removed: toremove
+                            });
+                        }
+                    });
                     Object.defineProperty(collection, 'pump', {
                         enumerable: false,
                         configurable: true,
@@ -554,7 +595,14 @@ MEPH.define('MEPH.util.Observable', {
                                 c.on('changed', function () {
                                     me.pump(me.length);
                                 }, me);
-
+                                c.on('synchronized', function (type, options) {
+                                    // pushFunc.apply(me, options.added);
+                                    me.length = 0;
+                                    me._pause();
+                                    me.pump(me.length);
+                                    me._start();
+                                    me.fire(type, options);
+                                }, me);
                                 this[key2] = c;
                             }
                             if (typeof a === 'function') {

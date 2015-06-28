@@ -112,12 +112,15 @@
             chatSession = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversation);//, { data: data }
             if (chatSession && chatSession.data) {
                 return me.$inj.messageService.openConversation(chatSession.data).then(function (session) {
-                    me.chatSession = session;
-                    me.messages = MEPH.util.Observable.observable(session.messages);
-                    me.chatSession.cards = MEPH.util.Observable.observable(me.chatSession.cards || []);
-                    me.chatSession.cards.un(null, me);
-                    me.chatSession.cards.on('changed', me.onContactsChange.bind(me), me);
-                    me.onContactsChange();
+                    if (session) {
+                        session.messages = session.messages || [];
+                        me.chatSession = session;
+                        me.messages = MEPH.util.Observable.observable(session.messages);
+                        me.chatSession.cards = MEPH.util.Observable.observable(me.chatSession.cards || []);
+                        me.chatSession.cards.un(null, me);
+                        me.chatSession.cards.on('changed', me.onContactsChange.bind(me), me);
+                        me.onContactsChange();
+                    }
                 });
             }
             else {

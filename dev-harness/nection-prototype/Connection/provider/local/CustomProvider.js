@@ -25,6 +25,8 @@ MEPH.define('Connection.provider.local.CustomProvider', {
         });
         me.great();
     },
+    logout:function(){
+    },
     onInjectionsComplete: function () {
         var me = this;
         me.injectionsResolve();

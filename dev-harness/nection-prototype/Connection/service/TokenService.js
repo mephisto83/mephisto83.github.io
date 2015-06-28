@@ -55,7 +55,7 @@
                         }
                     }
                 })
-        }, 10000)//(response.expiration * .7) ||
+        }, (response.expiration * .7) || 10000)//
     },
     refreshToken: function () {
         var me = this;

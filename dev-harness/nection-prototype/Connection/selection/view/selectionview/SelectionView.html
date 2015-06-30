@@ -1,6 +1,8 @@
 ﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "activityheader", "before" : true -->
-<div class="col-xs-12 connection-selected-contacts-list" mephid="selectedContactsSpace">
+<div class="col-xs-12 connection-selected-contacts-list"
+     mephid="selectedContactsSpace">
     <listview data-bind='"source": "c$.selectedContacts"'
+              meph-event-remove-contact="c$.removeTouched"
               meph-event-toggle-selected="c$.removeTouched">
         <template name="Connection.template.SelectedContactListItem">
             <span>Selected Contact Item</span>
@@ -22,6 +24,15 @@
                 <div>Select Item</div>
             </template>
         </search>
+    </div>
+</div>
+<!-- "instruction": true, "name" : "injectop", "close": true -->
+<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "activityfooter", "before" : true -->
+<div class="row">
+    <div class="col-xs-12">
+        <mephbutton class="row-button" meph-event-btn-click="c$.addContacts">
+            <i class="fa fa-plus"><b class="pad-left">Add</b></i>
+        </mephbutton>
     </div>
 </div>
 <!-- "instruction": true, "name" : "injectop", "close": true -->

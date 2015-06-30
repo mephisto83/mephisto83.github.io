@@ -27,6 +27,7 @@
             me.$aftershow = null;
         }
         me.$aftershow = setTimeout(function () {
+            me.mainview.clear();
             me.setupContactSelection();
         }, 500);
     },

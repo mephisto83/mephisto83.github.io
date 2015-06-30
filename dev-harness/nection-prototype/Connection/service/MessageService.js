@@ -241,10 +241,14 @@
     },
     addContactToConversation: function (contact, id, groupContacts) {
         var me = this;
+        return me.addContactsToConversation([contact.card], id, groupContacts);
+    },
+    addContactsToConversation: function (contacts, id, groupContacts) {
+        var me = this;
         return me.when.injected.then(function () {
             if (id) {
                 return me.$inj.rest.addPath('messages/add/to/group').post({
-                    cards: [contact.card],
+                    cards: contacts,
                     group: id
                 }).then(function (result) {
                     if (result.success && result.authorized) {

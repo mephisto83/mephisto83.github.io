@@ -142,10 +142,12 @@
         //editconversationgroup
         if (me.chatSession && me.chatSession.cards) {
             me.when.injected.then(function () {
-                me.$inj.stateService.set(Connection.constant.Constants.CurrentConversationContacts, {
-                    groupId: me.chatSession.id,
-                    data: me.chatSession.cards
-                });
+                //me.$inj.stateService.set(Connection.constant.Constants.CurrentConversationContacts, {
+                //    groupId: me.chatSession.id,
+                //    data: me.chatSession.cards
+                //});
+
+                me.$inj.stateService.setConversation(me.chatSession);
             }).then(function () {
                 MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'editconversationgroup', path: 'editconversationgroup' });
             });

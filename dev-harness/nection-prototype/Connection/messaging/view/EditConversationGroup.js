@@ -100,13 +100,15 @@
                                 .then(function (conversation) {
                                     me.isNewChatSession = false;
                                     me.currentGroupId = conversation.id;
-                                    me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, {
-                                        data: conversation
-                                    });
-                                    me.$inj.stateService.set(Connection.constant.Constants.CurrentConversationContacts, {
-                                        groupId: conversation.id,
-                                        data: conversation.cards
-                                    });
+                                    //me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, {
+                                    //    data: conversation
+                                    //});
+                                    //me.$inj.stateService.set(Connection.constant.Constants.CurrentConversationContacts, {
+                                    //    groupId: conversation.id,
+                                    //    data: conversation.cards
+                                    //});
+                                    me.$inj.stateService.setConversation(conversation);
+
                                 });
                         }
                     }).then(function () {

@@ -3,7 +3,8 @@
         loggedin: false,
         $promise: null,
         refreshTokenKey: 'connectino-service-refresh-token',
-        userIdKey: 'connection-serivce-userid-key'
+        userIdKey: 'connection-serivce-userid-key',
+        cards: null
     },
     mixins: {
         injectable: 'MEPH.mixins.Injections'
@@ -13,6 +14,7 @@
         'identityProvider',
         'stateService',
         'storage',
+        'customProvider',
         'tokenService'
     ],
     initialize: function () {
@@ -34,7 +36,14 @@
             me.checkProviderConsistency(args.providers);
         })
         me.hasLoggedIn = false
-
+        me.hasCompletedLogin = new Promise(function (resolve) {
+            me.executeAfterLogin = resolve;
+        });
+        MEPH.subscribe(Connection.constant.Constants.ConnectionLogOut, function () {
+            me.hasCompletedLogin = new Promise(function (resolve) {
+                me.executeAfterLogin = resolve;
+            });
+        });
         me.$promise = Promise.resolve();
     },
     onInjectionsComplete: function () {
@@ -80,6 +89,31 @@
                 MEPH.Log('heart/beat[delete] failed')
             })
         })
+    },
+    myCards: function (clear) {
+        var me = this;
+        if (clear) {
+            me.cards = null;
+        }
+        return me.when.injected.then(function () {
+            if (me.cards) {
+                return me.cards;
+            }
+            if (me.loggedin)
+                return me.$inj.customProvider.retrieveCards().catch(function () {
+                    return me.myCards();
+                });
+            else {
+                return me.hasCompletedLogin.then(function () {
+                    return me.$inj.customProvider.retrieveCards();
+                }).catch(function () {
+                    return me.myCards();
+                });
+            }
+        }).then(function (cards) {
+            me.cards = cards;
+            return me.cards;
+        });
     },
     checkProviderConsistency: function (providers) {
         var me = this;
@@ -205,8 +239,6 @@
 
                 MEPH.Log('Got check results');
                 if (res && res.authorized) {
-                    me.$inj.rest.setHeader('mvc-connection.ticket', res.token);
-                    me.$inj.rest.setHeader('contactId', res.contactId);
                     me.$inj.tokenService.start(res);
                     provider.online = res.success;
                     if (provider.online && !me.hasLoggedIn) {
@@ -216,6 +248,7 @@
                             viewId: 'main',
                             path: '/main'
                         });
+                        me.executeAfterLogin();
                         me.hasLoggedIn = true;
                         return true;
                     }

@@ -616,15 +616,10 @@
             useSearch = options.useSearch || false,
             skipLocalContacts = options.skipLocalContacts || false,
             search = options.search || '';
-
-        options.source = options.source || [];
-
+        
         if (!source.$pumpsource) {
             source.$pumpsource = MEPH.util.Observable.observable([]);
             source.pump(function (skip, take) {
-                if (options.filter) {
-                    return source.$pumpsource.filter(options.filter).subset(skip, skip + (take || 15));
-                }
                 return source.$pumpsource.subset(skip, skip + (take || 15));
             }, source.$pumpsource);
         }
@@ -643,7 +638,7 @@
         var urlSearch = 'search';
 
         if (!search) {
-            return;
+            return Promise.resolve();
         }
         if (!useSearch)
             urlSearch = 'suggest';

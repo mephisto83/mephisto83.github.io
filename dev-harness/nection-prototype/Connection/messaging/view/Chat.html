@@ -1,14 +1,15 @@
 ﻿<div class="meph-view meph-view-remove mainview chatview">
     <chatview data-bind='"activityName": "c$.name"' mephid="mainview">
-        <listview data-bind='"source": "v$.messages"'
+        <listview data-bind='"source": "v$.chatSession.messages"'
                   auto-scroll="true"
+                  meph-event-remove-message="v$.removeMessage"
                   prevent-bounce="true">
             <template name="Connection.template.ConversationMessage">
             </template>
         </listview>
         <div class="row chatview-input-row">
             <div class="col-xs-10 chatview-input-row-input">
-                <multilinetext meph-data-value="v$.inputValue" meph-data-cls="chatview-text-area"></multilinetext>
+                <multilinetext meph-data-value="v$.inputValue" meph-data-disabled="v$.disabled" meph-data-cls="chatview-text-area"></multilinetext>
             </div>
             <div class="col-xs-2 chatview-input-row-input">
                 <mephbutton meph-event-click="v$.enterText">

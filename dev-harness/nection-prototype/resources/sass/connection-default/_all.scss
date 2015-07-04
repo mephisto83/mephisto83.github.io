@@ -24,10 +24,11 @@ $profile-conversation-message-height: 50px;
 $chatview-bottom-padding: 49px;
 $application-menu-secondary-border-radius: 10px;
 $connection-select-contact-list-item-padding: 4px;
-
+$contact-list-item-selection-height: 42px;
 $connection-list-profile-details-padding: 55px;
 $connection-list-profile-image-width: $connection-list-profile-details-padding - 5px;
 $profile-item-image-height: $profile-item-height - 10;
+$reveal-slide-distance: 130px;
 
 /* As hex codes */
 
@@ -63,11 +64,15 @@ $view-header-body-padding-botttom: 0px;
 $profile_height: 200px;
 $profile_width: 200px;
 
+$message-box-top: 135px;
+
 $profile_height_sm: 100px;
 $profile_width_sm: 100px;
 
 $profile_list_height: 95px;
 $profile_list_width: 95px;
+
+$profile-selection-size: 40px;
 
 $profile-list-width-small: 35px;
 $profile-list-height-small: 35px;
@@ -79,6 +84,7 @@ $row-button-font-size: 2em;
 .space-right {
     padding-right: 10px;
 }
+
 
 .connection-account-group-item {
     padding: 10px;
@@ -317,6 +323,58 @@ $meph-activity-view-footer-height: 50px;
     body[color-palette='#{$palette}'] {
         &.mobile-bottom-menu[color-palette='#{$palette}'] {
 
+
+            .reveal-list-item-container {
+                position: relative;
+                transition: all .2s;
+                background-color: $color2;
+
+                &.slide-over {
+                    .row {
+                        //        left: -$reveal-slide-distance;
+                        transform: translateX(-$reveal-slide-distance);
+                        -webkit-transform: translate(-$reveal-slide-distance);
+                    }
+                }
+
+                .row {
+                    background-color: $color3;
+                    -webkit-transition: all .2s;
+                    transition: all .2s;
+                    position: relative;
+                    top: 0px;
+                    left: 0px;
+                }
+            }
+
+            .reveal-list-item-box {
+                display: none;
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                transform: translateX(0);
+                -webkit-transform: translate(0);
+                z-index: -1;
+                -webkit-transition: all .2s;
+                transition: all .2s;
+
+
+                &.show {
+                    z-index: 101;
+                    display: block;
+
+                    button {
+                        right: 4px;
+                        top: 11px;
+                        position: relative;
+
+                        & + button {
+                            right: 24px;
+                        }
+                    }
+                }
+            }
+
             .conversation-item-button-panel {
                 right: 15px;
                 position: absolute;
@@ -375,6 +433,7 @@ $meph-activity-view-footer-height: 50px;
                 color: $color3;
             }
 
+            .overlay.relegated.signal,
             .overlay.relegated {
                 right: 0px;
                 bottom: 0px;
@@ -385,6 +444,46 @@ $meph-activity-view-footer-height: 50px;
 
                 .fa {
                     color: $color3;
+                }
+            }
+
+            $right-offset: 35px;
+
+            .overlay.relegated {
+                right: $right-offset * 0;
+
+                & + .overlay.relegated {
+                    right: $right-offset * 1;
+
+                    & + .overlay.relegated {
+                        right: $right-offset * 2;
+
+                        & + .overlay.relegated {
+                            right: $right-offset * 3;
+
+                            & + .overlay.relegated {
+                                right: $right-offset * 4;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .overlay.relegated.signal {
+                i.fa {
+                    color: white;
+
+                    &.connected {
+                        color: green;
+                    }
+
+                    &.connecting {
+                        color: yellow;
+                    }
+
+                    &.disconnected {
+                        color: red;
+                    }
                 }
             }
 
@@ -466,6 +565,7 @@ $meph-activity-view-footer-height: 50px;
                                 text-align: center;
                                 background-color: transparent;
                                 border: 0;
+                                padding-left: 4px;
 
                                 .fa {
                                     margin-top: -6px;
@@ -495,6 +595,12 @@ $meph-activity-view-footer-height: 50px;
             .meph-application-body {
                 border-top: 0px;
             }
+        }
+
+        .list-item-button {
+            float: right;
+            margin-left: 4px;
+            border-color: $color2;
         }
 
         [editrelationship] {
@@ -569,6 +675,10 @@ $meph-activity-view-footer-height: 50px;
             padding: 0px;
             height: $contact-list-item-height;
 
+            &.selection {
+                height: $contact-list-item-selection-height;
+            }
+
             &.conversation-list-item {
                 height: auto;
                 min-height: $profile-conversation-message-height;
@@ -600,6 +710,7 @@ $meph-activity-view-footer-height: 50px;
                 }
             }
 
+            .name-text,
             h4, h3, h2 {
                 color: $color1;
                 /*white-space: nowrap;
@@ -707,6 +818,16 @@ $meph-activity-view-footer-height: 50px;
                     margin-bottom: $meph-activity-view-footer-height;
                 }
             }
+
+            &.connection-has-selected-contacts {
+                .listwrapper {
+                    bottom: $meph-activity-view-footer-height + 50px;
+
+                    .list-group {
+                        margin-bottom: $meph-activity-view-footer-height + 50px;
+                    }
+                }
+            }
         }
 
         .removed-meph-activity-view-body {
@@ -759,6 +880,17 @@ $meph-activity-view-footer-height: 50px;
         .meph-activity-view-header {
             &.connection-has-selected-contacts {
                 height: $meph-activity-view-body-padding-top-expanded-search;
+            }
+        }
+
+        .image-row {
+            display: block;
+            overflow: hidden;
+            width: 100%;
+            border-right: solid 61px transparent;
+
+            .conversation-profile-image {
+                display: table-cell;
             }
         }
 
@@ -864,6 +996,10 @@ $meph-activity-view-footer-height: 50px;
 
         .fa {
             color: $color1;
+
+            &:active {
+                color: $color2;
+            }
         }
 
         .row.contactlink.fa-dead {
@@ -945,6 +1081,11 @@ $meph-activity-view-footer-height: 50px;
         .connection-list-profile-image {
             height: $profile_list_height;
             width: $profile_list_width;
+
+            &.selection {
+                height: $profile-selection-size;
+                width: $profile-selection-size;
+            }
 
             &.conversation-message {
                 height: $profile-conversation-message-height;
@@ -1067,6 +1208,7 @@ $meph-activity-view-footer-height: 50px;
             border-radius: $connection-box-border-radius;
         }
 
+        .message-box,
         .connection-box {
             position: absolute;
             top: 0px;
@@ -1089,6 +1231,11 @@ $meph-activity-view-footer-height: 50px;
             i {
                 color: $color3;
             }
+        }
+
+        .message-box {
+            right: 15px;
+            top: $message-box-top;
         }
 
         .color2, .color3, .color4, .color5, .color6, .color7, .color1 {

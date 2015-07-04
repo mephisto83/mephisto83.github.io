@@ -30,6 +30,9 @@ MEPH.define('Connection.application.Converters', {
 
             return temp.profileimage;
         },
+        Card: function (cal) {
+            return cal ? cal.profileimage : '';
+        },
         Card2: function (val) {
             if (!val || !val.cards || !val.cards.nth) {
                 return ''
@@ -58,18 +61,39 @@ MEPH.define('Connection.application.Converters', {
             var n = d.toLocaleDateString();
             var time = d.getTime();
             if (minute + time > now) {
-                return '< 1 min ago';
+                return '< 1 min';
             }
             else if (hour + time > now) {
-                return Math.abs(Math.round((now - time) / minute)) + ' min ago';
+                return Math.abs(Math.round((now - time) / minute)) + ' min';
             }
             else if (day + time > now) {
-                return Math.abs(Math.round((now - time) / hour)) + ' hr ago';
+                return Math.abs(Math.round((now - time) / hour)) + ' hr';
             }
             else if (week + time > now) {
-                return Math.abs(Math.round((now - time) / day)) + ' days ago';
+                return Math.abs(Math.round((now - time) / day)) + ' days';
             }
             return n;
+        },
+        ToggleReveal: function (data, index, element, list, argument, source) {
+            if (list) {
+                MEPH.Array(list.querySelectorAll('.reveal-list-item-container'))
+                    .where(function (x) {
+                        return x !== element;
+                    }).foreach(function(element){
+                        var item = element.querySelector('.reveal-list-item-box.show');
+                        if (item) {
+                            element.classList.remove('slide-over');
+                            item.classList.remove('show');
+                        }
+                    });
+            }
+            if (element) {
+                var item = element.querySelector('.reveal-list-item-box');
+                if (item) {
+                    element.classList.toggle('slide-over');
+                    item.classList.toggle('show');
+                }
+            }
         }
     }
 }).then(function () {

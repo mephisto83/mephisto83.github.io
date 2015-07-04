@@ -1,7 +1,7 @@
 ﻿MEPH.define('Connection.messaging.view.Conversations', {
     alias: 'main_conversations',
     templates: true,
-    extend: 'MEPH.mobile.activity.container.Container',
+    extend: 'Connection.messaging.view.BaseChatActivity',
     mixins: ['MEPH.mobile.mixins.Activity'],
     injections: ['messageService',
         'overlayService',
@@ -17,18 +17,12 @@
         var me = this;
         me.great();
     },
-    onLoaded: function () {
-        var me = this;
-
-    },
+   
     afterShow: function () {
         var me = this;
 
-        if (me.$aftershow) {
-            clearTimeout(me.$aftershow);
-            me.$aftershow = null;
-        }
-        me.$aftershow = setTimeout(function () {
+        if (!me.hasShown) {
+            me.hasShown = true;
             return me.when.injected.then(function () {
                 me.$inj.overlayService.open('openining conversations');
                 me.$inj.overlayService.relegate('openining conversations');
@@ -39,8 +33,12 @@
                 me.$inj.overlayService.close('openining conversations');
                 me.$inj.messageService.healthCheck();
             });
-        }, 500);
+        }
 
+    },
+    afterHide: function () {
+        var me = this;
+        me.hasShown = false;
     },
     removeMeFromConversation: function () {
         var me = this,
@@ -54,18 +52,17 @@
             });
         }).then(function (remove) {
             MEPH.Log('Removing');
-            debugger
             return me.$inj.messageService.removeMeFromConversation(data.id);
         }).catch(function () {
             MEPH.Log('Not removing');
-        }).then(function () {
         });
     },
     openConversation: function () {
         var me = this;
         var data = me.getDomEventArg(arguments);
         me.when.injected.then(function () {
-            me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, { data: data });
+            //me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, { data: data });
+            me.$inj.stateService.setConversation(data);
         }).then(function () {
             MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'chatmessage', path: 'chatmessage' });
         });

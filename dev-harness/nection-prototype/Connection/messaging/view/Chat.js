@@ -1,10 +1,12 @@
 ﻿MEPH.define('Connection.messaging.view.Chat', {
     alias: 'main_chat',
     templates: true,
-    extend: 'MEPH.mobile.activity.container.Container',
+    extend: 'Connection.messaging.view.BaseChatActivity',
     mixins: ['MEPH.mobile.mixins.Activity'],
     injections: ['messageService',
         'relationshipService',
+        'dialogService',
+        'notificationService',
         'overlayService',
         'stateService'],
     requires: ['Connection.messaging.view.chatview.ChatView',
@@ -18,7 +20,8 @@
         inputValue: null,
         messages: null,
         changePossible: true,
-        chatSession: null
+        chatSession: null,
+        disabled: false
     },
     initialize: function () {
         var me = this;
@@ -26,9 +29,84 @@
     },
     onLoaded: function () {
         var me = this;
-
+        me.great();
         me.canchange = true;
         me.cards = MEPH.util.Observable.observable([]);
+        me.when.injected.then(function () {
+            me.$inj.messageService.on('state-changed', function (type, options) {
+                if (options && options.value === 'connected') {
+                    me.disabled = false;
+                }
+                else {
+                    me.disabled = true;
+                }
+            });
+            var conversationData = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversation);
+            me.$conversationSwitch = (me.$conversationSwitch || Promise.resolve()).then(function () {
+                return me.loadCurrentConversation(conversationData, true);
+            });
+            me.$inj.stateService.on(Connection.constant.Constants.CurrentConversation, function (evnt, type, chatSession) {
+                me.$conversationSwitch = me.$conversationSwitch.then(function () {
+                    me.loadCurrentConversation(chatSession);
+                });
+            });
+        });
+    },
+    loadCurrentConversation: function (chatSession, skip) {
+        var me = this;
+        if (chatSession && chatSession.data) {
+            me.setConversation(chatSession.data);
+            if (!skip) {
+                var guid = MEPH.GUID();
+                me.$inj.overlayService.open('openining conversation' + guid);
+                me.$inj.overlayService.relegate('openining conversation' + guid);
+                return me.$inj.messageService.openConversation(chatSession.data).then(function (session) {
+                    if (session) {
+                        me.setConversation(session);
+                    }
+                }).catch(function () {
+                    me.$inj.notificationService.notify({
+                        icon: 'exclamation-triangle',
+                        message: 'Something went wrong.'
+                    });
+                }).then(function () {
+                    me.$inj.overlayService.close('openining conversation' + guid);
+                });
+            }
+            else {
+                return Promise.resolve();
+            }
+        }
+    },
+    removeMessage: function () {
+        var me = this,
+            data = me.getDomEventArg(arguments),
+            scope = 'remove message from group conversation';
+
+        return me.when.injected.then(function () {
+            return me.$inj.dialogService.confirm({
+                title: 'Remove This Message?',
+                message: 'Once you remove the message noone will be able to see it, and it cannot be undone.',
+                yes: 'Remove',
+                no: 'Cancel'
+            });
+        }).then(function (remove) {
+            if (data) {
+                me.$inj.overlayService.open(scope);
+                return me.$inj.messageService
+                    .removeMessage(data, me.chatSession.id)
+                    .catch(function () {
+                        me.$inj.notificationService.notify({
+                            icon: 'exclamation-triangle',
+                            message: 'Couldn\'t remove message from conversation.'
+                        });
+                    });
+            }
+        }).catch(function () {
+        }).then(function () {
+            me.$inj.overlayService.close(scope);
+        });
+
     },
     enterText: function () {
         var me = this;
@@ -66,17 +144,6 @@
             }).join(', ');
         }
     },
-    afterShow: function () {
-        var me = this;
-
-        if (me.$aftershow) {
-            clearTimeout(me.$aftershow);
-            me.$aftershow = null;
-        }
-        me.$aftershow = setTimeout(function () {
-            me.openConversation();
-        }, 500);
-    },
     isReturnHit: function (domData) {
         var me = this;
         if (domData) {
@@ -102,40 +169,15 @@
             me.selectedCardValue = null;
         }
     },
-
-    openConversation: function () {
-        var me = this,
-            chatSession;
-        return me.when.injected.then(function () {
-            me.canchange = false;
-            me.$inj.overlayService.open('openining conversation');
-            chatSession = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversation);//, { data: data }
-            if (chatSession && chatSession.data) {
-                return me.$inj.messageService.openConversation(chatSession.data).then(function (session) {
-                    if (session) {
-                        session.messages = session.messages || [];
-                        me.chatSession = session;
-                        me.messages = MEPH.util.Observable.observable(session.messages);
-                        me.chatSession.cards = MEPH.util.Observable.observable(me.chatSession.cards || []);
-                        me.chatSession.cards.un(null, me);
-                        me.chatSession.cards.on('changed', me.onContactsChange.bind(me), me);
-                        me.onContactsChange();
-                    }
-                });
-            }
-            else {
-                me.chatSession = {
-                    cards: MEPH.util.Observable.observable([])
-                };
-                me.messages = MEPH.util.Observable.observable([]);
-                me.chatSession.cards.on('changed', me.onContactsChange.bind(me));
-                me.canchange = true;
-                me.onContactsChange();
-            }
-        }).catch(function () {
-        }).then(function () {
-            me.$inj.overlayService.close('openining conversation');
-        });
+    setConversation: function (session) {
+        var me = this;
+        if (session) {
+            session.messages = MEPH.util.Observable.observable(session.messages || []);
+            me.chatSession = session;
+            me.chatSession.cards.un(null, me);
+            me.chatSession.cards.on('changed', me.onContactsChange.bind(me), me);
+            me.onContactsChange();
+        }
     },
     gotoEditGroupView: function () {
         var me = this;

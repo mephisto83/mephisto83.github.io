@@ -67,6 +67,7 @@
                 }).then(function (result) {
                     if (result.success && result.authorized) {
                         me.setHeaders(result);
+                        me.setToken(result.token);
                         me.scheduleTokenRefresh(result);
                         MEPH.publish(Connection.constant.Constants.RefreshedToken, {});
                     }
@@ -127,6 +128,7 @@
     start: function (res) {
         var me = this;
         me.setUserId(res.contactId);
+        me.setHeaders(res);
         me.setToken(res.token);
         me.$inj.stateService.set('Messaging Token', res.token);
         me.setRefreshToken(res.refreshToken);

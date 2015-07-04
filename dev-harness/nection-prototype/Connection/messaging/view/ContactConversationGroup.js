@@ -1,12 +1,13 @@
 ﻿MEPH.define('Connection.messaging.view.ContactConversationGroup', {
     alias: 'main_contact_conversation_group',
     templates: true,
-    extend: 'MEPH.mobile.activity.container.Container',
+    extend: 'Connection.messaging.view.BaseChatActivity',
     mixins: ['MEPH.mobile.mixins.Activity'],
     injections: ['messageService',
         'relationshipService',
         'overlayService',
         'dialogService',
+'notificationService',
         'stateService'],
     requires: ['Connection.messaging.view.contactconversationgroupview.ContactConversationGroupView',
         'Connection.template.EditConversationGroupItem', ,
@@ -14,45 +15,73 @@
         'MEPH.list.View'],
     properties: {
         contacts: null,
-        memberNames: null,
         inputValue: null,
-        messages: null,
-        groupContacts: null,
-        changePossible: true,
         currentContact: null,
         chatSession: null
     },
     onLoaded: function () {
         var me = this;
+        me.great();
+
+        me.when.injected.then(function () {
+            var conversationData = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversation);
+            me.$conversationSwitch = (me.$conversationSwitch || Promise.resolve()).then(function () {
+                return me.loadCurrentConversation(conversationData);
+            });
+            me.$inj.stateService.on(Connection.constant.Constants.CurrentConversationContact, function () {
+                me.setupCurrentContact();
+            });
+            me.$inj.stateService.on(Connection.constant.Constants.CurrentConversation, function (evnt, type, chatSession) {
+                me.$conversationSwitch = me.$conversationSwitch.then(function () {
+                    me.loadCurrentConversation(chatSession);
+                });
+            });
+        });
     },
-    afterShow: function () {
+    loadCurrentConversation: function (chatSession, skip) {
+        var me = this;
+        if (chatSession && chatSession.data) {
+            me.setupGroupContacts(chatSession.data);
+            if (!skip) {
+                var guid = MEPH.GUID();
+                me.$inj.overlayService.open(guid);
+                me.$inj.overlayService.relegate(guid);
+
+                return me.$inj.messageService.openConversation(chatSession.data).then(function (session) {
+                    if (session) {
+                        me.setupGroupContacts(session)
+                    }
+                }).catch(function () {
+                    me.$inj.notificationService.notify({
+                        icon: 'exclamation-triangle',
+                        message: 'Something went wrong.'
+                    });
+                }).then(function () {
+                    me.$inj.overlayService.close(guid);
+                });
+            }
+            else {
+                return Promise.resolve();
+            }
+        }
+    },
+    setupGroupContacts: function (conversation) {
         var me = this;
 
-        if (me.$aftershow) {
-            clearTimeout(me.$aftershow);
-            me.$aftershow = null;
-        }
-        me.$aftershow = setTimeout(function () {
-            me.setupGroupContacts();
-        }, 500);
+        me.currentGroupId = conversation.id;
+        me.currentConversation = conversation;
+        me.setupCurrentContact();
+
     },
-    removeContactFromList: function () {
+    setupCurrentContact: function () {
         var me = this,
-            data = me.getDomEventArg(arguments);
-        return me.when.injected.then(function () {
-            return me.$inj.dialogService.confirm({
-                title: 'Remove This Person?',
-                message: 'They won\'t be able to keep chatting with this group.',
-                yes: 'Remove',
-                no: 'Cancel'
-            });
-        }).then(function (remove) {
-            MEPH.Log('Removing');
-            return me.$inj.messageService.removeContactFromConversation(data, me.currentGroupId, me.groupContacts);
-        }).catch(function () {
-            MEPH.Log('Not removing');
-        }).then(function () {
-        });
+currentContact;
+
+        currentContact = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversationContact);//, { data: data }
+        if (currentContact && currentContact.data) {
+            me.currentContact = currentContact.data;
+        }
+
     },
     messageContact: function () {
         var me = this;
@@ -61,33 +90,39 @@
                 .duolog(me.currentContact)
                 .then(function (conversation) {
                     me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, { data: conversation });//, { data: data }
-                    MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'chatmessage', path: 'chatmessage' });
+                    MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
+                        viewId: 'chatmessage', path: 'chatmessage'
+                    });
                 });
         }
     },
-    setupGroupContacts: function () {
-        var me = this,
-            currentContact,
-            currentContacts;
+    removeFromGroup: function () {
+        var me = this;
         return me.when.injected.then(function () {
-            me.$inj.overlayService.open('openining editconversationgroup');
-            currentContacts = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversationContacts);//, { data: data }
-            currentContact = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversationContact);//, { data: data }
-            if (currentContacts && currentContacts.data) {
-                me.currentGroupId = currentContacts.groupId;
-                if (me.groupContacts) {
-                    me.groupContacts.un(me);
-                }
-
-                me.groupContacts = MEPH.util.Observable.observable(currentContacts.data);
+            return me.$inj.dialogService.confirm({
+                title: 'Remove This Person?',
+                message: 'They won\'t be able to keep chatting with this group.',
+                yes: 'Remove',
+                no: 'Cancel'
+            });
+        }).then(function (remove) {
+            var conversation = me.currentConversation;
+            if (conversation && conversation && me.currentContact && me.currentGroupId) {
+                me.$inj.overlayService.open('remove from group conversation');
+                return me.$inj.messageService.removeContactFromConversation(me.currentContact, me.currentGroupId, conversation.cards);
             }
-            if (currentContact && currentContact.data) {
-                me.currentContact = currentContact.data;
+            MEPH.Log('Removing');
+        }).then(function (res) {
+            if (res) {
+                me.goBack();
             }
-
         }).catch(function () {
+            me.$inj.notificationService.notify({
+                icon: 'exclamation-triangle',
+                message: 'Couldn\'t remove person from group.'
+            });
         }).then(function () {
-            me.$inj.overlayService.close('openining editconversationgroup');
+            me.$inj.overlayService.close('remove from group conversation');
         });
     }
 });

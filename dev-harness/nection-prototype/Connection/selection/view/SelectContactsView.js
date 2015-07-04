@@ -28,7 +28,9 @@
         }
         me.$aftershow = setTimeout(function () {
             me.mainview.clear();
-            me.setupContactSelection();
+            me.setupContactSelection().then(function () {
+                me.mainview.loadSearchContacts();
+            });
         }, 500);
     },
     setupContactSelection: function () {
@@ -36,6 +38,7 @@
             currentConfig;
         return me.when.injected.then(function () {
             currentConfig = me.$inj.stateService.get(Connection.constant.Constants.CurrentSelectionConfig);//, { data: data }
+            me.mainview.setCurrentConfig(currentConfig);
         });
     }
 });

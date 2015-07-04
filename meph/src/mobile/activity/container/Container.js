@@ -13,7 +13,8 @@ MEPH.define('MEPH.mobile.activity.container.Container', {
         'MEPH.util.Draggable'],
     properties: {
         $removeHomePageCls: 'meph-view-remove',
-        percentageForDrag: 0.7
+        percentageForDrag: 0.7,
+        isShowing: false
     },
     initialize: function () {
         var me = this;
@@ -76,6 +77,7 @@ MEPH.define('MEPH.mobile.activity.container.Container', {
             dom;
         dom = me.getDomTemplate();
         view = dom.first();
+        me.isShowing = true;
         MEPH.publish(MEPH.Constants.ON_SHOW, me.activityArguments)
         return me.viewTransition(view, { remove: me.$removeHomePageCls }).then(function (x) {
             me.fire('show', {});
@@ -91,6 +93,7 @@ MEPH.define('MEPH.mobile.activity.container.Container', {
             dom = me.getDomTemplate();
 
         view = dom.first();
+        me.isShowing = false;
         MEPH.publish(MEPH.Constants.ON_HIDE, me.activityArguments)
         return me.viewTransition(view, { add: me.$removeHomePageCls }).then(function (x) {
             me.fire('hide', {});

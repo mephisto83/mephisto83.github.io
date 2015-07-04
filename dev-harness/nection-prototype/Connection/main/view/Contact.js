@@ -3,7 +3,8 @@
     templates: true,
     extend: 'Connection.control.contactbase.ContactBase',
     mixins: ['MEPH.mobile.mixins.Activity'],
-    injections: ['contactService', 'relationshipService', 'overlayService'],
+    injections: ['contactService',
+        'messageService', 'relationshipService', 'overlayService'],
     requires: ['MEPH.input.Search',
         'MEPH.util.Style',
         'Connection.control.contactlink.ContactLink',
@@ -77,6 +78,17 @@
                 })
             }
         })
+    },
+    messageContact: function () {
+        var me = this;
+        if (me.contact) {
+            return me.$inj.messageService
+                .duolog(me.contact)
+                .then(function (conversation) {
+                    me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, { data: conversation });//, { data: data }
+                    MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'chatmessage', path: 'chatmessage' });
+                });
+        }
     },
     displayResult: function () {
         var me = this;

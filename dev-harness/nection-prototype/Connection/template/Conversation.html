@@ -1,16 +1,9 @@
 ﻿<li class="list-group-item conversation-list-item">
     <div href="javascript:void(0);" tabindex="0">
-        <div class="conversation-profile-image" style="background-image:url('{{|CC.Card1}}')">
+        <div class="image-row">
+            {{cards|MEPH.util.Template.bindArray,'conversation_profile_image'}}
         </div>
-        <div class="conversation-profile-image" style="background-image:url('{{|CC.Card2}}')">
-        </div>
-        <div class="conversation-profile-image" style="background-image:url('{{|CC.Card3}}')">
-        </div>
-        <div class="converation-item-message">
-            <h4 class="connection-members-name">
-                {{|CC.Names}}
-            </h4>
-        </div>
+       
         <p class="converation-item-message">{{lastMessage.message}}</p>
         <div class="converation-item-message">{{lastMessage.dateCreated | CC.ConversationDate}}</div>
         <div class="conversation-item-button-panel">

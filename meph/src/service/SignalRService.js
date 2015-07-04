@@ -21,7 +21,9 @@
         var me = this, i;
         me.id = MEPH.GUID();
         me.messages = MEPH.util.Observable.observable([]);
+        MEPH.Events(me);
         me.channels = [];
+        me.$signalRServicePromises = [];
         MEPH.apply(args, me);
         me.serviceRPromise = Promise.resolve();
         me.hub = MEPH.getPathValue(me.hubPath);
@@ -45,17 +47,37 @@
 
             me.head.reconnected(function () {
                 me.tryingToReconnect = false;
+
+                me.resolvePending(true);
             });
             me.head.error(function (error) {
                 MEPH.Error(error);
+
+                me.resolvePending(false, error);
             });
 
             me.head.disconnected(function () {
                 if (me.tryingToReconnect) {
                     me.notifyUserOfDisconnect(); // Your function to notify user.
                 }
+                else {
+                    me.resolvePending(false, null);
+                }
             });
         }
+    },
+    resolvePending: function (res, error) {
+        var me = this;
+
+        me.$signalRServicePromises.foreach(function (x) {
+            if (error) {
+                x.tofail(error);
+            }
+            else {
+                x.toresolve(res);
+            }
+        });
+        me.$signalRServicePromises.clear();
     },
     connectionStateChanged: function (state) {
 
@@ -67,6 +89,13 @@
                 4: 'disconnected'
             };
         me.state = stateConversion[state.newState];
+        me.fire('state-changed', {
+            state: state,
+            value: me.state
+        });
+        if (me.state === 'connected') {
+            me.resolvePending(true);
+        }
     },
 
     processMessage: function (x) {
@@ -129,7 +158,7 @@
                     MEPH.publish('SIGNALRMESSAGE', { message: message });
                 }
             };
-            if (me.head)
+            if (me.head) {
                 me.head.start().done(function () {
                     me.started();
                     toresolve();
@@ -137,6 +166,7 @@
                     me.failed();
                     tofail();
                 });
+            }
         }
         else {
             if (tofail)
@@ -146,15 +176,55 @@
         }
         return promise;
     },
+    restart: function () {
+        var me = this;
+        return new Promise(function (toresolve, tofail) {
+            if (me.head) {
+                me.head.start().done(function () {
+                    me.started();
+                    toresolve();
+                }).fail(function () {
+                    me.failed();
+                    tofail();
+                });
+            }
+            else {
+                tofail();
+            }
+        });
+    },
     getChannel: function (channelId) {
         var me = this;
         return me.channels.first(function (x) {
             return x.channelId === channelId;
         });
     },
+    whenStarted: function () {
+        var me = this;
+        if (me.isStarted()) {
+            return Promise.resolve(true);
+        }
+        var obj = {
+
+        };
+        var unresolved = new Promise(function (resolve, fail) {
+            obj.toresolve = resolve;
+            obj.tofail = fail;
+        });
+        me.$signalRServicePromises.push(obj);
+        if (me.state === null) { me.start(); }
+        else if (me.isDisconnected()) {
+            me.restart();
+        }
+        return unresolved;
+    },
     isStarted: function () {
         var me = this;
         return me.state === 'connected';
+    },
+    isDisconnected: function () {
+        var me = this;
+        return me.state === 'disconnected';
     },
     notifyUserOfDisconnect: function () {
         var me = this;

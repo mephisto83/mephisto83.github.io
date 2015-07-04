@@ -12,13 +12,20 @@ MEPH.define('MEPH.overlay.Service', {
         me.templates = [];
         me.div = document.createElement('div');
     },
-    open: function (scope) {
-        var me = this;
+    open: function (scope, options) {
+        var me = this, html;
+        options = options || {};
+        MEPH.applyIf({ template: 'MEPH.overlay.Overlay' }, options);
         var template = me.templates.first(function (x) { return x.scope === scope; });
         if (!template && scope) {
-
-            var template = MEPH.getTemplate('MEPH.overlay.Overlay');
-            me.div.innerHTML = template.template;
+            var template = MEPH.getTemplate(options.template);
+            if (options.bindTo) {
+                html = MEPH.util.Template.bindTemplate(template.template, options.bindTo);
+            }
+            else {
+                html = template.template;
+            }
+            me.div.innerHTML = html;
             var el = me.div.firstElementChild;
             document.body.appendChild(el);
             el.setAttribute('scope', scope);

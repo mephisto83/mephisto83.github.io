@@ -23,8 +23,8 @@
     },
     clear: function () {
         var me = this;
-        me.selectedContacts.clear();
-        me.contacts.clear();
+        me.selectedContacts.dump();
+        me.contacts.dump();
     },
     onLoaded: function () {
         var me = this;
@@ -36,6 +36,7 @@
         me.selectedContacts = MEPH.util.Observable.observable([]);
         MEPH.util.Style.hide(me.selectedContactsSpace);
         me.selectedContacts.on('changed', me.updateSelectedContactsChange.bind(me));
+
     },
     updateSelectedContactsChange: function () {
         var me = this;
@@ -52,10 +53,52 @@
             me.headerdiv.classList.remove('connection-has-selected-contacts');
         }
     },
-    searchContacts: function () {
+    loadSearchContacts: function () {
+        var me = this;
+
+        me.when.injected.then(function () {
+
+            if (me.cancel && me.cancel.abort) {
+                me.cancel.abort();
+            }
+            me.cancel = {};
+            //me.$inj.relationshipService.searchContacts(0, 10, true, val, me.contacts, me.cancel, false, true);
+            me.$inj.relationshipService.search({
+                index: 0,
+                count: 10,
+                initial: true,
+                search: '',
+                source: me.contacts,
+                cancel: me.cancel,
+                useSearch: true,
+                skipLocalContacts: true,
+                filter: function (data) {
+                    return !me.violatesContactConfig(data) && !me.selectedContacts.some(function (x) {
+
+                        return x && x.card === data.card
+                    });
+                }
+            });
+
+        })
+    },
+    violatesContactConfig: function (data) {
+        var me = this;
+        if (me.currentConfig && me.currentConfig.contacts) {
+            if (me.currentConfig.contacts.some(function (x) { return x.card === data.card; })) {
+                return true;
+            }
+        }
+        return false;
+    },
+    setCurrentConfig: function (config) {
+        var me = this;
+        me.currentConfig = config;
+    },
+    searchContacts: function (force) {
         var me = this,
             val = me.getSearchValue();
-        if (me.$lastValue === val || !val) return;
+        if (me.$lastValue === val) return;
         me.$lastValue = val;
         me.searchThrottle = me.searchThrottle || MEPH.throttle(function () {
             me.when.injected.then(function () {
@@ -66,7 +109,7 @@
                 val = me.getSearchValue();
                 me.cancel = {};
                 //me.$inj.relationshipService.searchContacts(0, 10, true, val, me.contacts, me.cancel, false, true);
-                me.$inj.relationshipService.search({
+                return me.$inj.relationshipService.search({
                     index: 0,
                     count: 10,
                     initial: true,
@@ -76,23 +119,33 @@
                     useSearch: true,
                     skipLocalContacts: true,
                     filter: function (data) {
-                        return !me.selectedContacts.some(function (x) { return x.card === data.card });
+                        return !me.violatesContactConfig(data) && !me.selectedContacts.some(function (x) { return x && x.card === data.card });
                     }
                 });
 
             })
         }, 500);
-        me.searchThrottle();
+        return me.searchThrottle();
     },
     toggleSelected: function () {
         var me = this, data = me.getDomEventArg(arguments);
-        var filter = function (x) {
-            return x.card === data.card;
-        };
-        if (!me.selectedContacts.some(filter)) {
-            me.selectedContacts.push(data);
-        }
-        me.contacts.removeWhere(filter);
+        if (!data) return;
+
+        return Promise.resolve().then(function () {
+            var filter = function (x) {
+                return x.card === data.card;
+            };
+            if (!me.selectedContacts.some(filter)) {
+                me.selectedContacts.push(data);
+            }
+            //me.contacts.removeWhere(filter);
+            // me.contacts.dump();
+            if (me.searchThrottle)
+                return me.searchThrottle();
+            else {
+                return me.searchContacts();
+            }
+        });
     },
     addContacts: function () {
         var me = this;
@@ -105,13 +158,14 @@
                     no: 'Cancel'
                 });
             }).then(function (remove) {
+                me.$inj.overlayService.open('selection - view - add- contacts');
                 var currentConversation = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversation);
                 if (currentConversation && currentConversation.data && currentConversation.data.id) {
                     var conversation = me.$inj.messageService.getConversationById(currentConversation.data.id);
                     if (conversation) {
                         return me.$inj.messageService.addContactsToConversation(me.selectedContacts.select(function (x) {
                             return x.card;
-                        }), currentConversation.data.id, conversation.cards).then(function (conversation) {
+                        }), currentConversation.data.id, conversation.cards).then(function () {
                             me.$inj.stateService.setConversation(conversation);
                             //me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, {
                             //    data: conversation
@@ -128,28 +182,38 @@
                     return me.$inj.messageService.createConversation(me.selectedContacts.select(function (x) {
                         return x.card;
                     })).then(function (conversation) {
-                        debugger
                         me.$inj.stateService.setConversation(conversation);
                         me.goBack();
                     });
                 }
                 MEPH.Log('Add');
                 //   return me.$inj.messageService.removeContactFromConversation(data, me.currentGroupId, me.groupContacts);
+            }).then(function () {
+                me.$inj.overlayService.close('selection - view - add- contacts');
             }).catch(function () {
                 MEPH.Log('Not add');
             }).then(function () {
             });
     },
     removeTouched: function () {
-        var me = this, data = me.getDomEventArg(arguments);
 
-        var filter = function (x) {
-            return x.card === data.card;
-        };
-        if (!me.contacts.some(filter)) {
-            me.contacts.push(data);
-        }
-        me.selectedContacts.removeWhere(filter);
+        var me = this, data = me.getDomEventArg(arguments);
+        if (!data) return;
+        return Promise.resolve().then(function () {
+            var filter = function (x) {
+                return x.card === data.card;
+            };
+
+            //me.contacts.dump();
+            me.selectedContacts.removeWhere(filter);
+            //if (!me.contacts.some(filter))
+            //    me.contacts.push(data);
+            if (me.searchThrottle)
+                return me.searchThrottle();
+            else {
+                return me.searchContacts();
+            }
+        });
     },
     getSearchValue: function () {
         var me = this;

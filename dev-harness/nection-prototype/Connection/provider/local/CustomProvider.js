@@ -25,7 +25,7 @@ MEPH.define('Connection.provider.local.CustomProvider', {
         });
         me.great();
     },
-    logout:function(){
+    logout: function () {
     },
     onInjectionsComplete: function () {
         var me = this;
@@ -103,6 +103,20 @@ MEPH.define('Connection.provider.local.CustomProvider', {
                 cards.push.apply(cards, updatedcards);
                 me.cards = cards;
                 return res;
+            }).catch(function () {
+                return Promise.reject('Failed to cards ');
+            });
+        });
+    },
+    retrieveCards: function () {
+        var me = this;
+        return me.ready.then(function () {
+            return me.$inj.rest.addPath('contact/me/cards').get().then(function (res) {
+                if (res.authorized && res.success) {
+                    var updatedcards = res.cards.select(function (x) { x.name = x.name ? x.name : '< unnamed >'; return x; });
+                    return updatedcards;
+                }
+                return Promise.reject('Failed to cards ');
             }).catch(function () {
                 return Promise.reject('Failed to cards ');
             });

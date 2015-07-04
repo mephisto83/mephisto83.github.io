@@ -1,14 +1,12 @@
 ﻿<li class="list-group-item contact-list-item">
-    <a href="javascript:void(0);" tabindex="0">
-        <div class="row">
-            <div class="col-xs-4 ">
-                <div style="background-image:url('{{profileimage}}')" class="connection-list-profile-image"></div>
-            </div>
-            <div class="col-xs-7 contact-list-item-information">
-                <div>{{name}}</div>
-                <a href="javascript:void(0);" template-event="remove"><i class="fa fa-times fa-4x"></i></a>
-                <a href="javascript:void(0);" template-event="exclamation"><i class="fa fa-exclamation-circle fa-4x"></i></a>
-            </div>
+    <div class="row">
+        <div class="col-xs-4 ">
+            <div style="background-image:url('{{profileimage}}')" class="connection-list-profile-image"></div>
         </div>
-    </a>
+        <div class="col-xs-7 contact-list-item-information">
+            <div>{{name}}</div>
+            <button class="list-item-button" template-event="remove"><i class="fa fa-times fa-2x"></i></button>
+            <button class="list-item-button" template-event="exclamation"><i class="fa fa-exclamation-circle fa-2x"></i></button>
+        </div>
+    </div>
 </li>

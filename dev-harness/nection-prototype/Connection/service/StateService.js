@@ -17,18 +17,40 @@
 
     },
     set: function (type, state) {
+        var me = this, changed = false;
+        if (me.state[type] !== state) {
+            me.state[type] = state;
+            me.fire(type, 'change', me.state[type]);
+        }
+    },
+    getConversation: function () {
         var me = this;
-        me.state[type] = state;
-        me.fire(type, 'change');
+        return me.get(Connection.constant.Constants.CurrentConversation);
+    },
+    clearConversation: function () {
+        var me = this;
+        me.set(Connection.constant.Constants.CurrentConversation, null);
+        me.set(Connection.constant.Constants.CurrentConversationContacts, null);
+    },
+    newConversation: function () {
+        var me = this;
+        var conversation = {
+            id: null,
+            cards: MEPH.util.Observable.observable([]),
+            messages: MEPH.util.Observable.observable([]),
+            lastMessage: null,
+            dataCreated: null
+        }
+        me.setConversation(conversation);
     },
     setConversation: function (conversation) {
         var me = this;
-        me.set(Connection.constant.Constants.CurrentConversation, {
-            data: conversation
-        });
         me.set(Connection.constant.Constants.CurrentConversationContacts, {
             groupId: conversation ? conversation.id : null,
             data: conversation ? conversation.cards : null
+        });
+        me.set(Connection.constant.Constants.CurrentConversation, {
+            data: conversation
         });
     },
     get: function (type) {

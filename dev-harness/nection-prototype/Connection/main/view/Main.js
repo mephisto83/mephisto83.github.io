@@ -57,6 +57,10 @@
                 return Promise.resolve().then(function () {
                     return me.$inj.overlayService.open('connection-main');
                 }).then(function () {
+                    me.$inj.notificationService.notify({
+                        icon: 'cog',
+                        message: 'Loading cache'
+                    });
                     return me.$inj.relationshipService.loadCache();
                 }).then(function () {
                     return me.$inj.relationshipService.composeCards(me.listsource);
@@ -97,6 +101,10 @@
                      MEPH.Error('There was a problem getting contacts from the device')
                  }).then(function () {
                      MEPH.Log('Get contact list ', 5)
+                     me.$inj.notificationService.notify({
+                         icon: 'cog',
+                         message: 'Got contact list'
+                     });
                      return me.$inj.relationshipService.getContactList()
                  }).then(function (contactListFromServer) {
                      MEPH.Log('Set contact list ', 5)
@@ -105,6 +113,10 @@
                  }).catch(function () {
                      MEPH.Error('an error occurred while getting my contact list from the server')
                  }).then(function () {
+                     me.$inj.notificationService.notify({
+                         icon: 'cog',
+                         message: 'Get my relationships'
+                     });
                      MEPH.Log('Get my relationship contacts', 5)
                      return me.$inj.relationshipService.getMyRelationshipContacts();
                  }).then(function (mycontacts) {
@@ -125,14 +137,48 @@
                  }).catch(function () {
                      MEPH.Error('Something went wrong composing the cards.');
                  }).then(function () {
-                     if (!me.$hasSearched) {
+                     if (!me.$hasSearched || me.listsource.length === 0) {
                          //   me.$inj.relationshipService.searchContacts(0, me.searchlimit, true, '', me.listsource);
-                         me.$inj.relationshipService.search({
-                             index: 0,
-                             count: me.searchlimit,
-                             initial: true,
-                             search: '',
-                             source: me.listsource
+                         me.$inj.notificationService.notify({
+                             icon: 'cog',
+                             message: 'Searching for contacts'
+                         });
+
+                         if (me.cancel && me.cancel.abort) {
+                             me.cancel.abort();
+                         }
+                         me.cancel = {};
+                         try {
+                             me.$inj.relationshipService.search({
+                                 index: 0,
+                                 count: 10,
+                                 initial: true,
+                                 search: '',
+                                 cancel: me.cancel,
+                                 useSearch: false,
+                                 source: me.listsource
+                             }).then(function () {
+                                 me.$inj.notificationService.notify({
+                                     icon: 'cog',
+                                     message: 'Finished searching: ' + me.listsource.length
+                                 });
+                             }).catch(function (e) {
+                                 me.$inj.notificationService.notify({
+                                     icon: 'cog',
+                                     message: 'Search failed: ' + (e ? e.message : '')
+                                 });
+                             });
+                         } catch (e) {
+                             me.$inj.notificationService.notify({
+                                 icon: 'cog',
+                                 message: 'Search failed: ' + (e ? e.message : '')
+                             });
+                         }
+                     }
+                     else {
+                         me.$inj.notificationService.notify({
+                             icon: 'cog',
+                             message: 'Not searching for contacts'
                          });
                      }
                      return me.$inj.overlayService.close('connection-main');

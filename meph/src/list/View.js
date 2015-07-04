@@ -62,14 +62,21 @@ MEPH.define('MEPH.list.View', {
                     return x && x.getAttribute ? x.getAttribute('template-event') : null;
                 });
                 if (potentialEvent && element && MEPH.util.Dom.isDomDescendant(potentialEvent, element)) {
-                    me.when.injected.then(function () {
-                        me.$inj.notificationService.notify({ message: potentialEvent.getAttribute('template-event') });
-                    })
+                    //me.when.injected.then(function () {
+                    //    me.$inj.notificationService.notify({ message: potentialEvent.getAttribute('template-event') });
+                    //})
                     element.dispatchEvent(MEPH.createEvent(potentialEvent.getAttribute('template-event'), {
                         data: me.source[index],
                         index: index,
                         argument: potentialEvent.getAttribute('template-event-argument') || null
                     }));
+                    var func = potentialEvent.getAttribute('template-function');
+                    if (func) {
+                        func = MEPH.getPathValue(func);
+                        if (func) {
+                            func(me.source[index], index, listItemEl, element, potentialEvent.getAttribute('template-event-argument') || null, me);
+                        }
+                    }
                     prevent = true;
                 }
                 if (!(me.customEventPrevent === 'true' && prevent)) {
@@ -91,6 +98,7 @@ MEPH.define('MEPH.list.View', {
     addListListeners: function (obj) {
         var me = this;
         if (obj && Array.isArray(obj) && obj.on) {
+            me.$boundSource.length = 0;
             obj.on('changed', me.updateList.bind(me), me);
             obj.on('synchronized', me.synchronizeList.bind(me), me);
         }
@@ -303,11 +311,11 @@ MEPH.define('MEPH.list.View', {
                     return t.item === x;
                 });
 
-                if (type === 'synchronized')
+                if (type === 'synchronized') {
                     removed.forEach(function (t) {
                         MEPH.util.Dom.removeFromDom(t.el);
                     });
-
+                }
             });
             if (type === 'synchronized') {
 
@@ -318,12 +326,39 @@ MEPH.define('MEPH.list.View', {
                     div.innerHTML = res.html;
                     var ch = div.firstElementChild;
                     ch.setAttribute('data-item-index', me.source.indexOf(t))
+                    if (t.un) {
+                        t.un(null, me);
+                    }
                     // me.listelement.appendChild(ch);
                     return div.innerHTML;
                 }).join('');
 
                 if (me.listelement) {
+
                     me.listelement.innerHTML = html;
+                    var count = me.source.length;
+                    var first = me.listelement.querySelector('[data-item-index="0"]');
+                    me.$boundSource.forEach(function (t) {
+                        if (t.item && t.item.un) {
+                            t.item.un(null, me);
+                        }
+                    });
+                    me.$boundSource.length = 0;
+                    first = {
+                        nextElementSibling: first
+                    };
+                    for (var i = 0 ; i < count ; i++) {
+                        var ch = first.nextElementSibling;
+                        first = first.nextElementSibling;
+                        var t = me.source[i];
+                        var boundItem = {
+                            el: ch,
+                            item: t
+                        };
+                        me.$boundSource.push(boundItem);
+                        if (t.on)
+                            t.on('altered', me.updateItem.bind(me, t, boundItem), me);
+                    }
                 }
             }
         }

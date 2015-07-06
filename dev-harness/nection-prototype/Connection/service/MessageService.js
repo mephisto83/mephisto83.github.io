@@ -20,7 +20,10 @@
         var me = this;
         me.mixins.injectable.init.apply(me);
         me.$healthCheckPromise = Promise.resolve();
+        me.$checkMessagesPromise = Promise.resolve();
         me.monitoredConversations = MEPH.util.Observable.observable([]);
+        me.conversationSettings = MEPH.util.Observable.observable([]);
+
         me.contactCardCollection = [];
         me.temporarilyDeleted = [];
         me.connected = false;
@@ -92,6 +95,9 @@
                             case 'MessageUpdate':
                                 me.updateMessages(update);
                                 break;
+                            case 'ConversationSetting':
+                                me.updateConversationSettings(update);
+                                break;
                         }
                     });
                 }
@@ -137,7 +143,9 @@
             me.$inj.overlayService.close('signal-service-state');
             if (options.value === 'disconnected') {
                 setTimeout(function () {
-                    me.$inj.signalService.restart();
+                    me.$inj.signalService.restart().then(function(){
+                        return me.addConnection();
+                    });
                 }, 5000);
             }
             me.fire(type, options);
@@ -466,6 +474,23 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
         }
 
     },
+    updateConversationSettings: function (update) {
+        var me = this;
+        var settings = me.conversationSettings.first(function (setting) {
+            if (setting.id === update.Group) {
+                return setting;
+            }
+        });
+        if (!settings) {
+            settings = { id: update.Group };
+            me.conversationSettings.push(settings);
+        }
+        if (settings) {
+            settings.notificationValue = update.NotificationValue;
+            settings.notificationExpiration = update.NotificationExpiration && !isNaN(update.NotificationExpiration) ? Date.now() + update.NotificationExpiration : null;
+        }
+
+    },
     monitorConversation: function (conversation) {
         var me = this, result = [];
         var res = MEPH.util.Array.convert(arguments).where(function (conversation) {
@@ -695,6 +720,36 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
                 });
             });
     },
+    updateConversationMessages: function (conversation) {
+        var me = this;
+        if (conversation && conversation.id) {
+            
+
+            var convo = me.getConversationById(conversation.id);
+            me.checkMessages(convo.messages.select(function (x) {
+                return x.id;
+            }), convo.id);
+        }
+    },
+    checkMessages: function (messages, group) {
+        var me = this;
+        if (messages && messages.length && group) {
+            me.$checkMessagesPromise = me.$checkMessagesPromise.then(function () {
+                return me.when.injected.then(function () {
+                    return me.$inj.rest.nocache().addPath('messages/check')
+                          .post({
+                              communicationGroup: group,
+                              messages: messages
+                          }).catch(function () {
+                              me.$inj.notificationService.notify({
+                                  icon: 'exclamation-triangle',
+                                  message: 'Something went checking the messages'
+                              });
+                          });
+                });
+            });
+        }
+    },
     healthCheck: function () {
         var me = this;
         me.$healthCheckPromise = me.$healthCheckPromise.then(function () {
@@ -777,7 +832,29 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
 
         });
     },
+    updateConversationProperty: function (property, value, group) {
+        var me = this;
+        return me.when.injected.then(function () {
+            return me.getToken().then(function (token) {
+                return me.$inj.rest.nocache().addPath('messages/update/conversation/settings')
+                        .post({
+                            communicationGroup: group,
+                            property: property,
+                            value: value
+                        }).then(function (result) {
+                            if (result.success && result.authorized) {
 
+                            }
+                            else {
+                                me.$inj.notificationService.notify({
+                                    icon: 'exclamation-triangle',
+                                    message: 'Could not update settings for some reason.'
+                                });
+                            }
+                        });
+            });
+        });
+    },
     removeMessage: function (message, id) {
         var me = this;
         return me.when.injected.then(function () {

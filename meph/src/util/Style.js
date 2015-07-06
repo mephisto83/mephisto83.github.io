@@ -17,16 +17,16 @@
         },
         clearPosition: function (dom, onlytransform) {
             if (dom) {
-                requestAnimationFrame(function () {
-                    if (!onlytransform) {
-                        dom.style.left = '';
-                        dom.style.top = '';
-                        dom.style.right = '';
-                        dom.style.bottom = '';
-                    }
-                    dom.style.webkitTransform = '';
-                    dom.style.transform = '';
-                });
+                //       requestAnimationFrame(function () {
+                if (!onlytransform) {
+                    dom.style.left = '';
+                    dom.style.top = '';
+                    dom.style.right = '';
+                    dom.style.bottom = '';
+                }
+                dom.style.webkitTransform = '';
+                dom.style.transform = '';
+                //     });
             }
         },
         setPosition: function (dom, x, y) {

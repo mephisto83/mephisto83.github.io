@@ -117,6 +117,38 @@
             MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'contactconversationgroup', path: 'contactconversationgroup' });
         });
     },
+    chooseNotifications: function () {
+        var me = this;
+        return me.when.injected.then(function () {
+            return me.$inj.dialogService.choice({
+                title: 'Select...',
+                message: 'Mute notifications for this conversation.',
+                choices: [{
+                    text: 'For 15 Minutes',
+                    value: 1,
+                }, {
+                    text: 'For 1 hour',
+                    value: 2,
+                }, {
+                    text: 'For 8 hours',
+                    value: 3,
+                }, {
+                    text: 'For 24 hours',
+                    value: 4,
+                }, {
+                    text: 'Until I turn it back on',
+                    value: 5,
+                }]
+            });
+        }).then(function (value) {
+            me.$inj.overlayService.open('changing notification settings');
+            return me.$inj.messageService.updateConversationProperty("Notifications", value, me.currentGroupId);
+        }).catch(function () {
+        }).then(function () {
+
+            me.$inj.overlayService.close('changing notification settings');
+        });
+    },
     removeContactFromList: function () {
         var me = this,
             data = me.getDomEventArg(arguments);

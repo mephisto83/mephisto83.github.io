@@ -445,3 +445,33 @@ $notificationHeight: 50px;
         top: 20%;
     }
 }
+
+.meph-ptr-reset {
+    transition: all .25s ease;
+
+    .meph-ptr {
+        -webkit-transform: translate3d( 0, 0, 0 );
+        transform: translate3d( 0, 0, 0 );
+    }
+}
+
+.meph-ptr-refresh,
+.meph-ptr-loading {
+    transition: all .25s ease;
+
+    &:before {
+        -webkit-animation: fa-spin 2s infinite linear;
+        animation: fa-spin 2s infinite linear; 
+        content: "\f021";
+        font-family: "FontAwesome";
+        font-size: 30px;
+        top: auto;
+        position: absolute;
+        left: 50%;
+    }
+
+    .meph-ptr {
+        -webkit-transform: translate3d( 0, 50px, 0 );
+        transform: translate3d( 0, 50px, 0 );
+    }
+}

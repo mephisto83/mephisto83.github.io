@@ -3,6 +3,8 @@
 
         <listview data-bind='"source": "v$.listsource"'
                   prevent-bounce="true"
+                  pull-to-refresh="true"
+                  meph-event-refresh-request="v$.refreshList"
                   meph-event-itemclick="v$.openContact"
                   meph-data-renderondemand="true">
             <template name="Connection.template.ContactItem">

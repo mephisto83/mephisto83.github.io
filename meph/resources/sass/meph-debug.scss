@@ -36,8 +36,8 @@ $image-search-path: './' !default;
 //$relative-image-path-for-uis: true; // defaults to "../images/" when true
 @import "variables";
 @import "bootstrap";
-@import 'meph-default/all';
 @import 'scss/font-awesome';
+@import 'meph-default/all';
 @import 'bootstrapsocial';
 
 .graphwrap {

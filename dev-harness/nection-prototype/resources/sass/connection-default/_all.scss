@@ -10,8 +10,8 @@ $contact-list-item-typeahead-height: 35px;
 $common-contacts-badge-size: 30px;
 $profile-image-border-width: 2px;
 $padding-size: $padding-standard;
-$button-dim: 58px;
-$connection-box-indicator-padding: 7px;
+$button-dim: 70px;
+$connection-box-indicator-padding: 17px;
 $padding-to-the-left: $connection-box-indicator-padding;
 $conversation-row-horizontal-margin: -10px;
 $conversation-row-bottom-margin: 4px;
@@ -64,7 +64,7 @@ $view-header-body-padding-botttom: 0px;
 $profile_height: 200px;
 $profile_width: 200px;
 
-$message-box-top: 135px;
+$message-box-top: 125px;
 
 $profile_height_sm: 100px;
 $profile_width_sm: 100px;
@@ -603,6 +603,10 @@ $meph-activity-view-footer-height: 50px;
             border-color: $color2;
         }
 
+        .dialog-row.dialog-row-button:active {
+            background-color: $color2;
+        }
+
         [editrelationship] {
             h2 {
                 margin: $margin-stardard;
@@ -622,6 +626,21 @@ $meph-activity-view-footer-height: 50px;
         .contact-list-item div.conversation-message-message {
             padding-right: 15px;
             color: $color5;
+        }
+
+        .connection-box-button {
+            background-color: $color1;
+            color: $color3;
+            height: $button-dim;
+            width: $button-dim;
+            top: 0;
+            left: 0;
+            position: absolute;
+            border-radius: 50%;
+
+            i.fa {
+                padding: 0;
+            }
         }
 
         button.connection-top-menu-button {

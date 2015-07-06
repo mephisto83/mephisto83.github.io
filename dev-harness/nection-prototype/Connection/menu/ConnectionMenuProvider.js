@@ -140,6 +140,15 @@
             });
 
         }
+        else if (me.loggedIn) {
+            res.push({
+                connectionmenu: true,
+                name: 'Chat',
+                viewId: 'chat',
+                cls: 'fa fa-weixin',
+                path: 'chat'
+            });
+        }
 
         if (me.mode === 'edit') {
 
@@ -206,13 +215,13 @@
                 path: 'accounts'
             });
             if (me.mode !== 'chat') {
-                res.push({
-                    connectionmenu: true,
-                    name: 'Chat',
-                    viewId: 'chat',
-                    cls: 'fa fa-weixin',
-                    path: 'chat'
-                });
+                //res.push({
+                //    connectionmenu: true,
+                //    name: 'Chat',
+                //    viewId: 'chat',
+                //    cls: 'fa fa-weixin',
+                //    path: 'chat'
+                //});
             }
             res.push({
                 connectionmenu: true,

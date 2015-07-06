@@ -1,0 +1,12 @@
+﻿<div class="overlay no-animation dialog">
+    <div class="dialog-message"><i class="fa fa-question-circle "></i>{{title}}</div>
+    <div class="row dialog-row">
+        <div class="col-xs-12">{{message}}</div>
+    </div>
+    {{choices|MEPH.util.Template.bindArray,'dialog_choice_item'}}
+    <div class="row dialog-row" template-event="dialog-choice-cancel" template-event-argument="cancel">
+        <div class="col-xs-12">
+            Cancel
+        </div>
+    </div>
+</div>

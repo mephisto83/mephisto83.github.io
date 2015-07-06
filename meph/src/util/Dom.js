@@ -446,6 +446,195 @@ MEPH.define('MEPH.util.Dom', {
             }
             return element;
         },
+        pullToRefresh: function (options) {
+            options = options || {};
+            var contentEl = options.contentEl;
+            var containerEl = options.containerEl;
+            var ptrEl = options.ptrEl;
+            var distanceToRefresh = options.distanceToRefresh || 70;
+            var loadingFunction = options.loadingFunction || null;
+            var resistance = options.resistance || 2.4;
+
+            if (!contentEl || !containerEl)
+                return;
+
+            var pan = {};
+
+            contentEl.classList.add('meph-ptr');
+
+            var obj = {
+                _panStart: function () {
+                    pan.startingPositionY = contentEl.scrollTop;
+
+                    if (pan.startingPositionY === 0) {
+                        pan.enabled = true;
+                    }
+                },
+                _panDown: function (e) {
+                    if (!pan.enabled) {
+                        return;
+                    }
+                    if (e.distance > distanceToRefresh)
+                        e.preventDefault();
+                    pan.distance = e.distance / resistance;
+                    MEPH.Log('pan distance ' + pan.distance);
+                    obj._setContentPan();
+                    obj._setBodyClass();
+                },
+                _setBodyClass: function _setBodyClass() {
+                    if (pan.distance > distanceToRefresh) {
+                        containerEl.classList.add('meph-ptr-refresh');
+                    } else {
+                        containerEl.classList.remove('meph-ptr-refresh');
+                    }
+                },
+                _setContentPan: function _setContentPan() {
+                    // Use transforms to smoothly animate elements on desktop and mobile devices
+                    contentEl.style.transform = contentEl.style.webkitTransform = 'translate3d( 0, ' + pan.distance + 'px, 0 )';
+                    if (ptrEl)
+                        ptrEl.style.transform = ptrEl.style.webkitTransform = 'translate3d( 0, ' + (pan.distance - ptrEl.offsetHeight) + 'px, 0 )';
+                },
+                _panUp: function (e) {
+                    if (!pan.enabled || pan.distance === 0) {
+                        return;
+                    }
+
+                    if (e.distance > distanceToRefresh)
+                        e.preventDefault();
+
+                    if (pan.distance < e.distance / resistance) {
+                        pan.distance = 0;
+                    } else {
+                        pan.distance = e.distance / resistance;
+                    }
+
+                    obj._setContentPan();
+                    obj._setBodyClass();
+                },
+                _doLoading: function () {
+                    var lf = loadingFunction ? loadingFunction() : null;
+                    if (lf) {
+                        lf.then(function () {
+                            // For UX continuity, make sure we show loading for at least one second before resetting
+                            setTimeout(function () {
+                                // Once actual loading is complete, reset pull to refresh
+                                obj._doReset();
+                            }, 1000);
+                        });
+                    }
+                    else {
+                        setTimeout(function () {
+                            obj._doReset();
+                        }, 1000);
+                    }
+
+                },
+                _doReset: function () {
+                    containerEl.classList.remove('meph-ptr-loading');
+                    containerEl.classList.remove('meph-ptr-refresh');
+                    containerEl.classList.add('meph-ptr-reset');
+                    var executed = false;
+                    var bodyClassRemove = function () {
+                        containerEl.classList.remove('meph-ptr-reset');
+                        executed = true;
+                        containerEl.removeEventListener('transitionend', bodyClassRemove, false);
+
+                    };
+                    setTimeout(function () {
+                        if (!executed) {
+                            bodyClassRemove();
+                        }
+                    }, 1000);
+                    containerEl.addEventListener('transitionend', bodyClassRemove, false);
+                },
+                _panEnd: function (e) {
+                    if (!pan.enabled) {
+                        return;
+                    }
+
+                    if (e.distance > distanceToRefresh)
+                    e.preventDefault();
+                    MEPH.util.Style.clearPosition(contentEl, true);
+                    if (ptrEl)
+                        MEPH.util.Style.clearPosition(ptrEl, true);
+
+                    if (containerEl.classList.contains('meph-ptr-refresh')) {
+                        obj._doLoading();
+                    } else {
+                        obj._doReset();
+                    }
+
+                    pan.distance = 0;
+                    pan.enabled = false;
+                }
+            };
+            MEPH.Events(obj);
+            MEPH.util.Dom.touchExtEvents(contentEl, { threshold: 10 });
+            obj.don(['mousedown', 'touchstart'], contentEl, obj._panStart);
+            obj.don(['touchmove-up'], contentEl, obj._panUp);
+            obj.don(['touchmove-down'], contentEl, obj._panDown);
+            obj.don(['mouseup', 'touchend', 'touchleave', 'mouseout'], containerEl, obj._panEnd);
+
+        },
+
+        touchExtEvents: function touchExtEvents(el, options) {
+            var touchsurface = el,
+            swipedir,
+            startX,
+            startY,
+            distX,
+            distY,
+            elapsedTime,
+            startTime;
+            options = options || {};
+            var threshold = options.threshold || 150; //required min distance traveled to be considered swipe
+            var restraint = options.restraint || 100; // maximum distance allowed at the same time in perpendicular direction
+
+            stretchMargin = options.stretchMargin || 10;
+            var started = false;
+            touchsurface.addEventListener('touchstart', function (e) {
+                var touchobj = MEPH.util.Dom.getScreenEventPositions(e)[0];
+                swipedir = 'none';
+                dist = 0;
+                startX = touchobj.x;
+                startY = touchobj.y;
+
+                started = true;
+            }, false)
+            var distance;
+            var touchMoveHandler = function (e) {
+                if (started) {  //      requestAnimationFrame(function () {
+                    var touchobj = MEPH.util.Dom.getScreenEventPositions(e)[0];
+                    distX = touchobj.x - startX; // get horizontal dist traveled by finger while in contact with surface
+                    distY = touchobj.y - startY; // get vertical dist traveled by finger while in contact with surface
+                    swipedir = 'none';
+
+                    if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint) { // 2nd condition for horizontal swipe met
+                        swipedir = (distX < 0) ? 'left' : 'right' // if dist traveled is negative, it indicates left swipe
+                        distance = Math.abs(distX);
+                    }
+                    else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint) { // 2nd condition for vertical swipe met
+                        swipedir = (distY < 0) ? 'up' : 'down' // if dist traveled is negative, it indicates up swipe
+                        distance = Math.abs(distY);
+                    }
+                    if (swipedir !== 'none')
+                        touchsurface.dispatchEvent(MEPH.createEvent('touchmove-' + swipedir, { distance: distance }))
+                    //    });
+                }
+            }
+            touchsurface.addEventListener('touchmove', touchMoveHandler, false);
+            touchsurface.addEventListener('mousemove', touchMoveHandler, false);
+            var touchEndHandler = function (e) {
+                requestAnimationFrame(function () {
+                    started = false;
+                });
+            };
+            touchsurface.addEventListener('touchend', touchEndHandler, false);
+            touchsurface.addEventListener('touchleave', touchEndHandler, false);
+            touchsurface.addEventListener('mouseleave', touchEndHandler, false);
+            touchsurface.addEventListener('mouseout', touchEndHandler, false);
+
+        },
         /**
          * Adds simple data entry to disposable elements
          * @param {Object} me
@@ -602,8 +791,7 @@ MEPH.define('MEPH.util.Dom', {
                         e.preventDefault();
                 });
             }, false)
-        }
-  ,
+        },
         calculateOverlap: function (dom, rect) {
             var rec = dom.getBoundingClientRect();
             var maxleft = Math.max(rect.left, rec.left);

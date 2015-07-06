@@ -17,7 +17,7 @@
         var me = this;
         me.great();
     },
-   
+
     afterShow: function () {
         var me = this;
 
@@ -63,8 +63,11 @@
         me.when.injected.then(function () {
             //me.$inj.stateService.set(Connection.constant.Constants.CurrentConversation, { data: data });
             me.$inj.stateService.setConversation(data);
+
         }).then(function () {
             MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'chatmessage', path: 'chatmessage' });
+        }).then(function () {
+            me.$inj.messageService.updateConversationMessages(data);
         });
     },
     searchDynChanged: function () {

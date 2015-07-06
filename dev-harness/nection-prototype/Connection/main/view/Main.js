@@ -3,7 +3,10 @@
     templates: true,
     extend: 'MEPH.mobile.activity.container.Container',
     mixins: ['MEPH.mobile.mixins.Activity'],
-    injections: ['relationshipService', 'overlayService', 'notificationService'],
+    injections: ['relationshipService',
+        'overlayService',
+        'messageService',
+        'notificationService'],
     requires: ['MEPH.input.Search',
         'MEPH.util.Observable',
         'MEPH.list.View',
@@ -186,6 +189,16 @@
         });;
 
     },
+    refreshList: function () {
+        var me = this,
+            data = me.getDomEventArg(arguments);
+
+        if (data && data.promise) {
+            var val = me.mainview.searchInput.value; //MEPH.Array(arguments).last().domEvent.val;//
+
+            data.promise(me._search(val, true));
+        }
+    },
     toImageSource: function () {
         var me = this;
         return 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
@@ -220,23 +233,27 @@
         }
         me.$last_val = val;
         me.$timeout = setTimeout(function () {
+            me._search(val, search);
 
-            if (me.cancel && me.cancel.abort) {
-                me.cancel.abort();
-            }
-            me.cancel = {};
-            me.$hasSearched = true;
-            //  me.$inj.relationshipService.searchContacts(0, me.searchlimit, true, val, me.listsource, me.cancel, search);
-            me.$inj.relationshipService.search({
-                index: 0,
-                count: me.searchlimit,
-                initial: true,
-                search: val,
-                source: me.listsource,
-                cancel: me.cancel,
-                useSearch: search //|| val.length < 4
-            });
         }, 500);
+    },
+    _search: function (val, search) {
+        var me = this;
+        if (me.cancel && me.cancel.abort) {
+            me.cancel.abort();
+        }
+        me.cancel = {};
+        me.$hasSearched = true;
+        //  me.$inj.relationshipService.searchContacts(0, me.searchlimit, true, val, me.listsource, me.cancel, search);
+        return me.$inj.relationshipService.search({
+            index: 0,
+            count: me.searchlimit,
+            initial: true,
+            search: val,
+            source: me.listsource,
+            cancel: me.cancel,
+            useSearch: search //|| val.length < 4
+        });
     },
     openContact: function (data) {
         MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {

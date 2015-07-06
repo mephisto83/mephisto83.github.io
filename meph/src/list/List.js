@@ -27,6 +27,7 @@ MEPH.define('MEPH.list.List', {
         renderondemand: null,
         boundSource: null,
         source: null,
+        pullToRefresh: null,
         updateQueue: null,
         updatePromise: null,
         intelligentScroll: false,
@@ -59,6 +60,12 @@ MEPH.define('MEPH.list.List', {
             path: 'intelligentScroll'
         });
 
+        me.addTransferableAttribute('pullToRefresh', {
+            object: me,
+            asValue: true,
+            path: 'pullToRefresh'
+        })
+
         me.addTransferableAttribute('autoScroll', {
             object: me,
             asValue: true,
@@ -82,6 +89,28 @@ MEPH.define('MEPH.list.List', {
         //  me.don(['touchstart'], me.listwrapper, stopScrolling);
 
         me.callParent.apply(arguments);
+        if (me.pullToRefresh) {
+            MEPH.util.Dom.pullToRefresh({
+                contentEl: me.listwrapper,
+                containerEl: me.listwrapper.parentElement,
+                loadingFunction: function () {
+                    var firstEl = me.getFirstElement(),
+                        res;
+                    firstEl.dispatchEvent(MEPH.createEvent('refresh-request', {
+                        data: {
+                            promise: function (promise) {
+                                res = promise
+                            }
+                        }
+                    }));
+                    return new Promise(function (resolve) {
+                        setTimeout(function () {
+                            resolve(res);
+                        }, 10);
+                    });
+                }
+            });
+        }
     },
     /**
      * @private

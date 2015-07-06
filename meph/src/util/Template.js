@@ -1,4 +1,5 @@
 ﻿MEPH.define('MEPH.util.Template', {
+    requires: ['MEPH.util.Dom'],
     statics: {
         commentType: 8,
         getComments: function (element) {
@@ -50,6 +51,23 @@
                 }).join('');
             }
             return '';
+        },
+        templateEventHandler: function (dom, evntType, callback) {
+            dom.addEventListener(evntType, function (evt) {
+                var listItemEl = dom;
+                var index = parseFloat(listItemEl.getAttribute('data-item-index'));
+                var element = dom;
+
+                if (!evt.path) {
+                    MEPH.util.Dom.generatePath(evt);
+                }
+                var potentialEvent = MEPH.Array(evt.path).first(function (x) {
+                    return x && x.getAttribute ? x.getAttribute('template-event') : null;
+                });
+                if (potentialEvent && element && MEPH.util.Dom.isDomDescendant(potentialEvent, element)) {
+                    callback(potentialEvent.getAttribute('template-event'), potentialEvent.getAttribute('template-event-argument'));
+                }
+            });
         },
         bindTemplate: function (templateString, data) {
             var $Template = MEPH.util.Template,

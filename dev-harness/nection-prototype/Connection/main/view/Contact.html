@@ -12,9 +12,11 @@
                     <i class="fa fa-link fa-2x col-md-12"></i>
                     <div>Connected</div>
                 </div>
-                <div mephid="addRelationshipBtn" class="connection-box-indicator" style="display:none;" meph-event-click="v$.checkingResult | v$.createIfNonExistent | v$.displayResult">
-                    <i class="fa fa-chain-broken fa-2x col-md-12"></i>
-                    <div>Connect</div>
+                <div mephid="addRelationshipBtn" class="connection-box-indicator" style="display:none;">
+                    <mephbutton class="connection-box-button" meph-event-click="v$.checkingResult | v$.createIfNonExistent | v$.displayResult">
+                        <i class="fa fa-chain-broken fa-2x col-md-12"></i>
+                        <div>Connect</div>
+                    </mephbutton>
                 </div>
                 <div mephid="checkingRelationship" class="connection-box-indicator" style="display:none;">
                     <i class="fa fa-cog fa-2x col-md-12 fa-spin"></i>

@@ -1,4 +1,5 @@
 ﻿MEPH.define('Connection.service.RelationshipService', {
+    extend: 'Connection.service.Service',
     injections: ['rest', 'overlayService', 'deviceContactsProvider', 'storage', 'notificationService'],
     requires: ['MEPH.util.Geo', 'MEPH.util.KString'],
     mixins: {
@@ -39,6 +40,8 @@
                 }, 1000 * 60);
             });
         });
+
+      
     },
     afterServerCachedLoaded: function (callback) {
         var me = this;
@@ -56,6 +59,9 @@
                 if (res) {
                     me.savedContactsFromServer = res.savedContactsFromServer && res.savedContactsFromServer.length ? res.savedContactsFromServer : null;
                     me.myRelationshipsContacts = res.myRelationshipsContacts && res.myRelationshipsContacts.length ? res.myRelationshipsContacts : null;
+                    if (me.myRelationshipsContacts) {
+                        me.relationshipsContacts = me.convertContactDTO(me.myRelationshipsContacts);
+                    }
                 }
                 MEPH.Log('Loaded cache');
             });
@@ -335,13 +341,21 @@
 
             return me.$inj.rest.addPath('relationship/get/card/{id}').get({ id: card }).then(function (res) {
                 if (res.success && res.authorized) {
-                    resolve(res.card);
+                    var convertedCard = me.convertContactDTO([{ cards: [res.card] }]);
+                    debugger
+                    resolve(me.processCard(res.card));
                 }
                 else { fail() }
             }).catch(function () {
                 fail();
             });
         });
+    },
+    processCard: function (card) {
+        var me = this;
+        var convertedCard = me.convertContactDTO([{ cards: [card] }]);
+
+        return convertedCard.first();
     },
     composeCards: function (source) {
         var me = this;
@@ -546,6 +560,7 @@
         if (source && source.length === 0) {
             var me = this;
             if (me.relationshipsContacts) {
+                me.relationshipsContacts.sort(me.sortCards);
                 source.pump(function (skip, take) {
                     return me.relationshipsContacts.subset(skip, skip + (take || 15));
                 });
@@ -567,7 +582,7 @@
         }));
         if (me.relationshipsContacts) {
             toaddcoverted.unshift.apply(toaddcoverted, me.relationshipsContacts.filter(function (x) {
-                if (!me.serverCachedSearchResults.some(function (t) {
+                if (me.serverCachedSearchResults.some(function (t) {
                        return t.contactId === x.contactId;
                 })) {
                     return false;
@@ -616,7 +631,7 @@
             useSearch = options.useSearch || false,
             skipLocalContacts = options.skipLocalContacts || false,
             search = options.search || '';
-        
+
         if (!source.$pumpsource) {
             source.$pumpsource = MEPH.util.Observable.observable([]);
             source.pump(function (skip, take) {
@@ -642,14 +657,16 @@
         }
         if (!useSearch)
             urlSearch = 'suggest';
-
-
         var guid = search;
-        return me.ready.then(function () {
-            return me.$inj.overlayService.open(guid);
-        }).then(function () {
+        var throttleKey = 'relationship search @@!@#';
+        var res = me.$throttle(throttleKey + search, throttleKey);
+        if (res) {
+            return res;
+        }
+        cancel = {};
+        var tothrottle = me.ready.then(function () {
+            me.$inj.overlayService.open(guid);
             me.$inj.overlayService.relegate(guid);
-        }).then(function () {
             var rest = me.$inj.rest.addPath('relationship/').addPath(urlSearch);
             MEPH.Log('Relationship search');
             MEPH.Log(rest.path());
@@ -705,7 +722,9 @@
                 return Promise.reject('Failed to get search results');
             });
 
-        })
+        });
+        tothrottle.cancel = cancel;
+        return me.$throttle(tothrottle, throttleKey + search, throttleKey);
     },
     searchContacts: function (index, count, initial, search, source, cancel, useSearch, skiplocalcontacts) {
         var me = this, toaddcoverted = [];

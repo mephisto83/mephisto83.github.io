@@ -2,7 +2,10 @@
     <conversationview data-bind='"activityName": "c$.name"' mephid="mainview">
         <listview data-bind='"source": "v$.conversations"'
                   prevent-bounce="true"
+                  pull-to-refresh="true"
+                  meph-event-scrolled-bottom="v$.getMoreConversations"
                   meph-event-itemclick="v$.openConversation"
+                  meph-event-refresh-request="v$.refreshList"
                   custom-event-prevent="true"
                   meph-event-remove-conversation="v$.removeMeFromConversation"
                   meph-data-renderondemand="true">

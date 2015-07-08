@@ -4,6 +4,8 @@
     requires: ['MEPH.button.IconButton',
         'MEPH.util.Binder',
                 'Connection.template.ContactListItem',
+                'MEPH.control.Meph',
+                'Connection.template.ConversationProfileImage',
                 'MEPH.input.Typeahead'],
     extend: 'MEPH.mobile.activity.view.ActivityView',
     properties: {

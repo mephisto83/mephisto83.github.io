@@ -96,6 +96,10 @@ $row-button-font-size: 2em;
     top: 20px;
 }
 
+*:focus {
+    outline: none;
+}
+
 .mainview {
     .meph-activity-view-body {
         padding-top: $view-header-body-height;
@@ -121,6 +125,7 @@ $row-button-font-size: 2em;
         position: absolute;
         padding-top: 4px;
         z-index: 11;
+        padding-left: 15px;
 
         button {
             padding-top: 7px;
@@ -603,6 +608,24 @@ $meph-activity-view-footer-height: 50px;
             border-color: $color2;
         }
 
+        pre {
+            display: block;
+            padding: 9.5px;
+            margin: 0 0 10px;
+            font-size: 13px;
+            line-height: 1.428571429;
+            word-break: break-all;
+            word-wrap: break-word;
+            color: $color5;
+            background-color: $color3;
+            border: 1px solid transparent;
+        }
+
+        .last-message-sent-by {
+            font-size: x-small;
+            color: $color2;
+        }
+
         .dialog-row.dialog-row-button:active {
             background-color: $color2;
         }
@@ -665,6 +688,10 @@ $meph-activity-view-footer-height: 50px;
 
         .converation-item-message {
             padding-left: 2px;
+
+            &.date {
+                text-align: right;
+            }
         }
 
         .conversation-profile-image {
@@ -674,6 +701,13 @@ $meph-activity-view-footer-height: 50px;
             display: inline-block;
             font-size: 32px;
             padding-left: 50px;
+        }
+
+        .button-search-combo-search {
+            .conversation-profile-image {
+                height: 40px;
+                padding-left: 40px;
+            }
         }
 
         .single-row-text,
@@ -907,6 +941,10 @@ $meph-activity-view-footer-height: 50px;
             overflow: hidden;
             width: 100%;
             border-right: solid 61px transparent;
+
+            &.button-search-combo-search {
+                border-right: none;
+            }
 
             .conversation-profile-image {
                 display: table-cell;
@@ -1300,6 +1338,10 @@ $meph-activity-view-footer-height: 50px;
 
     body[font-palette='#{$palette}'] {
         font-family: $font, $alternate;
+
+        pre {
+            font-family: $font, $alternate;
+        }
     }
 }
 

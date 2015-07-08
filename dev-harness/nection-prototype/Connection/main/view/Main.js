@@ -6,6 +6,7 @@
     injections: ['relationshipService',
         'overlayService',
         'messageService',
+        'stateService',
         'notificationService'],
     requires: ['MEPH.input.Search',
         'MEPH.util.Observable',
@@ -34,9 +35,9 @@
         if (!me.listsource) {
             me.listsource = MEPH.util.Observable.observable([]);
             me.ready.then(function () {
-                return me.$inj.relationshipService.afterServerCachedLoaded(function () {
-                    return me.search('', true);
-                });
+                return me.loadRelationshipContacts();//return me.$inj.relationshipService.afterServerCachedLoaded(function () {
+                //    return me.search('', true);
+                //});
             });
         }
         me.great();
@@ -130,7 +131,7 @@
                      MEPH.Error('An error occurred while eget my relationship contacts.')
                  }).then(function () {
                      MEPH.Log('Setting contact parts', 5);
-                     //return me.$inj.relationshipService.setContactParts(deviceContacts, savedContactsFromServer, myRelationshipsContacts);
+                     return me.$inj.relationshipService.setContactParts(deviceContacts, savedContactsFromServer, myRelationshipsContacts);
                  }).then(function () {
                      MEPH.Log('Merging device contacts', 5);
                      return me.$inj.relationshipService.mergeDeviceContacts();
@@ -178,12 +179,7 @@
                              });
                          }
                      }
-                     else {
-                         me.$inj.notificationService.notify({
-                             icon: 'cog',
-                             message: 'Not searching for contacts'
-                         });
-                     }
+
                      return me.$inj.overlayService.close('connection-main');
                  });
         });;
@@ -239,10 +235,6 @@
     },
     _search: function (val, search) {
         var me = this;
-        if (me.cancel && me.cancel.abort) {
-            me.cancel.abort();
-        }
-        me.cancel = {};
         me.$hasSearched = true;
         //  me.$inj.relationshipService.searchContacts(0, me.searchlimit, true, val, me.listsource, me.cancel, search);
         return me.$inj.relationshipService.search({
@@ -251,15 +243,20 @@
             initial: true,
             search: val,
             source: me.listsource,
-            cancel: me.cancel,
             useSearch: search //|| val.length < 4
         });
     },
-    openContact: function (data) {
-        MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
-            viewId: 'Contact',
-            path: 'main/contact',
-            data: MEPH.util.Array.convert(arguments).last().domEvent.data
+    openContact: function () {
+        var me = this,
+            data = me.getDomEventArg(arguments);
+        return me.when.injected.then(function () {
+            me.$inj.stateService.set(Connection.constant.Constants.CurrentContact, data);
+        }).then(function () {
+            MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
+                viewId: 'Contact',
+                path: 'main/contact',
+                data: data
+            });
         });
     }
 });

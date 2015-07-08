@@ -6,6 +6,7 @@
     injections: ['messageService',
         'relationshipService',
         'overlayService',
+        'notificationService',
         'dialogService',
         'stateService'],
     requires: ['Connection.messaging.view.editconversationgroupview.EditConversationGroupView',
@@ -50,10 +51,11 @@
                         me.setupGroupContacts(session)
                     }
                 }).catch(function () {
-                    me.$inj.notificationService.notify({
-                        icon: 'exclamation-triangle',
-                        message: 'Something went wrong.'
-                    });
+                    if (!(args && args.status === 0))
+                        me.$inj.notificationService.notify({
+                            icon: 'exclamation-triangle',
+                            message: 'Something went wrong.'
+                        });
                 }).then(function () {
                     me.$inj.overlayService.close(guid);
                 });

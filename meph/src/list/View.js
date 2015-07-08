@@ -100,6 +100,10 @@ MEPH.define('MEPH.list.View', {
         if (obj && Array.isArray(obj) && obj.on) {
             me.$boundSource.length = 0;
             obj.on('changed', me.updateList.bind(me), me);
+            obj.on('sorted', function () {
+                me.$boundSource.length = 0;
+                me.renderList(true);
+            }, me);
             obj.on('synchronized', me.synchronizeList.bind(me), me);
         }
     },
@@ -436,7 +440,10 @@ MEPH.define('MEPH.list.View', {
         var ch = div.firstElementChild;
         ch.setAttribute('data-item-index', index);
         MEPH.util.Dom.insertAfter(elObj.el, ch);
-        elObj.el.parentNode.removeChild(elObj.el);
+        if (elObj.el.parentNode) {
+            elObj.el.parentNode.removeChild(elObj.el);
+        }
+
         elObj.el = ch;
 
     },
@@ -457,13 +464,13 @@ MEPH.define('MEPH.list.View', {
             if (me.listwrapper.scrollHeight === me.listwrapper.clientHeight + me.listwrapper.scrollTop) {
                 if (!me.$scrolledToTop) {
                     me.$scrolledToTop = true;
-                    me.listwrapper.dispatchEvent(MEPH.createEvent('scrolled-top', {}));
+                    me.listwrapper.dispatchEvent(MEPH.createEvent('scrolled-bottom', {}));
                 }
             }
             else if (me.listwrapper.scrollTop === 0) {
                 if (!me.$scrolledToBottom) {
                     me.$scrolledToBottom = true;
-                    me.listwrapper.dispatchEvent(MEPH.createEvent('scrolled-bottom', {}));
+                    me.listwrapper.dispatchEvent(MEPH.createEvent('scrolled-top', {}));
                 }
             }
             else {

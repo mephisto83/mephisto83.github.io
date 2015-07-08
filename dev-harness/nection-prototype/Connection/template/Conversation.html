@@ -3,9 +3,10 @@
         <div class="image-row">
             {{cards|MEPH.util.Template.bindArray,'conversation_profile_image'}}
         </div>
+        <span class="last-message-sent-by">{{| CC.SentBy}}</span>
+        <pre class="converation-item-message">{{lastMessage.message}}</pre>
        
-        <p class="converation-item-message">{{lastMessage.message}}</p>
-        <div class="converation-item-message">{{lastMessage.dateCreated | CC.ConversationDate}}</div>
+        <div class="converation-item-message date">{{lastMessage.dateCreated | CC.ConversationDate}}</div>
         <div class="conversation-item-button-panel">
             <a href="javascript:void(0);" template-event="remove-conversation"><i class="fa fa-times fa-4x"></i></a>
         </div>

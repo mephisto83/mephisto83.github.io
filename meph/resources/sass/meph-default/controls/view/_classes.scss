@@ -12,8 +12,9 @@
 .meph-remove-home-page,
 .meph-view-remove {
     opacity: 0;
-    transform: translateX(-100%);
-    -webkit-transform: translate(-100%,0px);
+    transform: translateX(-100%) !important;
+    -webkit-transform: translate(-100%,0px) !important;
+    z-index: -1;
 }
 
 .meph-split {

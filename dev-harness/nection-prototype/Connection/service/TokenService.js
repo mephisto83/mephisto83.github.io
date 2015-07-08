@@ -1,6 +1,6 @@
 ﻿MEPH.define('Connection.service.TokenService', {
     properties: {
-        $maxNumberOfRefreshAttempts: 10,
+        $maxNumberOfRefreshAttempts: 5,
         state: null,
         refreshTokenKey: 'connectino-service-refresh-token',
         userIdKey: 'connection-serivce-userid-key',

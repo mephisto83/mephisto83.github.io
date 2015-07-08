@@ -5,6 +5,7 @@
         ConnectionLogIn: 'Connection + log in',
         ConnectionLogOut: 'Connection log out',
         CurrentCard: 'Current card',
+        CurrentContact: 'Current contact',
         ConnectionLost: 'Connection has been lost',
         MultipleLogins: 'Multiple logins from different providers',
         SECONDARY_MENU: 'SECONDARY_MENU',

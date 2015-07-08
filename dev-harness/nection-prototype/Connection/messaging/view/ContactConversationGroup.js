@@ -74,14 +74,28 @@
 
     },
     setupCurrentContact: function () {
-        var me = this,
-currentContact;
+        var me = this, currentContact;
 
         currentContact = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversationContact);//, { data: data }
         if (currentContact && currentContact.data) {
             me.currentContact = currentContact.data;
         }
 
+
+    },
+    viewProfile: function () {
+        var me = this;
+        if (me.currentContact) {
+            return me.when.injected.then(function () {
+                me.$inj.stateService.set(Connection.constant.Constants.CurrentContact, me.currentContact);
+            }).then(function () {
+                MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
+                    viewId: 'Contact',
+                    path: 'main/contact',
+                    data: me.currentContact
+                });
+            });
+        }
     },
     messageContact: function () {
         var me = this;

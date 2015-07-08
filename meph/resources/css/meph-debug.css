@@ -5464,7 +5464,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; background
 .meph-view, .meph-home-page-view { position: absolute; -moz-transition: 0.1s, 0.1s; -o-transition: 0.1s, 0.1s; -webkit-transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; height: 100%; width: 100%; transform: translateX(0%); -webkit-transform: perspective(600px) translate(0%, 0px); }
 
 /* line 12, ../sass/meph-default/controls/view/_classes.scss */
-.meph-remove-home-page, .meph-view-remove { opacity: 0; transform: translateX(-100%); -webkit-transform: translate(-100%, 0px); }
+.meph-remove-home-page, .meph-view-remove { opacity: 0; transform: translateX(-100%) !important; -webkit-transform: translate(-100%, 0px) !important; }
 
 /* line 19, ../sass/meph-default/controls/view/_classes.scss */
 .meph-split { width: 80%; margin: auto; float: left; padding-top: 10px; padding-bottom: 10px; border-bottom: solid 1px rgba(205, 205, 205, 0.63); }

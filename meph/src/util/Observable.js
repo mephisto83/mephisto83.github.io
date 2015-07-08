@@ -398,6 +398,29 @@ MEPH.define('MEPH.util.Observable', {
                         }.bind(collection)
                     });
 
+                    var sortFunc = collection.sort;
+                    Object.defineProperty(collection, 'sort', {
+                        enumerable: false,
+                        configurable: true,
+                        writable: true,
+                        value: function () {
+                            this.fire.apply(this, MEPH.Array(['beforesort'].concat(ConvertToList(arguments))));
+                            var result = MEPH.Array([sortFunc.apply(this, arguments)]);
+                            this.fire('aftersort', { removed: [], added: [] });
+                            this.fire.apply(this, MEPH.Array(['onpop'].concat(ConvertToList(arguments))));
+                            // this.fire('changed', { removed: [], added: [] });
+                            this.fire('sorted', { removed: [], added: [] });
+                            //result.where(function (x) {
+                            //    return x;
+                            //}).foreach(function (x, index) {
+                            //    if (x.isObservable) {
+                            //        x.clearListeners();
+                            //    }
+                            //});
+                            return result;
+                        }.bind(collection)
+                    })
+
                     var unshiftFunc = collection.unshift;
                     Object.defineProperty(collection, 'unshift', {
                         enumerable: false,

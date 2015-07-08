@@ -47,6 +47,7 @@ MEPH.define('MEPH.notification.Service', {
                         me.div.innerHTML = html;
                         el = me.div.firstElementChild;
                         document.body.appendChild(el);
+                        MEPH.util.Dom.insertFirst(document.body, el);
                         setTimeout(function (el) {
                             el.classList.add('remove-notification');
                             setTimeout(function () {

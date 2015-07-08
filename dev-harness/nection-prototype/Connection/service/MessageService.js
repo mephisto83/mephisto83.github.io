@@ -1,4 +1,5 @@
 ﻿MEPH.define('Connection.service.MessageService', {
+    extend: 'Connection.service.Service',
     injections: ['rest',
         'signalService',
         'overlayService',
@@ -14,13 +15,15 @@
     },
     requires: ['Connection.template.SignalStateOverlay'],
     properties: {
-        serviceStorageKey: 'connection-message-service-storage-key'
+        serviceStorageKey: 'connection-message-service-storage-key',
+        $conversationSettingsKey: '$conversationSettingsKey'
     },
     initialize: function () {
         var me = this;
         me.mixins.injectable.init.apply(me);
         me.$healthCheckPromise = Promise.resolve();
         me.$checkMessagesPromise = Promise.resolve();
+        me.$conversationPropertyUpdatePromise = Promise.resolve();
         me.monitoredConversations = MEPH.util.Observable.observable([]);
         me.conversationSettings = MEPH.util.Observable.observable([]);
 
@@ -32,6 +35,8 @@
             me.updateMonitoredCards();
         }, 60000);
         MEPH.Events(me);
+        me.openConversationSettings();
+        me.addHandlers();
         me.when.injected.then(function () {
 
             me.$inj.notificationService.notify({ message: 'Preparing sleep detection' });
@@ -69,7 +74,10 @@
                 }
             });
             me.$inj.signalService.addCallbackFunction('broadcastConnection', function (connected) {
+                var wasconnected = me.connected;
                 me.connected = connected === 'connected';
+                if (me.connected && !wasconnected)
+                    me.fire('connected', {});
             })
             me.$inj.signalService.addCallbackFunction('broadcastGroupStatus', function (results) {
                 if (results) {
@@ -119,6 +127,9 @@
                     groupConversation.lastMessage = groupConversation.lastMessage || {};
                     if (groupConversation.lastMessage) {
                         groupConversation.lastMessage.message = message;
+                        groupConversation.lastMessage.cardId = cardId;
+                        groupConversation.lastMessage.clientId = clientId;
+                        groupConversation.lastMessage.id = nextMessage.id;
                         groupConversation.lastMessage.dateCreated = dateCreated;
                     }
                     me.updateMessage(themessage);
@@ -130,12 +141,26 @@
                         localMessage.cardId = cardId;
                     }
                     else {
+                        me.$inj.notificationService.notify({
+                            message: 'New Message',
+                            icon: 'inbox'
+                        });
                         groupConversation.messages.push(themessage);
                     }
+
+                    me.sortMessages(groupConversation.messages);
                 }
             });
 
         });
+    },
+    addHandlers: function () {
+        var me = this;
+        me.on('connected', me.onConnected.bind(me));
+    },
+    onConnected: function (type, options) {
+        var me = this;
+        me.getSettingsForConversations();
     },
     onSignalServiceStateChange: function (type, options) {
         var me = this;
@@ -143,10 +168,12 @@
             me.$inj.overlayService.close('signal-service-state');
             if (options.value === 'disconnected') {
                 setTimeout(function () {
-                    me.$inj.signalService.restart().then(function(){
-                        return me.addConnection();
-                    });
+                    me.$inj.signalService.restart();
                 }, 5000);
+            }
+            else if (options.value === 'connected') {
+                
+                me.addConnection();
             }
             me.fire(type, options);
             return me.$inj.overlayService.open('signal-service-state', {
@@ -320,6 +347,8 @@
                         });
                     }
                     MEPH.util.Observable.observable(card);
+                    if (me.$inj.relationshipService)
+                        card = me.$inj.relationshipService.processCard(card);
                     me.contactCardCollection.push(card);
                 }
             });
@@ -417,7 +446,7 @@
         }).where();
         if (me.cards && me.cards.length) {
             if (!me.cards.some(function (card) {
-return contactsForConversation.some(function (x) { return x.card === card.id; });
+    return contactsForConversation.some(function (x) { return x.card === card.id; });
             })) {
 
                 if (update && update.Group) {
@@ -476,11 +505,7 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
     },
     updateConversationSettings: function (update) {
         var me = this;
-        var settings = me.conversationSettings.first(function (setting) {
-            if (setting.id === update.Group) {
-                return setting;
-            }
-        });
+        var settings = me.getConversationSetting(update.Group);
         if (!settings) {
             settings = { id: update.Group };
             me.conversationSettings.push(settings);
@@ -488,8 +513,70 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
         if (settings) {
             settings.notificationValue = update.NotificationValue;
             settings.notificationExpiration = update.NotificationExpiration && !isNaN(update.NotificationExpiration) ? Date.now() + update.NotificationExpiration : null;
+            if (update.OldestSeenMessageDate) {
+                settings.oldestSeenMessage = new Date(update.OldestSeenMessageDate).getTime();
+            }
+            if (update.MostRecentlySeenMessageDate) {
+                settings.latestSeenMessage = new Date(update.MostRecentlySeenMessageDate).getTime();
+            }
         }
+        me.saveConversationSettings();
+    },
+    saveConversationSettings: function () {
+        var me = this;
+        me.when.injected.then(function () {
+            return me.$inj.storage.set(me.$conversationSettingsKey, me.conversationSettings);
+        });
+    },
+    openConversationSettings: function () {
+        var me = this;
+        me.when.injected.then(function () {
+            return me.$inj.storage.get(me.$conversationSettingsKey).then(function (res) {
+                if (res) {
+                    me.conversationSettings = res;
+                }
+            })
+        });
+    },
+    getConversationSetting: function (id) {
+        var me = this;
+        var settings = me.conversationSettings.first(function (setting) {
+            if (setting.id === id) {
+                return setting;
+            }
+        });
+        return settings;
+    },
+    updateMessageSeenSettings: function (id) {
+        var me = this;
+        var settings = me.getConversationSetting(id);
+        if (settings) {
+            var conversation = me.getConversationById(id);
+            if (conversation && conversation.messages) {
+                var oldest = conversation.messages.first();
+                var newest = conversation.messages.last();
+                if (oldest && newest)
+                    me.$conversationPropertyUpdatePromise = me.$conversationPropertyUpdatePromise.then(function () {
+                        var newtime = new Date(newest.dateCreated).getTime();
+                        var oldtime = new Date(oldest.dateCreated).getTime();
 
+                        return ((!settings.oldestSeenMessage || settings.oldestSeenMessage > oldtime) ?
+                            me.updateConversationProperty('OldestSeenMessage', newest.id, id) : Promise.resolve()).then(function () {
+                                if ((!settings.latestSeenMessage || settings.latestSeenMessage < newtime)) {
+                                    return me.updateConversationProperty('NewestSeenMessage', oldest.id, id);
+                                }
+                            });
+                    }).catch(function () {
+                        me.$inj.notificationService.notify({
+                            icon: 'exclamation-triangle',
+                            message: 'An error occurred'
+                        })
+                    });
+            }
+        }
+        else {
+            me.getSettingsForConversation(id);
+        }
     },
     monitorConversation: function (conversation) {
         var me = this, result = [];
@@ -532,27 +619,46 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
                     });
                 }
                 existingConversation.messages = MEPH.util.Observable.observable(existingConversation.messages || []);
-                existingConversation.messages.sort(function (x, y) {
-                    return new Date(x.dateCreated).getTime() - new Date(y.dateCreated).getTime();
-                });
+                me.sortMessages(existingConversation.messages);
                 result.push(existingConversation);
                 return false;
             }
             else {
                 if (conversation.messages)
-                    conversation.messages.sort(function (x, y) {
-                        return new Date(x.dateCreated).getTime() - new Date(y.dateCreated).getTime();
-                    });
+                    me.sortMessages(conversation.messages);
                 conversation.cards = MEPH.util.Observable.observable(conversation.cards || []);
                 MEPH.util.Observable.observable(conversation);
                 result.push(conversation);
                 return conversation;
             }
         });
-
+        me.monitoredConversations._pause();
         me.monitoredConversations.push.apply(me.monitoredConversations, res);
-
+        me.monitoredConversations._start();
+        me.sortMonitoredConversations(me.monitoredConversations);
         return result.length > 1 ? result : result[0] || null;
+    },
+    sortMonitoredConversations: function (monitoredConversations) {
+        if (monitoredConversations) {
+            monitoredConversations.sort(function (x, y) {
+                if (y.lastMessage && x.lastMessage) {
+                    return new Date(y.lastMessage.dateCreated).getTime() - new Date(x.lastMessage.dateCreated).getTime();
+                }
+                else if (y.lastMessage) {
+                    return 1;
+                }
+                else if (x.lastMessage) {
+                    return -1;
+                }
+                return 0;
+            });
+        }
+    },
+    sortMessages: function (messages) {
+        if (messages)
+            messages.sort(function (x, y) {
+                return new Date(x.dateCreated).getTime() - new Date(y.dateCreated).getTime();
+            })
     },
     refreshToken: function () {
         var me = this;
@@ -588,9 +694,17 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
     },
     getConversations: function (conversationList, start, fetch) {
         var me = this, err;
-        start = start || "0";
+        start = start || 0;
         fetch = fetch || 10;
-        me.when.injected.then(function () {
+        var throttleId = 'getConversations' + start + ' ' + fetch;
+
+        var res = me.$throttle(throttleId, throttleId);
+        if (res) {
+            return res;
+        }
+
+        var cancel = {};
+        var tothrottle = me.when.injected.then(function () {
             me.$inj.overlayService.open('get conversationts');
             if (conversationList) {
                 conversationList.ref[conversationList.property] = me.monitoredConversations;
@@ -633,7 +747,7 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
                                 me.updateMonitoredCards();
 
                                 me.monitorConversation.apply(me, res.groups);
-
+                                fetch = res.groups.length;
                                 me.$inj.storage.set(me.serviceStorageKey, res);
                             }
                         }
@@ -651,7 +765,11 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
             if (err) {
                 throw err;
             }
+            return { start: start, fetch: fetch };
         });
+        tothrottle.cancel = cancel;
+        return me.$throttle(tothrottle, throttleId, throttleId);
+
     },
     sendMessage: function () {
         var me = this, args = arguments;
@@ -723,7 +841,7 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
     updateConversationMessages: function (conversation) {
         var me = this;
         if (conversation && conversation.id) {
-            
+
 
             var convo = me.getConversationById(conversation.id);
             me.checkMessages(convo.messages.select(function (x) {
@@ -763,23 +881,50 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
             });
         });
     },
-    $throttle: function (a, b) {
+
+    getSettingsForConversation: function (id) {
         var me = this;
-        me.$throttLib = me.$throttLib || {};
-        if (typeof a === 'string') {
-            if (me.$throttLib[a]) {
-                return me.$throttLib[a];
+        if (id) {
+            var throttleKey = 'get settings for conversation';
+            var res = me.$throttle(throttleKey + id, throttleKey + id);
+            if (res) {
+                return res;
             }
-            return null;
+            var cancel = {};
+            var tothrottle = me.when.injected.then(function () {
+                var rest = me.$inj.rest.nocache().addPath('messages/get/conversation/settings/{id}');
+                cancel.abort = function () {
+                    rest.out.http.abort();
+                }
+
+                return rest.get({
+                    id: id
+                });
+            });
+            tothrottle.cancel = cancel;
+            return me.$throttle(tothrottle, throttleKey + id, throttleKey + id);
         }
-        me.$throttLib[b] = a.catch(function (b, e) {
-            delete me.$throttLib[b];
-            return Promise.reject(e);
-        }.bind(me, b)).then(function (b, res) {
-            delete me.$throttLib[b];
-            return res
-        }.bind(me, b));
-        return me.$throttLib[b];
+    },
+    getSettingsForConversations: function () {
+        var me = this;
+        if (id) {
+            var throttleKey = 'get settings for conversations';
+            var res = me.$throttle(throttleKey + id, throttleKey + id);
+            if (res) {
+                return res;
+            }
+            var cancel = {};
+            var tothrottle = me.when.injected.then(function () {
+                var rest = me.$inj.rest.nocache().addPath('messages/get/conversations/settings');
+                cancel.abort = function () {
+                    rest.out.http.abort();
+                }
+
+                return rest.get();
+            });
+            tothrottle.cancel = cancel;
+            return me.$throttle(tothrottle, throttleKey + id, throttleKey + id);
+        }
     },
     openConversation: function (conversation, fetch, start) {
         var me = this;
@@ -787,39 +932,45 @@ return contactsForConversation.some(function (x) { return x.card === card.id; })
         start = start || 0;
         if (conversation && conversation.id) {
 
-            var res = me.$throttle('openConversation ' + conversation.id);
+            var res = me.$throttle('openConversation ' + conversation.id, 'openConversation');
             if (res) {
                 return res;
             }
-            return me.$throttle(me.when.injected.then(function () {
-                return me.getToken().then(function (token) {
-                    return me.$inj.rest.nocache().addPath('messages/conversations/{group}/{token}/{fetch}/{start}').get({
-                        token: token,
-                        fetch: fetch,
-                        start: start,
-                        group: conversation.id
-                    }).then(function (results) {
-                        if (results.authorized && results.success) {
-                            results.cards = MEPH.util.Observable.observable(results.cards || []);
-                            results.messages = MEPH.util.Observable.observable(results.messages || []);
+            var cancel = {};
+            var tothrottle = me.when.injected.then(function () {
+                var rest = me.$inj.rest.nocache().addPath('messages/conversations/{group}/{fetch}/{start}');
+                cancel.abort = function () {
+                    rest.out.http.abort();
+                }
 
-                            me.collectCards(results.cards);
-                            var toreturn = me.monitorConversation(results);
-                            toreturn.cards = results.cards;
-                            me.updateMonitoredCards();
-                            return me.getConversationById(conversation.id);
-                        }
-                        else {
+                return rest.get({
+                    fetch: fetch,
+                    start: start,
+                    group: conversation.id
+                }).then(function (results) {
+                    if (results.authorized && results.success) {
+                        results.cards = MEPH.util.Observable.observable(results.cards || []);
+                        results.messages = MEPH.util.Observable.observable(results.messages || []);
+                        me.sortMessages(results.messages);
+                        me.collectCards(results.cards);
+                        var toreturn = me.monitorConversation(results);
+                        toreturn.cards = results.cards;
+                        me.updateMonitoredCards();
+                        me.updateMessageSeenSettings(conversation.id);
+                        return me.getConversationById(conversation.id);
+                    }
+                    else {
 
-                            me.$inj.notificationService.notify({
-                                icon: 'info',
-                                message: 'May not be the most recent.'
-                            });
-                            return me.getConversationById(conversation.id);
-                        }
-                    });
+                        me.$inj.notificationService.notify({
+                            icon: 'info',
+                            message: 'May not be the most recent.'
+                        });
+                        return me.getConversationById(conversation.id);
+                    }
                 });
-            }), 'openConversation ' + conversation.id);
+            });
+            tothrottle.cancel = cancel;
+            return me.$throttle(tothrottle, 'openConversation ' + conversation.id, 'openConversation');
 
         }
         else {

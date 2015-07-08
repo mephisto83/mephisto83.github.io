@@ -18,36 +18,27 @@ MEPH.define('Connection.application.Converters', {
             }
             return '';
         },
+        SentBy: function (obj) {
+            if (obj.lastMessage) {
+                var card = obj.cards.first(function (x) { return x.card === obj.lastMessage.cardId; });
+                if (card) {
+                    return (card.name || card.firstname) + ': ';
+                }
+            }
+            return '';
+        },
         Hide: function (val) {
             if (val) return '';
             return 'display:none;';
         },
-        Card1: function (val) {
-            if (!val || !val.cards || !val.cards.nth) {
-                return ''
-            }
-            var temp = val.cards.nth(1) || {};
-
-            return temp.profileimage;
-        },
         Card: function (cal) {
             return cal ? cal.profileimage : '';
         },
-        Card2: function (val) {
-            if (!val || !val.cards || !val.cards.nth) {
-                return ''
+        NoCommonContacts: function (obj) {
+            if (obj) {
+                return obj.commonRelationshipCount && parseFloat(obj.commonRelationshipCount) ? '' : 'nocommoncontacts';
             }
-            var temp = val.cards.nth(2) || {};
-
-            return temp.profileimage;
-        },
-        Card3: function (val) {
-            if (!val || !val.cards || !val.cards.nth) {
-                return ''
-            }
-            var temp = val.cards.nth(3) || {};
-
-            return temp.profileimage;
+            return 'nocommoncontacts';
         },
         ConversationDate: function (val) {
             if (val === null) return '';
@@ -79,7 +70,7 @@ MEPH.define('Connection.application.Converters', {
                 MEPH.Array(list.querySelectorAll('.reveal-list-item-container'))
                     .where(function (x) {
                         return x !== element;
-                    }).foreach(function(element){
+                    }).foreach(function (element) {
                         var item = element.querySelector('.reveal-list-item-box.show');
                         if (item) {
                             element.classList.remove('slide-over');

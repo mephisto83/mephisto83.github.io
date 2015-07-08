@@ -4,7 +4,10 @@
     extend: 'Connection.control.contactbase.ContactBase',
     mixins: ['MEPH.mobile.mixins.Activity'],
     injections: ['contactService',
-        'messageService', 'relationshipService', 'overlayService'],
+        'stateService',
+        'messageService',
+        'relationshipService',
+        'overlayService'],
     requires: ['MEPH.input.Search',
         'MEPH.util.Style',
         'Connection.control.contactlink.ContactLink',
@@ -40,14 +43,18 @@
         MEPH.util.Style.hide(me.$activityview.removeRelationshipBtn);
         MEPH.util.Style.hide(me.$activityview.addRelationshipBtn);
         MEPH.util.Style.show(me.$activityview.checkingRelationship);
-        if (arguments.data) {
-            me.contact = arguments.data;
-        }
-        me.checkingResult();
-
-        me.setupQrCodes();
+        //if (arguments.data) {
+        //    me.contact = arguments.data;
+        //}
 
         Promise.all([me.when.loaded, me.when.injected]).then(function () {
+
+            me.contact = me.$inj.stateService.get(Connection.constant.Constants.CurrentContact);
+
+            me.checkingResult();
+
+            me.setupQrCodes();
+
             if (me.$inj.relationshipService) {
                 me.$inj.overlayService.open('connection-contact');
                 me.$inj.overlayService.relegate('connection-contact');

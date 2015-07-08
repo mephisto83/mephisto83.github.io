@@ -1,7 +1,10 @@
 ﻿  <!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "activityheader", "before" : true -->
 <div class="">
     <div class="col-md-9 col-sm-10 col-lg-10 col-xs-10">
-        <search meph-event-keypressed="v$.searchDynChanged" mephid="searchInput" meph-data-placeholder="Search..."></search>
+        <search meph-event-keypressed="v$.searchDynChanged" 
+                meph-event-change="v$.searchDynChanged" 
+                mephid="searchInput" 
+                meph-data-placeholder="Search..."></search>
     </div>
     <div class="col-md-2 col-sm-1 col-lg-1 col-xs-2 main-view-search-button">
         <mephbutton meph-event-click="v$.searchChanged"

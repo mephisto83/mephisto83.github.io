@@ -45,7 +45,7 @@
         bindArray: function (data, template) {
             template = template.split('').subset(1, template.length - 1).join('')
             var templateStr = MEPH.getTemplate(template);
-            if (templateStr && templateStr.template) {
+            if (templateStr && templateStr.template && data && data.select) {
                 return data.select(function (x) {
                     return MEPH.util.Template.bindTemplate(templateStr.template, x);
                 }).join('');
@@ -68,6 +68,28 @@
                     callback(potentialEvent.getAttribute('template-event'), potentialEvent.getAttribute('template-event-argument'));
                 }
             });
+        },
+        getTemplatePaths: function (templateString) {
+            var $Template = MEPH.util.Template,
+              val;
+            var singularSymbol = '@';
+            var regex = new RegExp('({{)[A-Za-z0-9_.' + singularSymbol + ' ,\'\|]*(}})', 'g');
+            var hasTemplate = $Template.hasTemplate(templateString);
+            if (hasTemplate) {
+                var res = templateString.match(regex);
+                return res.reverse().unique().select(function (x) {
+                    return x.split('').subset(2, x.length - 2).join('');
+                }).select(function (t) {
+                    return $Template.getIntialPath(t).trim();
+                });
+            }
+            return [];
+        },
+        hasTemplate: function (templateString) {
+            var singularSymbol = '@';
+            var regex = new RegExp('({{)[A-Za-z0-9_.' + singularSymbol + ' ,\'\|]*(}})', 'g');
+            var hasTemplate = regex.test(templateString);
+            return hasTemplate;
         },
         bindTemplate: function (templateString, data) {
             var $Template = MEPH.util.Template,

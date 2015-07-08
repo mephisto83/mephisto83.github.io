@@ -4,14 +4,12 @@
     <div href="javascript:void(0);" tabindex="0">
         <div class="row">
             <div class="col-xs-2 ">
-                <div style="background-image:url('{{profileimage}}');" class="connection-list-profile-image conversation-message"></div>
+                <div style="background-image:url('{{profileimage}}');" title="{{name}}" class="connection-list-profile-image conversation-message"></div>
                 <div class="converation-item-message">{{dateCreated | CC.ConversationDate}}</div>
             </div>
             <div class="col-xs-10 contact-list-item-information conversation-message">
                 <span class="col-xs-12 name-text">{{name}}</span>
-                <div class="col-xs-12 conversation-message-message">
-                    {{message}}
-                </div>
+                <pre class="col-xs-12 conversation-message-message">{{message}}</pre>
             </div>
         </div>
         <div class="reveal-list-item-box">

@@ -1,18 +1,22 @@
 ﻿  <!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "activityheader", "before" : true -->
 <div class="row">
-    <div class="col-xs-2 button-search-combo-button">
+    <div class=" button-search-combo-button">
         <mephbutton meph-event-click="c$.goBack" class="connection-top-menu-button">
             <i class="fa fa-backward"></i>
         </mephbutton>
     </div>
-    <div class="col-xs-12 button-search-combo-search">
-        <div tabindex="0"
-             class="col-xs-12 connection-chat-view connection-members-name"
-             meph-event-keyup="boolean.IsTrue, v$.isReturnHit, v$.view | boolean.Then, style.show, c$.typeaheadHolder | boolean.Then, style.hide, c$.nameDisplay | c$.focusTypeahead "
-             meph-event-click="v$.gotoEditGroupView"
-             mephid="nameDisplay"
-             data-bind='"innerHTML":"v$.memberNames"'>
-        </div>
-    </div>
+    <!--<div class=" button-search-combo-search">-->
+    <!--<div tabindex="0"
+         class="col-xs-12 connection-chat-view connection-members-name"
+         meph-event-keyup="boolean.IsTrue, v$.isReturnHit, v$.view | boolean.Then, style.show, c$.typeaheadHolder | boolean.Then, style.hide, c$.nameDisplay | c$.focusTypeahead "
+         meph-event-click="v$.gotoEditGroupView"
+         mephid="nameDisplay"
+         data-bind='"innerHTML":"v$.memberNames"'>
+    </div>-->
+    <meph meph-event-click="v$.gotoEditGroupView"
+          class="button-search-combo-search image-row">
+        {{view.chatSession.cards|MEPH.util.Template.bindArray,'conversation_profile_image'}}
+    </meph>
+    <!--</div>-->
 </div>
 <!-- "instruction": true, "name" : "injectop", "close": true -->

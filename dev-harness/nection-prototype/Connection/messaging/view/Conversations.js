@@ -15,6 +15,7 @@
     },
     initialize: function () {
         var me = this;
+        me.$getConversationsPromise = Promise.resolve();
         me.great();
     },
 
@@ -23,18 +24,61 @@
 
         if (!me.hasShown) {
             me.hasShown = true;
-            return me.when.injected.then(function () {
-                me.$inj.overlayService.open('openining conversations');
-                me.$inj.overlayService.relegate('openining conversations');
-                return me.$inj.messageService.getConversations({ ref: me, property: 'conversations' });
-            }).catch(function () {
-            }).then(function () {
-                me.$aftershow = null;
-                me.$inj.overlayService.close('openining conversations');
-                me.$inj.messageService.healthCheck();
+            me.$getConversationsPromise = me.$getConversationsPromise.then(function () {
+                return me.when.injected.then(function () {
+                    me.$inj.overlayService.open('openining conversations');
+                    me.$inj.overlayService.relegate('openining conversations');
+                    return me.$inj.messageService.getConversations({ ref: me, property: 'conversations' });
+                }).catch(function () {
+                }).then(function (lastMessages) {
+                    me.lastMessages = lastMessages;
+                    me.$aftershow = null;
+                    me.$inj.overlayService.close('openining conversations');
+                    me.$inj.messageService.healthCheck();
+                });
             });
         }
 
+    },
+    refreshList: function () {
+        var me = this;
+        me.$getConversationsPromise = me.$getConversationsPromise.then(function () {
+            return me.when.injected.then(function () {
+
+                me.$inj.overlayService.open('openining refresh conversations');
+                me.$inj.overlayService.relegate('openining refresh conversations');
+                return me.$inj.messageService.getConversations({ ref: me, property: 'conversations' });
+            }).catch(function () {
+            }).then(function (lastMessages) {
+                me.lastMessages = lastMessages;
+                me.$aftershow = null;
+                me.$inj.overlayService.close('openining refresh conversations');
+                me.$inj.messageService.healthCheck();
+            });;
+        });
+    },
+    getMoreConversations: function () {
+        var me = this;
+        me.$getConversationsPromise = me.$getConversationsPromise.then(function () {
+            return me.when.injected.then(function () {
+
+                me.$inj.overlayService.open('openining more conversations');
+                me.$inj.overlayService.relegate('openining more conversations');
+                var fetch = 10;
+                var start = 0;
+                if (me.lastMessages) {
+                    start = me.lastMessages.start + me.lastMessages.fetch;
+                    fetch = me.lastMessages.fetch;
+                }
+                return me.$inj.messageService.getConversations({ ref: me, property: 'conversations' }, start, fetch);
+            }).catch(function () {
+            }).then(function (lastMessages) {
+                me.lastMessages = lastMessages;
+                me.$aftershow = null;
+                me.$inj.overlayService.close('openining more conversations');
+                me.$inj.messageService.healthCheck();
+            });
+        });
     },
     afterHide: function () {
         var me = this;

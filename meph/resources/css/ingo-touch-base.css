@@ -3027,12 +3027,12 @@ a.list-group-item.active > [mephplatform] .badge, .nav-pills > .active > a > [me
 /* line 2, ../sass/meph-default/controls/view/_classes.scss */
 [mephplatform] .meph-view, [mephplatform] .meph-home-page-view { position: absolute; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; transition: 0.1s, 0.1s; height: 100%; width: 100%; transform: translateX(0%); -webkit-transform: perspective(600px) translate(0%, 0px); }
 /* line 12, ../sass/meph-default/controls/view/_classes.scss */
-[mephplatform] .meph-remove-home-page, [mephplatform] .meph-view-remove { opacity: 0; transform: translateX(-100%); -webkit-transform: translate(-100%, 0px); }
-/* line 19, ../sass/meph-default/controls/view/_classes.scss */
+[mephplatform] .meph-remove-home-page, [mephplatform] .meph-view-remove { opacity: 0; transform: translateX(-100%) !important; -webkit-transform: translate(-100%, 0px) !important; z-index: -1; }
+/* line 20, ../sass/meph-default/controls/view/_classes.scss */
 [mephplatform] .meph-split { width: 80%; margin: auto; float: left; padding-top: 10px; padding-bottom: 10px; border-bottom: solid 1px rgba(205, 205, 205, 0.63); }
-/* line 28, ../sass/meph-default/controls/view/_classes.scss */
+/* line 29, ../sass/meph-default/controls/view/_classes.scss */
 [mephplatform] .meph-label { font-weight: bold; }
-/* line 33, ../sass/meph-default/controls/view/_classes.scss */
+/* line 34, ../sass/meph-default/controls/view/_classes.scss */
 [mephplatform] .visualizer { overflow: hidden; }
 /* line 4, ../sass/meph-default/controls/view/panel/flyout/_flyoutpanel.scss */
 [mephplatform] .meph-flyout-panel { width: 300px; position: fixed; top: 0px; z-index: 10000; /* For Safari 3.1 to 6.0 */ -webkit-transition-property: all; -webkit-transition-duration: 0.2s; -webkit-transition-timing-function: ease; -webkit-transition-delay: 0s; /* Standard syntax */ transition-property: all; transition-duration: 0.2s; transition-timing-function: ease; transition-delay: 0s; opacity: 0; }

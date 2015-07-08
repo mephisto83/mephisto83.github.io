@@ -42,15 +42,52 @@
                 }
             });
             var conversationData = me.$inj.stateService.get(Connection.constant.Constants.CurrentConversation);
+            me.$lastLoaded = {
+                fetch: 10,
+                start: 0
+            }
             me.$conversationSwitch = (me.$conversationSwitch || Promise.resolve()).then(function () {
-                return me.loadCurrentConversation(conversationData, true);
+                return me.loadCurrentConversation(conversationData);
             });
             me.$inj.stateService.on(Connection.constant.Constants.CurrentConversation, function (evnt, type, chatSession) {
                 me.$conversationSwitch = me.$conversationSwitch.then(function () {
+                    me.$lastLoaded = {
+                        fetch: 10,
+                        start: 0
+                    }
                     me.loadCurrentConversation(chatSession);
                 });
             });
         });
+    },
+    refreshList: function () {
+        var me = this,
+            guid = MEPH.GUID();
+        var chatSession = me.chatSession;
+        if (chatSession) {
+            me.$inj.overlayService.open('openining conversation' + guid);
+            me.$inj.overlayService.relegate('openining conversation' + guid);
+            var fetch = 10;
+            var start = 0;
+            if (me.$lastLoaded) {
+                fetch = me.$lastLoaded.fetch;
+                start = Math.min(chatSession.messages.length, me.$lastLoaded.start + fetch);
+                me.$lastLoaded.start = start;
+            }
+
+            return me.$inj.messageService.openConversation(chatSession, fetch, start).then(function (session) {
+                if (session) {
+                    me.setConversation(session);
+                }
+            }).catch(function () {
+                me.$inj.notificationService.notify({
+                    icon: 'exclamation-triangle',
+                    message: 'Something went wrong.'
+                });
+            }).then(function () {
+                me.$inj.overlayService.close('openining conversation' + guid);
+            });
+        }
     },
     loadCurrentConversation: function (chatSession, skip) {
         var me = this;
@@ -64,11 +101,12 @@
                     if (session) {
                         me.setConversation(session);
                     }
-                }).catch(function () {
-                    me.$inj.notificationService.notify({
-                        icon: 'exclamation-triangle',
-                        message: 'Something went wrong.'
-                    });
+                }).catch(function (args) {
+                    if (!(args && args.status === 0))
+                        me.$inj.notificationService.notify({
+                            icon: 'exclamation-triangle',
+                            message: 'Something went wrong.'
+                        });
                 }).then(function () {
                     me.$inj.overlayService.close('openining conversation' + guid);
                 });

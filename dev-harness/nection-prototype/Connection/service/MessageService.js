@@ -172,7 +172,7 @@
                 }, 5000);
             }
             else if (options.value === 'connected') {
-                
+
                 me.addConnection();
             }
             me.fire(type, options);
@@ -907,24 +907,23 @@
     },
     getSettingsForConversations: function () {
         var me = this;
-        if (id) {
-            var throttleKey = 'get settings for conversations';
-            var res = me.$throttle(throttleKey + id, throttleKey + id);
-            if (res) {
-                return res;
-            }
-            var cancel = {};
-            var tothrottle = me.when.injected.then(function () {
-                var rest = me.$inj.rest.nocache().addPath('messages/get/conversations/settings');
-                cancel.abort = function () {
-                    rest.out.http.abort();
-                }
-
-                return rest.get();
-            });
-            tothrottle.cancel = cancel;
-            return me.$throttle(tothrottle, throttleKey + id, throttleKey + id);
+        var throttleKey = 'get settings for conversations';
+        var res = me.$throttle(throttleKey, throttleKey);
+        if (res) {
+            return res;
         }
+        var cancel = {};
+        var tothrottle = me.when.injected.then(function () {
+            var rest = me.$inj.rest.nocache().addPath('messages/get/conversations/settings');
+            cancel.abort = function () {
+                rest.out.http.abort();
+            }
+
+            return rest.get();
+        });
+        tothrottle.cancel = cancel;
+        return me.$throttle(tothrottle, throttleKey, throttleKey);
+
     },
     openConversation: function (conversation, fetch, start) {
         var me = this;

@@ -16,7 +16,8 @@
     requires: ['Connection.template.SignalStateOverlay'],
     properties: {
         serviceStorageKey: 'connection-message-service-storage-key',
-        $conversationSettingsKey: '$conversationSettingsKey'
+        $conversationSettingsKey: '$conversationSettingsKey',
+        throttleSeconds: 60 * 1000
     },
     initialize: function () {
         var me = this;
@@ -149,6 +150,7 @@
                     }
 
                     me.sortMessages(groupConversation.messages);
+                    me.saveConversations();
                 }
             });
 
@@ -157,10 +159,62 @@
     addHandlers: function () {
         var me = this;
         me.on('connected', me.onConnected.bind(me));
+        me.on('saved', me.onSaved.bind(me));
     },
     onConnected: function (type, options) {
         var me = this;
         me.getSettingsForConversations();
+        me.calculateUnseenMessages();
+    },
+    onSaved: function (type, options) {
+        var me = this;
+
+        var messages = me.calculateUnseenMessages();
+        messages.forEach(function (message) {
+            if (message && message.id) {
+                var conversation = me.getConversationByMessage(message);
+                if (conversation) {
+                    if (!conversation.unseenMessages.some(function (x) {
+                         return x.id === message.id && message.id;
+                    })) {
+                        conversation.unseenMessages.push(message);
+                        conversation.unseenCount = conversation.unseenMessages.length;
+                    }
+                }
+            }
+        });
+
+        MEPH.publish(Connection.constant.Constants.UnseenMessages, { messages: messages });
+    },
+    getConversationByMessage: function (message) {
+        var me = this;
+        if (message && message.id) {
+            return me.monitoredConversations.first(function (x) {
+                return x && x.messages.some(function (t) { return t.id === message.id; });
+            })
+        }
+        return null;
+    },
+    calculateUnseenMessages: function () {
+        var me = this;
+        var unseenMessages = me.monitoredConversations.select(function (conversation) {
+            if (conversation.messages) {
+                var settings = me.getConversationSetting(conversation.id);
+
+                var index = conversation.messages.firstIndex(function (x) {
+                    return new Date(x.dateCreated).getTime() > settings.oldestSeenMessage;
+                });
+                var lastIndex = conversation.messages.firstIndex(function (x) {
+                    return new Date(x.dateCreated).getTime() > settings.latestSeenMessage;
+                });
+                return conversation.messages.subset(0, index).concat(conversation.messages.subset(lastIndex));
+            }
+            else {
+                return [];
+            }
+        }).concatFluent();
+
+        return unseenMessages;
     },
     onSignalServiceStateChange: function (type, options) {
         var me = this;
@@ -196,6 +250,15 @@
                 });
             });
         })
+    },
+    removeClientMessage: function (message, id) {
+        var me = this;
+        if (message && message.clientId && (id || message.messageGroup)) {
+            var conversation = me.getConversationById((id || message.messageGroup));
+            conversation.messages.removeWhere(function (x) {
+                return x.clientId === message.clientId;
+            });
+        }
     },
     getMessagesInTheLast: function (seconds) {
         var me = this;
@@ -524,9 +587,17 @@
     },
     saveConversationSettings: function () {
         var me = this;
-        me.when.injected.then(function () {
-            return me.$inj.storage.set(me.$conversationSettingsKey, me.conversationSettings);
-        });
+        if (me.$saveSettingsThrottle) {
+            clearTimeout(me.$saveSettingsThrottle);
+            me.$saveSettingsThrottle = null;
+        }
+        me.$saveSettingsThrottle = setTimeout(function () {
+            me.$saveSettingsThrottle = null;
+            me.when.injected.then(function () {
+                return me.$inj.storage.set(me.$conversationSettingsKey, me.conversationSettings);
+            });
+            me.fire('saved', {});
+        }, 5000);
     },
     openConversationSettings: function () {
         var me = this;
@@ -581,6 +652,8 @@
     monitorConversation: function (conversation) {
         var me = this, result = [];
         var res = MEPH.util.Array.convert(arguments).where(function (conversation) {
+            conversation.unseenMessages = MEPH.util.Observable.observable(conversation.unseenMessages || []);
+            conversation.unseenCount = conversation.unseenMessages.length;
             conversation.messages = MEPH.util.Observable.observable(conversation.messages || []);
             if (me.monitoredConversations.some(function (x) { return x.id === conversation.id; })) {
 
@@ -678,19 +751,27 @@
     },
     saveConversations: function () {
         var me = this;
-        try {
-            me.when.injected.then(function () {
-                me.$inj.storage.set(me.serviceStorageKey, { groups: me.monitoredConversations }).catch(function () {
-                    MEPH.Log(new Error('Didnt save monitored conversations'));
-                    me.$inj.notificationService.notify({
-                        icon: 'exclamation-triangle',
-                        message: 'Didn\'t save monitored conversations.'
-                    });
-                })
-            });
-        } catch (e) {
-
+        if (me.$saveThrottle) {
+            clearTimeout(me.$saveThrottle);
+            me.$saveThrottle = null;
         }
+        me.$saveThrottle = setTimeout(function () {
+            try {
+                me.$saveThrottle = null;
+                me.when.injected.then(function () {
+                    me.$inj.storage.set(me.serviceStorageKey, { groups: me.monitoredConversations }).catch(function () {
+                        MEPH.Log(new Error('Didnt save monitored conversations'));
+                        me.$inj.notificationService.notify({
+                            icon: 'exclamation-triangle',
+                            message: 'Didn\'t save monitored conversations.'
+                        });
+                    })
+                });
+            } catch (e) {
+
+            }
+            me.fire('saved', {});
+        }, 5000);
     },
     getConversations: function (conversationList, start, fetch) {
         var me = this, err;
@@ -768,7 +849,7 @@
             return { start: start, fetch: fetch };
         });
         tothrottle.cancel = cancel;
-        return me.$throttle(tothrottle, throttleId, throttleId);
+        return me.$throttle(tothrottle, throttleId, throttleId, me.throttleSeconds);
 
     },
     sendMessage: function () {
@@ -902,7 +983,7 @@
                 });
             });
             tothrottle.cancel = cancel;
-            return me.$throttle(tothrottle, throttleKey + id, throttleKey + id);
+            return me.$throttle(tothrottle, throttleKey + id, throttleKey + id, me.throttleSeconds);
         }
     },
     getSettingsForConversations: function () {
@@ -922,7 +1003,7 @@
             return rest.get();
         });
         tothrottle.cancel = cancel;
-        return me.$throttle(tothrottle, throttleKey, throttleKey);
+        return me.$throttle(tothrottle, throttleKey, throttleKey, me.throttleSeconds);
 
     },
     openConversation: function (conversation, fetch, start) {
@@ -1007,19 +1088,24 @@
     },
     removeMessage: function (message, id) {
         var me = this;
-        return me.when.injected.then(function () {
-            return me.getToken().then(function (token) {
-                return me.$inj.rest.nocache().addPath('messages/remove/from/conversation')
-                        .post({
-                            messages: [message.id],
-                            group: id || message.messageGroup
-                        }).then(function (result) {
-                            if (result.success && result.authorized) {
+        if (message.id == null) {
+            me.removeClientMessage(message, id || message.messageGroup);
+        }
+        else {
+            return me.when.injected.then(function () {
+                return me.getToken().then(function (token) {
+                    return me.$inj.rest.nocache().addPath('messages/remove/from/conversation')
+                            .post({
+                                messages: [message.id],
+                                group: id || message.messageGroup
+                            }).then(function (result) {
+                                if (result.success && result.authorized) {
 
-                            }
-                        });
+                                }
+                            });
+                });
             });
-        });
+        }
     },
     createConversation: function (cards) {
         var me = this;

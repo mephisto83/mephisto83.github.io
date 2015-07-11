@@ -1,7 +1,7 @@
 ﻿MEPH.define('Connection.service.Service', {
     injections: [],
 
-    $throttle: function (a, b, category) {
+    $throttle: function (a, b, category, timelimit) {
         var me = this;
         me.$throttLib = me.$throttLib || [];
         if (typeof a === 'string') {
@@ -24,10 +24,14 @@
             return null;
         }
         var item = a.catch(function (a, b, e) {
-            me.$throttLib.removeWhere(function (x) { return x.id === a && x.category === b });
+            setTimeout(function () {
+                me.$throttLib.removeWhere(function (x) { return x.id === a && x.category === b });
+            }, timelimit || 0);
             return Promise.reject(e);
         }.bind(me, b, category)).then(function (a, b, res) {
-            me.$throttLib.removeWhere(function (x) { return x.id === a && x.category === b });
+            setTimeout(function () {
+                me.$throttLib.removeWhere(function (x) { return x.id === a && x.category === b });
+            }, timelimit || 0);
             return res
         }.bind(me, b, category));
         me.$throttLib.push({

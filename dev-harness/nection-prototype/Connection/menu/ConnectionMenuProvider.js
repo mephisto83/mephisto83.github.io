@@ -7,13 +7,16 @@
     },
     injections: ['userService', 'stateService'],
     properties: {
-        appMenu: null
+        appMenu: null,
+        messageInfo: null
     },
     initialize: function () {
         var me = this;
         MEPH.subscribe(Connection.constant.Constants.ConnectionLogIn, me.onloggedIn.bind(me));
+        MEPH.subscribe(Connection.constant.Constants.UnseenMessages, me.onSceneMessages.bind(me));
         MEPH.subscribe(MEPH.Constants.LOGOUT, me.onLogout.bind(me));
         me.mixins.injectable.init.apply(me);
+        me.messageInfo = { has: false, count: 0 };
 
         MEPH.subscribe(MEPH.Constants.ON_SHOW, function (type, args) {
             if (args.path === 'main/me' ||
@@ -53,6 +56,13 @@
                 me.onloggedIn();
             }
         })
+    },
+    onSceneMessages: function (type, options) {
+        var me = this;
+        if (options && options.messages) {
+            me.messageInfo.count = options.messages.length;
+            me.messageInfo.has = options.messages.length ? true : false;
+        }
     },
     getSecondaryMenuItems: function () {
         var me = this, res = [];
@@ -146,7 +156,8 @@
                 name: 'Chat',
                 viewId: 'chat',
                 cls: 'fa fa-weixin',
-                path: 'chat'
+                path: 'chat',
+                badge: me.messageInfo
             });
         }
 
@@ -253,13 +264,21 @@
         var me = this;
 
         if (data.openSideMenu) {
-            MEPH.publish(Connection.constant.Constants.SECONDARY_MENU, { elements: me.getSecondardMenuItems() });
+            MEPH.publish(Connection.constant.Constants.SECONDARY_MENU, {
+                elements: me.getSecondardMenuItems()
+            });
         }
         if (data.logout) {
             MEPH.publish(MEPH.Constants.LOGOUT, {});
         }
         if (data.newchat) {
             me.$inj.stateService.newConversation();
+            setTimeout(function () {
+                MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
+                    viewId: 'editconversationgroup',
+                    path: 'editconversationgroup'
+                });
+            }, 200);
         }
         if (data.viewId) {
             MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: data.viewId, path: data.path });

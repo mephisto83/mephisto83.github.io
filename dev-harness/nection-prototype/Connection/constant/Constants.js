@@ -15,6 +15,7 @@
         CurrentConversationContacts: 'CurrentConversationContacts',
         RefreshedToken: 'RefreshedToken',
         CurrentSelectionConfig: 'CurrentSelectionConfig',
-        MergeSituation: 'MergeSituation'
+        MergeSituation: 'MergeSituation',
+        UnseenMessages: 'UnseenMessages'
     }
 })

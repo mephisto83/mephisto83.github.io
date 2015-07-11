@@ -1054,7 +1054,7 @@ MEPH.define('MEPH.util.Array', {
                     configurable: true,
                     value: function (func) {
                         var collection = this, count = 0;
-
+                        func = func || function (x) { return x; };
                         collection.foreach(function (t) {
                             count += t.length;
                         });

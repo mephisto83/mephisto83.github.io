@@ -621,6 +621,47 @@ $meph-activity-view-footer-height: 50px;
             border: 1px solid transparent;
         }
 
+        .connection-chat-badge-list {
+            z-index: 1001;
+            top: 0px;
+            right: 0;
+
+            .number-badge-list:before {
+                content: attr(data-item);
+                background-color: $color1;
+                color: $color3;
+                height: 42px;
+                width: 42px;
+                position: absolute;
+                z-index: 10000;
+                border-radius: 50%;
+                left: 0;
+                font-size: 27px;
+                bottom: 0;
+                text-align: center;
+            }
+        }
+
+        .connection-chat-badge {
+            position: absolute;
+            z-index: 1001;
+            top: 0px;
+
+            .number-badge:before {
+                content: attr(data-item);
+                background-color: $color1;
+                color: $color3;
+                height: 17px;
+                width: 17px;
+                position: absolute;
+                z-index: 10000;
+                border-radius: 50%;
+                left: 18px;
+                font-size: 10px;
+                top: 4px;
+            }
+        }
+
         .last-message-sent-by {
             font-size: x-small;
             color: $color2;

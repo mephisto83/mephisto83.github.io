@@ -2,7 +2,10 @@
     templates: true,
     alias: 'connection_menu_template',
     extend: 'MEPH.control.Control',
-    requires: ['MEPH.util.Dom'],
+    requires: [
+        'MEPH.util.Dom',
+        'MEPH.control.Meph'
+    ],
     statics: {
     },
     properties: {

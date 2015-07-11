@@ -29,29 +29,15 @@ MEPH.define('MEPH.control.Meph', {
 		var paths = MEPH.util.Template.getTemplatePaths(text);
 		me.on('altered', function (type, path, c) {
 			var a = c;
-			//if (path && typeof path.value === 'object') {
-			//	paths.first(function (x) {
-			//		return MEPH.getPathValue(intialPath, x) === path.value;
-			//	})
-			//}
-			//var _path = paths.first(function (x) {
-			//	return path.path.indexOf(x.split('.').subset(1, 2).join('.')) !== -1;
-			//});
-			//if (_path) {
-
-			//	var res = MEPH.getPathValue(_path, me);
-			//	if (path && path.old && path.old.un) {
-			//		path.old.un(null, me);
-			//	}
-			//	if (res && res.on) {
-
-			//		res.un(null, me);
-			//		res.on('changed', function () {
-			//			me.renderTemplate();
-			//		})
-			//	}
-			//	me.renderTemplate();
-			//}
+			paths.forEach(function (_path) {
+				var res = MEPH.getPathValue(_path, me);
+				if (res && res.on) {
+					res.un(null, me);
+					res.on('changed', function () {
+						throttledRender();
+					})
+				}
+			});
 			throttledRender();
 		});
 		item.innerHTML = '';

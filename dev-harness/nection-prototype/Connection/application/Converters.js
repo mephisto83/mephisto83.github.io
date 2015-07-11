@@ -27,6 +27,16 @@ MEPH.define('Connection.application.Converters', {
             }
             return '';
         },
+        UnseenMessages: function (data) {
+            if (data && data.length) {
+                return '<div class="number-badge-list" data-item="' + data.length + '"></div>';
+            }
+        },
+        ShowBadge: function (data) {
+            if (data && data.count) {
+                return '<div class="number-badge" data-item="' + data.count + '"></div>';
+            }
+        },
         Hide: function (val) {
             if (val) return '';
             return 'display:none;';

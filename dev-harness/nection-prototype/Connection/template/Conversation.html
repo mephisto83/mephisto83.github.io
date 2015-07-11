@@ -3,6 +3,7 @@
         <div class="image-row">
             {{cards|MEPH.util.Template.bindArray,'conversation_profile_image'}}
         </div>
+        <div class="connection-chat-badge-list">{{unseenMessages| CC.UnseenMessages}}</div>
         <span class="last-message-sent-by">{{| CC.SentBy}}</span>
         <pre class="converation-item-message">{{lastMessage.message}}</pre>
        

@@ -1,12 +1,29 @@
 ﻿<div class="meph-view meph-view-remove meph-edit-contact">
-    <activityview data-bind='"activityName": "c$.contact.name"' mephid="activityview">  
+    <activityview data-bind='"activityName": "c$.contact.name"' mephid="activityview">
         <div class="col-sm-12" footerpadding edit-contact-fields>
             <div class="center-block">
                 <img mephid="currentprofileimage"
                      class="center-block profile"
+                     meph-event-click="style.show,v$.activityview.selectImage|style.invisible,v$.activityview.currentprofileimage"
                      data-bind='"src": "c$.profileimagesource | v$.toImageSource"' />
             </div>
-
+            <div style="display:none;" mephid="selectImage" class="edit-contact-select-image">
+                <label>Select a profile image.</label>
+                <div class="image-selection-div">
+                    <listview data-bind='"source": "v$.profileimagesource"'
+                              meph-event-select="v$.selectProfileImage | style.hide,v$.activityview.selectImage|style.visible,v$.activityview.currentprofileimage"
+                              class="connection-profile-image-selection listwrapper">
+                        <template name="Connection.template.ProfileImageSelection">
+                        </template>
+                    </listview>
+                </div>
+                <mephbutton meph-event-btn-click="v$.selectImageFromDevice">
+                    <i class="fa fa-picture-o"></i>
+                </mephbutton>
+                <mephbutton meph-event-btn-click="style.hide,v$.activityview.selectImage|style.visible,v$.activityview.currentprofileimage">
+                    <i class="fa fa-times"></i>
+                </mephbutton>
+            </div>
             <div>
                 <typeahead meph-data-source="v$.companysource"
                            meph-data-field="value"
@@ -192,22 +209,6 @@
                 </typeahead>
             </div>
 
-            <label>Select a profile image.</label>
-            <list data-bind='"source": "v$.profileimagesource"'>
-                <template name="edit_list_template_afdasdfasdf">
-                    <li class="listitem">
-                        <fieldset>
-                            <div class="col-md-3 col-sm-3 col-xs-3">
-                                <radio mephid="checkbox" meph-data-name="image" meph-event-click="v$.selectImage, c$.data"></radio>
-                            </div>
-                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                <img class="center-block profile small"
-                                     data-bind='"src": "c$.data.value| v$.toImageSource"' />
-                            </div>
-                        </fieldset>
-                    </li>
-                </template>
-            </list>
-        </div> 
+        </div>
     </activityview>
 </div>

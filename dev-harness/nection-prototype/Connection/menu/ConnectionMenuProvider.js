@@ -21,6 +21,7 @@
         MEPH.subscribe(MEPH.Constants.ON_SHOW, function (type, args) {
             if (args.path === 'main/me' ||
                 args.path === 'main/create/contact' ||
+                args.path === 'contactimage' ||
                 args.path === 'main/contact/relationship/edit') {
                 if (args.path === 'main/contact/relationship/edit') {
                     me.mode = 'relationshipedit';
@@ -30,6 +31,9 @@
                 }
                 else if (args.path === 'main/me') {
                     me.mode = 'edit';
+                }
+                else if (args.path === 'contactimage') {
+                    me.mode = 'contactimage';
                 }
                 if (me.loadMenu) {
                     me.loadMenu();
@@ -202,6 +206,36 @@
             cls: 'fa fa-bars'
         });
 
+        if (me.mode === 'contactimage') {
+            res.length = 0;
+            res.push({
+                connectionmenu: true,
+                back: true,
+                name: 'Back',
+                cls: 'fa fa-reply '
+            }, {
+                connectionmenu: true,
+                name: 'Camera Mode',
+                use: 'cameramode',
+                cls: 'fa fa-camera '
+            }, {
+                connectionmenu: true,
+                name: 'File mode',
+                use: 'filemode',
+                cls: 'fa fa-picture-o '
+            }, {
+                connectionmenu: true,
+                name: 'Take picture',
+                use: 'takepicture',
+                cls: 'fa fa-camera '
+            }, {
+                connectionmenu: true,
+                name: 'Ok',
+                use: 'savepicture',
+                cls: 'fa fa-floppy-o '
+            })
+        }
+
         res.foreach(function (x) {
             if (x.cls.indexOf('fa-2x') === -1)
                 x.cls += ' fa-2x';
@@ -279,6 +313,25 @@
                     path: 'editconversationgroup'
                 });
             }, 200);
+        }
+        if (data.use) {
+            switch (data.use) {
+                case 'cameramode':
+                    MEPH.publish(Connection.constant.Constants.UseCamera, {  });
+                    break;
+                case 'filemode':
+                    MEPH.publish(Connection.constant.Constants.UsePictureFiles, {});
+                    break;
+                case 'takepicture':
+                    MEPH.publish(Connection.constant.Constants.TakePicture, {});
+                    break;
+                case 'savepicture':
+                    MEPH.publish(Connection.constant.Constants.SavePicture, {});
+                    break;
+            }
+        }
+        if (data.back) {
+            window.history.back();
         }
         if (data.viewId) {
             MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: data.viewId, path: data.path });

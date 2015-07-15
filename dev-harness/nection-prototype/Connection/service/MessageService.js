@@ -17,7 +17,9 @@
     properties: {
         serviceStorageKey: 'connection-message-service-storage-key',
         $conversationSettingsKey: '$conversationSettingsKey',
-        throttleSeconds: 60 * 1000
+        $messagingSettingsKey: '$messagingSettingsKey',
+        throttleSeconds: 60 * 1000,
+        $saveThrottleTime: 200
     },
     initialize: function () {
         var me = this;
@@ -27,6 +29,7 @@
         me.$conversationPropertyUpdatePromise = Promise.resolve();
         me.monitoredConversations = MEPH.util.Observable.observable([]);
         me.conversationSettings = MEPH.util.Observable.observable([]);
+        me.unseenMessages = MEPH.util.Observable.observable([]);
 
         me.contactCardCollection = [];
         me.temporarilyDeleted = [];
@@ -107,6 +110,9 @@
                             case 'ConversationSetting':
                                 me.updateConversationSettings(update);
                                 break;
+                            case 'MessagingSetting':
+                                me.updateMessingSettings(update);
+                                break;
                         }
                     });
                 }
@@ -125,12 +131,19 @@
                     var localMessage = groupConversation.messages.first(function (x) {
                         return x.clientId === themessage.clientId;
                     });
+                    var alreadyExistsMessage = groupConversation.messages.first(function (x) {
+                        return x.id === nextMessage.Id;
+                    });
+                    if (alreadyExistsMessage) {
+                        debugger
+                        return;
+                    }
                     groupConversation.lastMessage = groupConversation.lastMessage || {};
                     if (groupConversation.lastMessage) {
                         groupConversation.lastMessage.message = message;
                         groupConversation.lastMessage.cardId = cardId;
                         groupConversation.lastMessage.clientId = clientId;
-                        groupConversation.lastMessage.id = nextMessage.id;
+                        groupConversation.lastMessage.id = nextMessage.Id;
                         groupConversation.lastMessage.dateCreated = dateCreated;
                     }
                     me.updateMessage(themessage);
@@ -161,30 +174,69 @@
         me.on('connected', me.onConnected.bind(me));
         me.on('saved', me.onSaved.bind(me));
     },
+    setUnseenMessages: function (unseen) {
+        var me = this;
+        if (unseen) {
+            me.unseenMessages = unseen;
+        }
+    },
+    publishUnseenMessagesUpdate: function () {
+        var me = this;
+
+        MEPH.publish(Connection.constant.Constants.UnseenMessages, {
+            messages: me.getUnseenMessages()
+        });
+    },
+    getUnseenMessages: function () {
+        var me = this;
+        return me.unseenMessages;
+    },
     onConnected: function (type, options) {
         var me = this;
-        me.getSettingsForConversations();
-        me.calculateUnseenMessages();
+        me.$onConnectedPromise = me.$onConnectedPromise || Promise.resolve();
+        me.$onConnectedPromise = me.$onConnectedPromise.then(function () {
+            return me.getSettingsForConversations().then(function () {
+                return me.calculateUnseenMessages().then(function (messages) {
+                    me.clearSeenMessages();
+                    me.addUnseenMessagesToConversations(messages);
+                });
+            });
+        });
+    },
+    clearSeenMessages: function () {
+        var me = this;
+        me.monitoredConversations.forEach(function (conversation) {
+            if (conversation && conversation.unseenMessages && conversation.unseenMessages.dump) {
+                conversation.unseenMessages.dump();
+            }
+        });
     },
     onSaved: function (type, options) {
         var me = this;
 
-        var messages = me.calculateUnseenMessages();
-        messages.forEach(function (message) {
-            if (message && message.id) {
-                var conversation = me.getConversationByMessage(message);
-                if (conversation) {
-                    if (!conversation.unseenMessages.some(function (x) {
-                         return x.id === message.id && message.id;
-                    })) {
-                        conversation.unseenMessages.push(message);
-                        conversation.unseenCount = conversation.unseenMessages.length;
+        me.calculateUnseenMessages().then(function (messages) {
+            me.clearSeenMessages();
+            me.addUnseenMessagesToConversations(messages);
+            me.publishUnseenMessagesUpdate();
+        });
+    },
+    addUnseenMessagesToConversations: function (messages) {
+        var me = this;
+        if (messages) {
+            messages.forEach(function (message) {
+                if (message && message.id) {
+                    var conversation = me.getConversationByMessage(message);
+                    if (conversation) {
+                        if (!conversation.unseenMessages.some(function (x) {
+                             return x.id === message.id && message.id;
+                        })) {
+                            conversation.unseenMessages.push(message);
+                            conversation.unseenCount = conversation.unseenMessages.length;
+                        }
                     }
                 }
-            }
-        });
-
-        MEPH.publish(Connection.constant.Constants.UnseenMessages, { messages: messages });
+            });
+        }
     },
     getConversationByMessage: function (message) {
         var me = this;
@@ -197,24 +249,38 @@
     },
     calculateUnseenMessages: function () {
         var me = this;
-        var unseenMessages = me.monitoredConversations.select(function (conversation) {
-            if (conversation.messages) {
-                var settings = me.getConversationSetting(conversation.id);
+        var margin = 1000;
+        //return me.getUnseen().then(function () {
+        //    return me.getUnseenMessages();
+        //});
+        return me.getMessagingSettings().then(function (settings) {
+            var unseenMessages = me.monitoredConversations.select(function (conversation) {
+                if (conversation.messages && settings && me.cards) {
 
-                var index = conversation.messages.firstIndex(function (x) {
-                    return new Date(x.dateCreated).getTime() > settings.oldestSeenMessage;
-                });
-                var lastIndex = conversation.messages.firstIndex(function (x) {
-                    return new Date(x.dateCreated).getTime() > settings.latestSeenMessage;
-                });
-                return conversation.messages.subset(0, index).concat(conversation.messages.subset(lastIndex));
-            }
-            else {
-                return [];
-            }
-        }).concatFluent();
+                    var index = conversation.messages.firstIndex(function (x) {
+                        if (!me.cards.some(function (y) { return y.id === x.cardId; })) {
+                            return new Date(x.dateCreated).getTime() <= (settings.oldestSeenMessage - margin);
+                        }
+                        return false;
+                    });
 
-        return unseenMessages;
+                    var lastIndex = conversation.messages.firstIndex(function (x) {
+                        if (!me.cards.some(function (y) { return y.id === x.cardId; })) {
+                            return new Date(x.dateCreated).getTime() > (settings.latestSeenMessage + margin);
+                        }
+                        return false;
+                    });
+
+                    return (index === -1 ? [] : conversation.messages.subset(0, index))
+                        .concat(lastIndex === -1 ? [] : conversation.messages.subset(lastIndex));
+                }
+                else {
+                    return [];
+                }
+            }).concatFluent();
+            me.setUnseenMessages(unseenMessages);
+            return unseenMessages;
+        });
     },
     onSignalServiceStateChange: function (type, options) {
         var me = this;
@@ -388,6 +454,7 @@
             message.name = card.name || (card.firstname + ' ' + card.lastname);
             message.profileimage = card.profileimage;
             message.now = Date.now();
+            MEPH.util.Observable.observable(message);
         }
     },
     getCard: function (id) {
@@ -557,14 +624,55 @@
         var conversation = me.getConversationById(update.Group);
 
         if (conversation && conversation.messages) {
-            update.RemovedMessages.foreach(function (messageId) {
-                conversation.messages.removeWhere(function (x) {
-                    return x.id === messageId;
+            if (update.RemovedMessages)
+                update.RemovedMessages.foreach(function (messageId) {
+                    conversation.messages.removeWhere(function (x) {
+                        return x.id === messageId;
+                    });
                 });
-            });
+
             me.saveConversations();
         }
-
+        if (update.Messages) {
+            update.Messages.select(function (x) {
+                var t = {};
+                for (var i in x) {
+                    t[i.lowerCaseFirstLetter()] = x[i];
+                }
+                return t;
+            }).foreach(function (message) {
+                me.receiveMessage(message);
+            });
+        }
+    },
+    receiveMessage: function (message) {
+        var me = this;
+        var group = message.messageGroup;
+        var groupConversation = me.getConversationById(group);
+        if (groupConversation) {
+            if (!groupConversation.messages.some(function (x) { return x.id === message.id; })) {
+                message.now = null;
+                groupConversation.lastMessage = groupConversation.lastMessage || {};
+                if (groupConversation.lastMessage) {
+                    groupConversation.lastMessage.message = message.message;
+                    groupConversation.lastMessage.cardId = message.cardId;
+                    groupConversation.lastMessage.clientId = message.clientId;
+                    groupConversation.lastMessage.id = message.id;
+                    groupConversation.lastMessage.dateCreated = message.dateCreated;
+                }
+                me.updateMessage(message);
+                MEPH.util.Observable.observable(message);
+                me.$inj.notificationService.notify({
+                    message: 'New Message',
+                    icon: 'inbox'
+                });
+                groupConversation.messages._pause();
+                groupConversation.messages.push(message);
+                groupConversation.messages._start();
+                me.sortMessages(groupConversation.messages);
+                me.saveConversations();
+            }
+        }
     },
     updateConversationSettings: function (update) {
         var me = this;
@@ -576,14 +684,58 @@
         if (settings) {
             settings.notificationValue = update.NotificationValue;
             settings.notificationExpiration = update.NotificationExpiration && !isNaN(update.NotificationExpiration) ? Date.now() + update.NotificationExpiration : null;
-            if (update.OldestSeenMessageDate) {
-                settings.oldestSeenMessage = new Date(update.OldestSeenMessageDate).getTime();
-            }
-            if (update.MostRecentlySeenMessageDate) {
-                settings.latestSeenMessage = new Date(update.MostRecentlySeenMessageDate).getTime();
-            }
+
         }
         me.saveConversationSettings();
+    },
+    setOldestSeenMessage: function (num) {
+        var me = this;
+        return me.getMessagingSettings().then(function (settings) {
+            settings.oldestSeenMessage = num;
+            return me.saveMessagingSettings(settings);
+        });
+    },
+    setMostRecentlySeenMessageDate: function (num) {
+        var me = this;
+        return me.getMessagingSettings().then(function (settings) {
+            settings.latestSeenMessage = num;
+            return me.saveMessagingSettings(settings);
+        });
+    },
+    updateMessingSettings: function (update) {
+        var me = this;
+        me.$messagingSettingPromise = (me.$messagingSettingPromise || Promise.resolve()).then(function () {
+            return me.getMessagingSettings().then(function (settings) {
+                if (!settings) {
+                    settings = {};
+                }
+                if (settings) {
+                    if (update.OldestSeenMessageDate) {
+                        var olddate = new Date(update.OldestSeenMessageDate).getTime();
+                        me.setOldestSeenMessage(olddate);
+                    }
+                    if (update.MostRecentlySeenMessageDate) {
+                        var olddate = new Date(update.MostRecentlySeenMessageDate).getTime();
+                        settings.latestSeenMessage = olddate;
+                    }
+                }
+                return me.saveMessagingSettings(settings);
+            });
+        });
+    },
+    getMessagingSettings: function () {
+        var me = this;
+        return me.when.injected.then(function () {
+            return me.$inj.storage.get(me.$messagingSettingsKey);
+        });
+    },
+    saveMessagingSettings: function (settings) {
+        var me = this;
+        return me.when.injected.then(function () {
+            return me.$inj.storage.set(me.$messagingSettingsKey, settings);
+        }).then(function () {
+            me.fire('saved', {});
+        });
     },
     saveConversationSettings: function () {
         var me = this;
@@ -595,9 +747,10 @@
             me.$saveSettingsThrottle = null;
             me.when.injected.then(function () {
                 return me.$inj.storage.set(me.$conversationSettingsKey, me.conversationSettings);
+            }).then(function () {
+                me.fire('saved', {});
             });
-            me.fire('saved', {});
-        }, 5000);
+        }, me.$saveThrottleTime);
     },
     openConversationSettings: function () {
         var me = this;
@@ -625,16 +778,29 @@
             var conversation = me.getConversationById(id);
             if (conversation && conversation.messages) {
                 var oldest = conversation.messages.first();
-                var newest = conversation.messages.last();
-                if (oldest && newest)
+                var newest = conversation.messages.maxSelection(function (x) {
+                    return x && x.dateCreated ? new Date(x.dateCreated).getTime() : 0;
+                })
+                if (oldest && newest && (oldest.id !== me.$lastOldestId || newest.id !== me.$lastNewestId))
                     me.$conversationPropertyUpdatePromise = me.$conversationPropertyUpdatePromise.then(function () {
                         var newtime = new Date(newest.dateCreated).getTime();
                         var oldtime = new Date(oldest.dateCreated).getTime();
-
-                        return ((!settings.oldestSeenMessage || settings.oldestSeenMessage > oldtime) ?
-                            me.updateConversationProperty('OldestSeenMessage', newest.id, id) : Promise.resolve()).then(function () {
-                                if ((!settings.latestSeenMessage || settings.latestSeenMessage < newtime)) {
-                                    return me.updateConversationProperty('NewestSeenMessage', oldest.id, id);
+                        var $last = me.$lastOldestId;
+                        var $newest = me.$lastNewestId;
+                        me.$lastOldestId = oldest.id;
+                        me.$lastNewestId = newest.id;
+                        return ($last !== oldest.id ?
+                            me.updateConversationProperty('OldestSeenMessage', oldest.id, id) : Promise.resolve()).then(function () {
+                                if (($newest !== newest.id)) {
+                                    return me.updateConversationProperty('NewestSeenMessage', newest.id, id).then(function (results) {
+                                        if (results) {
+                                            var olddate = new Date(results.oldestSeenMessageDate).getTime();
+                                            return me.setOldestSeenMessage(olddate).then(function () {
+                                                var newdate = new Date(results.mostRecentlySeenMessageDate).getTime();
+                                                me.setMostRecentlySeenMessageDate(newdate);
+                                            })
+                                        }
+                                    });
                                 }
                             });
                     }).catch(function () {
@@ -645,8 +811,18 @@
                     });
             }
         }
-        else {
-            me.getSettingsForConversation(id);
+    },
+    cleanUnseenMessages: function (id) {
+        var me = this,
+            conversation = me.getConversationById(id);
+        if (conversation) {
+            conversation.unseenMessages = MEPH.util.Observable.observable(conversation.unseenMessages || []);
+            conversation.unseenMessages.dump();
+            conversation.unseenCount = conversation.unseenMessages.length;
+            conversation.messages.foreach(function (message) {
+                me.getUnseenMessages().removeWhere(function (t) { return message.id === t.id; });
+                me.publishUnseenMessagesUpdate();
+            })
         }
     },
     monitorConversation: function (conversation) {
@@ -771,7 +947,7 @@
 
             }
             me.fire('saved', {});
-        }, 5000);
+        }, me.$saveThrottleTime);
     },
     getConversations: function (conversationList, start, fetch) {
         var me = this, err;
@@ -868,7 +1044,7 @@
     send: function (val, chatSession) {
         var me = this;
         if (chatSession && val)
-            me.when.injected.then(function () {
+            return me.when.injected.then(function () {
                 return me.getToken().then(function (token) {
                     if (!chatSession.id) {
                         return me.$inj.rest.nocache().addPath('messages/createconversation').post({
@@ -891,7 +1067,7 @@
                 var session = me.getConversationById(chatSession.id);
                 if (session) {
                     if (session.userCardId) {
-                        me.makeSignalReady().then(function () {
+                        return me.makeSignalReady().then(function () {
                             var clientId = MEPH.GUID();
                             var themessage = {
                                 clientId: clientId,
@@ -902,8 +1078,6 @@
                             };
                             var convo = me.getConversationById(chatSession.id);
                             if (convo) {
-
-                                MEPH.util.Observable.observable(themessage);
                                 me.updateMessage(themessage);
                                 convo.messages.push(themessage);
                             }
@@ -962,7 +1136,6 @@
             });
         });
     },
-
     getSettingsForConversation: function (id) {
         var me = this;
         if (id) {
@@ -985,6 +1158,29 @@
             tothrottle.cancel = cancel;
             return me.$throttle(tothrottle, throttleKey + id, throttleKey + id, me.throttleSeconds);
         }
+    },
+    getUnseen: function () {
+        var me = this;
+        var throttleKey = 'get unseen';
+        var res = me.$throttle(throttleKey, throttleKey);
+        if (res) {
+            return res;
+        }
+
+        var cancel = {};
+        var tothrottle = me.when.injected.then(function () {
+            var rest = me.$inj.rest.nocache().addPath('messages/unseen');
+            cancel.abort = function () {
+                rest.out.http.abort();
+            }
+            return rest.get().then(function (result) {
+                if (result.success && result.authorized) {
+                    me.setUnseenMessages(result.unseenMessages);
+                }
+            });
+        });
+        tothrottle.cancel = cancel;
+        return me.$throttle(tothrottle, throttleKey, throttleKey);
     },
     getSettingsForConversations: function () {
         var me = this;
@@ -1011,7 +1207,7 @@
         fetch = fetch || 10;
         start = start || 0;
         if (conversation && conversation.id) {
-
+            me.cleanUnseenMessages(conversation.id);
             var res = me.$throttle('openConversation ' + conversation.id, 'openConversation');
             if (res) {
                 return res;
@@ -1036,7 +1232,7 @@
                         var toreturn = me.monitorConversation(results);
                         toreturn.cards = results.cards;
                         me.updateMonitoredCards();
-                        me.updateMessageSeenSettings(conversation.id);
+                        me.cleanUnseenMessages(conversation.id);
                         return me.getConversationById(conversation.id);
                     }
                     else {
@@ -1074,7 +1270,7 @@
                             value: value
                         }).then(function (result) {
                             if (result.success && result.authorized) {
-
+                                return result;
                             }
                             else {
                                 me.$inj.notificationService.notify({

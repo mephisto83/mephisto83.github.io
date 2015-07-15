@@ -608,6 +608,29 @@ $meph-activity-view-footer-height: 50px;
             border-color: $color2;
         }
 
+        .edit-contact-select-image {
+            position: fixed;
+            z-index: 19999;
+            top: 20px;
+            width: 100%;
+        }
+
+        .image-selection-div {
+            overflow-x: scroll;
+
+            .connection-profile-image-selection.listwrapper {
+                display: table;
+
+                .list-group {
+                    display: table-row;
+
+                    .list-group-item {
+                        display: table-cell;
+                    }
+                }
+            }
+        }
+
         pre {
             display: block;
             padding: 9.5px;
@@ -1161,14 +1184,23 @@ $meph-activity-view-footer-height: 50px;
             }
         }
 
+        .selectprofilecontactimage {
+            overflow: scroll;
+            padding-bottom: 100px;
+        }
+
+        .profile-select-canvas,
         .profile {
             height: $profile_height;
             width: $profile_width;
-            background-size: contain;
-            background-repeat: no-repeat;
-            border-radius: 50%;
+        }
+
+        .profile {
             background-position-x: 50%;
             border: solid $profile-image-border-width $color3;
+            border-radius: 50%;
+            background-size: contain;
+            background-repeat: no-repeat;
         }
 
         .profile.small {

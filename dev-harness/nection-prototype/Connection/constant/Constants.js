@@ -16,6 +16,10 @@
         RefreshedToken: 'RefreshedToken',
         CurrentSelectionConfig: 'CurrentSelectionConfig',
         MergeSituation: 'MergeSituation',
-        UnseenMessages: 'UnseenMessages'
+        UnseenMessages: 'UnseenMessages',
+        UseCamera: 'Use Camera',
+        UsePictureFiles: 'Use Picture files',
+        TakePicture: 'TakePicture',
+        SavePicture: 'SavePicture'
     }
 })

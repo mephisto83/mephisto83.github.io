@@ -12,6 +12,8 @@
                 'MEPH.mobile.activity.view.ActivityView',
                 'MEPH.input.Dropdown',
                 'MEPH.input.Text',
+                'Connection.template.ProfileImageSelection',
+                'MEPH.list.View',
                 'Connection.template.UserAttribute',
                 'Connection.template.Card',
                 'Connection.constant.Constants',
@@ -350,6 +352,20 @@
                 MEPH.Log(e);
             }
         }
+    },
+    selectProfileImage: function () {
+        var me = this,
+            data = me.getDomEventArg(arguments);
+        if (data) {
+            return me.selectImage(data);
+        }
+    },
+    selectImageFromDevice: function () {
+        var me = this;
+        MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
+            viewId: 'ContactImageSelection',
+            path: 'contactimage'
+        });
     },
     editMe: function () {
         var me = this;

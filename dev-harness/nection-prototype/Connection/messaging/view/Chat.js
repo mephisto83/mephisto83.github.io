@@ -20,6 +20,7 @@
         inputValue: null,
         messages: null,
         changePossible: true,
+        $fetchCount: 250,
         chatSession: null,
         disabled: false
     },
@@ -52,7 +53,7 @@
             me.$inj.stateService.on(Connection.constant.Constants.CurrentConversation, function (evnt, type, chatSession) {
                 me.$conversationSwitch = me.$conversationSwitch.then(function () {
                     me.$lastLoaded = {
-                        fetch: 10,
+                        fetch: me.$fetchCount,
                         start: 0
                     }
                     me.loadCurrentConversation(chatSession);
@@ -67,7 +68,7 @@
         if (chatSession) {
             me.$inj.overlayService.open('openining conversation' + guid);
             me.$inj.overlayService.relegate('openining conversation' + guid);
-            var fetch = 10;
+            var fetch = 250;
             var start = 0;
             if (me.$lastLoaded) {
                 fetch = me.$lastLoaded.fetch;
@@ -86,6 +87,9 @@
                 });
             }).then(function () {
                 me.$inj.overlayService.close('openining conversation' + guid);
+                if (chatSession.id) {
+                    me.$inj.messageService.updateMessageSeenSettings(chatSession.id);
+                }
             });
         }
     },
@@ -93,6 +97,7 @@
         var me = this;
         if (chatSession && chatSession.data) {
             me.setConversation(chatSession.data);
+
             if (!skip) {
                 var guid = MEPH.GUID();
                 me.$inj.overlayService.open('openining conversation' + guid);
@@ -109,6 +114,9 @@
                         });
                 }).then(function () {
                     me.$inj.overlayService.close('openining conversation' + guid);
+                    if (chatSession.data.id) {
+                        me.$inj.messageService.updateMessageSeenSettings(chatSession.data.id);
+                    }
                 });
             }
             else {
@@ -164,6 +172,9 @@
         }).then(function (conversation) {
             if (conversation && conversation.messages) {
                 me.messages = conversation.messages;
+                if (conversation.id) {
+                    me.$inj.messageService.updateMessageSeenSettings(conversation.id);
+                }
             }
         });
     },
@@ -214,8 +225,21 @@
             me.chatSession = session;
             me.chatSession.cards.un(null, me);
             me.chatSession.cards.on('changed', me.onContactsChange.bind(me), me);
+            me.chatSession.messages.un(null, 'currentchat');
+            me.chatSession.messages.on('changed', function () {
+                if (me.$inj.messageService) {
+                    me.$inj.messageService.updateMessageSeenSettings(me.chatSession.id);
+                }
+            }, 'currentchat')
             me.onContactsChange();
         }
+    },
+    afterHide: function () {
+        var me = this;
+        if (me.chatSession && me.chatSession.messages && me.chatSession.messages.un) {
+            me.chatSession.messages.un(null, 'currentchat');
+        }
+        me.great();
     },
     gotoEditGroupView: function () {
         var me = this;

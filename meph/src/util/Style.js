@@ -74,6 +74,16 @@
         hide: function (dom) {
             if (dom.style) dom.style.display = 'none';
         },
+        visible: function (dom) {
+            if (dom.style) {
+                dom.style.visibility = '';
+            }
+        },
+        invisible: function (dom) {
+            if (dom.style) {
+                dom.style.visibility = 'hidden';
+            }
+        },
         show: function (dom) {
             if (dom.style)
                 dom.style.display = '';

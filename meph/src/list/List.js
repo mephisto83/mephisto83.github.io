@@ -64,7 +64,11 @@ MEPH.define('MEPH.list.List', {
             object: me,
             asValue: true,
             path: 'pullToRefresh'
-        })
+        });
+
+        me.addTransferableAttribute('class', {
+            selector: '.listwrapper'
+        });
 
         me.addTransferableAttribute('autoScroll', {
             object: me,

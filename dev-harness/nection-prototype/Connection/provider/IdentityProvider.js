@@ -4,7 +4,7 @@
 MEPH.define('Connection.provider.IdentityProvider', {
     requires: ['Connection.provider.local.CustomProvider'],
     extend: 'MEPH.identity.IdentityProvider',
-    injections: ['customProvider'],
+    injections: ['customProvider', 'tokenService', 'rest', 'stateService'],
     initialize: function () {
         var me = this;
         me.mixins.injectable.init.apply(me);
@@ -29,6 +29,19 @@ MEPH.define('Connection.provider.IdentityProvider', {
             me.autoSelecting = val;
         }
     },
+    getProfileImagePath: function (cardid) {
+        var me = this;
+        return me.$inj.tokenService.getUserId().then(function (userid) {
+            var urlProfileImage = me.$inj.stateService.get(Connection.constant.Constants.ContactProfileImagePath);
+            var protocol = me.$inj.stateService.get(Connection.constant.Constants.ContactProfileImageProtocol);
+
+            var path = me.$inj.rest.clear().absolute(protocol)
+                .addPath(urlProfileImage)
+                .addPath('{userid}/{cardid}/default')
+                .path({ userid: userid, cardid: cardid });
+            return path;
+        });
+    },
     /**
    * Manages the soures
    * @param {Array} array
@@ -37,13 +50,32 @@ MEPH.define('Connection.provider.IdentityProvider', {
     source: function (array, cardid, options) {
         var me = this,
             callParent = me.callParent;
-        return me.when.injected.then(function () {
-            return me.ready().then(function () {
-                me.$inj.customProvider.source(array, cardid)
-            }).then(function () {
-                callParent.apply(me, [array, options]);
-            });
+        var profileImage = array.first(function (x) {
+            return x.prop === 'profileimage';
         });
+        return me.when.injected
+            .then(function () {
+                if (profileImage) {
+                    
+                    profileImage.source.removeWhere(function (x) { return x.source === 'bridge-source' });
+                    var source = {};
+                    return me.getProfileImagePath(cardid).then(function (val) {
+
+                        source.label = val + '(' + me.constructor.key + ')';
+                        source.provider = Connection.constant.Constants.BridgeSource;
+                        source.type = source.provider,
+                        source.value = val;
+                        profileImage.source.push(source);
+                    });
+                }
+            })
+            .then(function () {
+                return me.ready().then(function () {
+                    me.$inj.customProvider.source(array, cardid)
+                }).then(function () {
+                    callParent.apply(me, [array, options]);
+                });
+            });
     },
     getCards: function (cards) {
         var me = this, callParent = me.callParent;

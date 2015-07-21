@@ -608,6 +608,16 @@ $meph-activity-view-footer-height: 50px;
             border-color: $color2;
         }
 
+        .draggable-cursor {
+            height: 200px;
+            width: 200px;
+            border-radius: 50%;
+            border: solid 3px $color2;
+            top: 0px;
+            left: 0px;
+            z-index: 10000000;
+        }
+
         .edit-contact-select-image {
             position: fixed;
             z-index: 19999;

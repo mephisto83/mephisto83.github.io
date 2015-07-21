@@ -3,7 +3,11 @@
  * String
  */
 MEPH.define('MEPH.util.Draggable', {
-    requires: ['MEPH.util.Dom', 'MEPH.util.Style', 'MEPH.util.Vector'],
+    requires: ['MEPH.util.Dom',
+        'MEPH.util.Style',
+        'MEPH.util.Vector',
+        'MEPH.mobile.services.MobileServices'
+    ],
     properties: {
     },
     statics: {
@@ -13,11 +17,18 @@ MEPH.define('MEPH.util.Draggable', {
             if (dom && handle) {
                 return (function () {
                     var start, following, moved,
+                        scrollService,
                         scope = { canDrag: true },
                         startEventPosition;
                     dom.classList.add('meph-draggable');
                     if (!options.bungy) {
                         MEPH.util.Style.absolute(dom);
+                    }
+                    if (options.preventScroll) {
+
+                        MEPH.MobileServices.get('scrollService').then(function (s) {
+                            scrollService = s;
+                        })
                     }
                     function clearPosition() {
                         if (following && moved) {
@@ -33,6 +44,9 @@ MEPH.define('MEPH.util.Draggable', {
                                     cancelAnimationFrame(request);
                                     request = null;
                                 }
+                                if (options.preventScroll) {
+                                    scrollService.preventScrolling(true);
+                                }
                                 request = requestAnimationFrame(function () {
                                     start = MEPH.util.Dom.getScreenEventPositions(e, dom).first();
                                     if (options.canReact && !options.canReact(start)) {
@@ -41,8 +55,12 @@ MEPH.define('MEPH.util.Draggable', {
                                     following = true;
                                     if (!scope.selectOn)
                                         document.body.classList.add('meph-noselect');
-                                    startEventPosition = MEPH.util.Dom.getRelativePosition(dom, dom.parentNode || dom.parentElement);
-
+                                    if (options.translate) {
+                                        startEventPosition = dom.position || { x: 0, y: 0 };
+                                    }
+                                    else {
+                                        startEventPosition = MEPH.util.Dom.getRelativePosition(dom, dom.parentNode || dom.parentElement);
+                                    }
                                     if (options.bungy) {
                                         dom.classList.add('meph-draggable-bungy');
                                     }
@@ -62,15 +80,24 @@ MEPH.define('MEPH.util.Draggable', {
 
                                         var pos = MEPH.util.Dom.getScreenEventPositions(e, dom).first();
                                         if (options.translate) {
-                                            MEPH.util.Style.translate(dom,
-                                           options.restrict !== 'y' ? (pos.x - start.x) + startEventPosition.x : 0,
-                                           options.restrict !== 'x' ? (pos.y - start.y) + startEventPosition.y : 0)
+                                            var x = options.restrict !== 'y' ? (pos.x - start.x) + startEventPosition.x : 0;
+                                            var y = options.restrict !== 'x' ? (pos.y - start.y) + startEventPosition.y : 0;
+
+                                            MEPH.util.Style.translate(dom, x, y);
+                                            if (options.boundTo) {
+                                                var moveby = MEPH.util.Dom.boundTo(options.boundTo, dom);
+                                                x += moveby.x;
+                                                y += moveby.y;
+                                                MEPH.util.Style.translate(dom, x, y);
+                                            }
                                         }
                                         else {
-                                            if (options.restrict !== 'y')
-                                                MEPH.util.Style.left(dom, (pos.x - start.x) + startEventPosition.x);
-                                            if (options.restrict !== 'x')
-                                                MEPH.util.Style.top(dom, (pos.y - start.y) + startEventPosition.y);
+                                            if (options.restrict) {
+                                                if (options.restrict !== 'y')
+                                                    MEPH.util.Style.left(dom, (pos.x - start.x) + startEventPosition.x);
+                                                if (options.restrict !== 'x')
+                                                    MEPH.util.Style.top(dom, (pos.y - start.y) + startEventPosition.y);
+                                            }
                                         }
                                         if (pos.x - start.x || (pos.y - start.y))
                                             moved = true;
@@ -82,6 +109,9 @@ MEPH.define('MEPH.util.Draggable', {
                     ['mouseup', 'touchend', 'touchcancel'].foreach(function (evt) {
                         handle.addEventListener(evt, function (e) {
 
+                            if (options.preventScroll) {
+                                scrollService.preventScrolling(false);
+                            }
                             requestAnimationFrame(function () {
                                 if (following && options.bungy) {
                                     clearPosition();

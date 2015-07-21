@@ -6,11 +6,13 @@ MEPH.define('MEPH.input.Camera', {
     templates: true,
     properties: {
         $video: null,
+        width: 400,
+        height: 300,
         autoload: true
     },
     initialize: function () {
         var me = this,
-            properties = MEPH.Array(['autoload']);
+            properties = MEPH.Array(['autoload', 'width', 'height']);
 
         me.callParent.apply(me, arguments);
         properties.foreach(function (prop) {

@@ -196,6 +196,7 @@ MEPH.define('MEPH.util.Renderer', {
         context.stroke();
         context.fill();
     },
+
     drawImage: function (context, img, options) {
 
         if (options.center) {
@@ -207,13 +208,13 @@ MEPH.define('MEPH.util.Renderer', {
                 context.rotate(options.rotation);
             }
 
-            context.drawImage(img, 0, 0,
-                                     img.width,
-                                     img.height,
-                                    -img.width / 2,
-                                    -img.height / 2,
-                                     img.width,
-                                     img.height);
+            context.drawImage(img, options.sx || 0, options.sy || 0,
+                                 options.swidth || img.width,
+                                 options.sheight || img.height,
+                                  options.dx||  -img.width / 2,
+                                  options.dy|| -img.height / 2,
+                                   options.width || img.width,
+                                   options.height || img.height);
         }
         else {
 

@@ -79,6 +79,29 @@ MEPH.define('MEPH.util.Dom', {
             }
             return result;
         },
+        boundTo: function (bound, dom) {
+            var boundBox = bound.getBoundingClientRect();
+            var domBox = dom.getBoundingClientRect();
+            var y = 0;
+            var x = 0;
+            var bottom = domBox.bottom - boundBox.bottom;
+            var top = domBox.top - boundBox.top;
+            var left = domBox.left - boundBox.left;
+            var right = domBox.right - boundBox.right;
+            if (bottom > 0) {
+                y -= bottom;
+            }
+            else if (top < 0) {
+                y -= top;
+            }
+            if (left < 0) {
+                x -= left;
+            }
+            else if (right > 0) {
+                x -= right;
+            }
+            return { x: x, y: y };
+        },
         supportsUserMedia: function () {
             navigator.getUserMedia = (navigator.getUserMedia ||
                                       navigator.webkitGetUserMedia ||
@@ -553,7 +576,7 @@ MEPH.define('MEPH.util.Dom', {
                     }
 
                     if (e.distance > distanceToRefresh)
-                    e.preventDefault();
+                        e.preventDefault();
                     MEPH.util.Style.clearPosition(contentEl, true);
                     if (ptrEl)
                         MEPH.util.Style.clearPosition(ptrEl, true);

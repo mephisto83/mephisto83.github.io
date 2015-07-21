@@ -281,9 +281,11 @@
                     if (me.credential) {
                         me.credential.code = me.extractcode(code);
                         me.credential.client_id = me.args.clientId; // me.getClientId(res);
-                        if (me.$inj.storage) {
-                            return me.$inj.storage.set(me.storagekey, me.credential);
-                        }
+                        return me.when.injected.then(function () {
+                            if (me.$inj.storage) {
+                                return me.$inj.storage.set(me.storagekey, me.credential);
+                            }
+                        });
                     }
                 }).catch(function () {
                     MEPH.Log('There was a problem storing the credentials for ' + me.constructor.key, 2);

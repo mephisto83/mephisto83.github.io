@@ -181,7 +181,11 @@ MEPH.define('MEPH.util.Observable', {
                             enumerable: false,
                             writable: true,
                             configurable: false,
-                            value: function () {
+                            value: function (start) {
+
+                                if (start) {
+                                    this._start();
+                                }
                                 this.fire('altered', { path: '' });
                             }
                         });

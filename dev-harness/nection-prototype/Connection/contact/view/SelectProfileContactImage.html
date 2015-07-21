@@ -1,14 +1,16 @@
 ﻿<div class="meph-view meph-view-remove mainview selectprofilecontactimage">
-    <!--<mephbutton meph-event-btn-click="style.hide,v$.camerasource.formBody|style.show,v$.camera.formBody">
-        <i class="fa fa-picture-o"></i>
-    </mephbutton>
-    <mephbutton meph-event-btn-click="style.hide,v$.camera.formBody|style.show,v$.camerasource.formBody|style.show,v$.takepicture">
-        <i class="fa fa-camera"></i>
-    </mephbutton>-->
-    <div style="display:none;" mephid="canvasholder" canvasholder> <canvas mephid="canvas" class="profile-select-canvas"></canvas></div>
-    <camera mephid="camera" descriptiontext="Camera Image" meph-event-change="v$.onImageChange" labeltext="Camera Image"></camera>
-    <camerastream mephid="camerasource"></camerastream>
-    <!--<mephbutton mephid="takepicture" meph-event-btn-click="v$.takeAPicture">
-        <i class="fa fa-camera"></i>
-    </mephbutton>-->
+    <div style="display:table;width: 100%;">
+        <div class="draggable-cursor" mephid="draggableCursor"></div>
+        <div style="display:table-row">
+            <div style="display:table-cell;text-align:center;" mephid="canvasholder" canvasholder>
+                <camerastream mephid="camerasource" width="100%" height=""></camerastream>
+                <camera mephid="camera" descriptiontext="Camera Image" meph-event-change="v$.onImageChange" labeltext="Camera Image"></camera>
+            </div>
+        </div>
+        <canvas mephid="canvas" class="profile-select-canvas"></canvas>
+        <div class="col-md-12">
+            <range meph-data-min="0.1" label="Scale" meph-data-max="3" meph-data-step="0.01" 
+                   value="v$.scaleValue" meph-event-change="v$.redraw"></range>
+           </div>
+    </div>
 </div>

@@ -1,6 +1,7 @@
 ﻿MEPH.define('Connection.menu.ConnectionMenuProvider', {
     requires: ['MEPH.util.Observable',
                 'MEPH.Constants',
+                'MEPH.util.Dom',
                 'Connection.menu.template.MenuTemplate'],
     mixins: {
         injectable: 'MEPH.mixins.Injections'
@@ -208,39 +209,44 @@
 
         if (me.mode === 'contactimage') {
             res.length = 0;
+            var supporstMedia = MEPH.util.Dom.supportsUserMedia();
             res.push({
                 connectionmenu: true,
                 back: true,
                 name: 'Back',
                 cls: 'fa fa-reply '
-            }, {
+            },
+            (supporstMedia ? {
                 connectionmenu: true,
                 name: 'Camera Mode',
                 use: 'cameramode',
                 cls: 'fa fa-camera '
-            }, {
+            } : null),
+            {
                 connectionmenu: true,
                 name: 'File mode',
                 use: 'filemode',
                 cls: 'fa fa-picture-o '
-            }, {
+            },
+            (supporstMedia ? {
                 connectionmenu: true,
                 name: 'Take picture',
                 use: 'takepicture',
                 cls: 'fa fa-camera '
-            }, {
+            } : null)
+            , {
                 connectionmenu: true,
                 name: 'Ok',
                 use: 'savepicture',
                 cls: 'fa fa-floppy-o '
             })
         }
-
+        res = res.where();
         res.foreach(function (x) {
-            if (x.cls.indexOf('fa-2x') === -1)
+            if (x&&x.cls.indexOf('fa-2x') === -1)
                 x.cls += ' fa-2x';
         });
-        return res;
+        return res.where();
     },
     getSecondardMenuItems: function () {
         var me = this,
@@ -317,7 +323,7 @@
         if (data.use) {
             switch (data.use) {
                 case 'cameramode':
-                    MEPH.publish(Connection.constant.Constants.UseCamera, {  });
+                    MEPH.publish(Connection.constant.Constants.UseCamera, {});
                     break;
                 case 'filemode':
                     MEPH.publish(Connection.constant.Constants.UsePictureFiles, {});

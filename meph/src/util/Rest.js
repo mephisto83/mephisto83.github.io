@@ -41,6 +41,11 @@ MEPH.define('MEPH.util.Rest', {
             });
         }
     },
+    host: function (host) {
+        var me = this, copy = me.copy();
+        copy._host = host;
+        return copy;
+    },
     copy: function () {
         var me = this,
             rest = new MEPH.util.Rest();
@@ -51,6 +56,9 @@ MEPH.define('MEPH.util.Rest', {
         rest._path = me._path.select();
         rest._protocol = me._protocol;
         rest._host = me._host;
+        rest.$postData = me.$postData;
+
+        rest.$asBinary = me.$asBinary;
         rest.storage = me.storage;
         rest._header = me._header.select();
         return rest;
@@ -67,6 +75,18 @@ MEPH.define('MEPH.util.Rest', {
         if (!on) {
             copy.credentials = false;
         }
+        return copy;
+    },
+    postData: function (data) {
+        var me = this,
+            copy = me.copy();
+        copy.$postData = data;
+        return copy;
+    },
+    asBinary: function () {
+        var me = this,
+            copy = me.copy();
+        copy.$asBinary = true;
         return copy;
     },
     header: function (header, value) {
@@ -86,6 +106,7 @@ MEPH.define('MEPH.util.Rest', {
             headerObj = { header: header, value: value };
             me._header.push(headerObj);
         }
+        return me;
     },
     clear: function () {
         var me = this, copy = me.copy();
@@ -281,7 +302,8 @@ MEPH.define('MEPH.util.Rest', {
         return me.ajax(me.path(data), {
             method: method,
             requestHeaders: me._header.select(),
-            data: senddata,
+            asBinary: me.$asBinary,
+            data: senddata || me.$postData || null,
             withCredentials: me.credentials
         }, me.out).then(function (res) {
             if (res.responseJSON) {

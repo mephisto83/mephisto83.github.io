@@ -12,7 +12,7 @@
                 <canvas class="spreadsheet" mephid="canvas" tabindex="0"></canvas>
                 <canvas class="spreadsheet bottom" mephid="canvascontent"></canvas>
                 <svg class="spreadsheet " mephid="canvassvg" tabindex="0"></svg>
-                <div class="spreadsheet " mephid="canvashtml" tabindex="0"></div>
+                <div class="spreadsheet " style="z-index:-1" mephid="canvashtml" tabindex="0"></div>
                 <div class="activearea" mephid="activeareatop"></div>
                 <div class="activearea" mephid="activearealeft"></div>
                 <div class="activearea" mephid="activearea"></div>
@@ -21,7 +21,7 @@
                 <div class="selectarea" mephid="selectareatop"></div>
                 <!-- "name": "spreadsheetbodyend" -->
             </div>
-            <div class="spreadsheetscrollbarright">
+            <div class="spreadsheetscrollbarright" mephid="sidebar">
                 <scrollbar meph-data-virtualsize="c$.verticalSize"
                            meph-data-horizontal="false"
                            meph-data-scrollbarposition="c$.vbarposition"></scrollbar>

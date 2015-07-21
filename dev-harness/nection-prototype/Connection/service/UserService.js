@@ -101,13 +101,13 @@
             }
             if (me.loggedin)
                 return me.$inj.customProvider.retrieveCards().catch(function () {
-                    return me.myCards();
+                    //  return me.myCards();
                 });
             else {
                 return me.hasCompletedLogin.then(function () {
                     return me.$inj.customProvider.retrieveCards();
                 }).catch(function () {
-                    return me.myCards();
+                    //     return me.myCards();
                 });
             }
         }).then(function (cards) {
@@ -224,18 +224,22 @@
      * Checks the users credentials.
      **/
     checkCredentials: function (provider) {
-        var me = this;
+        var me = this,
+            $provider;
         MEPH.Log('Check credentials of ' + provider.name);
         //      me.$promise = me.$promise.then(function () {
         return me.ready.then(function () {
 
-            var $provider = me.$inj.identityProvider.getProviders().first(function (x) {
+            $provider = me.$inj.identityProvider.getProviders().first(function (x) {
                 return x.key.toLowerCase() === provider.name.toLowerCase();
             });
-
+            var credentials = $provider && $provider.p && $provider.p.credentials ? $provider.p.credentials() : null;
+            if (credentials == null) {
+                return Promise.resolve(new Error('No credentials'));
+            }
             return me.$inj.rest.nocache().addPath('login/{provider}').post({
                 provider: provider.name.toLowerCase()
-            }, $provider && $provider.p && $provider.p.credentials ? $provider.p.credentials() : null).then(function (res) {
+            }, credentials).then(function (res) {
 
                 MEPH.Log('Got check results');
                 if (res && res.authorized) {
@@ -259,23 +263,12 @@
                     provider.online = false;
                 }
                 return false;
-            }).catch(function (error) {
-                if ($provider && $provider.p && $provider.p.credentials)
-                    $provider.p.credentials(false);
-                provider.online = false;
-            })
+            });
+        }).catch(function (error) {
+            if ($provider && $provider.p && $provider.p.credentials)
+                $provider.p.credentials(false);
+            provider.online = false;
         });
-        //return Promise.resolve().then(function () {
-        //    if (provider.online && !me.hasLoggedIn) {
-        //        MEPH.publish(Connection.constant.Constants.ConnectionLogIn, {});
-        //        MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, { viewId: 'main', path: '/main' });
-        //        me.hasLoggedIn = true;
-        //        return true;
-        //    }
-        //    return false;
-        //});
-        //    });
-        //  return me.$promise;
     },
     isAttached: function (accounts) {
         var me = this;

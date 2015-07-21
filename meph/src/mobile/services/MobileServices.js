@@ -19,7 +19,7 @@ MEPH.define('MEPH.mobile.services.MobileServices', {
                     return x.name === serviceName;
                 });
             MEPH.MobileServices.promise = MEPH.MobileServices.promise || Promise.resolve();
-            return MEPH.MobileServices.promise = MEPH.MobileServices.promise.then(function () {
+            MEPH.MobileServices.promise = MEPH.MobileServices.promise.then(function () {
                 if (!serviceConfig) {
                     return Promise.resolve().then(function () { return null; });
                 }
@@ -40,7 +40,10 @@ MEPH.define('MEPH.mobile.services.MobileServices', {
                     }
                     return instance;
                 });
+            }).catch(function () {
+                MEPH.Log('There was a problem getting the service : ' + serviceName);
             });
+            return MEPH.MobileServices.promise;
         },
         loadAll: function () {
             var result,

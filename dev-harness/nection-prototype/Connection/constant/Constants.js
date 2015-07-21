@@ -20,6 +20,10 @@
         UseCamera: 'Use Camera',
         UsePictureFiles: 'Use Picture files',
         TakePicture: 'TakePicture',
-        SavePicture: 'SavePicture'
+        SavePicture: 'SavePicture',
+        SelectProfileContactImageData: 'SelectProfileContactImageData',
+        ContactProfileImagePath: 'contactProfileImagePath',
+        ContactProfileImageProtocol: 'contactProfileImageProtocol',
+        BridgeSource: 'bridge-source'
     }
 })

@@ -554,7 +554,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
             configure.requestHeaders.push({ header: 'Authorization', value: 'Bearer ' + meph.getAuthorizationToken() });
         }
 
-        var data = configure.data ? JSON.stringify(configure.data) : null;
+        var data = configure.data ? (configure.asBinary ? configure.data : JSON.stringify(configure.data)) : null;
 
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
@@ -745,7 +745,9 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
 
         configure = configure || {};
         configure.requestHeaders = configure.requestHeaders || [];
-        configure.requestHeaders.push({ header: 'Content-Type', value: 'application/json; charset=utf-8' });
+        if (!configure.requestHeaders.some(function (x) { return x.header === 'Content-Type' }) && 
+            !(configure.data instanceof window.FormData))
+            configure.requestHeaders.push({ header: 'Content-Type', value: 'application/json; charset=utf-8' });
         configure.requestHeaders.push({ header: 'Accept', value: 'text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' });
         return meph.ajax(path, configure, out).then(function (response) {
             try {

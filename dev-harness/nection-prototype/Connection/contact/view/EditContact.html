@@ -4,19 +4,27 @@
             <div class="center-block">
                 <img mephid="currentprofileimage"
                      class="center-block profile"
-                     meph-event-click="style.show,v$.activityview.selectImage|style.invisible,v$.activityview.currentprofileimage"
+                     meph-event-click="style.show,v$.activityview.selectImage| style.show,v$.activityview.selectImageBtns|style.invisible,v$.activityview.currentprofileimage"
                      data-bind='"src": "c$.profileimagesource | v$.toImageSource"' />
             </div>
             <div style="display:none;" mephid="selectImage" class="edit-contact-select-image">
                 <label>Select a profile image.</label>
                 <div class="image-selection-div">
                     <listview data-bind='"source": "v$.profileimagesource"'
-                              meph-event-select="v$.selectProfileImage | style.hide,v$.activityview.selectImage|style.visible,v$.activityview.currentprofileimage"
+                              meph-event-select="v$.selectProfileImage | style.hide,v$.activityview.selectImage|style.hide,v$.activityview.selectImageBtns|style.visible,v$.activityview.currentprofileimage"
                               class="connection-profile-image-selection listwrapper">
                         <template name="Connection.template.ProfileImageSelection">
                         </template>
                     </listview>
                 </div>
+                <br />
+                <div class="row">
+
+                </div>
+            </div>
+
+            <div style="display:none;" mephid="selectImageBtns" class="">
+                <h3>Select Image From Device</h3>
                 <mephbutton meph-event-btn-click="v$.selectImageFromDevice">
                     <i class="fa fa-picture-o"></i>
                 </mephbutton>

@@ -6,13 +6,20 @@
         injectable: 'MEPH.mixins.Injections'
     },
     injections: [],
-    initialize: function () {
+    initialize: function (config) {
         var me = this;
 
         MEPH.Events(me);
         me.mixins.injectable.init.apply(me);
         me.state = {};
-
+        if (config) {
+            for (var i in config) {
+                if (config.hasOwnProperty(i)) {
+                    // me.state[i] = config[i];
+                    me.set(i, config[i]);
+                }
+            }
+        }
         MEPH.Events(me);
 
     },

@@ -88,20 +88,6 @@
         me.great();
         me.dirtyValues = {};
         me.ready = me.when.injected;
-
-        MEPH.subscribe(Connection.constant.Constants.CurrentCard, function (type, options) {
-            me.initMe(me.$inj.stateService.get(Connection.constant.Constants.CurrentCard));
-        });
-        me.when.injected.then(function () {
-            var handler = function () {
-                me.initMe(me.$inj.stateService.get(Connection.constant.Constants.CurrentCard));
-            };
-            handler();
-            me.$inj.stateService.on(Connection.constant.Constants.CurrentCard, handler);
-        });
-        MEPH.subscribe([Connection.constant.Constants.LoggedOut, Connection.constant.Constants.LoggedIn], function () {
-            me.initMe(me.$inj.stateService.get(Connection.constant.Constants.CurrentCard));
-        });
     },
     onLoaded: function () {
         var me = this;
@@ -112,13 +98,22 @@
         });
         me.activityview.hideHeader();
         me.activityview.hideFooter();
+        me.on('change_profileimageValue', function (x) {
+            me.activityview.currentprofileimage.src = me.profileimageValue;
+        });
     },
-    //onInjectionsComplete: function () {
-    //    var me = this;
-
-    //    me.initMe();
-    //    me.toresolve();
-    //},
+    afterShow: function () {
+        var me = this;
+        me.when.injected.then(function () {
+            var obj = me.$inj.stateService.get(Connection.constant.Constants.CurrentCard)
+            me.initMe({ selectedCardId: obj.selectedCardId });
+        });
+    },
+    afterHide: function () {
+        var me = this;
+        MEPH.util.Style.hide(me.activityview.selectImage);
+        MEPH.util.Style.visible(me.activityview.currentprofileimage);
+    },
     valueChanged: function (property, visibility) {
         var me = this;
         if (me.dirtyValues[property] === undefined)
@@ -130,64 +125,53 @@
     },
     initMe: function (options) {
         var me = this, identityProvider;
-        if (me.$inj && me.$inj.identityProvider && (me.activityArguments || options)) {///&& !me.$inited
+        if (me.$inj && me.$inj.identityProvider && options) {///&& !me.$inited
 
-            me.$inj.overlayService.open('connection-contact-edit');
-            me.$inj.overlayService.relegate('connection-contact-edit');
+            //me.$inj.overlayService.open('connection-contact-edit');
+            //me.$inj.overlayService.relegate('connection-contact-edit');
             identityProvider = me.$inj.identityProvider;
             var properties = ['email2', 'phone1', 'phone2', 'name', 'email1',
                 'company', 'title',
                 'addressline1', 'city', 'addressline2', 'stateprovince', 'zipcode',
                 'occupation', 'profileimage', 'headline', 'link', 'skills'];
             me.activityview.currentprofileimage.src = null;
+            me._pause();
             properties.foreach(function (prop) {
                 me[prop + 'source'] = MEPH.util.Observable.observable([]);
                 me[prop + 'source'].contactProperty = prop;
                 me[prop + 'Value'] = null;
                 me[prop + 'ValueObj'] = null;
             });
-
-            var cardid = (options || me.activityArguments).selectedCardId;
+            var cardid = options.selectedCardId;
             me.currentcardid = cardid;
 
             var mycontact = me.$inj.stateService.get('mycontact') || null;
-            me.$inj.customProvider.getProperties(cardid).then(function (res) {
-                res.foreach(function (r) {
-                    if (mycontact[r.propType] !== r.value) {
-                        me[r.propType + 'Value'] = r.value;
-                    }
-                    if (r.propType === 'profileimage') {
-                        me.activityview.currentprofileimage.src = r.value;
-                    }
-                });
-            }).then(function () {
-                me.$inj.overlayService.close('connection-contact-edit');
-            });
+
             if (mycontact) {
                 for (var i in mycontact) {
                     me[i + 'Value'] = mycontact[i];
-                    if (i === 'profileimage') {
-                        me.activityview.currentprofileimage.src = mycontact[i];
-                    }
                 }
             }
+            me.activityview.currentprofileimage.src = mycontact['profileimage'];
             me.sources = properties.select(function (prop) {
                 return me[prop + 'source']
             });
 
+
             //me.sources.foreach(function (source) {
             //    source.on('changed', handler);
             //});
-
-            identityProvider.source(properties.select(function (property) {
-                return {
-                    prop: property,
-                    source: me[property + 'source']
-                };
-            }), me.currentcardid);
-
+            if (me.currentcardid) {
+                identityProvider.source(properties.select(function (property) {
+                    return {
+                        prop: property,
+                        source: me[property + 'source']
+                    };
+                }), me.currentcardid);
+            }
             me.$inited = true;
 
+            me.fireAltered(true);
         }
         me.when.injected.then(function () {
             var identityProvider = me.$inj.identityProvider;
@@ -225,16 +209,6 @@
             }
         });
     },
-    //afterShow: function () {
-    //    var me = this;
-    //    me.great();
-    //    // me.initMe();
-    //},
-    //afterHide: function () {
-    //    var me = this;
-    //    MEPH.publish()
-    //    me.great();
-    //},
     visbility: function (res) {
         if (res && res.provider === 'custom') {
             return false;

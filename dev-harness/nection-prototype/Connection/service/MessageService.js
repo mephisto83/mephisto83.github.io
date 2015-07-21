@@ -691,8 +691,10 @@
     setOldestSeenMessage: function (num) {
         var me = this;
         return me.getMessagingSettings().then(function (settings) {
-            settings.oldestSeenMessage = num;
-            return me.saveMessagingSettings(settings);
+            if (settings) {
+                settings.oldestSeenMessage = num;
+                return me.saveMessagingSettings(settings);
+            }
         });
     },
     setMostRecentlySeenMessageDate: function (num) {

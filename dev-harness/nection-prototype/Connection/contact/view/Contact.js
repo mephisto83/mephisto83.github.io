@@ -34,7 +34,6 @@
         var me = this;
         me.great();
 
-        console.info('qr code;')
         if (!me.cards || !me.cards.first())
             if (me.$inj && me.$inj.overlayService)
                 me.$inj.overlayService.open('connection-contact-aftershow');
@@ -43,8 +42,7 @@
             if (!me.cards || !me.cards.first())
                 if (me.$inj && me.$inj.overlayService)
                     me.$inj.overlayService.close('connection-contact-aftershow');
-            console.info('end qr code;')
-        })
+        });
     },
     afterHide: function () {
         var me = this;
@@ -55,11 +53,11 @@
     },
     initMe: function () {
         var me = this;
-        me.when.injected.then(function () {
+        return me.when.injected.then(function () {
             if (me.$inj && me.$inj.identityProvider) {
                 if (!me.cards || !me.cards.first())
                     me.$inj.overlayService.open('connection-contact-me');
-                me.$inj.identityProvider.getCards(me.cards).then(function () {
+                return me.$inj.identityProvider.getCards(me.cards).then(function () {
                     me.selectedCard = me.cards.first();
                     return me.refreshCard();
                 }).catch(function () {
@@ -75,23 +73,12 @@
 
         if (me.selectedCard && (!me.selectedCardValue || (me.selectedCardValue === me.selectedCard.name))) {
             me.$inj.identityProvider.autoSelect(false);
-            // setTimeout(function () {
-            //MEPH.publish(Connection.constant.Constants.CurrentCard, {
-            //    selectedCardId: me.selectedCard.id,
-            //    autoSelect: false
-            //});
             me.when.injected.then(function () {
                 me.$inj.stateService.set(Connection.constant.Constants.CurrentCard, {
                     selectedCardId: me.selectedCard.id,
                     autoSelect: false
                 })
             });
-            //MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
-            //    viewId: 'EditContact',
-            //    path: 'main/me/edit',
-            //    selectedCardId: me.selectedCard ? me.selectedCard.id : null
-            //});
-            //}, 200);
         }
         else if (me.selectedCardValue) {
 
@@ -100,21 +87,12 @@
 
                 me.cards.push(card);
                 me.selectedCard = card;
-                //MEPH.publish(Connection.constant.Constants.CurrentCard, {
-                //    selectedCardId: card.id,
-                //    autoSelect: true
-                //});
                 me.$inj.identityProvider.autoSelect(card.id);
                 me.$inj.stateService.set(Connection.constant.Constants.CurrentCard, {
                     selectedCardId: card.id,
                     autoSelect: true,
                     autoSelectId: card.id
                 });
-                //MEPH.publish(MEPH.Constants.OPEN_ACTIVITY, {
-                //    viewId: 'EditContact', path: 'main/me/edit',
-                //    selectedCardId: card.id,
-                //    autoSelect: true
-                //});
             }).catch(function () { }).then(function () {
                 me.$inj.overlayService.close('connection-contact-createcard');
             });

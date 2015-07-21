@@ -1,8 +1,7 @@
 ﻿<!-- "instruction": true, "name" : "injectop", "operation" : "inject" , "position" : "beforeinput", "before" : false -->
-<video data-bind='"id": "c$.id", "type": "c$.type", "value": "c$.inputfield.value", "class": "c$.inputCls"'
-    width="400"
-    height="300"
-    MEPHId="inputfield"
-    data-events='"change" : "c$.inputfield.value | c$.value"'>
-</video>
+<video data-bind='"id": "c$.id", "type": "c$.type", "value": "c$.inputfield.value", "class": "c$.inputCls", "width":"c$.width","height":"c$.height"'
+       width="400"
+       height="300"
+       mephid="inputfield"
+       data-events='"change" : "c$.inputfield.value | c$.value"'></video>
 <!-- "instruction": true, "name" : "injectop", "close": true -->

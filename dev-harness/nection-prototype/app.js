@@ -26,11 +26,19 @@ MEPH.ready().then(function () {
                 stayOn: '/staypath'
             },
             ioc: {
+                scrollService: {
+                    'static': true,
+                    'type': 'MEPH.service.ScrollService'
+                },
+
                 stateService: {
 
                     'static': true,
                     type: 'Connection.service.StateService',
-                    config: {}
+                    config: {
+                        contactProfileImagePath: 'zna.blob.core.windows.net/mycontainer',
+                        contactProfileImageProtocol: 'https'
+                    }
                 },
                 dialogService: {
                     'static': true,

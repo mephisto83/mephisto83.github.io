@@ -103,7 +103,9 @@ MEPH.define('MEPH.table.SpreadSheet', {
                         me.htmlrenderer = new MEPH.util.HTMLRenderer();
                         me.htmlrenderer.batchdraw = true;
                         me.htmlrenderer.setCanvas(me.canvashtml);
-
+                        MEPH.util.Style.hide(me.sidebar);
+                        MEPH.util.Style.hide(me.bottombar);
+                        me.body.classList.add('html-mode');
                         me.svgrenderer = new MEPH.util.SVG();
                         me.svgrenderer.batchdraw = true;
                         me.svgrenderer.setCanvas(me.canvassvg);

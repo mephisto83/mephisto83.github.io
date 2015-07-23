@@ -227,14 +227,15 @@
                 name: 'File mode',
                 use: 'filemode',
                 cls: 'fa fa-picture-o '
-            },
-            (supporstMedia ? {
-                connectionmenu: true,
-                name: 'Take picture',
-                use: 'takepicture',
-                cls: 'fa fa-camera '
-            } : null)
-            , {
+            }, 
+            //(fal ? {
+            //    connectionmenu: true,
+            //    name: 'Take picture',
+            //    use: 'takepicture',
+            //    cls: 'fa fa-camera '
+            //} : null)
+            //,
+            {
                 connectionmenu: true,
                 name: 'Ok',
                 use: 'savepicture',
@@ -243,7 +244,7 @@
         }
         res = res.where();
         res.foreach(function (x) {
-            if (x&&x.cls.indexOf('fa-2x') === -1)
+            if (x && x.cls.indexOf('fa-2x') === -1)
                 x.cls += ' fa-2x';
         });
         return res.where();

@@ -289,6 +289,14 @@ MEPH.define('MEPH.util.Dom', {
             }
             return { x: xPosition, y: yPosition };
         },
+        getRelativeScreenPosition: function (element, parent) {
+            var erect = element.getBoundingClientRect();
+            var prect = parent.getBoundingClientRect();
+            return {
+                x: erect.left - prect.left,
+                y: erect.top - prect.top
+            }
+        },
         getEventPositions: function (evt, element) {
             var positions = [];
             if (evt.changedTouches) {

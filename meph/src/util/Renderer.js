@@ -196,9 +196,8 @@ MEPH.define('MEPH.util.Renderer', {
         context.stroke();
         context.fill();
     },
-
     drawImage: function (context, img, options) {
-
+        var me = this;
         if (options.center) {
             context.translate(options.x, options.y);
             if (options.scale) {
@@ -208,13 +207,14 @@ MEPH.define('MEPH.util.Renderer', {
                 context.rotate(options.rotation);
             }
 
-            context.drawImage(img, options.sx || 0, options.sy || 0,
-                                 options.swidth || img.width,
-                                 options.sheight || img.height,
-                                  options.dx||  -img.width / 2,
-                                  options.dy|| -img.height / 2,
-                                   options.width || img.width,
-                                   options.height || img.height);
+            context.drawImage(img, MEPH.ifUndefined(options.sx, 0),
+                MEPH.ifUndefined(options.sy, 0),
+                MEPH.ifUndefined(options.swidth, img.width),
+                MEPH.ifUndefined(options.sheight, img.height),
+                MEPH.ifUndefined(options.dx, -img.width / 2),
+                MEPH.ifUndefined(options.dy, -img.height / 2),
+                MEPH.ifUndefined(options.width, img.width),
+                MEPH.ifUndefined(options.height, img.height));
         }
         else {
 

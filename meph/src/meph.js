@@ -338,6 +338,13 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
         //})
     }
 
+
+    meph.ifUndefined = function (a, b) {
+        if (a === undefined)
+            return b;
+        return a;
+    }; 
+
     /**
      * @method beforeResourceDefined
      * Executes before resources are defined
@@ -745,7 +752,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
 
         configure = configure || {};
         configure.requestHeaders = configure.requestHeaders || [];
-        if (!configure.requestHeaders.some(function (x) { return x.header === 'Content-Type' }) && 
+        if (!configure.requestHeaders.some(function (x) { return x.header === 'Content-Type' }) &&
             !(configure.data instanceof window.FormData))
             configure.requestHeaders.push({ header: 'Content-Type', value: 'application/json; charset=utf-8' });
         configure.requestHeaders.push({ header: 'Accept', value: 'text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' });

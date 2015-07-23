@@ -38,6 +38,7 @@ MEPH.define('Connection.provider.IdentityProvider', {
             var path = me.$inj.rest.clear().absolute(protocol)
                 .addPath(urlProfileImage)
                 .addPath('{userid}/{cardid}/default')
+                .addPath({ date: Date.now() })
                 .path({ userid: userid, cardid: cardid });
             return path;
         });
@@ -56,7 +57,7 @@ MEPH.define('Connection.provider.IdentityProvider', {
         return me.when.injected
             .then(function () {
                 if (profileImage) {
-                    
+
                     profileImage.source.removeWhere(function (x) { return x.source === 'bridge-source' });
                     var source = {};
                     return me.getProfileImagePath(cardid).then(function (val) {

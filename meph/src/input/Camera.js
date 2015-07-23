@@ -22,6 +22,12 @@ MEPH.define('MEPH.input.Camera', {
             });
         });
     },
+    onLoadedVideoData: function () {
+        var me = this;
+        var evt = MEPH.util.Array.convert(arguments).last();
+
+        debugger
+    },
     onLoaded: function () {
         var me = this, video, input, Dom = MEPH.util.Dom;
         me.callParent.apply(me, arguments);

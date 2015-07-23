@@ -113,6 +113,7 @@
         var me = this;
         MEPH.util.Style.hide(me.activityview.selectImage);
         MEPH.util.Style.visible(me.activityview.currentprofileimage);
+        MEPH.util.Style.hide(me.activityview.selectImageBtns)
     },
     valueChanged: function (property, visibility) {
         var me = this;

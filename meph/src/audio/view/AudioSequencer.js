@@ -509,6 +509,7 @@ MEPH.define('MEPH.audio.view.AudioSequencer', {
     },
     setupHeaders: function () {
         var me = this, columns = 2000, rows = 88;
+
         me.leftheadersource = [].interpolate(0, rows, function (x) {
             return MEPH.util.Observable.observable({
                 lane: x,
@@ -516,6 +517,7 @@ MEPH.define('MEPH.audio.view.AudioSequencer', {
                 length: 1
             });
         });
+
         me.topheadersource = [].interpolate(0, columns, function (x) {
             return MEPH.Observable.observable({
                 lane: 0,
@@ -527,6 +529,26 @@ MEPH.define('MEPH.audio.view.AudioSequencer', {
         me.columnheaders = 1;
         me.columns = columns;
         me.rows = rows;
+    },
+    getItemsInLeftSpace: function (cellData) {
+        var me = this;
+        return [].interpolate(cellData.rows, cellData.visibleRows + cellData.rows, function (x) {
+            return MEPH.util.Observable.observable({
+                lane: x,
+                time: x,
+                length: 1
+            });
+        });
+    },
+    getItemsInTopSpace: function (cellData) {
+        var me = this;
+        return [].interpolate(cellData.column, cellData.visibleColumns + cellData.column, function (x) {
+            return MEPH.Observable.observable({
+                lane: 0,
+                time: x,
+                length: 1
+            });
+        });
     },
     setupKeyCommands: function () {
         var me = this;
@@ -648,7 +670,7 @@ MEPH.define('MEPH.audio.view.AudioSequencer', {
                         }
                     });
                     me.translateToSource(me.sequence);
-                    me.update();
+                    me.update({ removed: items });
                 }
             }
         }

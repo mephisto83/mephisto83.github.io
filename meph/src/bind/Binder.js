@@ -182,11 +182,12 @@ MEPH.define('MEPH.bind.Binder', {
             dom.addEventListener(i, function (eventType, evnt) {
                 object.fire(Binder.events.domevent, {
                     eventType: eventType,
-                    domEvent: evnt
+                    domEvent: evnt,
+                    dom: dom
                 });
             }.bind(me, i));
         }
-        me.addDomEventListeners(eventBindingInformation, object, object);
+        me.addDomEventListeners(eventBindingInformation, object, object, dom);
     },
     /**
      * Reverses instructions that do not have pipes.
@@ -275,7 +276,8 @@ MEPH.define('MEPH.bind.Binder', {
                     if (!evnt.cancelled) {
                         subcontrolPackage.classInstance.fire(Binder.events.domevent, {
                             eventType: eventType,
-                            domEvent: evnt
+                            domEvent: evnt,
+                            dom: dom
                         });
                     }
                 }.bind(me, i));
@@ -283,7 +285,7 @@ MEPH.define('MEPH.bind.Binder', {
         }
         me.addDomEventListeners(eventBindingInformation, subcontrolPackage.classInstance, controlPackage.classInstance);
     },
-    addDomEventListeners: function (bindingInformation, obj, dom) {
+    addDomEventListeners: function (bindingInformation, obj, dom, filterDom) {
         var me = this, i, bi,
             instructions,
             Binder = MEPH.bind.Binder,
@@ -292,15 +294,16 @@ MEPH.define('MEPH.bind.Binder', {
             return;
         }
         obj.on(domevent, function (bindingInformation, eventType, args) {
-            for (i in bindingInformation) {
-                if (args.eventType === i) {
-                    if (bindingInformation.hasOwnProperty(i)) {
-                        bi = bindingInformation[i];
-                        instructions = me.parseInstructionString(bi, obj);
-                        me.executeInstructions(dom, null, domevent, instructions, dom, i, true, args);//me, ;
+            if (!filterDom || args.domEvent.path.some(function (x) { return x === filterDom; }))
+                for (i in bindingInformation) {
+                    if (args.eventType === i) {
+                        if (bindingInformation.hasOwnProperty(i)) {
+                            bi = bindingInformation[i];
+                            instructions = me.parseInstructionString(bi, obj);
+                            me.executeInstructions(dom, null, domevent, instructions, dom, i, true, args);//me, ;
+                        }
                     }
                 }
-            }
         }.bind(me, bindingInformation));
         obj.bindingInformations = obj.bindingInformations || [];
         obj.bindingInformations.push(bindingInformation);

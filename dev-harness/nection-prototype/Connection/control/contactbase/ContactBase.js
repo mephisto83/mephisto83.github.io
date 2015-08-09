@@ -10,6 +10,11 @@
         me.great();
         me.$qrgenerator = new MEPH.qrcode.Generator();
         me.$qrgeneratorsmall = new MEPH.qrcode.Generator();
+   Promise.all([me.when.loaded,     me.when.injected]).then(function () {
+            me.$inj.stateService.on('mycontact', function () {
+                me.setupQrCodes();
+            });
+        });
     },
 
     hideShow: function (show, hide, toggle) {
@@ -29,19 +34,20 @@
     setupQrCodes: function () {
         var me = this;
         if (!me.contact) return;
+        var cardid = me.contact.cardid || me.selectedCard.id;
         if (me.lastcode === cardid) {
             return;
         }
-        var qrcode = me.$activityview.qrcode;
-        var smallqrcode = me.$activityview.smallqrcode;
+        var qrcode = me.$activityview.template.qrcode;
+        var smallqrcode = me.$activityview.template.smallqrcode;
         // me.qrcode = me.querySelector('#qrcode');
         me.$qrgenerator.setEl(qrcode);
         me.$qrgenerator.clear();
         var margin = 30;
-        var cardid = me.contact.cardid || me.selectedCard.id;
+        var maxwidth = 300;
         me.$qrgenerator.makeCode(cardid,
-            parseFloat(qrcode.clientWidth) - margin,
-            parseFloat(qrcode.clientWidth) - margin);
+            Math.min(maxwidth, parseFloat(qrcode.clientWidth) - margin),
+            Math.min(maxwidth, parseFloat(qrcode.clientWidth) - margin));
         var gen = me.$qrgeneratorsmall;
         gen.setEl(smallqrcode);
         gen.clear();
@@ -54,9 +60,7 @@
     refreshCard: function () {
         var me = this,
             cardid = me.selectedCard ? me.selectedCard.id : null;
-        //if (me.selectedCard && me.selectedCard.name === me.selectedCardValue) {
-        //    cardid = null;
-        //}
+
         if (me.$inj && me.$inj.contactService && cardid) {
             return me.$inj.contactService.me(cardid, me.contact).then(function (contact) {
                 me.contact = contact;

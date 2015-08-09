@@ -37,5 +37,11 @@ MEPH.define('MEPH.input.Image', {
         input.setAttribute('capture', 'camera');
         input.setAttribute('accept', 'image/*');
         input.setAttribute('type', me.type);
+
+        //me.don('change', input, function () {
+        //    setTimeout(function () {
+        //        input.dispatchEvent(MEPH.createEvent('image-change', {}));
+        //    }, 5000);
+        //});
     }
 });

@@ -44,6 +44,9 @@
             me.$processing = false;
         }
         me.$supportsUserMedia = MEPH.util.Dom.supportsUserMedia();
+        MEPH.subscribe(Connection.constant.Constants.TakeContactPicture, function () {
+            me.takeAPicture();
+        })
     },
     onLoaded: function () {
         var me = this;

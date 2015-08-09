@@ -46,9 +46,10 @@ MEPH.define('MEPH.util.Draggable', {
                                 }
                                 if (options.preventScroll) {
                                     scrollService.preventScrolling(true);
+                                    scrollService.prevent(options.preventScroll);
                                 }
                                 request = requestAnimationFrame(function () {
-                                    start = MEPH.util.Dom.getScreenEventPositions(e, dom).first();
+                                    start = MEPH.util.Dom.getPageEventPositions(e, dom).first();
                                     if (options.canReact && !options.canReact(start)) {
                                         return;
                                     }
@@ -78,7 +79,7 @@ MEPH.define('MEPH.util.Draggable', {
                                             return;
                                         }
 
-                                        var pos = MEPH.util.Dom.getScreenEventPositions(e, dom).first();
+                                        var pos = MEPH.util.Dom.getPageEventPositions(e, dom).first();
                                         if (options.translate) {
                                             var x = options.restrict !== 'y' ? (pos.x - start.x) + startEventPosition.x : 0;
                                             var y = options.restrict !== 'x' ? (pos.y - start.y) + startEventPosition.y : 0;
@@ -110,6 +111,7 @@ MEPH.define('MEPH.util.Draggable', {
                         handle.addEventListener(evt, function (e) {
 
                             if (options.preventScroll) {
+                                scrollService.allow(options.preventScroll);
                                 scrollService.preventScrolling(false);
                             }
                             requestAnimationFrame(function () {

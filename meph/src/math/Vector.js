@@ -21,10 +21,17 @@ MEPH.define('MEPH.math.Vector', {
             else if (Array.isArray(obj)) {
                 return new MEPH.math.Vector(obj);
             }
-            return new MEPH.math.Vector(obj.x, obj.y, obj.z);
+            return new MEPH.math.Vector(obj.x || 0, obj.y || 0, obj.z || 0);
         },
         ZeroVector: function (dim) {
             return new MEPH.math.Vector([].interpolate(0, dim || 4, function () { return 0; }));
+        },
+        CenterOfGravity: function (vectors) {
+            var result = MEPH.math.Vector.ZeroVector(vectors.first().dimensions());
+            vectors.forEach(function (vect) {
+                result = result.add(vect);
+            });
+            return result.divide(vectors.length)
         },
         Slope: function (p1, p2) {
 
@@ -32,7 +39,7 @@ MEPH.define('MEPH.math.Vector', {
             return p21.y / p21.x;
         },
         Line: function (p1, p2) {
-            var slope = MEPH.math.Vector.Slope(p1, p2); 
+            var slope = MEPH.math.Vector.Slope(p1, p2);
             return {
                 p1: new MEPH.math.Vector(0, 0),
                 p2: new MEPH.math.Vector(1, slope)
@@ -337,7 +344,8 @@ MEPH.define('MEPH.math.Vector', {
         return this.subtract(a1);
     },
     toString: function () {
-        return this._x + "," + this._y;
+        return this.vector.join();
+        // return this._x + "," + this._y;
     },
     fromPoints: function (p1, p2) {
         return new MEPH.math.Vector2D(

@@ -303,7 +303,7 @@ MEPH.define('MEPH.table.Sequencer', {
         var length = me.length['function'](sequenceItem);
         var calctime = me.getScaled(time);
         var column = Math.floor(calctime);
-        var pos = me.getCellPosition({ row: lane, column: column }, offset);
+        var pos = me.getCellTablePosition({ row: lane, column: column }, offset);
         var columnWidth = me.getColumnWidth(column);
         var xoffset = (calctime - column) * columnWidth;
         var width = me.getScaled(length) * columnWidth;

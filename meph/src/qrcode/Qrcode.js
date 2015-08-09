@@ -188,8 +188,8 @@ MEPH.define('MEPH.qrcode.Qrcode', {
         //var image = me.binarize(128);
 
         if (me.debug) {
-            for (var y = 0; y < me.height; y++) {
-                for (var x = 0; x < me.width; x++) {
+            for (var y = me.height; y--;) {
+                for (var x = me.width; x--;) {
                     var point = (x * 4) + (y * me.width * 4);
                     me.imagedata.data[point] = image[x + y * me.width] ? 0 : 0;
                     me.imagedata.data[point + 1] = image[x + y * me.width] ? 0 : 0;

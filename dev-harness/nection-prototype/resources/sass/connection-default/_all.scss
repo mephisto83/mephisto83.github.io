@@ -34,6 +34,22 @@ $reveal-slide-distance: 130px;
 
 
 /* As RGBa codes */
+.qrcode_ornament {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    z-index: 10;
+}
+
+.qrcode-row {
+    display: table;
+    text-align: center;
+
+    img {
+        display: inline-block !important;
+    }
+
+}
 
 $rgba-primary-0: rgba(0, 145, 207,1); /* Main Primary color */
 $rgba-primary-1: rgba(50,166,0,1);

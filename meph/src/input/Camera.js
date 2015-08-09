@@ -8,7 +8,8 @@ MEPH.define('MEPH.input.Camera', {
         $video: null,
         width: 400,
         height: 300,
-        autoload: true
+        autoload: true,
+        videoCls: ''
     },
     initialize: function () {
         var me = this,
@@ -21,12 +22,15 @@ MEPH.define('MEPH.input.Camera', {
                 path: prop
             });
         });
+        me.addTransferableAttribute('videoCls', {
+            object: me,
+            path: 'videoCls',
+            asValue: true
+        });
     },
     onLoadedVideoData: function () {
         var me = this;
         var evt = MEPH.util.Array.convert(arguments).last();
-
-        debugger
     },
     onLoaded: function () {
         var me = this, video, input, Dom = MEPH.util.Dom;

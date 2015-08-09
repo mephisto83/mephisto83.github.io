@@ -26,6 +26,10 @@ MEPH.ready().then(function () {
                 stayOn: '/staypath'
             },
             ioc: {
+                exifService: {
+                    'static': true,
+                    'type': 'MEPH.util.EXIFReader'
+                },
                 scrollService: {
                     'static': true,
                     'type': 'MEPH.service.ScrollService'

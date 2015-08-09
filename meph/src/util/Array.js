@@ -232,6 +232,23 @@ MEPH.define('MEPH.util.Array', {
                     }
                 });
             }
+            if (!array.firstIndexWhere) {
+                Object.defineProperty(array, 'firstIndexWhere', {
+                    enumerable: false,
+                    writable: true,
+                    configurable: true,
+                    value: function (func) {
+                        var result = [];
+                        var collection = this;
+                        for (var i = 0 ; i < collection.length ; i++) {
+                            if (func(collection[i], i)) {
+                                return i;
+                            }
+                        }
+                        return -1;
+                    }
+                });
+            }
 
             if (!array.relativeCompliment) {
                 var extrasection_relativeCompliment = {
@@ -733,6 +750,25 @@ MEPH.define('MEPH.util.Array', {
                     }
                 });
             }
+
+            if (!array.interpSquare) {
+                Object.defineProperty(array, 'interpSquare', {
+                    enumerable: false,
+                    writable: true,
+                    configurable: true,
+                    value: function (x, y, func) {
+                        var collection = this;
+                        func = func || function (x) { return x; };
+                        for (var i = 0; i < x; i++) {
+                            for (var j = 0; j < y; j++) {
+                                collection.push(func(i, j));
+                            }
+                        }
+                        return collection;
+                    }
+                });
+            }
+
             if (!array.groupBy) {
                 Object.defineProperty(array, 'groupBy', {
                     enumerable: false,
@@ -1098,6 +1134,32 @@ MEPH.define('MEPH.util.Array', {
                             }
                             else {
                                 result.push(collection[i]);
+                            }
+
+                        }
+                        return MEPH.util.Array.create(result);
+                    }
+                });
+            }
+            if (!array.subsetSelect) {
+                Object.defineProperty(array, 'subsetSelect', {
+                    enumerable: false,
+                    writable: true,
+                    configurable: true,
+                    value: function (start, stop, func) {
+                        var collection = this;
+                        func = func || function (x) { return x; }
+                        stop = Math.min(collection.length, stop === undefined || stop === null ? collection.length : stop);
+                        start = Math.min(collection.length, start === undefined || start === null ? collection.length : start);
+                        start = start < 0 ? 0 : start;
+                        stop = stop < 0 ? 0 : stop;
+                        var result = this instanceof Float32Array ? new Float32Array(stop - start) : [];
+                        for (var i = start ; i < stop ; i++) {
+                            if (this instanceof Float32Array) {
+                                result[i - start] = func(collection[i]);
+                            }
+                            else {
+                                result.push(func(collection[i]));
                             }
 
                         }

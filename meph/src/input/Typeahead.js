@@ -1,6 +1,9 @@
 ﻿MEPH.define('MEPH.input.Typeahead', {
     alias: 'typeahead',
-    requires: ['MEPH.util.Observable', 'MEPH.util.Style'],
+    requires: [
+        'MEPH.util.Observable',
+        'MEPH.list.View',
+        'MEPH.util.Style'],
     templates: true,
     extend: 'MEPH.input.Text',
     properties: {

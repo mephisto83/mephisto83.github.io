@@ -226,6 +226,40 @@
         });;
     });
 
+    it('can draw a ring', function (done) {
+        MEPH.create('MEPH.util.Renderer').then(function ($class) {
+            //Assert  //Arrange
+            //Arrange
+            var renderer = new $class();
+            var canvas = document.createElement('canvas');
+            document.body.appendChild(canvas);
+            canvas.height = 300;
+            canvas.width = 400;
+            renderer.setCanvas(canvas);
+
+            //Act
+            //context.arc(x,y,r,sAngle,eAngle,counterclockwise);
+            var result = renderer.draw({
+                shape: 'ring',
+                fillStyle: 'blue',
+                radius: 30,
+                sAngle: 0,
+                eAngle: Math.PI * 2,
+                x: 100,
+                y: 100
+            });
+            //Assert
+            canvas.parentNode.removeChild(canvas);
+
+            expect(result).toBeTruthy();
+
+        }).catch(function (error) {
+            expect(new Error(error)).caught();
+        }).then(function () {
+            done();
+        });;
+    });
+
     it('draw multiple things ', function (done) {
         MEPH.create('MEPH.util.Renderer').then(function ($class) {
 
@@ -308,7 +342,7 @@
         });;
     });
 
-    
+
     it('Draw line ', function (done) {
         MEPH.create('MEPH.util.Renderer').then(function ($class) {
             //Arrange

@@ -58,6 +58,9 @@ MEPH.define('MEPH.util.Renderer', {
                         break;
                     case MEPH.util.Renderer.shapes.none:
                         break;
+                    case MEPH.util.Renderer.shapes.ring:
+                        me.drawRing(options);
+                        break;
                     default:
                         throw 'undefined shape type';
 
@@ -121,6 +124,14 @@ MEPH.define('MEPH.util.Renderer', {
         context.lineTo(options.lb.x, options.lb.y);
         context.closePath();
         context.fill();
+    },
+    drawRing: function (options) {
+        var me = this,
+           context = me.getContext();
+        context.beginPath();
+        me.applyOptions(context, options);
+        context.arc(options.x, options.y, options.radius, options.sAngle, options.eAngle, options.counterclockwise || false);
+        context.stroke();
     },
     drawLine: function (options) {
         var me = this,
@@ -199,12 +210,19 @@ MEPH.define('MEPH.util.Renderer', {
     drawImage: function (context, img, options) {
         var me = this;
         if (options.center) {
-            context.translate(options.x, options.y);
-            if (options.scale) {
-                context.scale(options.scale, options.scale);
+            context.translate(MEPH.ifUndefined(options.x, 0), MEPH.ifUndefined(options.y, 0));
+            if (options.transform) {
+                var transform = options.transform;
+                context.scale(MEPH.ifUndefined(transform.scaleX, 1), MEPH.ifUndefined(transform.scaleY, 1));
+                context.rotate(MEPH.ifUndefined(transform.rotation, 0));
             }
-            if (options.rotation) {
-                context.rotate(options.rotation);
+            else {
+                if (options.scale) {
+                    context.scale(options.scale, options.scale);
+                }
+                if (options.rotation) {
+                    context.rotate(options.rotation);
+                }
             }
 
             context.drawImage(img, MEPH.ifUndefined(options.sx, 0),
@@ -215,6 +233,28 @@ MEPH.define('MEPH.util.Renderer', {
                 MEPH.ifUndefined(options.dy, -img.height / 2),
                 MEPH.ifUndefined(options.width, img.width),
                 MEPH.ifUndefined(options.height, img.height));
+        }
+        else if (options.transform) {
+            var transform = options.transform;
+            if (options.centered) {
+                context.translate(MEPH.ifUndefined(options.width, img.width) / 2, MEPH.ifUndefined(options.height, img.height) / 2);
+            }
+
+            context.scale(MEPH.ifUndefined(transform.scaleX, 1), MEPH.ifUndefined(transform.scaleY, 1));
+            context.rotate(MEPH.ifUndefined(transform.rotation, 0));
+
+            if (options.centered) {
+                context.translate(-MEPH.ifUndefined(options.width, img.width) / 2, -MEPH.ifUndefined(options.height, img.height) / 2);
+            }
+            context.drawImage(img, MEPH.ifUndefined(options.sx, 0),
+                MEPH.ifUndefined(options.sy, 0),
+                MEPH.ifUndefined(options.swidth, img.width),
+                MEPH.ifUndefined(options.sheight, img.height),
+                MEPH.ifUndefined(options.dx, 0),
+                MEPH.ifUndefined(options.dy, 0),
+                MEPH.ifUndefined(options.width, img.width),
+                MEPH.ifUndefined(options.height, img.height));
+
         }
         else {
 
@@ -309,7 +349,8 @@ MEPH.define('MEPH.util.Renderer', {
             image: 'image',
             polygon: 'polygon',
             none: 'none',
-            quadratic: 'quadratic'
+            quadratic: 'quadratic',
+            ring: 'ring'
         },
         defaultShapeOptions: {
             x: 50,

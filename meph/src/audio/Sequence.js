@@ -297,6 +297,7 @@ MEPH.define('MEPH.audio.Sequence', {
             (typeof source === 'string' ||
              source instanceof MEPH.audio.Audio || (!source.containsRef(me)))) {
             me.parts.push({
+                id: MEPH.GUID(),
                 source: source,
                 relativeTimeOffset: timeOffset || 0,
                 duration: duration,

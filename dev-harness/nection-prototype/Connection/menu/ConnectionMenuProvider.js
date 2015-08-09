@@ -182,7 +182,12 @@
         }
         else if (me.mode === 'createcontact') {
             ///main/create/contact
-
+            res.unshift({
+                connectionmenu: true,
+                name: 'Take Picture',
+                use: Connection.constant.Constants.TakeContactPicture,
+                cls: 'fa fa-picture-o'
+            });
             res.removeWhere(function (x) {
                 return x.viewId === 'CreateContact';
             });
@@ -227,7 +232,7 @@
                 name: 'File mode',
                 use: 'filemode',
                 cls: 'fa fa-picture-o '
-            }, 
+            },
             //(fal ? {
             //    connectionmenu: true,
             //    name: 'Take picture',
@@ -334,6 +339,9 @@
                     break;
                 case 'savepicture':
                     MEPH.publish(Connection.constant.Constants.SavePicture, {});
+                    break;
+                case Connection.constant.Constants.TakeContactPicture:
+                    MEPH.publish(Connection.constant.Constants.TakeContactPicture, {});
                     break;
             }
         }

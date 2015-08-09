@@ -343,7 +343,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
         if (a === undefined)
             return b;
         return a;
-    }; 
+    };
 
     /**
      * @method beforeResourceDefined
@@ -1068,6 +1068,19 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
         }
     }
 
+    meph.base64ToArrayBuffer = function (base64, contentType) {
+        contentType = contentType || base64.match(/^data\:([^\;]+)\;base64,/mi)[1] || ''; // e.g. 'data:image/jpeg;base64,...' => 'image/jpeg'
+        base64 = base64.replace(/^data\:([^\;]+)\;base64,/gmi, '');
+        var binary = atob(base64);
+        var len = binary.length;
+        var buffer = new ArrayBuffer(len);
+        var view = new Uint8Array(buffer);
+        for (var i = 0; i < len; i++) {
+            view[i] = binary.charCodeAt(i);
+        }
+        return buffer;
+    }
+
     /**
      * @method addEventDataBindingPrefixes
      * Adds a data-bind prefix for event binding.
@@ -1748,6 +1761,35 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                 });
             }.bind(object)
         });
+        Object.defineProperty(object, 'hasDon', {
+            enumerable: false,
+            configurable: true,
+            writeable: true,
+            value: function (reference, type, dom, func) {
+                if (arguments.length === 0) {
+                    reference = this;
+                }
+                return meph.Array(this[domListenersPropertyKey]).removeWhere(function (x) {
+                    if (func && type) {
+                        return x.func = func && type === x.type;
+                    }
+                    else if (func) {
+                        return x.func = func;
+                    }
+                    else if (reference && type) {
+                        return x.type === type && reference === x.reference;
+                    }
+                    else if (type) {
+                        return x.type === type;
+                    }
+                    else if (reference) {
+                        return x.reference === reference;
+                    }
+                    return true;
+                }).length > 0
+            }.bind(object)
+        });
+
 
         Object.defineProperty(object, 'dun', {
             enumerable: false,

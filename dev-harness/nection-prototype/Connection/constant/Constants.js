@@ -24,6 +24,7 @@
         SelectProfileContactImageData: 'SelectProfileContactImageData',
         ContactProfileImagePath: 'contactProfileImagePath',
         ContactProfileImageProtocol: 'contactProfileImageProtocol',
-        BridgeSource: 'bridge-source'
+        BridgeSource: 'bridge-source',
+        TakeContactPicture: 'take contact image picture'
     }
 })

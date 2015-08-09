@@ -106,7 +106,7 @@
             "path": "/main/contact"
         },
         {
-            "viewId": "CreateContact_",
+            "viewId": "CreateContact",
             "view": "Connection.main.view.create.CreateContact",
             "singleton": true,
             "namespace": "Connection",
@@ -148,7 +148,7 @@
             "path": "/main/me/edit"
         },
         {
-            "viewId": "CreateContact",
+            "viewId": "CreateContact_",
             "view": "Connection.main.view.connect.ConnectContact",
             "singleton": true,
             "namespace": "Connection",

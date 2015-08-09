@@ -5,8 +5,10 @@
     mixins: ['MEPH.mobile.mixins.Activity'],
     injections: ['contactService',
         'notificationService',
+        'scrollService',
         'dialogService',
         'overlayService',
+        'exifService',
         'stateService'],
     requires: ['MEPH.input.Camera',
                 'MEPH.input.Text',
@@ -14,6 +16,7 @@
                 'MEPH.input.Range',
                 'MEPH.button.Button',
                 'MEPH.util.Renderer',
+                'MEPH.math.Vector',
                 'MEPH.util.Observable',
                 'MEPH.util.FileReader',
                 'MEPH.util.Style',
@@ -22,6 +25,7 @@
         status: null,
         size: 200,
         scaleValue: 1,
+        maxsize: 640,
         xValue: 0,
         yValue: 0,
         rotationValue: 0
@@ -36,10 +40,11 @@
         var me = this;
 
         MEPH.util.Draggable.draggable(me.draggableCursor, null, {
-            preventScroll: true,
+            preventScroll: me.body,
             translate: true,
             boundTo: me.canvasholder
         });
+
         me.renderer.setCanvas(me.canvas);
         MEPH.subscribe(Connection.constant.Constants.UsePictureFiles, function () {
             me.usePictureFiles();
@@ -98,32 +103,28 @@
         var me = this;
         return MEPH.util.FileReader.readFileList(me.camera.inputfield.files)
                 .then(function (fileResults) {
-                    if (!me.$processing) {
-                        return new Promise(function (r) {
-                            try {
-                                me.$processing = true;
-                                var file = fileResults.first();
+                    try {
+                        var file = fileResults.first();
+                        if (file)
+                            return me.when.injected.then(function () {
+                                return me.$inj.exifService.getEXIF(file).then(function (result) {
+                                    if (file) {
+                                        var myCanvas = me.canvas;
+                                        var ctx = myCanvas.getContext('2d');
+                                        var holder = me.querySelector('[canvasholder]');
 
-                                if (file) {
-                                    var myCanvas = me.canvas;
-                                    var ctx = myCanvas.getContext('2d');
-                                    var holder = me.querySelector('[canvasholder]');
-
-                                    var img = new Image;
-                                    me.$lastImage = me.useImage.bind(me, holder, ctx, img);
-                                    img.onload = me.$lastImage;
-                                    img.src = file.res;
-                                    r();
-                                }
-                            }
-                            catch (e) {
-                                MEPH.Log(e);
-                            }
-                        });
+                                        var img = new Image;
+                                        me.$lastImage = me.useImage.bind(me, holder, ctx, img, result);
+                                        img.onload = me.$lastImage;
+                                        img.src = file.res;
+                                    }
+                                });
+                            })
+                    }
+                    catch (e) {
+                        MEPH.Log(e);
                     }
                 });
-
-
     },
     usePictureFiles: function () {
         var me = this;
@@ -162,27 +163,72 @@
         Style.height(me.draggableCursor, parseFloat(me.scaleValue) * me.size);
         Style.width(me.draggableCursor, parseFloat(me.scaleValue) * me.size);
     },
-    useImage: function (holder, ctx, img) {
+    useImage: function (holder, ctx, img, exif) {
         var me = this;
         var myCanvas = me.canvas;
+
         ctx = ctx || myCanvas.getContext('2d');
         holder = holder || me.querySelector('[canvasholder]');
-        var scale = Math.max(img.width, img.height) / me.size;
-        var relwidth = Math.round(img.width) / scale;
-        var relheight = Math.round(img.height) / scale;
+        var orientation = exif.Orientation
+        var imagewidth = MEPH.ifUndefined(exif.PixelXDimension, Math.round(img.width));
+        var imageheight = MEPH.ifUndefined(exif.PixelYDimension, Math.round(img.height));
+        var sca = Math.max(imagewidth / me.maxsize, imageheight / me.maxsize);
+        imageheight = sca > 1 ? imageheight / sca : imageheight
+        imagewidth = sca > 1 ? imagewidth / sca : imagewidth;
+        var scale = imagewidth / imageheight;
+        var relwidth = Math.min(me.maxsize, document.body.clientWidth);
+        var relheight = relwidth / scale;
         me.canvas.width = me.size;
         me.canvas.height = me.size;
+        Style.height(me.testcanvas, relheight);
+        Style.width(me.testcanvas, relwidth);
+        me.testcanvas.width = imagewidth;
+        me.testcanvas.height = imageheight;
         me.$selectedImage = img;
+        me.$selectedImage.relative = {
+            width: relwidth,
+            height: relheight,
+            scale: imagewidth / relwidth,
+            imagewidth: imagewidth,
+            imageheight: imageheight
+        }
+
+        var transform = { rotation: 0, scaleX: 1, scaleY: 1 };
+        me.$selectedImage.relative.transform = transform;
+        switch (exif.Orientation) {
+            case 1:
+                break;
+            case 2:
+                transform.scaleX = -1;
+                break;
+            case 3:
+                transform.rotation = (Math.PI)
+                break;
+            case 4:
+                transform.scaleY = -1;
+                break;
+            case 5:
+                break;
+            case 6:
+                transform.rotation = Math.PI / 2
+            case 7: break;
+            case 8:
+                tranform.rotation = 1.5 * Math.PI;
+            default:
+                break;
+        }
+        me.$inj.notificationService.notify({
+            icon: 'exclamation-triangle',
+            message: 'imagewidth :  ' + imagewidth
+        });
         try {
-            me.renderTo(img, me.testcanvas, img.width, img.height);
+            me.renderTo(img, me.testcanvas, img.width, img.height, null, transform);
             Style.show(holder);
         } catch (e) {
             MEPH.Log(e);
         }
-        me.$processing = false;
-
     },
-    renderTo: function (img, canvas, ratiowidth, ratioheight, relPosition) {
+    renderTo: function (img, canvas, ratiowidth, ratioheight, relPosition, transform) {
         var context = canvas.getContext('2d');
         relPosition = relPosition || { x: 0, y: 0 };
         context.save();
@@ -192,7 +238,8 @@
         me.renderer.drawImage(context, img, {
             shape: MEPH.util.Renderer.shapes.image,
             rotation: me.rotationValue,
-            center: true,
+            centered: true,
+            transform: transform,
             scale: 1,
             swidth: ratiowidth,
             sheight: ratioheight,
@@ -205,7 +252,7 @@
         });
         context.restore();
     },
-    render: function (img, ratiowidth, ratioheight, relPosition) {
+    render: function (img, ratiowidth, ratioheight, relPosition, notcenter) {
         var me = this;
         ratiowidth = ratiowidth || 1;
         ratioheight = ratioheight || 1;
@@ -220,8 +267,10 @@
         me.renderer.drawImage(context, img, {
             shape: MEPH.util.Renderer.shapes.image,
             rotation: me.rotationValue,
-            center: true,
+            center: notcenter ? false : true,
+            centered: notcenter ? true : false,
             scale: 1,
+            transform: img.relative ? img.relative.transform : null,
             swidth: me.size * ratiowidth * selectedScale,
             sheight: me.size * ratioheight * selectedScale,
             sx: relPosition.x,
@@ -235,7 +284,6 @@
     },
     takeAPicture: function () {
         var me = this, video;
-        me.$processing = true;
         return Promise.resolve().then(function () {
             if (me.usingCamera && me.camerasource) {
                 video = me.camerasource.getVideo();
@@ -251,20 +299,23 @@
                 relObj.y = relObj.y * (video.videoHeight / video.clientHeight);
                 relObj.x = relObj.x * (video.videoWidth / video.clientWidth);
                 me.render(video, video.videoWidth / video.clientWidth, video.videoHeight / video.clientHeight, relObj);
-                me.$processing = false;
             }
             else if (me.$selectedImage) {
                 var relObj = MEPH.util.Dom.getRelativeScreenPosition(me.draggableCursor, me.testcanvas);
-                me.render(me.testcanvas, 1, 1, relObj);
+                if (me.$selectedImage) {
+                    relObj.x *= me.$selectedImage.relative.scale;
+                    relObj.y *= me.$selectedImage.relative.scale;
+                    var img = me.canvas;
+                    var rel = me.$selectedImage.relative;
+                    var tsize = parseFloat(me.scaleValue) * me.size;
+                    var rw = tsize / me.$selectedImage.relative.width;
+                    var rh = tsize / me.$selectedImage.relative.height;
+                    me.renderTo(me.testcanvas, img, me.testcanvas.width * rw, me.testcanvas.height * rh, relObj, {});
+                }
             }
         });
     },
     processPicture: function () {
         var me = this;
-        if (me.pictureTaken && !me.$processing) {
-            me.$processing = false;
-
-            // sme.$qrcode.decode(me.canvas);
-        }
     }
 });

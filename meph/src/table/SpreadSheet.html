@@ -12,7 +12,11 @@
                 <canvas class="spreadsheet" mephid="canvas" tabindex="0"></canvas>
                 <canvas class="spreadsheet bottom" mephid="canvascontent"></canvas>
                 <svg class="spreadsheet " mephid="canvassvg" tabindex="0"></svg>
-                <div class="spreadsheet " style="z-index:-1" mephid="canvashtml" tabindex="0"></div>
+                <div class="spreadsheet htmlsheet "
+                     meph-event-scroll="c$.doScrollPosition"
+                     mephid="canvashtml" tabindex="0">
+                    <div mephid="htmlCanvasStretcher" style="pointer-events:none;"></div>
+                </div>
                 <div class="activearea" mephid="activeareatop"></div>
                 <div class="activearea" mephid="activearealeft"></div>
                 <div class="activearea" mephid="activearea"></div>

@@ -25,7 +25,7 @@ MEPH.define('MEPH.mobile.activity.container.Container', {
 
     fullscreenMode: function () {
         var me = this,
-            stretchMargin = 50,
+            stretchMargin = 5,
             percentageForDrag = me.percentageForDrag;
         //If in standalone mode, handle swipes
         me.when.injected.then(function () {

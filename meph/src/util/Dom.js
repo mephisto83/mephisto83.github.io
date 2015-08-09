@@ -294,7 +294,10 @@ MEPH.define('MEPH.util.Dom', {
             var prect = parent.getBoundingClientRect();
             return {
                 x: erect.left - prect.left,
-                y: erect.top - prect.top
+                y: erect.top - prect.top,
+                top: erect.top - prect.top,
+                right: erect.right - prect.right,
+                bottom: erect.bottom - prect.bottom,
             }
         },
         getEventPositions: function (evt, element) {
@@ -698,6 +701,20 @@ MEPH.define('MEPH.util.Dom', {
                 }, element);
             });
             return blur;
+        },
+        getPageEventPositions: function (evt, element) {
+            var positions = [];
+            if (evt.changedTouches) {
+                var pos = element ? MEPH.util.Dom.getPosition(element) : { x: 0, y: 0 };
+                for (i = evt.changedTouches.length; i--;) {
+                    touch = evt.changedTouches[i];
+                    positions.push({ x: touch.pageX - pos.x, y: touch.pageY - pos.y, identifier: touch.identifier });
+                }
+            }
+            else {
+                positions.push({ x: evt.pageX, y: evt.pageY });
+            }
+            return positions;
         },
         getScreenEventPositions: function (evt, element) {
             var positions = [];

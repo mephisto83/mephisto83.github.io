@@ -1,4 +1,6 @@
-﻿
+﻿*.stop-scroll {
+    overflow: hidden !important;
+}
 
 .dropbox {
     border: 10px dashed red;
@@ -11,6 +13,16 @@
     height: 100%;
     width: 100%;
     z-index: 5;
+}
+
+.spreadsheet.htmlsheet {
+    pointer-events: bounding-box;
+    overflow: auto;
+    z-index: 100;
+
+    * {
+        pointer-events: all;
+    }
 }
 
 .noselect {
@@ -461,7 +473,7 @@ $notificationHeight: 50px;
 
     &:before {
         -webkit-animation: fa-spin 2s infinite linear;
-        animation: fa-spin 2s infinite linear; 
+        animation: fa-spin 2s infinite linear;
         content: "\f021";
         font-family: "FontAwesome";
         font-size: 30px;

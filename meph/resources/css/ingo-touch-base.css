@@ -3186,97 +3186,103 @@ a.list-group-item.active > [mephplatform] .badge, .nav-pills > .active > a > [me
 [mephplatform] .meph-application-menu-categories-item.meph-item-ready { background-color: #FF9966; }
 /* line 27, ../sass/meph-default/controls/view/field/_field.scss */
 [mephplatform] .meph-formfield-hidden { display: none; }
-/* line 3, ../sass/meph-default/controls/view/_misc.scss */
+/* line 1, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] *.stop-scroll { overflow: hidden !important; }
+/* line 5, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .dropbox { border: 10px dashed red; margin: 20px auto; height: 100px; }
-/* line 9, ../sass/meph-default/controls/view/_misc.scss */
+/* line 11, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .spreadsheetbody, [mephplatform] .spreadsheet { height: 100%; width: 100%; z-index: 5; }
-/* line 16, ../sass/meph-default/controls/view/_misc.scss */
+/* line 18, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .spreadsheet.htmlsheet { pointer-events: bounding-box; overflow: auto; z-index: 100; }
+/* line 23, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .spreadsheet.htmlsheet * { pointer-events: all; }
+/* line 28, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .noselect { /**/ -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-/* line 25, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .spreadsheet { overflow: hidden; position: relative; }
-/* line 30, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .audiosequenceheader { position: absolute; height: 40px; width: 100%; z-index: 100; }
 /* line 37, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .spreadsheetwrapper { padding-bottom: 40px; padding-top: 67px; }
+[mephplatform] .spreadsheet { overflow: hidden; position: relative; }
 /* line 42, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .audiosequenceheader { position: absolute; height: 40px; width: 100%; z-index: 100; }
+/* line 49, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .spreadsheetwrapper { padding-bottom: 40px; padding-top: 67px; }
+/* line 54, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .spreadsheetbody { position: relative; }
-/* line 48, ../sass/meph-default/controls/view/_misc.scss */
+/* line 60, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .spreadsheetscrollbarright { position: absolute; right: 0; z-index: 10; height: 100%; background-color: white; top: 0px; padding-top: 0px; padding-bottom: 20px; }
-/* line 59, ../sass/meph-default/controls/view/_misc.scss */
+/* line 71, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .spreadsheetscrollbarbotom { width: 100%; background-color: white; left: 0px; z-index: 10; bottom: 0px; position: absolute; padding-left: 15px; padding-right: 20px; }
-/* line 70, ../sass/meph-default/controls/view/_misc.scss */
+/* line 82, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .scrollbarhandle { background-color: #c1c1c1; position: absolute; }
-/* line 75, ../sass/meph-default/controls/view/_misc.scss */
+/* line 87, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .scrollbar { height: 100%; width: 100%; position: relative; z-index: 10; border: 1px solid #c1c1c1; }
-/* line 83, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .selectarea, [mephplatform] .activearea { display: none; position: absolute; border: dotted 2px #4ba2e4; pointer-events: none; }
-/* line 91, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .noresponse { pointer-events: none; }
 /* line 95, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .selectarea, [mephplatform] .activearea { display: none; position: absolute; border: dotted 2px #4ba2e4; pointer-events: none; }
+/* line 103, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .noresponse { pointer-events: none; }
+/* line 107, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .infoarea { background-color: rgba(186, 204, 93, 0.5); border: dotted 1px rgba(186, 204, 93, 0.2); }
-/* line 100, ../sass/meph-default/controls/view/_misc.scss */
+/* line 112, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .pitches { background-color: rgba(93, 204, 186, 0.5); }
-/* line 104, ../sass/meph-default/controls/view/_misc.scss */
+/* line 116, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .selectarea.active, [mephplatform] .activearea.active { display: block; z-index: 4; }
-/* line 110, ../sass/meph-default/controls/view/_misc.scss */
+/* line 122, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .selectarea.active { background-color: rgba(93, 186, 204, 0.2); }
-/* line 114, ../sass/meph-default/controls/view/_misc.scss */
+/* line 126, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .spreadsheet .bottom { z-index: -1; }
-/* line 118, ../sass/meph-default/controls/view/_misc.scss */
+/* line 130, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .spreadsheet .spreadsheet, [mephplatform] .spreadsheet .topheader, [mephplatform] .spreadsheet .leftheader { position: absolute; }
-/* line 124, ../sass/meph-default/controls/view/_misc.scss */
+/* line 136, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .grabrep { position: absolute; background-color: rgba(1, 233, 204, 0.2); }
-/* line 129, ../sass/meph-default/controls/view/_misc.scss */
+/* line 141, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .tweeneditor { position: relative; width: 100%; height: 100%; }
-/* line 135, ../sass/meph-default/controls/view/_misc.scss */
+/* line 147, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .tweeneditor svg { width: 100%; height: 100%; position: relative; }
-/* line 143, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .tweeneditorspace { position: absolute; top: 0px; height: 100%; padding-bottom: 50px; }
-/* line 150, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .tweeneditorspace circle { cursor: pointer; r: 6px; }
 /* line 155, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .button_row { position: absolute; height: 50px; bottom: 0px; }
-/* line 161, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .spectrogram canvas, [mephplatform] .spectrogram { height: 100%; width: 100%; }
+[mephplatform] .tweeneditorspace { position: absolute; top: 0px; height: 100%; padding-bottom: 50px; }
+/* line 162, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .tweeneditorspace circle { cursor: pointer; r: 6px; }
 /* line 167, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] svg[control] { overflow: visible; }
+[mephplatform] .button_row { position: absolute; height: 50px; bottom: 0px; }
 /* line 173, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .spectrogram canvas, [mephplatform] .spectrogram { height: 100%; width: 100%; }
+/* line 179, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] svg[control] { overflow: visible; }
+/* line 185, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] svg path.preconnection { stroke-dasharray: 10, 5; }
-/* line 177, ../sass/meph-default/controls/view/_misc.scss */
+/* line 189, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] svg text { user-select: none; }
-/* line 181, ../sass/meph-default/controls/view/_misc.scss */
+/* line 193, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] svg path.connection { stroke: #1fc03c; stroke-width: 3px; }
-/* line 187, ../sass/meph-default/controls/view/_misc.scss */
+/* line 199, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] svg path.connection:hover { stroke: yellow; stroke-width: 10px; }
-/* line 192, ../sass/meph-default/controls/view/_misc.scss */
+/* line 204, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] svg path.connection.selected { stroke: orange; stroke-width: 4px; }
-/* line 197, ../sass/meph-default/controls/view/_misc.scss */
+/* line 209, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] svg path.connection.selected:hover { stroke: red; stroke-width: 10px; }
-/* line 202, ../sass/meph-default/controls/view/_misc.scss */
+/* line 214, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] svg text.ignore { pointer-events: none; }
-/* line 207, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .contextmenu { position: absolute; width: 150px; }
-/* line 212, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .resourceloaderholder, [mephplatform] .soundfontlistpopup, [mephplatform] .audiographpopup { position: absolute; top: 0px; }
 /* line 219, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .contextmenu { position: absolute; width: 150px; }
+/* line 224, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .resourceloaderholder, [mephplatform] .soundfontlistpopup, [mephplatform] .audiographpopup { position: absolute; top: 0px; }
+/* line 231, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .resourceloaderholder, [mephplatform] .soundfontlistholder, [mephplatform] .audiographholder { width: 100%; position: absolute; top: 0px; width: 100%; height: 100%; padding-top: 50px; padding-bottom: 50px; padding-left: 40px; padding-right: 40px; z-index: 100; background-color: rgba(255, 255, 255, 0.85); }
-/* line 235, ../sass/meph-default/controls/view/_misc.scss */
+/* line 247, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .graphBody { height: 100%; position: absolute; width: 100%; top: 0; z-index: 0; background-color: rgba(255, 255, 255, 0.65); }
-/* line 244, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .meph-graph-control { height: 100%; width: 100%; position: relative; }
-/* line 250, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] div.graphBody div:first-child { height: 100%; width: 100%; }
 /* line 256, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .meph-graph-control { height: 100%; width: 100%; position: relative; }
+/* line 262, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] div.graphBody div:first-child { height: 100%; width: 100%; }
+/* line 268, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .square_list { float: left; width: 25%; padding: 2px; font-size: 10px; line-height: 1.4; background-color: #f9f9f9; border: 1px solid #fff; }
-/* line 267, ../sass/meph-default/controls/view/_misc.scss */
+/* line 279, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .empty_contact { background-image: url("images/empty_contact.png"); height: 100px; width: 100px; background-size: contain; background-repeat: no-repeat; border-radius: 50%; }
-/* line 277, ../sass/meph-default/controls/view/_misc.scss */
+/* line 289, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .hidden-header { display: none; }
-/* line 281, ../sass/meph-default/controls/view/_misc.scss */
+/* line 293, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .hidden-header + .meph-activity-view-body { padding-top: 0px; }
-/* line 285, ../sass/meph-default/controls/view/_misc.scss */
+/* line 297, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .typehead { position: relative; }
-/* line 288, ../sass/meph-default/controls/view/_misc.scss */
+/* line 300, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .typehead .typeahead.suggestions { position: absolute; z-index: 1000; background-color: white; width: 100%; }
 @-ms-keyframes spin { from { -ms-transform: rotate(0deg); }
   to { -ms-transform: rotate(360deg); } }
@@ -3286,47 +3292,47 @@ a.list-group-item.active > [mephplatform] .badge, .nav-pills > .active > a > [me
   to { -webkit-transform: rotate(360deg); } }
 @keyframes spin { from { transform: rotate(0deg); }
   to { transform: rotate(360deg); } }
-/* line 338, ../sass/meph-default/controls/view/_misc.scss */
+/* line 350, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .notification-overlay { position: fixed; width: 100%; padding: 4px; pointer-events: none; z-index: 10000; background-color: rgba(201, 201, 201, 0.5); transition: width .2s, height .2s, background-color .2s, transform .2s, bottom .2s; height: 50px; bottom: 50px; }
-/* line 349, ../sass/meph-default/controls/view/_misc.scss */
+/* line 361, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .notification-overlay span { padding-left: 3px; }
-/* line 354, ../sass/meph-default/controls/view/_misc.scss */
+/* line 366, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .remove-notification { bottom: -50px; }
-/* line 358, ../sass/meph-default/controls/view/_misc.scss */
+/* line 370, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay { position: fixed; top: 0px; height: 100%; z-index: 10000; width: 100%; background-color: rgba(201, 201, 201, 0.4); -webkit-transition: all .2s; transition: all .2s; }
-/* line 367, ../sass/meph-default/controls/view/_misc.scss */
+/* line 379, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay i { font-size: 14em; position: relative; text-align: center; width: 100%; top: 20%; -webkit-transition: all .2s; transition: all .2s; }
-/* line 375, ../sass/meph-default/controls/view/_misc.scss */
+/* line 387, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay i.spin { -webkit-animation-name: spin; -webkit-animation-duration: 4000ms; -webkit-animation-iteration-count: infinite; -webkit-animation-timing-function: linear; -moz-animation-name: spin; -moz-animation-duration: 4000ms; -moz-animation-iteration-count: infinite; -moz-animation-timing-function: linear; -ms-animation-name: spin; -ms-animation-duration: 4000ms; -ms-animation-iteration-count: infinite; -ms-animation-timing-function: linear; animation-name: spin; animation-duration: 4000ms; animation-iteration-count: infinite; animation-timing-function: linear; }
-/* line 395, ../sass/meph-default/controls/view/_misc.scss */
+/* line 407, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay.dialog { z-index: 10001; text-align: center; }
-/* line 399, ../sass/meph-default/controls/view/_misc.scss */
+/* line 411, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay.dialog .dialog-message { margin-top: 50%; font-size: 2.3em; }
-/* line 404, ../sass/meph-default/controls/view/_misc.scss */
+/* line 416, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay.dialog .dialog-message, [mephplatform] .overlay.dialog .dialog-row { padding: 8px; background-color: white; }
-/* line 410, ../sass/meph-default/controls/view/_misc.scss */
+/* line 422, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay.dialog i { font-size: 1.5em; }
-/* line 413, ../sass/meph-default/controls/view/_misc.scss */
+/* line 425, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay.dialog i[button] { display: inline; }
-/* line 420, ../sass/meph-default/controls/view/_misc.scss */
+/* line 432, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay.no-animation i { -webkit-animation-name: none; -ms-animation-name: none; -moz-animation-name: none; animation-name: none; }
-/* line 429, ../sass/meph-default/controls/view/_misc.scss */
+/* line 441, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay.relegated { height: 50px; width: 40px; left: 50%; }
-/* line 434, ../sass/meph-default/controls/view/_misc.scss */
+/* line 446, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .overlay.relegated i { font-size: 2em; top: 20%; }
-/* line 440, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .overlay.removed { top: -100%; }
-/* line 443, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .overlay.removed i { font-size: 2em; top: 20%; }
-/* line 449, ../sass/meph-default/controls/view/_misc.scss */
-[mephplatform] .meph-ptr-reset { transition: all .25s ease; }
 /* line 452, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.removed { top: -100%; }
+/* line 455, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .overlay.removed i { font-size: 2em; top: 20%; }
+/* line 461, ../sass/meph-default/controls/view/_misc.scss */
+[mephplatform] .meph-ptr-reset { transition: all .25s ease; }
+/* line 464, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .meph-ptr-reset .meph-ptr { -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
-/* line 458, ../sass/meph-default/controls/view/_misc.scss */
+/* line 470, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .meph-ptr-refresh, [mephplatform] .meph-ptr-loading { transition: all .25s ease; }
-/* line 462, ../sass/meph-default/controls/view/_misc.scss */
+/* line 474, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .meph-ptr-refresh:before, [mephplatform] .meph-ptr-loading:before { -webkit-animation: fa-spin 2s infinite linear; animation: fa-spin 2s infinite linear; content: "\f021"; font-family: "FontAwesome"; font-size: 30px; top: auto; position: absolute; left: 50%; }
-/* line 473, ../sass/meph-default/controls/view/_misc.scss */
+/* line 485, ../sass/meph-default/controls/view/_misc.scss */
 [mephplatform] .meph-ptr-refresh .meph-ptr, [mephplatform] .meph-ptr-loading .meph-ptr { -webkit-transform: translate3d(0, 50px, 0); transform: translate3d(0, 50px, 0); }
 /* line 1, ../sass/meph-default/mobile/application/container/_mobileapplicationcontainer.scss */
 [mephplatform] .meph-mobile-application-container, [mephplatform] .meph-application-container { width: 100%; height: 100%; position: relative; }

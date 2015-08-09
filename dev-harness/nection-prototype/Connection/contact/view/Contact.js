@@ -38,7 +38,6 @@
             if (me.$inj && me.$inj.overlayService)
                 me.$inj.overlayService.open('connection-contact-aftershow');
         return me.refreshCard().then(function () {
-            me.setupQrCodes();
             if (!me.cards || !me.cards.first())
                 if (me.$inj && me.$inj.overlayService)
                     me.$inj.overlayService.close('connection-contact-aftershow');

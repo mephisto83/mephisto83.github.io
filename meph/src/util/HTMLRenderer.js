@@ -39,6 +39,10 @@ MEPH.define('MEPH.util.HTMLRenderer', {
         me.parts = [];
         me.unused = [];
     },
+    getParts: function () {
+        var me = this;
+        return me.parts;
+    },
     setCanvas: function (svg) {
         var me = this;
         me.$svg = svg;
@@ -68,9 +72,12 @@ MEPH.define('MEPH.util.HTMLRenderer', {
             options = me.applyDefaults(options);
             switch (options.shape) {
                 case MEPH.util.Renderer.shapes.rectangle:
-                    var res = pool.removeFirstWhere(function (x) {
-                        x.options.shape === options.shape;
-                    }).first();
+                    var res;
+                    if (me.batchdraw) {
+                        res = pool.removeFirstWhere(function (x) {
+                            x.options.shape === options.shape;
+                        }).first();
+                    }
                     result = result.concat(me.drawRectangle(options, res ? res.shape : null));
                     break;
                 case MEPH.util.SVG.shapes.bezier:
@@ -94,6 +101,7 @@ MEPH.define('MEPH.util.HTMLRenderer', {
         })
         return result;
     },
+
     remove: function (obj) {
         var me = this;
         var p = me.parts.removeWhere(function (x) { return x === obj; });
@@ -113,6 +121,37 @@ MEPH.define('MEPH.util.HTMLRenderer', {
                 x.parentNode.removeChild(x);
         })
     },
+    erase: function (parts) {
+        var me = this;
+        me.getParts().removeWhere(function (x) { return parts.indexOf(x) !== -1 });
+        parts.forEach(function (x) {
+            if (x.shape && x.shape.parentNode) {
+                x.shape.parentNode.removeChild(x.shape);
+            }
+        });
+    },
+    update: function () {
+        var me = this, options;
+        me.getParts().forEach(function (x) {
+            options = x.options;
+            if (options)
+                switch (options.shape) {
+                    case MEPH.util.Renderer.shapes.rectangle:
+                        (me.drawRectangle(options, x ? x.shape : null));
+                        break;
+                    case MEPH.util.SVG.shapes.bezier:
+                    case MEPH.util.SVG.shapes.line:
+                        (me.drawLine(options));
+                        break;
+                    case MEPH.util.SVG.shapes.text:
+                        (me.drawText(options));
+                        break;
+                    case MEPH.util.SVG.shapes.circle:
+                        (me.drawCircle(options));
+                        break;
+                }
+        });
+    },
     drawRectangle: function (options, el) {
         var me = this,
                   canvas, shape,
@@ -129,6 +168,8 @@ MEPH.define('MEPH.util.HTMLRenderer', {
         }
         shape = shape || document.createElement("div");
         MEPH.util.Style.absolute(shape);
+        var x = options.x;
+        var y = options.y;
         MEPH.util.Style.setPosition(shape, x, y);
         //shape.setAttributeNS(null, "x", options.x);
         //shape.setAttributeNS(null, "y", options.y);

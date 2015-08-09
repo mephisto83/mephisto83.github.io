@@ -1,18 +1,22 @@
-﻿<div class="meph-view meph-view-remove mainview selectprofilecontactimage">
+﻿<div class="meph-view meph-view-remove mainview selectprofilecontactimage" mephid="body">
     <div style="display:table;width: 100%;">
-        <div class="draggable-cursor" meph-event-dragged="v$.redraw" mephid="draggableCursor"></div>
+        <div class="draggable-cursor"
+             meph-event-dragged="v$.redraw"
+             mephid="draggableCursor"></div>
         <div style="display:table-row">
             <div style="display:table-cell;text-align:center;" mephid="canvasholder" canvasholder>
                 <canvas mephid="testcanvas"
                         class="profile-select-test-canvas"></canvas>
                 <camerastream mephid="camerasource"
                               width="100%"
+                              meph-data-video-cls="select-profile-image-camera"
                               height=""></camerastream>
             </div>
         </div>
         <camera mephid="camera"
                 descriptiontext="Camera Image"
                 meph-event-change="v$.onImageChange"
+                meph-event-image-change="v$.onImageChange"
                 labeltext="Camera Image"></camera>
         <div class="col-md-12">
             <range meph-data-min="0.1"
@@ -23,8 +27,12 @@
                    descriptiontext="Scale"
                    meph-event-change="v$.resizeCursor | v$.redraw"></range>
         </div>
-        <canvas mephid="canvas"
-                class="profile-select-canvas"></canvas>
+        <div style="display:table-row">
+            <div style="display:table-cell;text-align:center;">
+                <canvas mephid="canvas"
+                        class="profile-select-canvas"></canvas>
+            </div>
+        </div>
 
     </div>
 </div>

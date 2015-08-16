@@ -20,6 +20,14 @@
     overflow: auto;
     z-index: 100;
 
+    .selected {
+        background-color: rgb(133, 250, 7) !important; 
+    }
+
+    .grabbed {
+        outline: dotted rgba(0, 179, 255, 0.25);
+    }
+
     * {
         pointer-events: all;
     }
@@ -116,8 +124,9 @@ $padding-distance: 20px;
 .selectarea.active,
 .activearea.active {
     display: block;
-    z-index: 4;
+    z-index: 400000;
 }
+
 
 .selectarea.active {
     background-color: rgba(93, 186, 204, 0.2);

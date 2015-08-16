@@ -12,11 +12,13 @@ MEPH.define('MEPH.table.Sequencer', {
         grabbing: 'grabbing'
     },
     properties: {
+        deletekeycode: 'X',
         grabkeycode: 'G',
         source: null,
         radius: 2,
         leftHeaderLeftPadding: 3,
         topheadersource: null,
+        deselectOnUngrab: true,
         leftheadersource: null,
 
         /**
@@ -35,6 +37,11 @@ MEPH.define('MEPH.table.Sequencer', {
          * This function will take a number and item as an input, and set the time on the item.
          **/
         settime: null,
+
+        /**
+         * @property {Object} time
+         **/
+        gettime: null,
 
         /**
          * @property{Object} rowheader
@@ -90,10 +97,19 @@ MEPH.define('MEPH.table.Sequencer', {
             me.onMouseMoveCell(me.canvas, evt);
         });
 
-        me.don('mouseoveritem', me.canvas, function (evt) {
-            me.onMouseOverItem(evt);
+        //me.don('mouseoveritem', me.canvas, function (evt) {
+        //    me.onMouseOverItem(evt);
+        //});
+
+        me.don('selectend', me.canvashtml, function (evt) {
+            var items = me.getSelectedItems();
+            me.setSelectedItems(items, evt.additive);
+
         });
 
+        me.don('itemclick', me.canvashtml, function (evt) {
+            me.onItemClick(evt);
+        });
         me.don('mouseovercelltop', me.topheader, function (evt) {
             me.onMouseOverCell(me.topheader, evt, 'top')
         });
@@ -160,16 +176,29 @@ MEPH.define('MEPH.table.Sequencer', {
     deleteSelected: function () {
         var me = this;
 
-        if (me.selectedrange && me.selectedrange.end && me.selectedrange.start) {
+        if (me.selectedItems && me.selectedItems.length) {
+            var items = me.selectedItems;
+            if (me['delete'] && me['delete']['function']) {
+                me['delete']['function'](me.selectedItems);
+                me.setSelectedItems([], false);
+            }
+        }
+    },
+    getSelectedItems: function () {
+        var me = this;
+
+        if (me.selectedrange && me.selectedrange.end && me.selectedrange.end) {
             var items = me.getItemInSpace({
                 row: me.selectedrange.start.row,
                 visibleRows: me.selectedrange.end.row - me.selectedrange.start.row,
                 column: me.selectedrange.start.column,
                 visibleColumns: me.selectedrange.end.column - me.selectedrange.start.column
             }, me.source);
-            if (me['delete'] && me['delete']['function'])
-                me['delete']['function'](items);
         }
+        else {
+            return [];
+        }
+        return items;
     },
     getItemInSpace: function (cellData, source, header) {
         var result = [],
@@ -312,6 +341,7 @@ MEPH.define('MEPH.table.Sequencer', {
             x: pos.x + xoffset,
             y: pos.y,
             width: width,
+            borderRadius: '3',
             fillStyle: me.color && me.color['function'] ? me.color['function'](sequenceItem) : '#ff0000',
             height: height,
             column: column,
@@ -384,15 +414,33 @@ MEPH.define('MEPH.table.Sequencer', {
                 break;
         }
     },
+    onItemClick: function (evnt) {
+        var me = this;
+        switch (evnt.header) {
+            default:
+                me.lastitem = evnt.items.first() || me.lastitem;
+                if (me.lastitem.state) {
+                    me.lastitem.state('selected');
+                }
+                me.setSelectedItems([me.lastitem], evnt.additive || evnt.ctrlKey);
+                break;
+        }
+    },
     /**
      *Grabs an item from a sequence, and sets the state to grabbing.
      * @param {Object} item
      */
-    grab: function (item) {
+    grab: function () {
         var me = this;
         if (me.settime && typeof (me.settime['function']) === 'function' && !me.state) {
             me.state = MEPH.table.Sequencer.grabbing;
-            me.grabbeditem = item;
+            me.grabbeditem = me.selectedItems[0];
+
+            me.selectedItems.forEach(function (item) {
+                if (item.state) {
+                    item.state('grabbed');
+                }
+            });
             if (me.grabrep) {
                 Style.show(me.grabrep);
             }
@@ -400,11 +448,13 @@ MEPH.define('MEPH.table.Sequencer', {
         }
         else return false;
     },
-    ungrab: function (item) {
+    ungrab: function () {
         var me = this;
-        if (me.grabbeditem === item && me.state === MEPH.table.Sequencer.grabbing) {
+        if (me.grabbeditem && me.state === MEPH.table.Sequencer.grabbing) {
+            var item = me.grabbeditem;
             me.grabbeditem = null;
             if (me.grabrep) {
+                var originalTime = me.gettime['function'](item);
                 var position = MEPH.util.Dom.getRelativePosition(me.grabrep, me.canvas);
                 var col = me.getRelativeColum(position.x);
                 var colpos = me.getCellColumnPosition({ column: col });
@@ -412,12 +462,27 @@ MEPH.define('MEPH.table.Sequencer', {
                 var time = col + extrac;
                 time = Math.max(0, time);
                 var unscaledtime = me.unscaleValue(time);
-                me.settime['function'](unscaledtime, item);
-                Style.hide(me.grabrep);
-                if (item.update) {
-                    item.update();
-                }
+                var difference = unscaledtime - originalTime;
+                // me.settime['function'](unscaledtime, item);
 
+                Style.hide(me.grabrep);
+                me.selectedItems.forEach(function (item) {
+                    originalTime = me.gettime['function'](item);
+                    me.settime['function'](originalTime + difference, item);
+                    if (item.update) {
+                        item.update();
+                    }
+
+                    if (item.unstate) {
+                        item.unstate('grabbed');
+                    }
+
+                });
+
+
+                if (me.deselectOnUngrab) {
+                    me.lastitem = null;
+                }
             }
 
             me.state = null;
@@ -425,17 +490,21 @@ MEPH.define('MEPH.table.Sequencer', {
     },
     onKeyPress: function (evt) {
         var me = this,
-            key = MEPH.util.Dom.getCharCode(evt);
+            key = MEPH.util.Dom.getCharCode(evt),
+            code = String.fromCharCode(key).toLowerCase();
 
         if (String.fromCharCode(key).toLowerCase() === me.grabkeycode.toLowerCase()) {
-            if (me.lastitem) {
+            if (me.selectedItems && me.selectedItems.length) {
                 if (me.state === null) {
-                    me.grab(me.lastitem);
+                    me.grab();
                 }
                 else if (me.state === MEPH.table.Sequencer.grabbing) {
                     me.ungrab(me.grabbeditem);
                 }
             }
+        }
+        else if (code === me.deletekeycode.toLowerCase()) {
+            me.deleteSelected();
         }
         else {
             me.great();

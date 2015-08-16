@@ -203,6 +203,9 @@ MEPH.define('MEPH.audio.Sequence', {
             parent.source.setRelativeTime(item, time - parent.relativeTimeOffset);
         }
     },
+    getRelativeTime: function (item) {
+        return item.relativeTimeOffset;
+    },
     /**
      * Gets the index of the item relative to the parent/ancestor.
      * @param {Object} item

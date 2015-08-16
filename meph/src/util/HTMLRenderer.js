@@ -175,7 +175,9 @@ MEPH.define('MEPH.util.HTMLRenderer', {
         MEPH.util.Style.height(shape, options.height);
         MEPH.util.Style.strokeWidth(shape, options.strokeWidth);
         MEPH.util.Style.backgroundColor(shape, options.fillStyle);
-
+        if (options.borderRadius) {
+            MEPH.util.Style.borderRadius(shape, options.borderRadius);
+        }
         if (add) {
             canvas.appendChild(shape);
         }

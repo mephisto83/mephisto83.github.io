@@ -607,6 +607,13 @@ MEPH.define('MEPH.audio.view.AudioSequencer', {
 
             }
         }
+
+        me.gettime = {
+            'function': function (item) {
+                return me.sequence.getRelativeTime(item);
+            }
+        }
+
         me.color = {
             'function': function (item) {
                 var result = '#ff0000';

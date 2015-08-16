@@ -17,6 +17,14 @@ MEPH.define('MEPH.util.Dom', {
                 b: parseInt(result[3], 16)
             } : null;
         },
+        stopPropagation: function (evt) {
+            if (evt && evt.stopPropagation) {
+                evt.stopPropagation();
+            }
+            if (evt && evt.preventDefault) {
+                evt.preventDefault();
+            }
+        },
         insertFirst: function (referenceNode, newNode) {
             var node = referenceNode.childNodes[0];
             referenceNode.insertBefore(newNode, node);

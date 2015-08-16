@@ -487,3 +487,11 @@ $notificationHeight: 50px;
         transform: translate3d( 0, 50px, 0 );
     }
 }
+
+.spreadsheet.htmlsheet > div {
+    transition: width .2s, height .2s, background-color .2s, transform .2s, bottom .2s;
+}
+
+.spreadsheet.htmlsheet > div.notransition {
+    transition: none;
+}

@@ -28,26 +28,19 @@ MEPH.define('MEPH.ringcode.RingCode', {
         });
 
         me.colors = [].interpolate(0, me.defaultColorCount + 2, function (x) {
-            /*
-             0 0 0
-             0 0 1
-             0 1 0 
-             0 1 1
-             1 0 0 
-             1 0 1 
-             1 1 0 
-             1 1 1
-            */
             return x.toString(base);
         }).select(function (x) {
             x = [].interpolate(x.length, 3, function () { return '0' }).join('') + x;
             return x.split('').select(function (t) {
-                return Math.floor(t / (base - 1) * 255);
+                return Math.floor((t) / (base - 1) * (255 - 10));
             })
         });
         me.breakColor = me.toColor([255, 255, 255]);
         me.centerColor = me.toColor(me.colors.first());
         me.centerColor = '#ff00ff';
+        me.centeringColors = [{ color: '#ff0000', type: 'base' },
+            { color: '#ff0000', type: 'base' },
+            { color: '#00ff00', type: 'peak' }, ];
         me.colors = me.colors.subset(1, me.colors.length - 1);
         me.great();
 
@@ -88,37 +81,23 @@ MEPH.define('MEPH.ringcode.RingCode', {
             }).concatFluent(function (x) {
                 return x;
             });
-            var pi2 = 2 * Math.PI / 3;
-            var equ = [].interpolate(0, 3, function (x) {
+            var centeringpoints = 3;
+            var pi2 = 2 * Math.PI / centeringpoints;
+            var equ = [].interpolate(0, centeringpoints, function (x) {
                 return MEPH.math.Util.rectangular(pi2 * x, me.radiusStep + ringRadius)
-            }).select(function (pos) {
+            }).select(function (pos, i) {
                 return {
                     shape: 'circle',
                     radius: me.radiusStep / 4,
                     lineWidth: 0,
-                    strokeStyle: me.centerColor,
-                    fill: me.centerColor,
-                    fillStyle: me.centerColor,
-                    x: me.centerPointX + pos.x,
-                    y: me.centerPointY + pos.y
-                }
-            });
-            var centereq = [].interpolate(0, 3, function (x) {
-                return MEPH.math.Util.rectangular(pi2 * x, me.radiusStep + ringRadius)
-            }).select(function (pos) {
-                return {
-                    shape: 'circle',
-                    radius: me.radiusStep / 6,
-                    lineWidth: 0,
-                    strokeStyle: me.breakColor,
-                    fill: me.breakColor,
-                    fillStyle: me.breakColor,
+                    strokeStyle: me.centeringColors[i].color,
+                    fill: me.centeringColors[i].color,
+                    fillStyle: me.centeringColors[i].color,
                     x: me.centerPointX + pos.x,
                     y: me.centerPointY + pos.y
                 }
             });
             commands.push.apply(commands, equ);
-          //  commands.push.apply(commands, centereq);
             commands.push({
                 shape: 'circle',
                 radius: me.radiusStep / 4,

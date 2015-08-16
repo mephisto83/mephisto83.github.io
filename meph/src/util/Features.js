@@ -1,5 +1,8 @@
 ﻿MEPH.define('MEPH.util.Features', {
-    requires: ['MEPH.math.Vector', 'MEPH.math.Util', 'MEPH.util.Task'],
+    requires: ['MEPH.util.Dom',
+        'MEPH.math.Vector',
+        'MEPH.math.Util',
+        'MEPH.util.Task'],
     initialize: function () {
         var me = this;
         me.jsfeat = MEPH.util.Features.jsfeat;
@@ -27,160 +30,101 @@
         return Features.jsfeat.fast_corners.set_threshold(threshold);
     },
     hexToRgb: function (hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
+        return MEPH.util.Dom.hexToRgb(hex);
     },
-    //detectRingCodeCenter: function (canvas, options) {
-    //    var me = this;
-    //    var ctx = canvas.getContext('2d');
-    //    var height = canvas.height, width = canvas.width;
-    //    var step = width;
-    //    var imageData = ctx.getImageData(0, 0, width, height);
-    //    var level = 1;
-    //    var x = options.x || 10;
-    //    var y = options.y || 10;
-    //    var featureResults = me.detectFeatures(canvas, options);
-    //    var corners = featureResults.corners.subset(0, featureResults.count).select(function (x) {
-    //        return MEPH.math.Vector.Create(x);
-    //    });
-    //    var rgb = me.hexToRgb(options.color);
-    //    var vectorColor = new MEPH.math.Vector.Create([rgb.r, rgb.g, rgb.b, 255]);
-    //    var maxcolordistance = options.maxcolordistance || 10;
-    //    var maxcirclevariation = options.maxcirclevariation || 4;
-    //    var startx = options.startx || 0;
-    //    var starty = options.starty || 0;
-    //    var spread = 3;
-    //    var endx = options.endx || width;
-    //    var endy = options.endy || height;
-    //    var potentialCenters = [].interpSquare(x, y, function (_x, _y) {
-    //        var $x = startx + (_x * (endx - startx) / x);
-    //        var $y = starty + (_y * (endy - starty) / y);
-    //        if (vectorColor.distance(me.getColorAt($x, $y, width, imageData)) < maxcolordistance) {
-    //            return { x: $x, y: $y };
-    //        }
-    //        return false;
-    //    }).where();
-    //    return potentialCenters.select(function (potentialCog) {
-    //        var newpos = [].interpSquare(x, y, function ($x, $y) {
-    //            var x_ = $x - (x / 2);
-    //            var y_ = $y - (y / 2);
-    //            return MEPH.math.Vector.Create(potentialCog).add(MEPH.math.Vector.Create({ x: spread * x_, y: spread * y_ }));
-    //        }).where(function (pos) {
-    //            var color = me.getColorAt(pos.x, pos.y, step, imageData);
-    //            return vectorColor.distance(color) < maxcolordistance;
-    //        });
-    //        if (newpos.length)
-    //            return MEPH.math.Vector.CenterOfGravity(newpos);
-    //        return false;
-    //    }).where().select(function (x) {
+    getRingMetaData: function (ringcenters, centeringColors, centercolor, radiusStep, steps) {
+        var me = this;
+        var peakColor = centeringColors.first(function (x) { return x.type === 'peak'; });
+        var center = ringcenters.first(function (x) { return x.color === centercolor; });
+        var peak = ringcenters.first(function (x) { return x.color === peakColor.color; });
+        var distance = center.cog.distance(peak.cog);
+        var radius = radiusStep * steps;
+        return {
+            peak: peak.cog,
+            center: center.cog,
+            distance: distance,
+            radius: radius,
+            ratio: distance / radius
+        }
+    },
+    detectCorners: function (corners, fudge) {
+        fudge = fudge || 4;
+        var tl = corners[0],
+            tr = tl,
+            bl = tl,
+            br = tl,
+            i;
+        for (i = corners.length; i--;) {
+            //top-left
+            var corner = corners[i];
+            //if (corner.y <= (tl.y + fudge)) {//corner is lt
+            if (corner.x - fudge <= tl.x) {
+                tl = corner;
+            }
+            //}
+            //bottom-left
+            if (corner.y >= (bl.y - fudge)) {
+                if (corner.x <= bl.x) {
+                    bl = corner;
+                }
+            }
+            // top - right
+            if (corner.x + fudge >= tr.x) {
+                //if (corner.y >= (tr.y + fudge)) {
+                //}
+                tr = corner;
 
-    //        var distances = corners.select(function (corner) {
-    //            return corner.distance(x);
-    //        }).sort(function (a, b) {
-    //            return a - b;
-    //        });
-    //        var cutoff = distances.firstIndexWhere(function (x, index) {
-    //            if (index == 0) return false; return x - distances[index - 1] > maxcirclevariation;
-    //        });
-    //        if (cutoff !== -1) {
-    //            if (distances[cutoff - 1] - distances[0] > maxcirclevariation) {
-    //                return false;
-    //            }
-    //            var estimatedRadius = distances.subset(0, cutoff).summation(function (val, res, index) {
-    //                res += val;
-    //                return res;
-    //            }) / cutoff;
-    //            x.estimatedRadius = estimatedRadius;
-    //        }
-    //        else { return false }
-    //        return x;
-    //    }).where();
+            }
 
-    //    return potentialCenters;
-    //},
-    //detectRingCodeCenter: function (canvas, options) {
-    //    var me = this;
-    //    var level = 1;
-    //    var x = options.x || 10;
-    //    var y = options.y || 10;
-    //    var featureResults = me.detectFeatures(canvas, options);
-    //    var height = featureResults.height,
-    //        width = featureResults.width;
-    //    var step = width;
-    //    var imageData = featureResults.imageData;
-    //    var corners = featureResults.corners.subsetSelect(0, featureResults.count, function (x) {
-    //        return MEPH.math.Vector.Create(x);
-    //    });
-    //    var rgb = me.hexToRgb(options.color);
-    //    var vectorColor = new MEPH.math.Vector.Create([rgb.r, rgb.g, rgb.b, 255]);
-    //    var maxcolordistance = options.maxcolordistance || 10;
-    //    var maxcirclevariation = options.maxcirclevariation || 10;
-    //    var starttime = Date.now();
-    //    var interestingFeatures = corners.where(function (potentialCog) {
-    //        var color = me.getColorAt(potentialCog.x, potentialCog.y, step, imageData);
+            //bottom - right
+            if (corner.y >= (br.y - fudge)) {
+                if (corner.x >= br.x) {
+                    br = corner;
+                }
+            }
+        }
+        return {
+            topLeft: tl,
+            topRight: tr,
+            bottomLeft: bl,
+            bottomRight: br
+        }
+    },
+    detectPoints: function (canvas, options) {
+        var me = this;
+        options.maxdistance = options.maxdistance || 17;
+        var rgb = me.hexToRgb(options.color);
+        var vectorColor = new MEPH.math.Vector.Create([rgb.r, rgb.g, rgb.b, 255]);
+        var featureResults = me.detectFeatures(canvas, options);
+        return featureResults.corners.subset(0, featureResults.count);//MEPH.util.Task.taskable(featureResults.corners).task.subset(0, featureResults.count)
+        //.then(function (corners) {
+        //    //return corners.task.select(function (x) {
+        //    //    var vect = MEPH.math.Vector.Create(x);
 
-    //        if (vectorColor.distance(color) < maxcolordistance) {
-    //            return potentialCog;
-    //        }
-    //    })
-    //    console.log('got colors in ' + (((Date.now() - starttime)) / 1000));
-    //    starttime = Date.now();
-    //    var res = [],
-    //        feature;
-    //    for (var i = interestingFeatures.length; i--;) {
-    //        feature = interestingFeatures[i];
-    //        var found = res.some(function (x) {
-    //            return maxcirclevariation > x.distance(feature);
-    //        });
-    //        if (!found) {
-    //            res.push(feature)
-    //        }
-    //    }
-    //    return res;
-    //    //var res = interestingFeatures.forEach(function (x) {
+        //    //    //var color = me.getColorAt(x.x, x.y, canvas.width, featureResults.imageData);
+        //    //    //x.corner = vectorColor.distance(color) < options.maxdistance
+        //    //    return vect;
+        //    //});
+        //});
 
-    //    //    var distances = interestingFeatures.select(function (corner) {
-    //    //        return corner.distance(x);
-    //    //    }).sort(function (a, b) {
-    //    //        return a - b;
-    //    //    });
-    //    //    var cutoff = distances.firstIndexWhere(function (x, index) {
-    //    //        if (index == 0) return false; return x - distances[0] > maxcirclevariation;
-    //    //    });
-    //    //    if (cutoff !== -1) {
-    //    //        if (distances[cutoff - 1] - distances[0] > maxcirclevariation) {
-    //    //            return false;
-    //    //        }
-    //    //        var estimatedRadius = distances.subset(0, cutoff).summation(function (val, res, index) {
-    //    //            res += val;
-    //    //            return res;
-    //    //        }) / cutoff;
-    //    //        x.estimatedRadius = estimatedRadius;
-    //    //    }
-    //    //    else { return false }
-    //    //    return x;
-    //    //}).where();
-    //    //console.log('selected interesting features ' + (((Date.now() - starttime)) / 1000));
-    //    //return res;
-    //},
+    },
     detectRingCodeCenter: function (canvas, options) {
         var me = this;
         var ctx = canvas.getContext('2d');
         var height = canvas.height, width = canvas.width;
         var step = width;
-        var imageData = ctx.getImageData(0, 0, width, height);
         var level = 1;
         var x = options.x || 10;
         var y = options.y || 10;
         var featureResults = me.detectFeatures(canvas, options);
-        var rgb = me.hexToRgb(options.color);
-        var vectorColor = new MEPH.math.Vector.Create([rgb.r, rgb.g, rgb.b, 255]);
+        var imageData = me.imageData;
+        var vectorColors = options.colors.select(function (color) {
+            var rgb = me.hexToRgb(color);
+            var vectorColor = new MEPH.math.Vector.Create([rgb.r, rgb.g, rgb.b, 255]);
+            return vectorColor;
+        })
         var maxcolordistance = options.maxcolordistance || 10;
-        var maxcirclevariation = options.maxcirclevariation || 4;
+        var maxcirclevariation = options.maxcirclevariation || 10;
         var startx = options.startx || 0;
         var starty = options.starty || 0;
         var spread = options.spread || 3;
@@ -201,7 +145,9 @@
                         return MEPH.math.Vector.Create({ x: x_, y: y_ });
                     }).where(function (pos) {
                         var color = me.getColorAt(pos.x, pos.y, step, imageData);
-                        return vectorColor.distance(color) < maxcolordistance;
+                        return vectorColors.some(function (vectorColor) {
+                            return vectorColor.distance(color) < maxcolordistance;
+                        });
                     });
                     if (newpos.length)
                         return MEPH.math.Vector.CenterOfGravity(newpos);
@@ -236,11 +182,35 @@
                                 return x;
                             }).then(function (temp) {
                                 return temp.task.where();
+                            }).then(function (temp) {
+                                var groups = [];
+                                return temp.task.foreach(function (t) {
+                                    var foundGroup = groups.first(function (group) {
+                                        return group.members.some(function (x) { return x.distance(t) < maxcirclevariation; })
+                                    });
+                                    if (foundGroup) {
+                                        foundGroup.members.push(t);
+                                    }
+                                    else {
+                                        groups.push({ members: [t] });
+                                    }
+                                }).then(function () {
+                                    var starttime = Date.now();
+                                    groups.select(function (group) {
+                                        group.cog = MEPH.math.Vector.CenterOfGravity(group.members);
+                                        group.color = me.toHex(me.getColorAt(group.cog.x, group.cog.y, step, imageData));
+                                    });
+                                    console.log('Grouping time : ' + (((Date.now() - starttime) / 1000)));
+                                    return groups;
+                                })
                             });
                         });
                 });
                 // return potentialCenters;
             });
+    },
+    toHex: function (vector) {
+        return '#' + vector.x.toString(16).pad(2, 0) + vector.y.toString(16).pad(2, 0) + vector.z.toString(16).pad(2, 0);
     },
     getColorAt: function (x, y, step, imageData) {
         var me = this, pix = (Math.floor(x) + Math.floor(y) * step) * 4;
@@ -254,11 +224,13 @@
         return temp;
     },
     detectFeatures: function (canvas, options) {
+        var me = this;
         options = options || { threshold: 20, render: false };
         var Features = MEPH.util.Features;
         var ctx = canvas.getContext('2d');
         var height = canvas.height, width = canvas.width;
         var imageData = ctx.getImageData(0, 0, width, height);
+        me.imageData = imageData;
         var me = this;
         if (!(me.lastWidth === width && me.lastHeight === height)) {
             me.matrix = me.createMatrix(width, height);

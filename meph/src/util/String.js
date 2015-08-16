@@ -35,6 +35,22 @@ if (!String.prototype.lowerCaseFirstLetter) {
         }
     });
 }
+if (!String.prototype.pad) {
+    Object.defineProperty(String.prototype, 'pad', {
+        enumerable: false,
+        writable: true,
+        configurable: true,
+        value: function (len, val) {
+            var string = this;
+            if (string.length < len) {
+                for (var i = string.length  ; i < len; i++) {
+                    string = val + string;
+                }
+            }
+            return string;
+        }
+    });
+}
 
 /**
  * @method startsWith

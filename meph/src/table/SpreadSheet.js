@@ -379,14 +379,15 @@ MEPH.define('MEPH.table.SpreadSheet', {
                 return;
             me.select(evt);
         });
-
-        me.don('mouseout', [me.canvassvg, me.canvashtml, me.canvas], me.onMouseupSelecting.bind(me));
+        if (!me.staticPosition)
+            me.don('mouseout', [me.canvassvg, me.canvashtml, me.canvas], me.onMouseupSelecting.bind(me));
         me.don('mouseup', [me.canvassvg, me.canvashtml, me.canvas], me.onMouseupSelecting.bind(me));
         var removenoselect = function () {
             document.body.classList.remove('noselect');
         }
         me.don('mouseup', document.body, removenoselect);
-        me.don('mouseout', document.body, removenoselect);
+        if (!me.staticPosition)
+            me.don('mouseout', document.body, removenoselect);
     },
     getSelectedStartRow: function (selecting) {
         if (!selecting || !selecting.end || !selecting.start) {
@@ -823,10 +824,7 @@ MEPH.define('MEPH.table.SpreadSheet', {
     doScrollPosition: function (e) {
         var me = this;
         if (me.enablehtml) {
-            //requestAnimationFrame(function () {
-            //    me.hbarposition = me.canvashtml.scrollLeft / me.timelineLength;
-            //    me.vbarposition = me.canvashtml.scrollTop / me.timelineHeight;
-            //});
+
             if (me.$afterScrolled) {
                 clearTimeout(me.$afterScrolled);
             }
@@ -967,7 +965,7 @@ MEPH.define('MEPH.table.SpreadSheet', {
         if (me.updateCellsAnimFrame !== null && me.updateCellsAnimFrame !== undefined) {
             cancelAnimationFrame(me.updateCellsAnimFrame);
         }
-        me.updateCellsAnimFrame = requestAnimationFrame(function () {
+        var anim = (function () {
             var headerInstructions = me.getTopHeaderInstructions(me.visibletopheader);
             if (headerInstructions) {
                 me.topContentRenderer.clear();
@@ -996,8 +994,14 @@ MEPH.define('MEPH.table.SpreadSheet', {
                     })
                 }
                 else if (me.enablehtml && me.svgrenderer) {
-                    Style.width(me.htmlCanvasStretcher, me.timelineLength);
-                    Style.height(me.htmlCanvasStretcher, me.timelineHeight);
+                    var scrollLeft = me.canvashtml.scrollLeft;
+                    var scrollTop = me.canvashtml.scrollTop;
+                    Style.width(me.htmlCanvasStretcher, 0);
+                    Style.height(me.htmlCanvasStretcher, 0);
+                    Style.height(me.htmlCanvasStretcher, me.canvashtml.scrollHeight + 300);
+                    Style.width(me.htmlCanvasStretcher, me.canvashtml.scrollWidth + 500);
+                    Style.scrollLeft(me.canvashtml, scrollLeft);
+                    Style.scrollTop(me.canvashtml, scrollTop);
                     Style.absolute(me.htmlCanvasStretcher);
                     Style.zIndex(me.htmlCanvasStretcher, -1);
                     if (options) {
@@ -1013,6 +1017,21 @@ MEPH.define('MEPH.table.SpreadSheet', {
                             var res = me.htmlrenderer.draw(options.added);
                             if (res) {
                                 res.foreach(function (item) {
+                                    item.options.relObj.dom = item.shape;
+                                    item.options.relObj.update = function () {
+                                        if (me.getInstructionsFor) {
+                                            var instructions = me.getInstructionsFor(this),
+                                                dom = this.dom;
+
+                                            if (dom && instructions) {
+                                                instructions.forEach(function (instruction) {
+                                                    Style.width(dom, instruction.width);
+                                                    Style.height(dom, instruction.height);
+                                                    Style.translate(dom, instruction.x, instruction.y);
+                                                });
+                                            }
+                                        }
+                                    }
                                     me.dun(item.shape);
                                     me.don('mouseover', item.shape, function (item) {
                                         me.dispatchEvent('mouseoveritem', {
@@ -1020,6 +1039,17 @@ MEPH.define('MEPH.table.SpreadSheet', {
                                         }, me.canvas)
                                     }.bind(me, item), item.shape);
                                 });
+                            }
+                        }
+                        if (headerInstructions) {
+                            for (var i = headerInstructions.length ; i--;) {
+                                var instruction = headerInstructions[i];
+                                if (instruction && instruction.relObj && instruction.relObj.dom) {
+                                    var dom = instruction.relObj.dom;
+                                    Style.width(dom, instruction.width);
+                                    Style.height(dom, instruction.height);
+                                    Style.translate(dom, instruction.x, instruction.y);
+                                }
                             }
                         }
                     }
@@ -1050,6 +1080,13 @@ MEPH.define('MEPH.table.SpreadSheet', {
             }
             me.updateCellsAnimFrame = null;
         });
+
+        if (me.staticPosition) {
+            anim();
+        }
+        else {
+            me.updateCellsAnimFrame = requestAnimationFrame(anim);
+        }
     },
     drawContent: function (singleinstruction) {
         var me = this, headerInstructions;
@@ -1103,7 +1140,7 @@ MEPH.define('MEPH.table.SpreadSheet', {
         if (me.animFrame !== null) {
             cancelAnimationFrame(me.animFrame);
         }
-        me.animFrame = requestAnimationFrame(function () {
+        var anim = function () {
             var rows, columns, headers;
 
             if (!me.rendered) {
@@ -1153,7 +1190,14 @@ MEPH.define('MEPH.table.SpreadSheet', {
                 width: canvaswidth
             }
             me.animFrame = null;
-        });
+        }
+
+        if (me.staticPosition) {
+            anim();
+        }
+        else {
+            me.animFrame = requestAnimationFrame(anim);
+        }
     },
     positionCanvas: function (canvas, left, top, width, height) {
         Style.left(canvas, left);

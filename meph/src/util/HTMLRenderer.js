@@ -170,18 +170,11 @@ MEPH.define('MEPH.util.HTMLRenderer', {
         MEPH.util.Style.absolute(shape);
         var x = options.x;
         var y = options.y;
-        MEPH.util.Style.setPosition(shape, x, y);
-        //shape.setAttributeNS(null, "x", options.x);
-        //shape.setAttributeNS(null, "y", options.y);
-        // shape.setAttributeNS(null, "width", options.width);
+        MEPH.util.Style.translate(shape, x, y);
         MEPH.util.Style.width(shape, options.width);
-        //shape.setAttributeNS(null, "height", options.height);
-        //shape.setAttributeNS(null, "stroke", options.strokeStyle);
         MEPH.util.Style.height(shape, options.height);
-        // shape.setAttributeNS(null, "stroke-width", options.strokeWidth);
         MEPH.util.Style.strokeWidth(shape, options.strokeWidth);
         MEPH.util.Style.backgroundColor(shape, options.fillStyle);
-        //shape.setAttributeNS(null, "fill", options.fillStyle);
 
         if (add) {
             canvas.appendChild(shape);

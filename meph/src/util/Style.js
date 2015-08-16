@@ -93,6 +93,12 @@
             dom.style.removeProperty(prop);
             dom[prop] = '';
         },
+        scrollTop: function (dom, scrollTop) {
+            dom.scrollTop = scrollTop;
+        },
+        scrollLeft: function (dom, scrollLeft) {
+            dom.scrollLeft = scrollLeft;
+        },
         width: function (dom, width) {
             dom.style.width = parseFloat(width) + 'px';
             dom.width = parseFloat(width);

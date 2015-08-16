@@ -68,10 +68,10 @@ MEPH.define('MEPH.util.Observable', {
             });
         },
         canObserve: function (object) {
-            var AudioBuffer = AudioBuffer || null;
-            var Float32Array = Float32Array || null;
-            var ArrayBuffer = ArrayBuffer || null;
-            var AudioContext = AudioContext || null;
+            var AudioBuffer = window.AudioBuffer || null;
+            var Float32Array = window.Float32Array || null;
+            var ArrayBuffer = window.ArrayBuffer || null;
+            var AudioContext = window.AudioContext || null;
             return ![Float32Array, AudioBuffer, AudioContext, ArrayBuffer].where().some(function (x) { return object instanceof x; });
         },
         /**

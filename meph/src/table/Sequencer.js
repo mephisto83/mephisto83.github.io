@@ -414,6 +414,9 @@ MEPH.define('MEPH.table.Sequencer', {
                 var unscaledtime = me.unscaleValue(time);
                 me.settime['function'](unscaledtime, item);
                 Style.hide(me.grabrep);
+                if (item.update) {
+                    item.update();
+                }
 
             }
 

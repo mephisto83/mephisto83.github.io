@@ -532,7 +532,7 @@ MEPH.define('MEPH.audio.view.AudioSequencer', {
     },
     getItemsInLeftSpace: function (cellData) {
         var me = this;
-        return [].interpolate(cellData.rows, cellData.visibleRows + cellData.rows, function (x) {
+        return [].interpolate(cellData.row, cellData.visibleRows + cellData.row, function (x) {
             return MEPH.util.Observable.observable({
                 lane: x,
                 time: x,
@@ -745,16 +745,6 @@ MEPH.define('MEPH.audio.view.AudioSequencer', {
         }
         else {
             me.addSequence(hovercells.first());
-
-            //var el = me.getTemplateEl('MEPH.audio.view.sequencer.CanvasContextMenu');
-            //me.$canvasContextMenuEl = el;
-            //el.querySelector('[addsequence]').focus();
-            //var elements = MEPH.Array(el.querySelectorAll('[addsequence]')).select(function (t) { return { setFunc: function () { }, element: t } });
-            //Dom.addSimpleDataEntryToElments(me, elements, el);
-            //me.don('click', elements.select(function (t) { return t.element; }), function () {
-            //    me.addSequence(hovercells.first());
-            //    me.canvas.focus();
-            //}, 'button');
         }
     },
     onInjectionsComplete: function () {

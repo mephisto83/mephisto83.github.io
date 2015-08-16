@@ -218,6 +218,7 @@
                         'math/FFT.spec.js',
                         'math/Hamilton.spec.js',
                         'math/Matrix.spec.js',
+                        'math/Matrix3d.spec.js',
                         'math/Set.spec.js',
                         'math/Quaternion.spec.js',
                         'math/Util.spec.js',

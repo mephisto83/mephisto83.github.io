@@ -200,6 +200,9 @@ MEPH.define('MEPH.util.Renderer', {
             context = me.getContext();
         context.strokeStyle = options.strokeStyle;
         me.setFillStyle(options, context);
+        if (options.rotation) {
+            context.rotate(MEPH.ifUndefined(options.rotation, 0));
+        }
         context.beginPath();
         me.applyOptions(context, options);
         context.arc(options.x, options.y, options.radius, 0, Math.PI * 2, true);

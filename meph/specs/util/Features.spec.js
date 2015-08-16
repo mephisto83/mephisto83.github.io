@@ -55,7 +55,7 @@
     it('can detect features', function () {
         var obj = createCanvasAndParst();
         obj.renderer.draw([].interpolate(0, 2, function () {
-            return { shape: 'circle', x: 380 * Math.random() + 10, y: 380 * Math.random() + 10, radius: 20, fillStyle: '#f00fff' }
+            return { shape: 'circle', x: 380 * Math.random() + 10, y: 380 * Math.random() + 10, radius: 20, fillStyle: '#ff0fff' }
         }));
 
         var features = new Features();
@@ -68,60 +68,375 @@
         obj.canvas.parentNode.removeChild(obj.canvas);
     });
 
-    it('can find the center of a spiral code', function (done) {
-        MEPH.render('MEPH.ringcode.RingCode', 'ringcode').then(function (r) {
-            var results = r.res;
-            var app = r.app;
+    it('draw field to detect', function () {
+        var obj = createCanvasAndParst();
+        var spread = 20;
+        obj.renderer.draw([].interpSquare(10, 10, function (x, y) {
+            var radius = 4, color = '#ffff00';
+            var offset = { x: 10, y: 10 };
+            if ((x == 0 && y == 0) || (x === 0 && y === 9) || (x === 9 && y === 9)) {
+                color = '#ff00ff';
+            }
+            return {
+                shape: 'circle',
+                fillStyle: color,
+                x: spread * x + offset.x + 10,
+                y: spread * y + offset.y + 10,
+                radius: radius
+            }
+        }));
 
-            var called, dom,
-                ringcode = results.first().classInstance;
-            ringcode.width = 400;
-            var radius = 5;
-            ringcode.height = 400;
-            ringcode.value = MEPH.GUID().split('-').join('');
+        var features = new Features();
+        var res = features.detectFeatures(obj.canvas, { threshold: 1, render: true });
+        expect(res).toBeTruthy();
+        expect(res.corners).toBeTruthy();
+        expect(res.count !== undefined).toBeTruthy();
+        expect(res.data_u32).toBeTruthy();
+        obj.canvas.parentNode.removeChild(obj.canvas);
+    });
 
-            setTimeout(function () {
-                ringcode.draw();
+    it('can get points ', function () {
+        var obj = createCanvasAndParst({ height: 300, width: 300 });
+        var spread = 20;
+        obj.renderer.draw([].interpSquare(10, 10, function (x, y) {
+            var radius = 4,
+                color = '#ffff00';
+            var offset = {
+                x: 20,
+                y: 20
+            };
+            if ((x === 9 && y === 9)) {
+                color = '#f000ff';
+            }
+            return {
+                shape: 'circle',
+                fillStyle: color,
+                x: spread * x + offset.x + 10,
+                y: spread * y + offset.y + 10,
+                radius: radius
+            }
 
-                var features = new Features();
-                var start = Date.now();
-                features.detectRingCodeCenter(ringcode.body, {
-                    color: ringcode.centerColor || '#000000',
-                    x: 5,
-                    y: 5,
-                    threshold: 40,
-                    render: true
-                }).then(function (res) {;
-                    var end = Date.now();
-                    MEPH.Log((end - start) / 1000);
-                    expect(res.length === 1).toBeTruthy();
+            return false;
+        }).where());
 
-                    if (res.length) {
-                        var renderer = new MEPH.util.Renderer();
+        var features = new Features();
+        var starttime = Date.now();
+        var res = features.detectPoints(obj.canvas, { threshold: 1, render: true, color: '#ffff00' });
 
-                        renderer.setCanvas(ringcode.body);
+        //        res.m
 
-                        renderer.draw(res.select(function (res) {
-                            return {
-                                shape: 'circle',
-                                x: res.x,
-                                y: res.y,
-                                radius: res.estimatedRadius || 4
-                            }
-                        }));
-                    }
-                    //if (app) {
-                    //    app.removeSpace();
-                    //}
-                    done();
-                });
-            }, 200);
-            ///Assert
+        //.then(function (res) {
+        var time = (Date.now() - starttime) / 1000;
+        console.log('total time ' + time);
+        expect(res).toBeTruthy();
+        expect(res.length > 100).toBeTruthy();
+        //}).catch(function (e) {
+        //    expect(e).caught();
+        obj.canvas.parentNode.removeChild(obj.canvas);
+        //}).then(done);
+    });
 
-        }).catch(function (error) {
-            expect(error || new Error('did not render as expected')).caught();
-        }).then(function () {
 
-        });
+    it('can detect corners ', function () {
+        var obj = createCanvasAndParst({ height: 300, width: 300 });
+        var spread = 20, radius, color;
+        obj.renderer.draw([].interpSquare(10, 10, function (x, y) {
+            radius = 4;
+            color = '#ffff00';
+            var offset = {
+                x: 20,
+                y: 20
+            };
+            if ((x === 9 && y === 9)) {
+                color = '#f000ff';
+            }
+            return {
+                shape: 'circle',
+                fillStyle: color,
+                x: spread * x + offset.x + 10,
+                y: spread * y + offset.y + 10,
+                radius: radius
+            }
+
+            return false;
+        }).where());
+
+        var features = new Features();
+        var starttime = Date.now();
+        var res = features.detectPoints(obj.canvas, { threshold: 1, render: true, color: '#ffff00' });
+        var corners = features.detectCorners(res);
+        //        res.m
+
+        //.then(function (res) {
+        var time = (Date.now() - starttime) / 1000;
+        console.log('total time ' + time);
+        expect(res).toBeTruthy();
+        expect(corners).toBeTruthy();
+        expect(corners.topRight).toBeTruthy();
+        expect(corners.topLeft).toBeTruthy();
+        expect(corners.bottomLeft).toBeTruthy();
+        expect(corners.bottomRight).toBeTruthy();
+        expect(res.length > 100).toBeTruthy();
+        var mark = '#ffffff';
+        radius = 10;
+        obj.renderer.draw([{
+            shape: 'circle',
+            fillStyle: mark,
+            x: corners.topLeft.x,
+            y: corners.topLeft.y,
+            radius: radius / 2
+        }, {
+            shape: 'circle',
+            fillStyle: mark,
+            x: corners.topRight.x,
+            y: corners.topRight.y,
+            radius: radius / 2
+        }, {
+            shape: 'circle',
+            fillStyle: mark,
+            x: corners.bottomLeft.x,
+            y: corners.bottomLeft.y,
+            radius: radius / 2
+        }, {
+            shape: 'circle',
+            fillStyle: mark,
+            x: corners.bottomRight.x,
+            y: corners.bottomRight.y,
+            radius: radius / 2
+        }]);
+        obj.canvas.parentNode.removeChild(obj.canvas);
+        //}).catch(function (e) {
+        //    expect(e).caught();
+        //}).then(done);
+    });
+
+
+    it('can detect corners even when rotated ', function () {
+        var obj = createCanvasAndParst({ height: 300, width: 300 });
+        var spread = 20, radius, color;
+        obj.renderer.draw([].interpSquare(10, 10, function (x, y) {
+            radius = 4;
+            color = '#ffff00';
+            var offset = {
+                x: 20,
+                y: 20
+            };
+            if ((x === 9 && y === 9)) {
+                color = '#f000ff';
+            }
+            return {
+                shape: 'circle',
+                fillStyle: color,
+                x: spread * x + offset.x + 10,
+                y: spread * y + offset.y + 10,
+                rotation: -.1,
+                radius: radius
+            }
+
+            return false;
+        }).where());
+
+        var features = new Features();
+        var starttime = Date.now();
+        var res = features.detectPoints(obj.canvas, { threshold: 1, render: true, color: '#ffff00' });
+        var corners = features.detectCorners(res);
+        //        res.m
+
+        //.then(function (res) {
+        var time = (Date.now() - starttime) / 1000;
+        console.log('total time ' + time);
+        expect(res).toBeTruthy();
+        if (corners.topLeft) {
+            expect(corners).toBeTruthy();
+            expect(corners.topRight).toBeTruthy();
+            expect(corners.topLeft).toBeTruthy();
+            expect(corners.bottomLeft).toBeTruthy();
+            expect(corners.bottomRight).toBeTruthy();
+            var mark = '#ffffff';
+            radius = 10;
+
+            obj.renderer.draw([{
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.topLeft.x,
+                y: corners.topLeft.y,
+                radius: radius / 2
+            }, {
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.topRight.x,
+                y: corners.topRight.y,
+                radius: radius / 2
+            }, {
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.bottomLeft.x,
+                y: corners.bottomLeft.y,
+                radius: radius / 2
+            }, {
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.bottomRight.x,
+                y: corners.bottomRight.y,
+                radius: radius / 2
+            }]);
+        }
+        expect(res.length > 100).toBeTruthy();
+
+        //}).catch(function (e) {
+        //    expect(e).caught();
+        //}).then(done);
+    });
+    it('can detect corners even when rotated ', function () {
+        var obj = createCanvasAndParst({ height: 300, width: 300 });
+        var spread = 20, radius, color;
+        obj.renderer.draw([].interpSquare(10, 10, function (x, y) {
+            radius = 4;
+            color = '#ffff00';
+            var offset = {
+                x: 20,
+                y: 20
+            };
+            if ((x === 9 && y === 9)) {
+                color = '#f000ff';
+            }
+            return {
+                shape: 'circle',
+                fillStyle: color,
+                x: spread * x + offset.x + 10,
+                y: spread * y + offset.y + 10,
+                rotation: .1,
+                radius: radius
+            }
+
+            return false;
+        }).where());
+
+        var features = new Features();
+        var starttime = Date.now();
+        var res = features.detectPoints(obj.canvas, { threshold: 1, render: true, color: '#ffff00' });
+        var corners = features.detectCorners(res);
+        //        res.m
+
+        //.then(function (res) {
+        var time = (Date.now() - starttime) / 1000;
+        console.log('total time ' + time);
+        expect(res).toBeTruthy();
+        if (corners.topLeft) {
+            expect(corners).toBeTruthy();
+            expect(corners.topRight).toBeTruthy();
+            expect(corners.topLeft).toBeTruthy();
+            expect(corners.bottomLeft).toBeTruthy();
+            expect(corners.bottomRight).toBeTruthy();
+            var mark = '#ffffff';
+            radius = 10;
+
+            obj.renderer.draw([{
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.topLeft.x,
+                y: corners.topLeft.y,
+                radius: radius / 2
+            }, {
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.topRight.x,
+                y: corners.topRight.y,
+                radius: radius / 2
+            }, {
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.bottomLeft.x,
+                y: corners.bottomLeft.y,
+                radius: radius / 2
+            }, {
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.bottomRight.x,
+                y: corners.bottomRight.y,
+                radius: radius / 2
+            }]);
+        }
+        expect(res.length > 100).toBeTruthy();
+
+        //}).catch(function (e) {
+        //    expect(e).caught();
+        //}).then(done);
+    });
+    it('can detect corners even when rotated ', function () {
+        var obj = createCanvasAndParst({ height: 300, width: 300 });
+        var spread = 20, radius, color;
+        obj.renderer.draw([].interpSquare(10, 10, function (x, y) {
+            radius = 4;
+            color = '#ffff00';
+            var offset = {
+                x: 20,
+                y: 20
+            };
+            if ((x === 9 && y === 9)) {
+                color = '#f000ff';
+            }
+            return {
+                shape: 'circle',
+                fillStyle: color,
+                x: spread * x + offset.x + 10,
+                y: spread * y + offset.y + 10,
+                rotation: 0,
+                radius: radius
+            }
+
+            return false;
+        }).where());
+
+        var features = new Features();
+        var starttime = Date.now();
+        var res = features.detectPoints(obj.canvas, { threshold: 1, render: true, color: '#ffff00' });
+        var corners = features.detectCorners(res);
+        //        res.m
+
+        //.then(function (res) {
+        var time = (Date.now() - starttime) / 1000;
+        console.log('total time ' + time);
+        expect(res).toBeTruthy();
+        if (corners.topLeft) {
+            expect(corners).toBeTruthy();
+            expect(corners.topRight).toBeTruthy();
+            expect(corners.topLeft).toBeTruthy();
+            expect(corners.bottomLeft).toBeTruthy();
+            expect(corners.bottomRight).toBeTruthy();
+            var mark = '#ffffff';
+            radius = 10;
+
+            obj.renderer.draw([{
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.topLeft.x,
+                y: corners.topLeft.y,
+                radius: radius / 2
+            }, {
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.topRight.x,
+                y: corners.topRight.y,
+                radius: radius / 2
+            }, {
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.bottomLeft.x,
+                y: corners.bottomLeft.y,
+                radius: radius / 2
+            }, {
+                shape: 'circle',
+                fillStyle: mark,
+                x: corners.bottomRight.x,
+                y: corners.bottomRight.y,
+                radius: radius / 2
+            }]);
+        }
+        expect(res.length > 100).toBeTruthy();
+
+        //}).catch(function (e) {
+        //    expect(e).caught();
+        //}).then(done);
     });
 });

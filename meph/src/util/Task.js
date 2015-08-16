@@ -99,6 +99,13 @@
         func = func || function (x) { return x; };
         return this.task._(function (x) { return x; }, 0, this.length, this.task.taskable([]), func);
     },
+    foreach: function (func) {
+        func = func || function (x) { return x; };
+        var me = this;
+        return this.task._(func, 0, this.length, this.task.taskable([])).then(function () {
+            return me;
+        });
+    },
     subset: function (start, stop) {
         return this.task._(function (x) { return x; }, start, stop, this.task.taskable([]));
     }

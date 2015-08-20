@@ -79,4 +79,12 @@
 
         expect(Matrix3d.equals(a, Matrix3d.identity(3))).toBeTruthy();
     });
+
+    it('mat projection 2d', function () {
+        var a = [0, 0, 1, 0, 0, 1, 1, 1];
+        var b = [0, 0, 1, 0, 0, 1, 1, 1];
+        var t = Matrix3d.transform2d(a, b);
+        var identity = Matrix3d.identity(4);
+        expect(Matrix3d.equals(t, identity)).toBeTruthy();
+    });
 });

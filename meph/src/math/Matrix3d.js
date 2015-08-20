@@ -54,7 +54,7 @@
             var Matrix3d = MEPH.math.Matrix3d;
             var s = Matrix3d.basisToPoints(x1s, y1s, x2s, y2s, x3s, y3s, x4s, y4s);
             var d = Matrix3d.basisToPoints(x1d, y1d, x2d, y2d, x3d, y3d, x4d, y4d);
-            return Matrix3d.multmm(d, adj(s));
+            return Matrix3d.multmm(d, Matrix3d.adj(s));
         },
         project: function (m, x, y) {
             var v = MEPH.math.Matrix3d.multmv(m, [x, y, 1]);
@@ -88,21 +88,65 @@
             }
             return false;
         },
-        transform2d: function (elt, x1, y1, x2, y2, x3, y3, x4, y4) {
+        transform2d: function (a, b) {
             var Matrix3d = MEPH.math.Matrix3d;
-            var w = elt.offsetWidth, h = elt.offsetHeight;
-            var t = Matrix3d.general2DProjection
-              (0, 0, x1, y1, w, 0, x2, y2, 0, h, x3, y3, w, h, x4, y4);
-            for (i = 0; i != 9; ++i) t[i] = t[i] / t[8];
+            var x1 = b[0],
+                y1 = b[1],
+                x2 = b[2],
+                y2 = b[3],
+                x3 = b[4],
+                y3 = b[5],
+                x4 = b[6],
+                y4 = b[7];
+
+            var i1 = a[0],
+                j1 = a[1],
+                i2 = a[2],
+                j2 = a[3],
+                i3 = a[4],
+                j3 = a[5],
+                i4 = a[6],
+                j4 = a[7];
+
+
+            var t = Matrix3d.general2DProjection(i1, j1, x1, y1, i2, j2, x2, y2, i3, j3, x3, y3, i4, j4, x4, y4);
+            for (i = 0; i != 9; ++i) {
+                t[i] = t[i] / t[8];
+            }
+            
+            return t;
+        },
+        transform2da: function (a, b) {
+            var Matrix3d = MEPH.math.Matrix3d;
+            var x1 = b[0],
+                y1 = b[1],
+                x2 = b[2],
+                y2 = b[3],
+                x3 = b[4],
+                y3 = b[5],
+                x4 = b[6],
+                y4 = b[7];
+
+            var i1 = a[0],
+                j1 = a[1],
+                i2 = a[2],
+                j2 = a[3],
+                i3 = a[4],
+                j3 = a[5],
+                i4 = a[6],
+                j4 = a[7];
+
+
+            var t = Matrix3d.general2DProjection(i1, j1, x1, y1, i2, j2, x2, y2, i3, j3, x3, y3, i4, j4, x4, y4);
+            for (i = 0; i != 9; ++i) {
+                t[i] = t[i] / t[8];
+            }
             t = [t[0], t[3], 0, t[6],
                  t[1], t[4], 0, t[7],
                  0, 0, 1, 0,
                  t[2], t[5], 0, t[8]];
-            t = "matrix3d(" + t.join(", ") + ")";
-            elt.style["-webkit-transform"] = t;
-            elt.style["-moz-transform"] = t;
-            elt.style["-o-transform"] = t;
-            elt.style.transform = t;
+
+            return t;
         }
     }
 });

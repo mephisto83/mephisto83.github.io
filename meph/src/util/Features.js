@@ -48,46 +48,106 @@
         }
     },
     detectCorners: function (corners, fudge) {
-        fudge = fudge || 4;
+        fudge = fudge || 0;
+        var width = 300;
+        var height = 300;
         var tl = corners[0],
+            tls = [],
             tr = tl,
             bl = tl,
             br = tl,
             i;
-        for (i = corners.length; i--;) {
-            //top-left
-            var corner = corners[i];
-            //if (corner.y <= (tl.y + fudge)) {//corner is lt
-            if (corner.x - fudge <= tl.x) {
-                tl = corner;
-            }
-            //}
-            //bottom-left
-            if (corner.y >= (bl.y - fudge)) {
-                if (corner.x <= bl.x) {
-                    bl = corner;
-                }
-            }
-            // top - right
-            if (corner.x + fudge >= tr.x) {
-                //if (corner.y >= (tr.y + fudge)) {
-                //}
-                tr = corner;
 
-            }
-
-            //bottom - right
-            if (corner.y >= (br.y - fudge)) {
-                if (corner.x >= br.x) {
-                    br = corner;
-                }
-            }
+        var distance = function (x1, y1, x2, y2) {
+            return Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2);
         }
+
+        //for (i = corners.length; i--;) {
+        //    //top-left
+        //    var corner = corners[i];
+        //    if (distance(corner.x, corner.y, 0, 0) <= distance(tl.x, tl.y, 0, 0)) {
+        //        //   if (corner.x - fudge <= tl.x) {
+        //        tl = corner;
+        //    }
+
+        //    //bottom-left
+        //    if (distance(corner.x, corner.y, 0, height) <= distance(bl.x, bl.y, 0, height)) {
+        //        bl = corner;
+        //    }
+        //    // top right
+
+        //    if (distance(corner.x, corner.y, width, 0) <= distance(tr.x, tr.y, width, 0)) {
+        //        tr = corner;
+        //    }
+
+        //    //bottom - right
+        //    if (distance(corner.x, corner.y, width, height) <= distance(br.x, br.y, width, height)) {
+        //        br = corner;
+        //    }
+        //}
+
+        var tlsr = corners.slice(0).sort(function (corner, tl) {
+            return distance(corner.x, corner.y, -width, -height) - distance(tl.x, tl.y, -width, -height);
+        }).subset(0, 4).summation(function (t, r) {
+            if (!r) {
+                r = { x: 0, y: 0 };
+            }
+            r.x += t.x;
+            r.y += t.y;
+            return r;
+        });
+        tlsr.x /= 4;
+        tlsr.y /= 4;
+
+
+        var trsr = corners.slice(0).sort(function (corner, tr) {
+            return (distance(corner.x, corner.y, width, -height) - distance(tr.x, tr.y, width, -height));
+        }).subset(0, 4).summation(function (t, r) {
+            if (!r) {
+                r = { x: 0, y: 0 };
+            }
+            r.x += t.x;
+            r.y += t.y;
+            return r;
+        });
+        trsr.x /= 4;
+        trsr.y /= 4;
+
+        var blsr = corners.slice(0).sort(function (corner, tr) {
+            return (distance(corner.x, corner.y, -width, height) - distance(tr.x, tr.y, -width, height));
+        }).subset(0, 4).summation(function (t, r) {
+            if (!r) {
+                r = { x: 0, y: 0 };
+            }
+            r.x += t.x;
+            r.y += t.y;
+            return r;
+        });
+        blsr.x /= 4;
+        blsr.y /= 4;
+
+        var brsr = corners.slice(0).sort(function (corner, br) {
+            return (distance(corner.x, corner.y, width, height) - distance(br.x, br.y, width, height));
+        }).subset(0, 4).summation(function (t, r) {
+            if (!r) {
+                r = { x: 0, y: 0 };
+            }
+            r.x += t.x;
+            r.y += t.y;
+            return r;
+        });
+        brsr.x /= 4;
+        brsr.y /= 4;
+
         return {
-            topLeft: tl,
-            topRight: tr,
-            bottomLeft: bl,
-            bottomRight: br
+            topLeft: tlsr,
+            tl: tlsr,
+            topRight: trsr,
+            tr: trsr,
+            bottomLeft: blsr,
+            bl: blsr,
+            bottomRight: brsr,
+            br: brsr
         }
     },
     detectPoints: function (canvas, options) {

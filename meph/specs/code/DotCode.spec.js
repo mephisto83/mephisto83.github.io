@@ -144,7 +144,7 @@
 
             var called, dom,
                 ringcode = results.first().classInstance;
-            ringcode.width = 400; 
+            ringcode.width = 400;
             ringcode.height = 400;
 
             ringcode.value = MEPH.GUID().split('-').join('');

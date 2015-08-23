@@ -1,6 +1,7 @@
 ﻿MEPH.define('MEPH.util.Features', {
     requires: ['MEPH.util.Dom',
         'MEPH.math.Vector',
+        'MEPH.math.Matrix3d',
         'MEPH.math.Util',
         'MEPH.util.Task'],
     initialize: function () {
@@ -11,6 +12,89 @@
         var me = this;
         var Features = MEPH.util.Features;
         return new me.jsfeat.matrix_t(640, 480, feat || Features.jsfeat.U8_t | Features.jsfeat.C1_t);
+    },
+    read: function (corners, dim, points) {
+        var me = this;
+        var Matrix3d = MEPH.math.Matrix3d;
+        var Util = MEPH.math.Util;
+        var b = [0, 0, 1, 0, 0, 1, 1, 1].select(function (x) { return 200 * x; });
+        var a = [corners.topLeft.x,
+            corners.topLeft.y,
+            corners.topRight.x,
+            corners.topRight.y,
+            corners.bottomLeft.x,
+            corners.bottomLeft.y,
+            corners.bottomRight.x,
+            corners.bottomRight.y];
+        var map = Matrix3d.transform2d(a, b);
+        var result = Matrix3d.zeros(dim);
+        var point;
+        var topRight = me.mapPoint(map, corners.topRight);
+        var topLeft = me.mapPoint(map, corners.topLeft);
+        var bottomLeft = me.mapPoint(map, corners.bottomLeft);
+        var distancex = Matrix3d.distance2d(topRight, topLeft);
+        var distancey = Matrix3d.distance2d(bottomLeft, topLeft);
+        var dist = (distancey + distancex) / 2;
+        var step = dist / dim;
+        //step += step / dim;
+        debugger
+        for (var i = points.length ; i--;) {
+            point = points[i];
+            point = me.mapPoint(map, point);
+            var xs = Math.floor(point.x / step);
+            var ys = Math.floor(point.y / step);
+
+            var count = 5;
+            //var minpos = [].squareMinimum(count, count, function (i, j) {
+            //    var tx = xs + Math.floor(i - count / 2);
+            //    var ty = ys + Math.floor(j - count / 2);
+            //    if (tx < dim && tx > 0 && ty < dim && ty > 0) {
+            //        return MEPH.math.Util.distance({ x: tx * step, y: ty * step }, point);
+            //    }
+            //    return 100000000;
+            //});
+            var minx = 100000;
+            var min_x;
+            [].interpolate(-3, 3, function (x) {
+                var tx = (xs + x) * step,
+                    val = Math.abs((Math.abs(point.x) - Math.abs(tx)));
+                if (val < minx) {
+                    min_x = tx;
+                    minx = xs + x;
+                }
+            });
+
+            var miny = 100000;
+            var min_y;
+            [].interpolate(-3, 3, function (y) {
+                var ty = (ys + y) * step,
+                    val = Math.abs((Math.abs(point.y) - Math.abs(ty)));
+                if (val < miny) {
+                    min_y = ty;
+                    miny = ys + y;
+                }
+            });
+
+            // var xs_r = cell % dim;
+            var xs_r = min_x;
+            var ys_r = min_y;
+            var cell = (ys_r * dim + xs_r);
+
+            if (result.length > cell) {
+                result[cell] += 1;
+            }
+        }
+
+        return result;
+    },
+    mapPoint: function (map, point) {
+        var res = Matrix3d.multmv(map, [point.x, point.y, 1]);
+        var finalx = res[0] / res[2];
+        var finaly = res[1] / res[2];
+        return {
+            x: finalx,
+            y: finaly
+        };
     },
     createCorners: function (width, height) {
         var Features = MEPH.util.Features;
@@ -47,10 +131,69 @@
             ratio: distance / radius
         }
     },
+    massageCornerSolution: function (corners, canvas, options) {
+        var me = this;
+        options = options || {};
+        var color = options.color || ['#ffff00'];
+        var maxdistance = options.maxdistance || 17;
+        var squareBox = 4;
+        var spread = options.spread || 4;
+        var ctx = canvas.getContext('2d');
+        var height = canvas.height, width = canvas.width;
+        var imageData = ctx.getImageData(0, 0, width, height);
+        var relPoints = [].interpSquare(squareBox, squareBox, function (x, y) {
+            return {
+                x: spread * (x - squareBox / 2),
+                y: spread * (y - squareBox / 2)
+            };
+        })
+
+        var vectorColors = color.select(function (color) {
+            var rgb = me.hexToRgb(color);
+            var vectorColor = new MEPH.math.Vector.Create([rgb.r, rgb.g, rgb.b, 255]);
+            return vectorColor;
+        });
+
+        var selectedCorners = [corners.topLeft,
+            corners.topRight,
+            corners.bottomLeft,
+            corners.bottomRight].select(function (corner) {
+                var newcenter = relPoints.select(function (pt) {
+                    var ptf = {
+                        x: pt.x + corner.x,
+                        y: pt.y + corner.y
+                    }
+                    var color = me.getColorAt(ptf.x, ptf.y, canvas.width, imageData);
+                    return vectorColors.minimum(function (vectorColor) {
+                        return vectorColor.distance(color)
+                    }) < maxdistance ? ptf : false;
+                }).where().summation(function (t, r, index, length) {
+                    if (!r) {
+                        r = { x: 0, y: 0 };
+                    }
+                    r.x += t.x;
+                    r.y += t.y;
+                    if (index + 1 === length) {
+                        r.x /= length;
+                        r.y /= length;
+                    }
+                    return r;
+                });;
+                return newcenter;
+
+            });
+
+        return {
+            topLeft: selectedCorners[0],
+            topRight: selectedCorners[1],
+            bottomLeft: selectedCorners[2],
+            bottomRight: selectedCorners[3]
+        };
+    },
     detectCorners: function (corners, fudge) {
         fudge = fudge || 0;
-        var width = 300;
-        var height = 300;
+        var width = 600;
+        var height = 600;
         var tl = corners[0],
             tls = [],
             tr = tl,
@@ -61,30 +204,6 @@
         var distance = function (x1, y1, x2, y2) {
             return Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2);
         }
-
-        //for (i = corners.length; i--;) {
-        //    //top-left
-        //    var corner = corners[i];
-        //    if (distance(corner.x, corner.y, 0, 0) <= distance(tl.x, tl.y, 0, 0)) {
-        //        //   if (corner.x - fudge <= tl.x) {
-        //        tl = corner;
-        //    }
-
-        //    //bottom-left
-        //    if (distance(corner.x, corner.y, 0, height) <= distance(bl.x, bl.y, 0, height)) {
-        //        bl = corner;
-        //    }
-        //    // top right
-
-        //    if (distance(corner.x, corner.y, width, 0) <= distance(tr.x, tr.y, width, 0)) {
-        //        tr = corner;
-        //    }
-
-        //    //bottom - right
-        //    if (distance(corner.x, corner.y, width, height) <= distance(br.x, br.y, width, height)) {
-        //        br = corner;
-        //    }
-        //}
 
         var tlsr = corners.slice(0).sort(function (corner, tl) {
             return distance(corner.x, corner.y, -width, -height) - distance(tl.x, tl.y, -width, -height);
@@ -141,13 +260,9 @@
 
         return {
             topLeft: tlsr,
-            tl: tlsr,
             topRight: trsr,
-            tr: trsr,
             bottomLeft: blsr,
-            bl: blsr,
-            bottomRight: brsr,
-            br: brsr
+            bottomRight: brsr
         }
     },
     detectPoints: function (canvas, options) {

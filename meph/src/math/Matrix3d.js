@@ -1,5 +1,8 @@
 ﻿MEPH.define('MEPH.math.Matrix3d', {
     statics: {
+        distance2d: function (a, b) {
+            return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+        },
         adj: function (m) { // Compute the adjugate of m
             return [
               m[4] * m[8] - m[5] * m[7], m[2] * m[7] - m[1] * m[8], m[1] * m[5] - m[2] * m[4],
@@ -113,7 +116,7 @@
             for (i = 0; i != 9; ++i) {
                 t[i] = t[i] / t[8];
             }
-            
+
             return t;
         },
         transform2da: function (a, b) {

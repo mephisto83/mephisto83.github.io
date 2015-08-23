@@ -5,6 +5,12 @@
  **/
 MEPH.define('MEPH.math.Util', {
     statics: {
+        clamp: function (max, min, val) {
+            return Math.min(max, Math.max(min, val));
+        },
+        distance: function (a, b) {
+            return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+        },
         cachedPrimes: null,
         polar: function (x, y) {
             return {

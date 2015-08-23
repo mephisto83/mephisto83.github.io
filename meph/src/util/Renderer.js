@@ -140,6 +140,9 @@ MEPH.define('MEPH.util.Renderer', {
         //var point = new MEPH.util.Vector(options.start.x, options.start.y);
         //var f = MEPH.util.Vector.Lerp2D(point, point2, .25).rotate(.13);
         //var g = MEPH.util.Vector.Lerp2D(point, point2, .75).rotate(-.13);
+        if (options.rotation) {
+            context.rotate(MEPH.ifUndefined(options.rotation, 0));
+        }
         context.beginPath();
         me.applyOptions(context, options);
         context.moveTo(options.start.x, options.start.y);

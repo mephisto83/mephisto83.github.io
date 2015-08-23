@@ -148,6 +148,29 @@ MEPH.define('MEPH.util.Array', {
                     }
                 });
             }
+
+            if (!array.minimum) {
+                Object.defineProperty(array, 'minimum', {
+                    enumerable: false,
+                    writable: true,
+                    configurable: true,
+                    value: function (func) {
+                        var result = null;
+                        var _result = null;
+                        var collection = this;
+                        func = func || function (x) { return x; };
+                        for (var i = 0 ; i < collection.length; i++) {
+                            if (result == null || func(collection[i]) < result) {
+                                result = func(collection[i]);
+                                _result = collection[i];
+                            }
+                        }
+                        return result;
+                    }
+                });
+            }
+
+
             if (!array.intersection) {
                 Object.defineProperty(array, 'intersection', {
                     enumerable: false,
@@ -769,6 +792,33 @@ MEPH.define('MEPH.util.Array', {
                 });
             }
 
+            if (!array.squareMinimum) {
+                Object.defineProperty(array, 'squareMinimum', {
+                    enumerable: false,
+                    writable: true,
+                    configurable: true,
+                    value: function (x, y, func) {
+                        var collection = this;
+                        var result = null;
+                        var _result = null;
+                        var val;
+                        func = func || function (x) { return x; };
+                        for (var i = 0; i < x; i++) {
+                            for (var j = 0; j < y; j++) {
+                                val = func(i, j, x, y);
+                                if (result == null || val < result) {
+                                    result = val;
+                                    _result = {
+                                        i: i,
+                                        j: j
+                                    }
+                                }
+                            }
+                        }
+                        return _result;
+                    }
+                });
+            }
             if (!array.groupBy) {
                 Object.defineProperty(array, 'groupBy', {
                     enumerable: false,
@@ -960,7 +1010,7 @@ MEPH.define('MEPH.util.Array', {
                         var result = 0;
                         var collection = this;
                         for (var i = 0; i < collection.length ; i++) {
-                            result = func(collection[i], result, i);
+                            result = func(collection[i], result, i, collection.length);
                         }
                         return result;
                     }

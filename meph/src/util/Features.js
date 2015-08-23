@@ -35,49 +35,47 @@
         var distancex = Matrix3d.distance2d(topRight, topLeft);
         var distancey = Matrix3d.distance2d(bottomLeft, topLeft);
         var dist = (distancey + distancex) / 2;
-        var step = dist / dim;
+        var step = dist / (dim - 1);
         //step += step / dim;
-        debugger
+
+        var count = 2;
         for (var i = points.length ; i--;) {
             point = points[i];
             point = me.mapPoint(map, point);
             var xs = Math.floor(point.x / step);
             var ys = Math.floor(point.y / step);
 
-            var count = 5;
-            //var minpos = [].squareMinimum(count, count, function (i, j) {
-            //    var tx = xs + Math.floor(i - count / 2);
-            //    var ty = ys + Math.floor(j - count / 2);
-            //    if (tx < dim && tx > 0 && ty < dim && ty > 0) {
-            //        return MEPH.math.Util.distance({ x: tx * step, y: ty * step }, point);
-            //    }
-            //    return 100000000;
-            //});
+
             var minx = 100000;
             var min_x;
-            [].interpolate(-3, 3, function (x) {
+            var minval = 10000;
+            [].interpolate(-count, count, function (x) {
                 var tx = (xs + x) * step,
-                    val = Math.abs((Math.abs(point.x) - Math.abs(tx)));
-                if (val < minx) {
+                    val = Math.abs((point.x - tx));
+                if (val < minval && tx >= 0) {
                     min_x = tx;
                     minx = xs + x;
+                    minval = val;
                 }
             });
 
             var miny = 100000;
             var min_y;
-            [].interpolate(-3, 3, function (y) {
+            minval = 10000;
+            
+            [].interpolate(-count, count, function (y) {
                 var ty = (ys + y) * step,
-                    val = Math.abs((Math.abs(point.y) - Math.abs(ty)));
-                if (val < miny) {
+                    val = Math.abs(point.y - ty);
+                if (val < minval && ty >= 0) {
                     min_y = ty;
                     miny = ys + y;
+                    minval = val;
                 }
             });
 
             // var xs_r = cell % dim;
-            var xs_r = min_x;
-            var ys_r = min_y;
+            var xs_r = minx;
+            var ys_r = miny;
             var cell = (ys_r * dim + xs_r);
 
             if (result.length > cell) {

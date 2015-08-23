@@ -951,9 +951,154 @@
         var points = features.detectPoints(obj.canvas, { threshold: 1, render: false, color: '#ffff00' });
         var corners = features.detectCorners(points);
         var newcorners = features.massageCornerSolution(corners, obj.canvas, { color: ['#ffff00', '#f000ff'] });
+
         var res = features.read(newcorners, 10, points);
-        //        res.m
+        features.detectPoints(obj.canvas, { threshold: 1, render: true, color: '#ffff00' });
+
+
+        [corners, newcorners].forEach(function (corners, i) {
+            obj.renderer.draw([{
+                shape: 'line',
+                color: i ? 'white' : 'red',
+                start: {
+                    x: corners.topLeft.x,
+                    y: corners.topLeft.y
+                },
+                end: {
+                    x: corners.topRight.x,
+                    y: corners.topRight.y
+                }
+            }, {
+                shape: 'line',
+                color: i ? 'white' : 'red',
+                start: {
+                    x: corners.bottomLeft.x,
+                    y: corners.bottomLeft.y
+                },
+                end: {
+                    x: corners.bottomRight.x,
+                    y: corners.bottomRight.y
+                }
+            }, {
+                shape: 'line',
+                color: i ? 'white' : 'red',
+                start: {
+                    x: corners.topRight.x,
+                    y: corners.topRight.y
+                },
+                end: {
+                    x: corners.bottomRight.x,
+                    y: corners.bottomRight.y
+                }
+            }, {
+                shape: 'line',
+                color: i ? 'white' : 'red',
+                start: {
+                    x: corners.topLeft.x,
+                    y: corners.topLeft.y
+                },
+                end: {
+                    x: corners.bottomLeft.x,
+                    y: corners.bottomLeft.y
+                }
+            }]);
+        });
+
+
         expect(res).toBeTruthy();
+        expect(res.indexWhere(function (x) { return x; }).length === 5).toBeTruthy();
+        expect(res.length === 100).toBeTruthy();
+    });
+
+    it('can read features  and massages a better solution into a binary string', function () {
+        var obj = createCanvasAndParst({ height: 300, width: 300 });
+        var spread = 20, radius, color;
+        var rotation = 0;
+        obj.renderer.draw([].interpSquare(10, 10, function (x, y) {
+            radius = 4;
+            color = '#ffff00';
+            var offset = {
+                x: 20,
+                y: 20
+            };
+            if ((x === 9 && y === 9)) {
+                color = '#f000ff';
+            }
+            if ((x == 9)
+                || (x % 2) === 0)
+                return {
+                    shape: 'circle',
+                    fillStyle: color,
+                    x: spread * x + offset.x + 10,
+                    y: spread * y + offset.y + 10,
+                    rotation: rotation,
+                    radius: radius
+                }
+
+            return false;
+        }).where());
+
+        var features = new Features();
+        var starttime = Date.now();
+        var points = features.detectPoints(obj.canvas, { threshold: 1, render: false, color: '#ffff00' });
+        var corners = features.detectCorners(points);
+        var newcorners = features.massageCornerSolution(corners, obj.canvas, { color: ['#ffff00', '#f000ff'] });
+
+        var res = features.read(newcorners, 10, points);
+        features.detectPoints(obj.canvas, { threshold: 1, render: true, color: '#ffff00' });
+
+
+        [corners, newcorners].forEach(function (corners, i) {
+            obj.renderer.draw([{
+                shape: 'line',
+                color: i ? 'white' : 'red',
+                start: {
+                    x: corners.topLeft.x,
+                    y: corners.topLeft.y
+                },
+                end: {
+                    x: corners.topRight.x,
+                    y: corners.topRight.y
+                }
+            }, {
+                shape: 'line',
+                color: i ? 'white' : 'red',
+                start: {
+                    x: corners.bottomLeft.x,
+                    y: corners.bottomLeft.y
+                },
+                end: {
+                    x: corners.bottomRight.x,
+                    y: corners.bottomRight.y
+                }
+            }, {
+                shape: 'line',
+                color: i ? 'white' : 'red',
+                start: {
+                    x: corners.topRight.x,
+                    y: corners.topRight.y
+                },
+                end: {
+                    x: corners.bottomRight.x,
+                    y: corners.bottomRight.y
+                }
+            }, {
+                shape: 'line',
+                color: i ? 'white' : 'red',
+                start: {
+                    x: corners.topLeft.x,
+                    y: corners.topLeft.y
+                },
+                end: {
+                    x: corners.bottomLeft.x,
+                    y: corners.bottomLeft.y
+                }
+            }]);
+        });
+
+
+        expect(res).toBeTruthy();
+        expect(res.indexWhere(function (x) { return x; }).length === 60).toBeTruthy();
         expect(res.length === 100).toBeTruthy();
     });
 

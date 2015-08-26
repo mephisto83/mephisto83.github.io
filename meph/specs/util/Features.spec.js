@@ -1,4 +1,4 @@
-﻿describe("MEPH/util/Features.spec.js", 'MEPH.util.Features', 'MEPH.util.Renderer', 'MEPH.code.RingCode', 'MEPH.math.Matrix3d', function () {
+﻿describe("MEPH/util/Features.spec.js", 'MEPH.util.Features', 'MEPH.util.Renderer', 'MEPH.code.DotCode', 'MEPH.math.Matrix3d', function () {
     var Features = MEPH.util.Features;
     var Matrix3d;
     beforeEach(function () {
@@ -44,10 +44,15 @@
         var canvas = document.createElement('canvas');
         document.body.appendChild(canvas);
         var renderer = new MEPH.util.Renderer();
-        canvas.height = options.height;
-        canvas.width = options.width;
-        renderer.setCanvas(canvas);
-
+        if (options.canvas === false) {
+            canvas.parentNode.removeChild(canvas);
+            canvas = null;
+        }
+        else {
+            canvas.height = options.height;
+            canvas.width = options.width;
+            renderer.setCanvas(canvas);
+        }
         return {
             renderer: renderer,
             canvas: canvas
@@ -1101,5 +1106,93 @@
         expect(res.indexWhere(function (x) { return x; }).length === 60).toBeTruthy();
         expect(res.length === 100).toBeTruthy();
     });
+    it('can draw a guid into a dotcode and read it with the features', function (done) {
+        MEPH.render('MEPH.code.DotCode', 'dotcode').then(function (r) {
+            var results = r.res;
+            var app = r.app;
 
+            var called, dom,
+                ringcode = results.first().classInstance;
+            ringcode.width = 400;
+            ringcode.height = 400;
+
+            ringcode.value = MEPH.GUID().split('-').join('');
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    ringcode.draw();
+                    var dimensions = 12;
+                    var obj = createCanvasAndParst({ height: 300, width: 300, canvas: false });
+                    obj.canvas = ringcode.body;
+                    obj.renderer.setCanvas(obj.canvas);
+                    var features = new Features();
+                    var starttime = Date.now();
+                    var points = features.detectPoints(obj.canvas, { threshold: 1, render: false, color: '#ffff00' });
+                    var corners = features.detectCorners(points);
+                    var newcorners = features.massageCornerSolution(corners, obj.canvas, { color: ['#ffff00', '#f000ff'] });
+
+                    var res = features.read(newcorners, dimensions, points);
+                    features.detectPoints(obj.canvas, { threshold: 1, render: true, color: '#ffff00' });
+                    var length = MEPH.GUID().split('-').join('').length;
+                    var text = features.convertToText(res, dimensions);
+                    text = text.substring(0, length);
+
+                    expect(text === ringcode.value).toBeTruthy();
+
+                    [corners, newcorners].forEach(function (corners, i) {
+                        obj.renderer.draw([{
+                            shape: 'line',
+                            color: i ? 'white' : 'red',
+                            start: {
+                                x: corners.topLeft.x,
+                                y: corners.topLeft.y
+                            },
+                            end: {
+                                x: corners.topRight.x,
+                                y: corners.topRight.y
+                            }
+                        }, {
+                            shape: 'line',
+                            color: i ? 'white' : 'red',
+                            start: {
+                                x: corners.bottomLeft.x,
+                                y: corners.bottomLeft.y
+                            },
+                            end: {
+                                x: corners.bottomRight.x,
+                                y: corners.bottomRight.y
+                            }
+                        }, {
+                            shape: 'line',
+                            color: i ? 'white' : 'red',
+                            start: {
+                                x: corners.topRight.x,
+                                y: corners.topRight.y
+                            },
+                            end: {
+                                x: corners.bottomRight.x,
+                                y: corners.bottomRight.y
+                            }
+                        }, {
+                            shape: 'line',
+                            color: i ? 'white' : 'red',
+                            start: {
+                                x: corners.topLeft.x,
+                                y: corners.topLeft.y
+                            },
+                            end: {
+                                x: corners.bottomLeft.x,
+                                y: corners.bottomLeft.y
+                            }
+                        }]);
+                    });
+
+                    resolve();
+                }, 200);
+            });
+        }).catch(function (error) {
+            expect(error || new Error('did not render as expected')).caught();
+        }).then(function () {
+            done();
+        });
+    });
 });

@@ -158,10 +158,12 @@ MEPH.define('MEPH.util.Array', {
                         var result = null;
                         var _result = null;
                         var collection = this;
+                        var val;
                         func = func || function (x) { return x; };
                         for (var i = 0 ; i < collection.length; i++) {
-                            if (result == null || func(collection[i]) < result) {
-                                result = func(collection[i]);
+                            val = func(collection[i], i);
+                            if (result == null || val < result) {
+                                result = val;
                                 _result = collection[i];
                             }
                         }
@@ -1084,10 +1086,12 @@ MEPH.define('MEPH.util.Array', {
                         var result = null;
                         var selection = null
                         var collection = this;
+                        var val;
                         func = func || function (x) { return x; }
                         for (var i = 0 ; i < collection.length; i++) {
-                            if (result == null || func(collection[i]) < result) {
-                                result = func(collection[i]);
+                            val = func(collection[i]);
+                            if (result == null || val < result) {
+                                result = val;
                                 selection = collection[i];
                             }
                         }

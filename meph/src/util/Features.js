@@ -62,7 +62,7 @@
             var miny = 100000;
             var min_y;
             minval = 10000;
-            
+
             [].interpolate(-count, count, function (y) {
                 var ty = (ys + y) * step,
                     val = Math.abs(point.y - ty);
@@ -84,6 +84,42 @@
         }
 
         return result;
+    },
+    convertToText: function (array, dim) {
+        var res = array.where(function (x, i) {
+            if (i === 0) {
+                return false;
+            }
+            else if (i === dim - 1) {
+                return false;
+            }
+            else if (i === (Math.pow(dim, 2) - 1)) {
+                return false;
+            }
+            else if (i === (Math.pow(dim, 2) - 1 - dim)) {
+                return false;
+            }
+
+            return true;
+        });
+
+        debugger
+        res = res.select(function (x) {
+            if (x) {
+                return 1;
+            }
+            return 0;
+        });
+        var result = [];
+        for (var i = 0 ; i < res.length ; i = i + 4) {
+            var offset = i;
+            result.push(res[offset] + '' + res[offset + 1] + '' + res[offset + 2] + '' + res[offset + 3]);
+        }
+        var tresult = result.select(function (t) {
+            return MEPH.util.Operations.Bin2Hex(t);
+        });
+
+        return tresult;
     },
     mapPoint: function (map, point) {
         var res = Matrix3d.multmv(map, [point.x, point.y, 1]);
@@ -145,7 +181,7 @@
                 y: spread * (y - squareBox / 2)
             };
         })
-
+        var bottomRightCornerColor = me.hexToRgb(color.last())
         var vectorColors = color.select(function (color) {
             var rgb = me.hexToRgb(color);
             var vectorColor = new MEPH.math.Vector.Create([rgb.r, rgb.g, rgb.b, 255]);
@@ -153,17 +189,17 @@
         });
 
         var selectedCorners = [corners.topLeft,
-            corners.topRight,
             corners.bottomLeft,
-            corners.bottomRight].select(function (corner) {
+            corners.bottomRight,
+            corners.topRight].select(function (corner) {
                 var newcenter = relPoints.select(function (pt) {
                     var ptf = {
                         x: pt.x + corner.x,
                         y: pt.y + corner.y
                     }
                     var color = me.getColorAt(ptf.x, ptf.y, canvas.width, imageData);
-                    return vectorColors.minimum(function (vectorColor) {
-                        return vectorColor.distance(color)
+                    return vectorColors.minimum(function (vectorColor, index) {
+                        return vectorColor.distance(color);
                     }) < maxdistance ? ptf : false;
                 }).where().summation(function (t, r, index, length) {
                     if (!r) {
@@ -177,15 +213,36 @@
                     }
                     return r;
                 });;
+                var color = me.getColorAt(newcenter.x, newcenter.y, canvas.width, imageData);
+                var selectedColor = vectorColors.minSelect(function (vectorColor, index) {
+                    return vectorColor.distance(color);
+                })
+                newcenter.color = selectedColor;
+
                 return newcenter;
 
             });
 
+        var brci = selectedCorners.firstIndexWhere(function (x) {
+            return bottomRightCornerColor.r === x.color.vector[0] &&
+                bottomRightCornerColor.g === x.color.vector[1] &&
+                bottomRightCornerColor.b === x.color.vector[2];
+        });
+
+        var num = 4;
+        var add = 0;
+        if (brci !== -1) {
+
+            add = brci - 2;
+            if (add < 0) {
+                add += num;
+            }
+        }
         return {
-            topLeft: selectedCorners[0],
-            topRight: selectedCorners[1],
-            bottomLeft: selectedCorners[2],
-            bottomRight: selectedCorners[3]
+            topLeft: selectedCorners[add % num],
+            bottomLeft: selectedCorners[(add + 1) % num],
+            bottomRight: selectedCorners[(add + 2) % num],
+            topRight: selectedCorners[(add + 3) % num],
         };
     },
     detectCorners: function (corners, fudge) {

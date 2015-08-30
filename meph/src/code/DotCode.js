@@ -6,7 +6,7 @@
 MEPH.define('MEPH.code.DotCode', {
     alias: 'dotcode',
     templates: true,
-    requires: ['MEPH.util.Style', 'MEPH.util.Dom', 'MEPH.util.Operations'],
+    requires: ['MEPH.util.Renderer', 'MEPH.util.Style', 'MEPH.util.Dom', 'MEPH.util.Operations'],
     extend: 'MEPH.control.Control',
     properties: {
         width: null,
@@ -15,12 +15,13 @@ MEPH.define('MEPH.code.DotCode', {
         radius: 4,
         step: 16,
         offsetY: 10,
+        size: false,
         offsetX: 10,
         $renderer: null
     },
     initialize: function () {
         var me = this,
-            properties = MEPH.Array(['width', 'height']);
+            properties = MEPH.Array(['width', 'height', 'size']);
 
         me.breakColor = me.toColor([255, 255, 255]);
         me.great();
@@ -39,6 +40,7 @@ MEPH.define('MEPH.code.DotCode', {
         if (commands) {
             var renderer = me.getRenderer();
             renderer.setCanvas(me.body);
+            renderer.clear();
             renderer.draw(commands);
         }
 
@@ -48,7 +50,7 @@ MEPH.define('MEPH.code.DotCode', {
         return (code || '').split('').select(function (x) {
             return MEPH.util.Operations.pad(MEPH.util.Operations.Hex2Bin(x), 4);
         }).join('');
-    }, 
+    },
     getCommands: function (commands) {
         var me = this;
 
@@ -57,6 +59,19 @@ MEPH.define('MEPH.code.DotCode', {
             var count = binaryCode.length + 4;
             var rowcount = Math.ceil(Math.sqrt(count));
             binaryCode.unshift(1);
+
+            if (me.size === 'auto') {
+                var width = me.step * rowcount + me.offsetX * 2;
+                var height = me.step * rowcount + me.offsetY * 2;
+
+                if (me.width !== width || me.height !== height) {
+                    me.width = width;
+                    me.height = height;
+                    setTimeout(function () {
+                        me.draw();
+                    }, 100);
+                }
+            }
             binaryCode.splice(rowcount - 1, 0, 1);
             var lbc = rowcount * rowcount - rowcount;
             if (lbc < binaryCode.length) {

@@ -48,7 +48,6 @@ $reveal-slide-distance: 130px;
     img {
         display: inline-block !important;
     }
-
 }
 
 $rgba-primary-0: rgba(0, 145, 207,1); /* Main Primary color */
@@ -196,6 +195,31 @@ $view-header-top-padding: $view-header-body-height;
 /*[headerpadding] {
     padding-top: $view-header-top-padding;
 }*/
+
+.dotcode-container {
+
+    .meph-ring-code {
+        background-color: black;
+        width: 100%;
+        max-width: 100px;
+        border-radius: 30px;
+    }
+
+    text-align: center;
+
+    &.active {
+        .meph-ring-code {
+            max-width: 400px;
+        }
+
+        position: absolute;
+        width: 100%;
+        z-index: 11111111111111111111111;
+        height: 100%;
+        background-color: black;
+        padding-top: 50px;
+    }
+}
 
 $space-between-fields: 50px;
 

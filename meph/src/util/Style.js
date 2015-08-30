@@ -51,6 +51,11 @@
                 dom.style.pointerEvents = 'all';
             }
         },
+        toggle: function (dom, cls) {
+            if (dom.classList) {
+                dom.classList.toggle(cls);
+            }
+        },
         addClassToggle: function (menuitem, cssclass) {
             (function () {
                 var timeout;
@@ -100,8 +105,13 @@
             dom.scrollLeft = scrollLeft;
         },
         width: function (dom, width) {
-            dom.style.width = parseFloat(width) + 'px';
-            dom.width = parseFloat(width);
+            if (isNaN(width)) {
+                dom.style.width = width;
+            }
+            else {
+                dom.style.width = parseFloat(width) + 'px';
+                dom.width = parseFloat(width);
+            }
         },
         top: function (dom, top) {
             dom.style.top = parseFloat(top) + 'px';

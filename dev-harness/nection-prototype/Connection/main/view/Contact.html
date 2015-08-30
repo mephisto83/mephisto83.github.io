@@ -29,6 +29,11 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-12 dotcode-container" mephid="dotcodecontainer">
+            <dotcode mephid="dotcode"
+                     meph-event-click="style.toggle,c$.dotcodecontainer,active"
+                     meph-data-size="auto"></dotcode>
+        </div>
         <div class="col-md-12 col-xs-12 contact-view-body">
             <div class="contact-view-body-details">
                 <h1 data-bind='"innerHTML":"v$.contact.name"'></h1>
@@ -58,13 +63,13 @@
 
         </div>
         <br />
-        <div class="col-md-12 col-xs-12 contact-view-body"
+        <!--<div class="col-md-12 col-xs-12 contact-view-body"
              meph-event-click="v$.hideShow, v$.$activityview.smallqrcode, v$.$activityview.qrcode">
             <div class="col-md-12 col-xs-12" mephid="qrcode" id="qrcode" qrcode>
             </div>
             <div class="col-md-12 col-xs-12" id="smallqrcode" mephid="smallqrcode" qrcode>
             </div>
-        </div>
+        </div>-->
         <div class="col-md-12 col-xs-12 contact-view-body" footerpadding>
             <!--<relationship mephid="relationshipdescription" meph-data-contact="v$.contact"></relationship>-->
         </div>

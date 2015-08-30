@@ -103,7 +103,7 @@
             return true;
         });
 
-        debugger
+
         res = res.select(function (x) {
             if (x) {
                 return 1;
@@ -119,7 +119,21 @@
             return MEPH.util.Operations.Bin2Hex(t);
         });
 
-        return tresult;
+        return tresult.join('');
+    },
+    getBoundary: function (canvas, func) {
+        var me = this;
+        var width = canvas.width;
+        var height = canvas.height;
+        var context2d = canvas.getContext('2d');
+        var image_data = context2d.getImageData(0, 0, width, height);
+
+        var jsfeat = MEPH.util.Features.jsfeat;
+        var gray_img = new jsfeat.matrix_t(width, height, jsfeat.U8_t | jsfeat.C1_t);
+        var code = jsfeat.COLOR_RGBA2GRAY;
+        //ff ff 00
+        var box = jsfeat.imgproc.boundingBox(image_data.data, width, height, gray_img, code, func);
+        return box;
     },
     mapPoint: function (map, point) {
         var res = Matrix3d.multmv(map, [point.x, point.y, 1]);
@@ -3215,6 +3229,85 @@
                         }
                     }
                 },
+                getPixel: function (src, w, h, _x, _y, code) {
+                    // this is default image data representation in browser
+                    if (typeof code === "undefined") { code = jsfeat.COLOR_RGBA2GRAY; }
+                    var x = 0, y = 0, i = 0, j = 0, ir = 0, jr = 0;
+                    var coeff_r = 4899, coeff_g = 9617, coeff_b = 1868, cn = 4;
+                    if (code == jsfeat.COLOR_RGB2GRAY || code == jsfeat.COLOR_BGR2GRAY) {
+                        cn = 3;
+                    }
+                    var cn2 = cn << 1, cn3 = (cn * 3) | 0;
+                    _x *= cn;
+                    _y *= cn;
+
+                    var dst_u8 = [];
+                    var c = 0;
+                    ir = _y * w + (_x);
+                    dst_u8[c] = (src[ir]);
+                    dst_u8[c + 1] = src[ir + 1];
+                    dst_u8[c + 2] = (src[ir + 2]);
+                    dst_u8[c + 3] = (src[ir + 3]);
+
+                    return dst_u8;
+                },
+                //added by : Andrew Porter
+                boundingBox: function (src, w, h, dst, code, filter) {
+                    // this is default image data representation in browser
+                    if (typeof code === "undefined") { code = jsfeat.COLOR_RGBA2GRAY; }
+                    var x = 0, y = 0, i = 0, j = 0, ir = 0, jr = 0;
+                    var coeff_r = 4899, coeff_g = 9617, coeff_b = 1868, cn = 4;
+
+                    if (code == jsfeat.COLOR_BGRA2GRAY || code == jsfeat.COLOR_BGR2GRAY) {
+                        coeff_r = 1868;
+                        coeff_b = 4899;
+                    }
+                    if (code == jsfeat.COLOR_RGB2GRAY || code == jsfeat.COLOR_BGR2GRAY) {
+                        cn = 3;
+                    }
+                    var cn2 = cn << 1, cn3 = (cn * 3) | 0;
+
+                    dst.resize(w, h, 1);
+                    var dst_u8 = dst.data;
+                    var box = {
+                        top: h,
+                        bottom: 0,
+                        left: w,
+                        right: 0
+                    };
+                    var vertDone;
+                    var horizDone;
+                    var me = this;
+                    
+                    for (y = 0; y < h; ++y) {
+                        for (x = 0; x <= w - 4; x++) {
+                            ir = (y * w * cn) + x * cn;
+                            if (filter && filter(src[ir], src[ir + 1], src[ir + 2])) {
+                                if ([].interpSquare(4, 4, function (tx, ty) {
+                                    var samples = me.getPixel(src, w, h, x + tx - 2, y + ty - 2, code);
+                                    return filter(samples[0], samples[1], samples[2]);
+                                }).where().length === 9) {
+                                    if (box.top > y) {
+                                        box.top = y;
+                                    }
+                                    else if (box.bottom < y) {
+                                        box.bottom = y;
+                                    }
+
+                                    if (box.left > x) {
+                                        box.left = x;
+                                    }
+                                    else if (box.right < x) {
+                                        box.right = x;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return box;
+                },
+                //End of addition
                 // derived from CCV library
                 resample: function (src, dst, nw, nh) {
                     var h = src.rows, w = src.cols;

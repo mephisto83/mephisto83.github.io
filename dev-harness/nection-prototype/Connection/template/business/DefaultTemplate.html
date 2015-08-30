@@ -1,20 +1,25 @@
 ﻿<div headerpadding class="contact-view-body">
     <div class="col-md-12 col-xs-12">
-        <div meph-event-click="style.show, c$.qrcode"
+        <!--<div meph-event-click="style.show, c$.qrcode"
              style=""
              class="qrcode_ornament"
              id="smallqrcode"
              mephid="smallqrcode" qrcode>
-        </div>
+        </div>-->
         <div data-bind='"style.backgroundImage" : "c$.data.profileimageurl"' class="center-block profile"></div>
     </div>
-    <div class="col-md-12 col-xs-12 qrcode-row" >
+    <div class="col-md-12 dotcode-container" mephid="dotcodecontainer">
+        <dotcode mephid="dotcode"
+                 meph-event-click="style.toggle,c$.dotcodecontainer,active"
+                 meph-data-size="auto"></dotcode>
+    </div>
+    <!--<div class="col-md-12 col-xs-12 qrcode-row">
         <div meph-event-click="style.hide, c$.qrcode"
              class="col-md-12 col-xs-12"
              mephid="qrcode"
              id="qrcode" qrcode>
         </div>
-    </div>
+    </div>-->
     <div class="col-md-12 col-xs-12" footerpadding>
         <div class="contact-view-body-details">
             <h1 data-bind='"innerHTML":"c$.data.name"'></h1>

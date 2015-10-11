@@ -65,7 +65,7 @@
                     return x && x.getAttribute ? x.getAttribute('template-event') : null;
                 });
                 if (potentialEvent && element && MEPH.util.Dom.isDomDescendant(potentialEvent, element)) {
-                    callback(potentialEvent.getAttribute('template-event'), potentialEvent.getAttribute('template-event-argument'));
+                    callback(potentialEvent.getAttribute('template-event'), potentialEvent.getAttribute('template-event-argument'), evt);
                 }
             });
         },
@@ -101,7 +101,7 @@
                 var res = templateString.match(regex);
                 //var paths = res.unique().select(function (x) {
                 //    return x.split('').subset(2, x.length - 2).join('');
-                //});
+                //}); 
                 res.reverse().unique().select(function (x) {
                     return x.split('').subset(2, x.length - 2).join('');
                 }).foreach(function (t) {
@@ -130,4 +130,37 @@
 
         }
     }
+}).then(function () {
+    window.mephT = MEPH.util.Template.templateEventHandler;
+
+    var makeControl = function (obj) {
+        obj.getConnectableTypes = function () {
+            return MEPH.Array([MEPH.control.Control.connectables.control, 'view']);
+        }
+        obj.getConnection = function (type) {
+            return obj;
+        }
+        obj.getReferenceConnections = function () {
+            return [{ type: 'control', obj: obj }];
+        }
+    };
+
+    var templateList = function (dom, array) {
+        //listview
+        var template = dom.querySelectorAll('template')[0];
+        if (template) {
+            dom.innerHTML = '';
+            array.on('changed', function () {
+                dom.innerHTML = '';
+                var t = '';
+                array.forEach(function (data) {
+                    t += MEPH.util.Template.bindTemplate(template.innerHTML, data);
+                });
+                dom.innerHTML = t;
+            });
+        }
+    };
+    window.mephT.templateList = templateList;
+
+    window.mephT.makeControl = makeControl;
 });

@@ -777,7 +777,7 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
      * @param {String} filetype
      * @param {Function} callback
      **/
-    meph.loadJSCssFile = function (filename, filetype, callback, attributes, innerHTML) {
+    meph.loadJSCssFile = function (filename, filetype, callback, attributes, innerHTML, mimetype) {
         callback = callback || meph.emptyFunction;
         var toResolve,
             toReject,
@@ -825,14 +825,18 @@ var mephFrameWork = (function ($meph, $frameWorkPath, $promise, $offset) {
                 script.onload = callback;
                 script.src = filename// 'helper.js';
                 head.appendChild(script);
-            }
+            } 
             toResolve(filename, filetype);
         }
-        else if (filetype === 'mp3' || filetype === 'audio') {
+        else if (filetype === 'mp3' || filetype === 'audio' || filetype === 'string') {
 
             var XHR = new XMLHttpRequest();
             XHR.open('GET', filename, true);
-            XHR.responseType = 'arraybuffer';
+            if (filetype === 'string') {
+                mimetype = mimetype || "text/plain";
+           //     XHR.overrideMimeType(mimetype + "; charset=x-user-defined");
+            }
+            XHR.responseType = filetype === 'string' ? 'text' : 'arraybuffer';
             XHR.onload = function () {
 
                 toResolve({ response: XHR.response })

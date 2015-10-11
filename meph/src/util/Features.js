@@ -135,6 +135,20 @@
         var box = jsfeat.imgproc.boundingBox(image_data.data, width, height, gray_img, code, func);
         return box;
     },
+    getRingBoundary: function (canvas, threshold, features, filter, step) {
+        var me = this;
+
+        var width = canvas.width;
+        var height = canvas.height;
+        var context2d = canvas.getContext('2d');
+        var image_data = context2d.getImageData(0, 0, width, height);
+
+        var jsfeat = MEPH.util.Features.jsfeat;
+        var code = jsfeat.COLOR_RGBA2GRAY;
+        //ff ff 00
+        var box = jsfeat.imgproc.ringBoxDetection(image_data.data, width, height, code, features, filter, step);
+        return box;
+    },
     mapPoint: function (map, point) {
         var res = Matrix3d.multmv(map, [point.x, point.y, 1]);
         var finalx = res[0] / res[2];
@@ -3244,6 +3258,7 @@
                     var dst_u8 = [];
                     var c = 0;
                     ir = _y * w + (_x);
+
                     dst_u8[c] = (src[ir]);
                     dst_u8[c + 1] = src[ir + 1];
                     dst_u8[c + 2] = (src[ir + 2]);
@@ -3251,6 +3266,65 @@
 
                     return dst_u8;
                 },
+                ringBoxDetection: function (src, w, h, code, features, filter, step) {
+                    // this is default image data representation in browser
+                    if (typeof code === "undefined") {
+                        code = jsfeat.COLOR_RGBA2GRAY;
+                    } step = step || 1;
+
+                    var x = 0, y = 0, i = 0, j = 0, ir = 0, jr = 0;
+                    var coeff_r = 4899, coeff_g = 9617, coeff_b = 1868, cn = 4;
+
+                    if (code == jsfeat.COLOR_BGRA2GRAY || code == jsfeat.COLOR_BGR2GRAY) {
+                        coeff_r = 1868;
+                        coeff_b = 4899;
+                    }
+                    if (code == jsfeat.COLOR_RGB2GRAY || code == jsfeat.COLOR_BGR2GRAY) {
+                        cn = 3;
+                    }
+                    var cn2 = cn << 1, cn3 = (cn * 3) | 0;
+
+                    var box = {
+                        top: h,
+                        bottom: 0,
+                        left: w,
+                        right: 0
+                    };
+                    var vertDone;
+                    var horizDone;
+                    var me = this;
+                    //features.forEach(function (feature) {
+
+                    for (y = 0; y < h; y = y + step) {
+                        for (x = 0; x <= w - 4; x = x + step) {
+                            //y = feature.y;
+                            //x = feature.x;
+                            // ir = (y * w * cn) + x * cn;
+                            if (filter && filter(src, x, y, function (tx, ty) {
+                                    if (tx < 0 || tx >= w || ty < 0 || ty > h) return false;
+                                    return me.getPixel(src, w, h, tx, ty, code);
+                            })) {
+                                if (box.top > y) {
+                                    box.top = y;
+                                }
+                                else if (box.bottom < y) {
+                                    box.bottom = y;
+                                }
+
+                                if (box.left > x) {
+                                    box.left = x;
+                                }
+                                else if (box.right < x) {
+                                    box.right = x;
+                                }
+                            }
+                        }
+                    }
+                    //});
+
+                    return box;
+                },
+
                 //added by : Andrew Porter
                 boundingBox: function (src, w, h, dst, code, filter) {
                     // this is default image data representation in browser
@@ -3278,7 +3352,7 @@
                     var vertDone;
                     var horizDone;
                     var me = this;
-                    
+
                     for (y = 0; y < h; ++y) {
                         for (x = 0; x <= w - 4; x++) {
                             ir = (y * w * cn) + x * cn;
@@ -3286,7 +3360,7 @@
                                 if ([].interpSquare(4, 4, function (tx, ty) {
                                     var samples = me.getPixel(src, w, h, x + tx - 2, y + ty - 2, code);
                                     return filter(samples[0], samples[1], samples[2]);
-                                }).where().length === 9) {
+                                }).where().length > 9) {
                                     if (box.top > y) {
                                         box.top = y;
                                     }

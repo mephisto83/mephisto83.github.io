@@ -27,7 +27,7 @@
         },
         getNotesInScale: function (id, from, to) {
             var scale = TheoryScales.getScale(id);
-            
+
             var re = [].interpolate(from, to, function (x) {
                 var note = (x - from) % 12;
                 var res = scale.base12.first(function (t) { return t === note; });
@@ -48,6 +48,36 @@
         },
         getVoices: function () {
             return MEPH.audio.music.theory.data.Voices.voiceList;
+        },
+        getVoice: function (array, closeTo) {
+            closeTo = closeTo || false;
+            var candidates = [];
+            var voice = MEPH.audio.music.theory.Scales.completedScales.first(function (t) {
+                if (t && t.voice) {
+                    if (t.voice.length === array.length) {
+                        return array.all(function (w, i) {
+                            return w === t.voice[i];
+                        });
+                    }
+                    else if (closeTo && t.voice.length > array.length) {
+                        if (array.all(function (w, i) {
+                                return t.voice.indexOf(w) === -1;
+                        })) {
+                            candidates.push(t);
+                        }
+                    }
+                }
+                return false;
+            });
+            if (voice)
+                return voice;
+            if (closeTo && candidates.length) {
+                candidates.sort(function (a, b) {
+                    return a.length - b.length;
+                })
+                return candidates[0];
+            }
+            return null;
         },
         createScaleArray: function (scale, shift, mod) {
             var result = [];

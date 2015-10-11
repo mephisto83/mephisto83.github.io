@@ -306,6 +306,18 @@ MEPH.define('MEPH.util.Renderer', {
         else if (options.simple) {
             context.putImageData(options.canvas, 0, 0);
         }
+        else if (options.scaleImage) {
+            context.drawImage(options.canvas,
+                MEPH.ifUndefined(options.sx, 0),
+                MEPH.ifUndefined(options.sy, 0),
+                MEPH.ifUndefined(options.swidth, options.canvas.width),
+                MEPH.ifUndefined(options.sheight, options.canvas.height),
+                MEPH.ifUndefined(options.dx, 0),
+                MEPH.ifUndefined(options.dy, 0),
+                MEPH.ifUndefined(options.width, options.canvas.width),
+                MEPH.ifUndefined(options.height, options.canvas.height));
+
+        }
         else {
             context.drawImage(options.canvas,
                                      0,

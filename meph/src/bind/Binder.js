@@ -207,7 +207,7 @@ MEPH.define('MEPH.bind.Binder', {
         if (!bindingInformation) {
             return false;
         }
-        for (i in bindingInformation) {
+        for (i in bindingInformation) { 
             if (MEPH.mephHasOwnProperty(bindingInformation, i)) {
                 if (bindingInformation[i].indexOf(MEPH.pipeString) === -1) {
                     path = MEPH.Array(bindingInformation[i].trim().split(MEPH.pathDelimiter));
@@ -294,6 +294,7 @@ MEPH.define('MEPH.bind.Binder', {
             return;
         }
         obj.on(domevent, function (bindingInformation, eventType, args) {
+            MEPH.util.Dom.generatePath(args.domEvent);
             if (!filterDom || args.domEvent.path.some(function (x) { return x === filterDom; }))
                 for (i in bindingInformation) {
                     if (args.eventType === i) {
@@ -334,7 +335,7 @@ MEPH.define('MEPH.bind.Binder', {
             var instruction = me.parseInstructionString(bindingInformation[b], obj);
             if (instruction) {
                 var firstinstruction = instruction.first();
-                if (firstinstruction) {
+                if (firstinstruction && firstinstruction.shortCut) {
                     var type = firstinstruction.shortCut.type;
                     var ref = obj.getReferenceConnections().first(function (x) { return x.type === type; });
                     if (!ref) {

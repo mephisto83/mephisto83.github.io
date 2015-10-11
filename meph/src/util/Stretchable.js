@@ -9,7 +9,8 @@ MEPH.define('MEPH.util.Stretchable', {
     statics: {
         stretchable: function (dom, handle, min) {
 
-            if (dom) {
+            if (dom && !dom.isStretchable) {
+                dom.isStretchable = true;
                 if (!handle) {
                     handle = document.createElement('i');
                     handle.classList.add('fa');

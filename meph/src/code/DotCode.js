@@ -11,12 +11,14 @@ MEPH.define('MEPH.code.DotCode', {
     properties: {
         width: null,
         centerColor: '#ffff00',
+        ringColor: '#00ffff',
         height: null,
         radius: 4,
         step: 16,
         offsetY: 10,
         size: false,
         offsetX: 10,
+        ringLineWidth: 4,
         $renderer: null
     },
     initialize: function () {
@@ -60,19 +62,26 @@ MEPH.define('MEPH.code.DotCode', {
             var rowcount = Math.ceil(Math.sqrt(count));
             binaryCode.unshift(1);
 
+            var width = me.step * rowcount;
+            var height = me.step * rowcount;
             if (me.size === 'auto') {
-                var width = me.step * rowcount + me.offsetX * 2;
-                var height = me.step * rowcount + me.offsetY * 2;
-
                 if (me.width !== width || me.height !== height) {
                     me.width = width;
                     me.height = height;
-                    setTimeout(function () {
+                    if (me.$drawTimeout) {
+                        clearTimeout(me.$drawTimeout);
+                        me.$drawTimeout = null;
+                    }
+                    me.$drawTimeout = setTimeout(function () {
                         me.draw();
+                        me.$drawTimeout = null;
                     }, 100);
                 }
             }
+            var centerPointX = me.body.clientWidth / 2;
+            var centerPointY = me.body.clientHeight / 2;
             binaryCode.splice(rowcount - 1, 0, 1);
+
             var lbc = rowcount * rowcount - rowcount;
             if (lbc < binaryCode.length) {
                 binaryCode.splice(rowcount * rowcount - rowcount, 0, 1);
@@ -89,8 +98,8 @@ MEPH.define('MEPH.code.DotCode', {
             binaryCode.push(1);
 
             var drawCommands = binaryCode.select(function (value, index) {
-                var x = (index % rowcount) * me.step + me.offsetX;
-                var y = Math.floor(index / rowcount) * me.step + me.offsetY;
+                var x = ((index % rowcount) * me.step) + (centerPointX) - (width / 2) + 2 * me.radius;
+                var y = (Math.floor(index / rowcount) * me.step) + (centerPointY) - (height / 2) + 2 * me.radius;
                 var command = {
                     shape: 'circle',
                     radius: me.radius,
@@ -101,11 +110,27 @@ MEPH.define('MEPH.code.DotCode', {
                     y: y
                 }
                 if (value == 0) {
-                    command.radius = 0;
+                    return false;
                 }
                 return command
-            });
+            }).where();
 
+            drawCommands.push({
+                shape: 'ring',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                fill: me.ringColor,
+                strokeStyle: me.ringColor,
+                stroke: me.ringColor,
+                fillStyle: me.ringColor,
+                lineWidth: 0,
+                radius: Math.sqrt(Math.pow(width / 2, 2) + Math.pow(height / 2, 2)),
+                lineWidth: me.ringLineWidth,
+                sAngle: 0,
+                eAngle: Math.PI * 2,
+                x: centerPointX,
+                y: centerPointY
+            });
             return drawCommands;
         }
         return [];

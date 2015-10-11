@@ -8,6 +8,21 @@ MEPH.define('MEPH.math.Util', {
         clamp: function (max, min, val) {
             return Math.min(max, Math.max(min, val));
         },
+        random: function (min, max) {
+            return min + (Math.random() * (max - min));
+        },
+        dimensionClamp: function (h, w, max) {
+            var size = Math.max(h, w, max);
+            if (size > max) {
+                var ratio = Math.max(w / max, h / max);
+                h = h / ratio;
+                w = w / ratio;
+            }
+            return {
+                height: h,
+                width: w
+            }
+        },
         distance: function (a, b) {
             return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
         },

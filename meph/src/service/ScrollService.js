@@ -6,6 +6,13 @@
     initialize: function () {
         var me = this;
         MEPH.Events(me);
+        function BlockElasticScroll(event) {
+            event.preventDefault();
+        }
+        me.$window.document.body.addEventListener('touchmove', function (e) {
+            me.preventDefault();
+
+        });
         me.$window.document.body.addEventListener('scroll', function (e) {
             me.preventDefault();
 

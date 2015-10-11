@@ -32,6 +32,9 @@ MEPH.define('MEPH.util.FileReader', {
                             case 'ArrayBuffer':
                                 reader.readAsArrayBuffer(file);
                                 break;
+                            case 'BinaryString':
+                                reader.readAsBinaryString(file);
+                                break;
                             case 'String':
                                 reader.readAsText(file);
                                 break;

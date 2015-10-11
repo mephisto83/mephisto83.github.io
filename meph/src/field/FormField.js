@@ -159,7 +159,7 @@ MEPH.define('MEPH.field.FormField', {
         var me = this, properties = (['inputCls',
                                                 'descriptionText',
 
-                                                'labelText',
+                                                'labelText', 
                                                 'descriptionCls',
                                                 'baseComponentCls',
                                                 'placeholder',

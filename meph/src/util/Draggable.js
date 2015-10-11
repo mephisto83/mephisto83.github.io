@@ -14,7 +14,8 @@ MEPH.define('MEPH.util.Draggable', {
         draggable: function (dom, handle, options) {
             handle = handle || dom;
             options = options || {}
-            if (dom && handle) {
+            if (dom && handle && !dom.isDraggable) {
+                dom.isDraggable = true;
                 return (function () {
                     var start, following, moved,
                         scrollService,

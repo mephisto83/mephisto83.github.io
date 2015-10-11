@@ -1,5 +1,5 @@
 ﻿<div class="meph-view meph-view-remove">
-    <activityview data-bind='"activityName": "c$.name"'>
+    <activityview mephid="acti" data-bind='"activityName": "c$.name"'>
         <div role="main">
             <!-- Main jumbotron for a primary marketing message or call to action -->
             <div class="page-header col-md-2">
@@ -11,6 +11,34 @@
                     Drop data
                 </h4>
                 <dropbox data-events='"filesdropped":"v$.loadFiles "'></dropbox><!---->
+             </div>
+            <div class="page-header col-md-5">
+                <h4>
+                    Midi(s) 
+                </h4>
+                <dropbox data-events='"filesdropped":"v$.loadMidis "'></dropbox><!---->
+                <file mephid="midiFileInput" description="midi file" labeltext="midi file."></file>
+                <mephbutton mephid="midiFileInputBtn" meph-event-click="v$.loadFileInput" href="javascript:void(0);">
+                    <div>Load file input</div>
+                    <i class="fa fa-flag fa-4x"></i>
+                </mephbutton>
+
+                <mephbutton meph-event-click="v$.generateAllSquareMovies" href="javascript:void(0);">
+                    <div>All Square Based</div>
+                    <i class="fa fa-music fa-4x"></i>
+                </mephbutton>
+                <mephbutton meph-event-click="v$.generateAllStageInfoMovie" href="javascript:void(0);">
+                    <div>All Info Based</div>
+                    <i class="fa fa-music fa-4x " complete-all-info-based></i>
+                </mephbutton>
+            </div>
+            <div class="col-md-3">
+                <listview data-bind='"source": "v$.midiFiles"'
+                          meph-event-load-midi-square-movie="v$.loadMidi | v$.generateSquareMovie | v$.saveMidiMovie"
+                          meph-event-load-midi-staff-movie="v$.loadMidi | v$.generateStaffMovie | v$.saveMidiMovie">
+                    <template name="Blend.presentation.template.MidiFile">
+                    </template>
+                </listview>
             </div>
             <div class="page-header col-md-2">
                 <h4>File Resources</h4>

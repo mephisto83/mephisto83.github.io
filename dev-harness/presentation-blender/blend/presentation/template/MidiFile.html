@@ -1,0 +1,35 @@
+﻿<li class="list-group-item conversation-list-item">
+    <div href="javascript:void(0);" tabindex="0">
+        <h1>
+            {{file.name}} 
+        </h1>
+        <div>Last modified: {{file.lastModifiedDate}}</div>
+        <div>Size: {{file.size}}</div>
+        <div>Type: {{file.type}}</div>
+
+        <div>
+            {{trackNames|MEPH.util.Template.bindArray,'Blend.presentation.template.ExtraInfo'}}
+        </div>
+
+        <div>
+            {{markers|MEPH.util.Template.bindArray,'Blend.presentation.template.ExtraInfo'}}
+        </div>
+        <div>
+            {{texts|MEPH.util.Template.bindArray,'Blend.presentation.template.ExtraInfo'}}
+        </div>
+        <div>
+            <span>
+                <a href="javascript:void(0);" template-event="load-midi-square-movie">
+                    <div>Square Based</div>
+                    <i class="fa fa-music fa-4x"></i>
+                </a>
+            </span>
+            <span>
+                <a href="javascript:void(0);" template-event="load-midi-staff-movie">
+                    <div>Staff Based</div>
+                    <i class="fa fa-music fa-4x"></i>
+                </a>
+            </span>
+        </div>
+    </div>
+</li>

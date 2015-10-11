@@ -62,14 +62,14 @@
             me.callParent.apply(me, arguments);
             me.on('load', me.onLoaded.bind(me));
             me.midiFiles = MEPH.util.Observable.observable([]);
-            MEPH.loadJSCssFile(MEPH.getSourcePath('Blend.presentation.template.batFile', '.html'), 'string', null, null, null, 'text/html').then(function (res) {
+            MEPH.loadJSCssFile(MEPH.getSourcePath('Blend.presentation.template.batFile', '.html'), 'string', null, null, null, 'text/html',true).then(function (res) {
                 me.batFileTemplate = res.response;
             });
-            MEPH.loadJSCssFile(MEPH.getSourcePath('Blend.presentation.template.blenderRender', '.html'), 'string', null, null, null, 'text/html').then(function (res) {
+            MEPH.loadJSCssFile(MEPH.getSourcePath('Blend.presentation.template.blenderRender', '.html'), 'string', null, null, null, 'text/html', true).then(function (res) {
                 me.blenderRenderTemplate = res.response;
             });
 
-            MEPH.loadJSCssFile(MEPH.getSourcePath('Blend.presentation.template.pythonScript', '.html'), 'string', null, null, null, 'text/html').then(function (res) {
+            MEPH.loadJSCssFile(MEPH.getSourcePath('Blend.presentation.template.pythonScript', '.html'), 'string', null, null, null, 'text/html', true).then(function (res) {
                 me.pythonScriptTemplate = res.response;
             });
             MEPH.audio.music.theory.Scales.init();

@@ -2,8 +2,10 @@
     "menu": [
         {
             "viewId": "BLEND001",
+            "itemType": "launch",
             "description": "Presentation Blender",
             "iconType": "launch"
         }
     ]
 }
+ 

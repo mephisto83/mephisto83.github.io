@@ -6,14 +6,27 @@
  *  direction, such as force, in contrast to scalar quantities, which have no direction.
  *  http://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)
  *
- */
+ */ 
 MEPH.define('MEPH.math.Vector', {
     alternateNames: '$Vector',
     requires: ['MEPH.math.J3DIVector3'],
     statics: {
         Id: 0,
         ZeroLength: Math.pow(1, -15),
-
+        Quick: {
+            ZeroVector: function (dim) {
+                return new MEPH.math.Vector([].interpolate(0, dim || 4, function () { return 0; }), false, false, false, true);
+            },
+            Create: function (obj) {
+                if (obj instanceof J3DIVector3) {
+                    return new MEPH.math.Vector(obj[0], obj[1], obj[2], false, true);
+                }
+                else if (Array.isArray(obj)) {
+                    return new MEPH.math.Vector(obj, false, false, false, true);
+                }
+                return new MEPH.math.Vector(obj.x || 0, obj.y || 0, obj.z || 0, false, true);
+            }
+        },
         Create: function (obj) {
             if (obj instanceof J3DIVector3) {
                 return new MEPH.math.Vector(obj[0], obj[1], obj[2]);
@@ -83,7 +96,7 @@ MEPH.define('MEPH.math.Vector', {
         $shortcuts: null,
         $defaultValue: 0
     },
-    initialize: function (x, y, z, useBinaryHeap) {
+    initialize: function (x, y, z, useBinaryHeap, skipDefine) {
         if (useBinaryHeap)
             this._id = Vector.Id++;
         var me = this;
@@ -94,8 +107,9 @@ MEPH.define('MEPH.math.Vector', {
             me.vector = [x, y, z];
         }
         else me.vector = [];
-
-        me.defineVectorShortcuts();
+        me.skipDefine = skipDefine;
+        if (!skipDefine)
+            me.defineVectorShortcuts();
 
     },
     defineVectorShortcuts: function () {
@@ -199,7 +213,7 @@ MEPH.define('MEPH.math.Vector', {
         if (that.dimensions() === dim) {
             var index = dim;
             if (dim === 2) {
-                return new MEPH.math.Vector([this.getIndex(0) * that.getIndex(1) - this.getIndex(1) * that.getIndex(0)]);
+                return new MEPH.math.Vector([this.getIndex(0) * that.getIndex(1) - this.getIndex(1) * that.getIndex(0)], false, false, false, true);
             }
             var result = [].interpolate(0, dim, function (i) {
 
@@ -221,7 +235,7 @@ MEPH.define('MEPH.math.Vector', {
                 var res = (u2 * v3) - (u3 * v2);
                 return res;
             });
-            return new MEPH.math.Vector(result);
+            return new MEPH.math.Vector(result, false, false, false, true);
         }
         else {
             throw new Error('MEPH.math.Vector: cross product requires same dimensions');
@@ -253,7 +267,7 @@ MEPH.define('MEPH.math.Vector', {
     add: function (that) {
         return new MEPH.math.Vector(this.vector.select(function (x, index) {
             return x + that.getIndex(index);
-        }));
+        }), false, false, false, this.skipDefine);
     },
     isZero: function () {
         var me = this;
@@ -266,7 +280,7 @@ MEPH.define('MEPH.math.Vector', {
     subtract: function (that) {
         return new MEPH.math.Vector(this.vector.select(function (x, index) {
             return x - that.getIndex(index);
-        }));
+        }), false, false, false, this.skipDefine);
     },
     /**
      * Gets the dimensions of the vector.
@@ -294,7 +308,7 @@ MEPH.define('MEPH.math.Vector', {
         var me = this;
         return new MEPH.math.Vector([].interpolate(0, this.dimensions(), function (x) {
             return me.getIndex(x) * scalar;
-        }));
+        }), false, false, false, this.skipDefine);
     },
     multiplyEquals: function (scalar) {
         this._x *= scalar;
@@ -308,11 +322,11 @@ MEPH.define('MEPH.math.Vector', {
     divide: function (scalar) {
         var me = this;
         if (scalar == 0) {
-            return new MEPH.math.Vector([].interpolate(0, this.dimensions(), function (x) { return 0; }));
+            return new MEPH.math.Vector([].interpolate(0, this.dimensions(), function (x) { return 0; }), false, false, false, this.skipDefine);
         }
         return new MEPH.math.Vector([].interpolate(0, this.dimensions(), function (x) {
             return me.getIndex(x) / scalar;
-        }));
+        }), false, false, false, this.skipDefine);
     },
     divideEquals: function (scalar) {
         this._x /= scalar;
@@ -363,9 +377,9 @@ MEPH.define('MEPH.math.Vector', {
     rotate: function (angle) {
         var ca = Math.cos(angle);
         var sa = Math.sin(angle);
-        var rx = this.x * ca - this.y * sa;
-        var ry = this.x * sa + this.y * ca;
-        return new MEPH.math.Vector(rx, ry);
+        var rx = this.vector[0] * ca - this.vector[1] * sa;
+        var ry = this.vector[0] * sa + this.vector[1] * ca;
+        return new MEPH.math.Vector(rx, ry, 0, false, this.skipDefine);
     },
     /**
      * Creates a radom vector.

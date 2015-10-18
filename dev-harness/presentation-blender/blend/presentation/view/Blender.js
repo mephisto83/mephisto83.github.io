@@ -41,14 +41,20 @@
             'MEPH.file.Dropbox', 'MEPH.util.FileReader'],
         statics: {
             BlendObjects: ["OrbLight"],
-            Materials: ["BlackShiny", "White", "Green", "Red", "Blue", 'Orange', 'Pink', 'Purple']
+            ProjectTileGroup: 'Bullet',
+            Materials: ["BlackShiny", "White", "Green", "Red", "Blue", 'Orange', 'Pink', 'Purple'],
+            Ships: {
+                Ship_1: 'Ship_1',
+                Ship_3: 'Ship_3', 
+                Ship_2: 'Ship_2'
+            }
         },
-        properties: {
+        properties: { 
             extrude: 0.07,
             blockspacing: 2.1,
             maxheight: 10,
             framesPerData: 3,
-            framespertext: 75, 
+            framespertext: 75,
             result: null,
             midiFiles: null,
             textalign: 'LEFT',
@@ -62,7 +68,7 @@
             me.callParent.apply(me, arguments);
             me.on('load', me.onLoaded.bind(me));
             me.midiFiles = MEPH.util.Observable.observable([]);
-            MEPH.loadJSCssFile(MEPH.getSourcePath('Blend.presentation.template.batFile', '.html'), 'string', null, null, null, 'text/html',true).then(function (res) {
+            MEPH.loadJSCssFile(MEPH.getSourcePath('Blend.presentation.template.batFile', '.html'), 'string', null, null, null, 'text/html', true).then(function (res) {
                 me.batFileTemplate = res.response;
             });
             MEPH.loadJSCssFile(MEPH.getSourcePath('Blend.presentation.template.blenderRender', '.html'), 'string', null, null, null, 'text/html', true).then(function (res) {
@@ -547,7 +553,7 @@
                         var base = info.notes.select(function (t, i) {
                             return t - info.notes[0];
                         });
-                        var found = TheoryScales.getVoice(base, true);
+                        var found = TheoryScales.getVoice(base);
                         if (found) {
                             info.scaleInfo = found;
                         }
@@ -622,7 +628,7 @@
                 jobFiles.push(jobbat);
             }).then(function () {
                 var renderbatch = me.blenderRenderInfos.select(function (info) {
-                     
+
 
                     var audio_file = info.orginalName.split('').subset(0, info.orginalName.length - 3).join('') + 'mp3';
                     var batFileTemplate = MEPH.util.Template.bindTemplate(me.blenderRenderTemplate, {
@@ -662,7 +668,12 @@
         },
         generateAllStageInfoMovie: function () {
             var me = this;
-            return me.generateAllMovies(me.generateStageInfoMovie.bind(me));
+            return me.generateAllMovies(function (a) {
+                var res = me.generateStageInfoMovie(a)
+                me.attachBattleScene(res);
+
+                return res;
+            });
         },
         saveMidiMovie: function (midiDef) {
             var me = this;
@@ -950,9 +961,721 @@
             };
 
         },
+        getChordData: function (midiTracks) {
+            var currentSelection = [];
+            var trackClock = 0;
+            var currentTrackNotes = {};
+            var start = null;
+            var end;
+
+            var trackEvents = [];
+            midiTracks.forEach(function (trackInfo) {
+                trackEvents = trackEvents.concat(trackInfo.events);
+            });
+
+            trackEvents.sort(function (a, b) {
+                return a.clock - b.clock;
+            });
+
+            var currentTrackNotesArray = [];
+            trackEvents.forEach(function (obj, i) {
+                trackClock = obj.clock;
+
+                if (start === null) {
+                    start = trackClock;
+                }
+                var removed = currentSelection.removeWhere(function (t) {
+                    if (t.endclock === null) {
+                        debugger;
+                    }
+                    if (!(t.clock <= trackClock && t.endclock >= trackClock)) {
+                        return true;
+                    }
+                    return false;
+                });
+                if (removed.length) {
+                    currentTrackNotes.notes = currentSelection.select(function (t) {
+                        return t.noteNumber
+                    });
+                    removed.forEach(function (t) {
+                        currentTrackNotes.notes.push(t.noteNumber);
+                    });
+                    currentTrackNotes.notes = currentTrackNotes.notes.unique();
+                    currentTrackNotes.notes.sort();
+                    currentTrackNotes.start = start;
+                    currentTrackNotes.end = trackClock;
+                    if (currentTrackNotes.notes.length > 2)
+                        currentTrackNotesArray.push(currentTrackNotes)
+                    currentTrackNotes = {};
+                    start = trackClock;
+                }
+                currentSelection.push(obj);
+            });
+
+            currentTrackNotesArray.where(function (t) {
+                return t.notes.length > 2;
+            }).forEach(function (info) {
+                var base = info.notes.select(function (t, i) {
+                    return t - info.notes[0];
+                });
+                var found = TheoryScales.getVoice(base);
+                if (found) {
+                    info.scaleInfo = found;
+                }
+                else {
+                    info.scaleInfo = null;
+                }
+            });
+            return currentTrackNotesArray;
+        },
+        collectUniqueCharactersFromChordData: function (chordData) {
+            return chordData.select(function (t) {
+                return t && t.scaleInfo && t.scaleInfo.name ? t.scaleInfo.name : '';
+            }).concatFluent(function (t) {
+                return t.split(' ');
+            }).unique().where(function (t) { return t.trim(); })
+                .select(function (t) {
+                    return t.replace('°', ' dim ');
+                });
+        },
+        shipName: function (fleet, shipNo) {
+            var me = this;
+            return fleet + '_' + shipNo;
+        },
+        createShipType: function (type, fleet, index, guns, noteNumbers) {
+            var me = this,
+                ship,
+                name = me.shipName(fleet, index);
+            switch (type) {
+                case type:
+                    ship = {
+                        "name": name,
+                        "group": type,
+                        "type": "custom"
+                    };
+                    break;
+                default:
+                    ship = {
+                        "name": name,
+                        "group": Blend.presentation.view.Blender.Ships.Ship_1,
+                        "type": "custom"
+                    };
+                    break;
+            }
+            ship.guns = guns;
+            ship.noteNumbers = noteNumbers;
+
+            return ship;
+        },
+        createShipObjects: function (ships, fleet) {
+            var me = this;
+            fleet = fleet || 'default_fleet_';
+            var shipobjects = ships.select(function (type, index) {
+                return me.createShipType(type, fleet, index);
+            });
+
+            return shipobjects;
+        },
+        getShipsForTrack: function (trackInfo, keyframes) {
+            var me = this,
+                requiredGuns,
+                shipDefinitions = [],
+                ships = [];
+            requiredGuns = trackInfo.length;
+            var i = 0;
+            while (requiredGuns > 0) {
+                var info = trackInfo[i];
+                i++;
+                var rand = Math.ceil(Math.random() * requiredGuns + .00001);
+                var guns;
+                if (rand > 24) {
+                    requiredGuns -= 24;
+                    guns = 24;
+                    group = Blend.presentation.view.Blender.Ships.Ship_2;
+                }
+                if (rand > 9) {
+                    requiredGuns -= 9;
+                    guns = 9;
+                    group = Blend.presentation.view.Blender.Ships.Ship_3;
+                }
+                else {
+                    requiredGuns -= 2;
+                    guns = 2;
+                    group = Blend.presentation.view.Blender.Ships.Ship_1;
+                }
+                var gun_note_start = trackInfo.length - requiredGuns - guns;
+                var ship = me.createShipType(group, 'default_fleet_' + info.track, i, guns,
+                    trackInfo.subset(gun_note_start, gun_note_start + guns).select(function (t) {
+                        return t.noteNumber;
+                    }));
+                shipDefinitions.push(ship);
+                ships.push(me.getInitialShipSettings(ship, null, keyframes));
+            }
+            if (ships.length < 2) {
+                group = Blend.presentation.view.Blender.Ships.Ship_1;
+                var guns = 2;
+                var ship = me.createShipType(group, 'default_fleet_' + 0, i, guns, []);
+                shipDefinitions.push(ship);
+                ships.push(me.getInitialShipSettings(ship, null, keyframes));
+            }
+            return { ships: ships, shipDefinitions: shipDefinitions };
+        },
+        setShipPosition: function (ship, pos) {
+            ship.position = pos;
+        },
+        getInitialShipSettings: function (ship, position, keyframes) {
+            var me = this,
+                setting;
+            position = position || {
+                x: 0,
+                y: 0,
+                z: 0
+            };
+            setting = {
+                "name": ship.name,
+                "position": {
+                    "x": position.x || 0,
+                    "y": position.y || 0,
+                    "z": position.z || 0
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1,
+                    "z": 1
+                },
+                "children": []
+            };
+            var bothGuns = ship.noteNumbers.select(function (noteNumber) {
+                //
+                return keyframes.where(function (t) {
+                    return t.objects.where(function (j) {
+                        return j.noteNumber === noteNumber;
+                    }).length;
+                }).select(function (keyframe) {;
+                    var tem = {
+                        "system": ship.name + "_psystem_note_" + noteNumber + "_" + keyframe.frame,
+                        "frame_start": keyframe.frame,
+                        "frame_end": keyframe.frame + 10,
+                        "lifetime": 30,
+                        "normal_factor": 15,
+                        "count": 10,
+                        "render_type": "GROUP",
+                        "particle_size": .3,
+                        "dupli_group": Blend.presentation.view.Blender.ProjectTileGroup
+                    };
+                    return tem;
+                })
+            });
+            switch (ship.group) {
+                case Blend.presentation.view.Blender.Ships.Ship_3:
+                    setting.children = [{
+                        "name": "hull.duckHead",
+                        "collision": {
+                            "use_particle_kill": "false"
+                        }
+                    }, {
+                        "name": "hull.block_split",
+                        "collision": {
+                            "use_particle_kill": "false"
+                        }
+                    }, {
+                        "name": "Bracket Engine",
+                        "collision": {
+                            "use_particle_kill": "false"
+                        }
+                    }];
+                    [1, 2, 3, 8].forEach(function (x) {
+                        setting.children.push({
+                            "name": "gun_ship_3_" + x.toString().pad(3, '0'),
+                            "track_to": {
+                                "target": me.getEmptyTargetName(ship)
+                            },
+                            "limit_rotation": {
+                                "use_limit_y": "True",
+                                "use_limit_x": "True",
+                                "owner_space": "LOCAL"
+                            }
+                        })
+                    });
+
+                    [4, 5, 6, 7, 9].forEach(function (x) {
+                        setting.children.push({
+                            "name": "gun_ship_3_" + x.toString().pad(3, '0'),
+                            "track_to": {
+                                "target": me.getEmptyTargetName(ship)
+                            },
+                            "limit_rotation": {
+                                "use_limit_y": "True",
+                                "use_limit_z": "True",
+                                "owner_space": "LOCAL"
+                            }
+                        })
+                    });
+
+                    [].interpolate(1, 10, function (x) {
+
+                        setting.children.push({
+                            "name": 'gun_ship_3_tip_' + x.toString().pad(3, '0'),
+                            "particles": bothGuns[x - 1] || []
+                        })
+                    });
+
+                    break;
+                case Blend.presentation.view.Blender.Ships.Ship_2:
+                    setting.children = [].interpolate(1, 29, function (x) {
+                        return {
+                            "name": 'Gun.' + x.toString().pad(3, '0'),
+                            "particles": bothGuns[x - 1] || []
+                        };
+                    });
+                    break;
+                case Blend.presentation.view.Blender.Ships.Ship_1:
+
+                    setting.children = [{
+                        "name": "hull.large",
+                        "collision": {
+                            "use_particle_kill": "false"
+                        }
+                    }, {
+                        "name": "hardpoint.dev.hammer_left",
+                        "track_to": {
+                            "target": this.getEmptyTargetName(ship)
+                        },
+                        "limit_rotation": {
+                            "use_limit_y": "True",
+                            "use_limit_z": "True",
+                            "owner_space": "LOCAL"
+                        }
+                    }, {
+                        "name": "hardpoint.dev.hammer_right",
+                        "track_to": {
+                            "target": this.getEmptyTargetName(ship)
+                        },
+                        "limit_rotation": {
+                            "use_limit_y": "True",
+                            "use_limit_z": "True",
+                            "owner_space": "LOCAL"
+                        }
+                    }, {
+                        "name": "gun_endpoint_2",
+                        "particles": bothGuns[1]
+                    }, {
+                        "name": "gun_endpoint_1",
+                        "particles": bothGuns[0]
+                    }];
+            }
+            //MEPH.setPathValue(setting.children[1], 'collision.use_particle_kill', 'false');
+            return setting;
+        },
+        createProjectTiles: function (name) {
+            var me = this;
+            return [{
+                "name": name,
+                "group": Blend.presentation.view.Blender.ProjectTileGroup,
+                "type": "custom"
+            }]
+        },
+        createShipPath: function (ship, options) {
+            var space = 10;
+            var $VQC = $Vector.Quick.Create;
+            return {
+                "name": ship.name + '_ship_path',
+                "type": "path",
+                "curvetype": "NURBS",
+                "twist_mode": "Z_UP",
+                "use_path": "true",
+                "use_path_follow": "true",
+                "path_animation": [{
+                    "eval_time": 0,
+                    "frame": 1
+                }, {
+                    "eval_time": options.duration,
+                    "frame": options.duration
+                }],
+                "path_duration": options.duration,
+                "points": ship.positions.select(function (x) {
+                    var v = $VQC(x);
+                    return v.vector.concat([1]);
+                })
+            };
+        },
+        getEmptyTargetName: function (ship) {
+            return ship.name + '_empty';
+        },
+        createEmpty: function (ship) {
+            return {
+                "name": this.getEmptyTargetName(ship),
+                "type": "empty"
+            };
+        },
+        addBattleScene: function (objects, keyframes, midiTracks, options) {
+            var me = this, intialframe = keyframes[0];
+            //Create ships
+
+            var midiTracksWithContent = midiTracks.where(function (track) {
+                return track.objects.length && track.events.length;
+            });
+
+            var uniqueTracksAndNotes = midiTracksWithContent.select(function (trackInfo, i) {
+                return trackInfo.objects.select(function (t) {
+                    return {
+                        track: i,
+                        noteNumber: t.noteNumber
+                    }
+                });
+            });
+            var shipGroupsForTracks = uniqueTracksAndNotes.select(function (trackInfo) {
+                return me.getShipsForTrack(trackInfo, keyframes);
+            });
+            var shipDefinitions = shipGroupsForTracks.select(function (x) { return x.shipDefinitions });
+
+
+            shipGroupsForTracks = shipGroupsForTracks.select(function (x) { return x.ships; });
+            var projectiles = me.createProjectTiles('bullet');
+
+            var shipTargetEmpties = shipDefinitions.select(function (x) {
+                return x.select(function (ship) {
+                    var empty = me.createEmpty(ship);
+                    intialframe.objects.unshift(me.createKeyFrame({
+                        name: empty.name,
+                        position: {
+                            x: 0,
+                            y: 0,
+                            z: 0
+                        }
+                    }));
+                    objects.unshift(empty);
+                    return empty;
+                })
+            });
+
+            //shipTargetEmpties.forEach(function (team) {
+            //    objects.unshift.apply(objects, team);
+            //});
+
+            intialframe.objects.push(me.createKeyFrame({
+                name: "bullet",
+                position: {
+                    x: 10000,
+                    y: 10000,
+                    z: 10000
+                }
+            }));
+
+            var x = 0;
+            var y = 0;
+            var space = 10;
+            var z = space / 3;
+            var center = -5;
+            var angle = 0;
+            var count = 1;
+            var $VQC = $Vector.Quick.Create;
+            shipGroupsForTracks.forEach(function (ships, i) {
+                ships.forEach(function (ship, index) {
+                    angle += Math.PI * .3;
+                    var shippos = {
+                        x: count * Math.cos(angle),
+                        y: count * Math.sin(angle),
+                        z: z
+                    }
+                    count += .5;
+                    me.setShipPosition(ship, shippos)
+                    ship.follow_path = {
+                        "target": ship.name + '_ship_path'
+                    };
+                });
+            });
+            shipDefinitions.forEach(function (ships) {
+                objects.push.apply(objects, ships);
+            });
+
+
+            objects.push.apply(objects, projectiles);
+            var lastframe = keyframes.last().frame;
+            var framesPerSecond = 24;
+            var step = 2;//frames
+            var stepToMovieLengthFactor = step / 10;
+            var chaseSpeed = 2 / (framesPerSecond) * stepToMovieLengthFactor
+            var retreatSpeed = 2.2 / (framesPerSecond) * stepToMovieLengthFactor
+            var retreatDistance = 2;
+            var evadeDistance = 2;
+            var maxAngularVelocity = chaseSpeed * 2.2;
+            var changetarget = 1400;
+            var boundarySphere = 5;
+            var shipData = shipGroupsForTracks.select(function (t, team) {
+                return t.select(function (x) {
+                    return {
+                        name: x.name,
+                        position: [
+                            x.position.x,
+                            x.position.y,
+                            x.position.z
+                        ],
+                        team: team,
+                        positions: [],
+                        target: null
+                    };
+                });
+            });
+            var assignTargets = function (shipData, frame) {
+                shipData.forEach(function (team, teamIndex) {
+                    team.forEach(function (t) {
+                        var otherteam = shipData.where(function (s, i) {
+                            return teamIndex !== i && s.length;
+                        }).random().first();
+                        otherteam = otherteam || shipData[0];
+
+                        var rships = otherteam.where(function (x) {
+                            return x.name !== t.name;
+                        }).random();
+
+                        var tship;
+                        if (rships.length) {
+                            tship = rships[0];
+                        }
+                        t.target = tship.name;
+                    });
+                });
+            }
+            var getShipPosition = function (name, shipData) {
+                var res;
+                if (shipPositionDictionary[name]) {
+                    return shipPositionDictionary[name]
+                }
+                shipData.first(function (team) {
+                    return team.first(function (ship) {
+                        if (ship.name === name) {
+                            res = ship.position;
+                            shipPositionDictionary[name] = ship.position;
+                            return true;
+                        }
+                    })
+                });
+                return res;
+            }
+            var saveCurrentPositions = function (shipData) {
+                shipData.forEach(function (team) {
+                    team.forEach(function (ship) {
+                        ship.positions.push(ship.position);
+                    });
+                });
+            }
+            var $VQC = $Vector.Quick.Create;
+            var getShipsTargeting = function (name, shipData) {
+                var results = [];
+                shipData.forEach(function (team) {
+                    team.forEach(function (ship) {
+                        if (ship.target === name) {
+                            results.push(ship);
+                        }
+                    });
+                });
+                return results;
+            }
+            var calculateIfRetreatRequired = function (shipData) {
+                shipData.forEach(function (team) {
+                    team.forEach(function (ship) {
+                        var enemyShips = getShipsTargeting(ship.name, shipData);
+                        var shipPos = getShipPosition(ship.name, shipData);
+                        shipPos = $VQC(shipPos);
+                        var tooCloseShips = enemyShips.where(function (enemy) {
+                            var dist = shipPos.distance($VQC(enemy.position));
+                            return dist < retreatDistance;
+                        });
+                        ship.tooCloseShips = tooCloseShips;
+                        ship.retreating = tooCloseShips.length > 0;
+                    });
+                })
+            }
+            var calculateRetreatDirection = function (shipData) {
+                shipData.forEach(function (team) {
+                    team.forEach(function (ship) {
+                        var retreatDir = $VQC([0, 0, 0]);;
+                        if (ship.retreating) {
+
+                            ship.tooCloseShips.forEach(function (enemy) {
+                                retreatDir = retreatDir.add($VQC(enemy.position))
+                            });
+                            retreatDir = retreatDir.divide(ship.tooCloseShips.length);
+                            $VQC(ship.position).subtract(retreatDir);
+                        }
+                        ship.direction = retreatDir;
+                    });
+                })
+            }
+            var calculateTargetDirection = function (shipData) {
+                shipData.forEach(function (team) {
+                    team.forEach(function (ship) {
+                        if (!ship.retreating) {
+                            var targetShipPosition = getShipPosition(ship.target, shipData);
+                            targetShipPosition = $VQC(targetShipPosition);
+                            ship.direction = targetShipPosition.subtract($VQC(ship.position));
+                        }
+                    });
+                })
+            };
+            var getAllShipsCloserThan = function (dist, ship, shidData) {
+                var result = [];
+                var shipdistance = $VQC(ship.position);
+                shipData.forEach(function (team) {
+                    team.forEach(function (othership) {
+                        if (othership.name !== ship.name) {
+                            if (dist > $VQC(othership.position).distance(shipdistance)) {
+                                result.push(othership);
+                            }
+                        }
+                    })
+                });
+                return result;
+            }
+            var calculateEvasiveManeuvers = function (shipData) {
+                shipData.forEach(function (team) {
+                    team.forEach(function (ship) {
+                        var shipsCloserThan = getAllShipsCloserThan(evadeDistance, ship, shipData);
+                        var evasiveDir = $VQC([0, 0, 0]);
+
+                        if (shipsCloserThan.length) {
+                            shipsCloserThan.forEach(function (closeShip) {
+                                evasiveDir = evasiveDir.add($VQC(closeShip.position));
+                            });
+                            // evasiveDir = evasiveDir.multiply(-1);
+                            evasiveDir = evasiveDir.cross(ship.direction);
+                        }
+
+                        ship.evasiveDir = evasiveDir;
+                    });
+                })
+            }
+            var calculateFinalDirection = function (shipData) {
+                shipData.forEach(function (team) {
+                    team.forEach(function (ship) {
+                        var direction = ship.evasiveDir
+                            .add(ship.direction).unit();
+                        var shiposVector = $VQC(ship.position);
+                        if (shiposVector.length() > boundarySphere) {
+                            direction = ship.evasiveDir
+                           .add(ship.direction).add(shiposVector.multiply(-1)).unit()
+                        }
+                        if (ship.positions.length > 1) {
+                            var current = shiposVector.subtract($VQC(ship.positions[ship.positions.length - 2])).unit();
+                            var changeOfDirection = direction.subtract(current);
+                            var amoutOfChange = changeOfDirection.length();
+                            if (amoutOfChange > maxAngularVelocity) {
+                                changeOfDirection = changeOfDirection.getVectorOfLength(maxAngularVelocity);
+                            }
+                            direction = current.add(changeOfDirection).unit();
+                        }
+
+
+                        ship.direction = direction;
+                    });
+                });
+            }
+            var shipPositionDictionary = {};
+            var calculateNextPosition = function (shipData) {
+                var lowerz = 0;
+                shipData.forEach(function (team) {
+                    team.forEach(function (ship) {
+                        var speed = ship.retreating ? retreatSpeed : chaseSpeed;
+                        var pos = $VQC(ship.position).add(ship.direction.multiply(speed));
+                        ship.position = pos.vector;
+                        if (lowerz > pos.vector[2]) {
+                            lowerz = pos.vector[2]
+                        }
+                        shipPositionDictionary[ship.name] = ship.position;
+                    });
+                });
+                return lowerz;
+            };
+
+            var positionEmptyTargets = function (shipData, frame) {
+                shipData.forEach(function (team) {
+                    team.forEach(function (ship) {
+                        var position = getShipPosition(ship.target, shipData);
+                        keyframes.push({
+                            frame: frame,
+                            objects: [me.createKeyFrame({
+                                name: me.getEmptyTargetName(ship),
+                                position: {
+                                    x: position[0],
+                                    y: position[1],
+                                    z: position[2]
+                                }
+                            })]
+                        });
+                    });
+                });
+            };
+
+            var addShipPaths = function (shipData, objects) {
+                shipData.forEach(function (team) {
+                    team.forEach(function (ship) {
+                        var shippath = me.createShipPath(ship, { duration: lastframe });
+                        objects.push(shippath);
+                        intialframe.objects.push({
+                            "name": shippath.name
+                        });
+                    });
+                })
+            }
+            var low = 0;
+            var lowest = 0;
+            for (var i = 0 ; i < lastframe; i = i + step) {
+                if (i === 0 || (i > 0 && i % changetarget === 0)) {
+                    assignTargets(shipData, i)
+                }
+
+                // get current positions
+                saveCurrentPositions(shipData);
+
+                // calculate if retreat required
+                calculateIfRetreatRequired(shipData);
+                // calculate retreat direction 
+                calculateRetreatDirection(shipData);
+
+                // calulate target direction
+                calculateTargetDirection(shipData);
+
+                // calculate evasive maneuver
+                calculateEvasiveManeuvers(shipData);
+
+                // add all together
+                calculateFinalDirection(shipData);
+
+                //position empty targets
+                positionEmptyTargets(shipData, i);
+
+                // multiply times speed
+                low = calculateNextPosition(shipData);
+                if (low < lowest) {
+                    lowest = low;
+                }
+            }
+            assignTargets(shipData, lastframe)
+
+            addShipPaths(shipData, objects);
+            shipGroupsForTracks.forEach(function (ships, i) {
+                ships.forEach(function (ship, index) {
+                    var shippos = { x: 0, y: 0, z: 0 };
+                    me.setShipPosition(ship, shippos);
+                    intialframe.objects.push(ship);
+                });
+            });
+        },
+        attachBattleScene: function (sceneData) {
+            var me = this,
+                objects = sceneData.objects,
+                keyframes = sceneData.keyframes,
+                midiTracks = sceneData.midiTracks;
+
+            me.addBattleScene(objects, keyframes, midiTracks, {
+                trackSquareSize: 10
+            });
+
+            return sceneData;
+        },
         generateStageInfoMovie: function (midiTracks) {
             var me = this;
-
             var objects = [];
             var keyframes = [];
             var framesPerSecond = 24;
@@ -960,6 +1683,8 @@
             var midiTracksWithContent = midiTracks.where(function (track) {
                 return track.objects.length && track.events.length;
             });
+            var chordData = me.getChordData(midiTracks);
+            var uniqueChordCharacterData = me.collectUniqueCharactersFromChordData(chordData);
             var tempTrack = midiTracks.first(function (x) { return x.tempos.length; })
             var midDim = Math.ceil(Math.sqrt(midiTracksWithContent.length));
             var trackSquareSize = 10;
@@ -1131,6 +1856,7 @@
                     scale: startScale,
                     position: pos
                 });
+                startAndEnd.noteNumber = evt.noteNumber;
 
                 var mid_fra = me.createKeyFrame({
                     name: name,
@@ -1282,22 +2008,20 @@
             initialkeyframeobjects.push(
                 {
                     "name": "default_camera",
-                    "position": { "x": 0, "y": -8.26655, "z": 10.84575 },
-                    "target": "default_empty"
+                    "position": { "x": 0, "y": -13.26655, "z": 2.84575 },
+                    "target": "default_empty",
+                    "lens": 15.66,
+                    "sensor_width": 15.80
                 },
             {
                 "name": "default_empty",
-                "position": { "x": 0, "y": 0, "z": 0 }
+                "position": { "x": 0, "y": 0, "z": 2.2 }
             },
             {
                 "name": "default_ground_plane",
-                scale: { x: 1000, y: 1000 },
+                "scale": { x: 1000, y: 1000, z: 1 },
                 "position": { "x": 0, "y": 0, "z": 0 }
             },
-            //{
-            //    "name": "wood_stage",
-            //    "position": { "x": 0, "y": 0, "z": 0 }
-            //},
             {
                 "name": "default_sun",
                 "type": "lamp",
@@ -1310,6 +2034,7 @@
             keyframes.sort(function (x, y) {
                 return x.frame - y.frame;
             });
+
             if (me.blenderRenderInfos) {
                 me.blenderRenderInfos.push({
                     file: midiTracks.fileName,
@@ -1323,7 +2048,8 @@
                 keyframes: keyframes,
                 objects: objects,
                 startFrame: 1,
-                startEnd: keyframes.last().frame
+                startEnd: keyframes.last().frame,
+                midiTracks: midiTracks
             }
         },
         generateSquareMovie: function (midiTracks) {
@@ -1458,8 +2184,10 @@
                 };
                 var startAndEnd = me.createKeyFrame({
                     name: name, scale: startScale,
+                    noteNumber: evt.noteNumber,
                     position: pos
                 });
+                startAndEnd.noteNumber = evt.noteNumber;
                 var mid_fra = me.createKeyFrame({
                     name: name,
                     scale: midScale,

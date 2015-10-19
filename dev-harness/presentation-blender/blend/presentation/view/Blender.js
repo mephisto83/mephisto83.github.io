@@ -1669,9 +1669,9 @@
                 keyframes = sceneData.keyframes,
                 midiTracks = sceneData.midiTracks;
 
-            me.addBattleScene(objects, keyframes, midiTracks, {
-                trackSquareSize: 10
-            });
+            //me.addBattleScene(objects, keyframes, midiTracks, {
+            //    trackSquareSize: 10
+            //});
 
             return sceneData;
         },

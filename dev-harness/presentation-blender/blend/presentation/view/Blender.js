@@ -34,7 +34,7 @@
             'MEPH.audio.music.theory.Scales',
             'MEPH.list.View',
             'Blend.presentation.template.MidiFile',
-            'MEPH.audio.midi.reader.MidiFile', 
+            'MEPH.audio.midi.reader.MidiFile',
             'MEPH.util.Observable',
             'MEPH.input.File',
             'MEPH.file.FileSaver', 'MEPH.button.Button',
@@ -46,11 +46,11 @@
             Materials: ["BlackShiny", "White", "Green", "Red", "Blue", 'Orange', 'Pink', 'Purple'],
             Ships: {
                 Ship_1: 'Ship_1',
-                Ship_3: 'Ship_3', 
+                Ship_3: 'Ship_3',
                 Ship_2: 'Ship_2'
             }
         },
-        properties: { 
+        properties: {
             extrude: 0.07,
             blockspacing: 2.1,
             maxheight: 10,
@@ -1121,6 +1121,21 @@
             }
             return { ships: ships, shipDefinitions: shipDefinitions };
         },
+        addShotFrames: function (keyframes, gunname, frame, body) {
+            var v = [0, 10000, 100000, 0];
+            [0, 1, 4, 5].forEach(function (i, t) {
+                var b = MEPH.clone(body);
+                b.children.push({
+                    name: gunname,
+                    scale: {
+                        y: v[t]
+                    }
+                });
+                keyframes.push({
+                    objects: [b], frame: frame + i
+                });
+            });
+        },
         setShipPosition: function (ship, pos) {
             ship.position = pos;
         },
@@ -1154,37 +1169,20 @@
                     }).length;
                 }).select(function (keyframe) {;
                     var tem = {
-                        "system": ship.name + "_psystem_note_" + noteNumber + "_" + keyframe.frame,
                         "frame_start": keyframe.frame,
-                        "frame_end": keyframe.frame + 10,
-                        "lifetime": 30,
-                        "normal_factor": 15,
-                        "count": 10,
-                        "render_type": "GROUP",
-                        "particle_size": .3,
-                        "dupli_group": Blend.presentation.view.Blender.ProjectTileGroup
+                        "noteNumber": noteNumber
                     };
                     return tem;
                 })
             });
+            var body = {
+                "name": ship.name,
+                "children": []
+            };
+            var gunshotFrames = [];
             switch (ship.group) {
                 case Blend.presentation.view.Blender.Ships.Ship_3:
-                    setting.children = [{
-                        "name": "hull.duckHead",
-                        "collision": {
-                            "use_particle_kill": "false"
-                        }
-                    }, {
-                        "name": "hull.block_split",
-                        "collision": {
-                            "use_particle_kill": "false"
-                        }
-                    }, {
-                        "name": "Bracket Engine",
-                        "collision": {
-                            "use_particle_kill": "false"
-                        }
-                    }];
+                    setting.children = [];
                     [1, 2, 3, 8].forEach(function (x) {
                         setting.children.push({
                             "name": "gun_ship_3_" + x.toString().pad(3, '0'),
@@ -1212,32 +1210,27 @@
                             }
                         })
                     });
-
                     [].interpolate(1, 10, function (x) {
-
-                        setting.children.push({
-                            "name": 'gun_ship_3_tip_' + x.toString().pad(3, '0'),
-                            "particles": bothGuns[x - 1] || []
-                        })
+                        var gunname = 'gun_ship_3_tip_' + x.toString().pad(3, '0');
+                        if (bothGuns[x - 1])
+                            bothGuns[x - 1].forEach(function (x) {
+                                me.addShotFrames(keyframes, gunname, x.frame_start, MEPH.clone(body));
+                            });
                     });
 
                     break;
                 case Blend.presentation.view.Blender.Ships.Ship_2:
-                    setting.children = [].interpolate(1, 29, function (x) {
-                        return {
-                            "name": 'Gun.' + x.toString().pad(3, '0'),
-                            "particles": bothGuns[x - 1] || []
-                        };
+                    gunshotFrames = [].interpolate(1, 29, function (x) {
+                        var gunname = 'Gun.' + x.toString().pad(3, '0');
+                        if (bothGuns[x - 1])
+                            bothGuns[x - 1].forEach(function (x) {
+                                me.addShotFrames(keyframes, gunname, x.frame_start, MEPH.clone(body));
+                            });
                     });
                     break;
                 case Blend.presentation.view.Blender.Ships.Ship_1:
 
                     setting.children = [{
-                        "name": "hull.large",
-                        "collision": {
-                            "use_particle_kill": "false"
-                        }
-                    }, {
                         "name": "hardpoint.dev.hammer_left",
                         "track_to": {
                             "target": this.getEmptyTargetName(ship)
@@ -1257,13 +1250,14 @@
                             "use_limit_z": "True",
                             "owner_space": "LOCAL"
                         }
-                    }, {
-                        "name": "gun_endpoint_2",
-                        "particles": bothGuns[1]
-                    }, {
-                        "name": "gun_endpoint_1",
-                        "particles": bothGuns[0]
                     }];
+                    ([1, 2]).forEach(function (t) {
+                        var gunname = 'gun_endpoint_' + t.toString();
+                        if (bothGuns[t - 1])
+                            (bothGuns[t - 1] || []).forEach(function (x) {
+                                me.addShotFrames(keyframes, gunname, x.frame_start, MEPH.clone(body));
+                            });
+                    })
             }
             //MEPH.setPathValue(setting.children[1], 'collision.use_particle_kill', 'false');
             return setting;
@@ -1309,10 +1303,19 @@
                 "type": "empty"
             };
         },
+        timeIt: function (func) {
+            var start = Date.now();
+            func();
+            var end = Date.now();
+            var time = end - start;
+            time = time / 1000;
+            console.log("time : " + (time));
+        },
         addBattleScene: function (objects, keyframes, midiTracks, options) {
             var me = this, intialframe = keyframes[0];
             //Create ships
 
+            var lastframe = keyframes.last().frame;
             var midiTracksWithContent = midiTracks.where(function (track) {
                 return track.objects.length && track.events.length;
             });
@@ -1392,14 +1395,14 @@
 
 
             objects.push.apply(objects, projectiles);
-            var lastframe = keyframes.last().frame;
             var framesPerSecond = 24;
-            var step = 2;//frames
+            var step = 50;//frames
+            var checkPotentialCollisionsEvery = 10;
             var stepToMovieLengthFactor = step / 10;
             var chaseSpeed = 2 / (framesPerSecond) * stepToMovieLengthFactor
             var retreatSpeed = 2.2 / (framesPerSecond) * stepToMovieLengthFactor
-            var retreatDistance = 2;
-            var evadeDistance = 2;
+            var retreatDistance = 4;
+            var evadeDistance = 4;
             var maxAngularVelocity = chaseSpeed * 2.2;
             var changetarget = 1400;
             var boundarySphere = 5;
@@ -1434,7 +1437,13 @@
                         if (rships.length) {
                             tship = rships[0];
                         }
-                        t.target = tship.name;
+                        if (tship) {
+                            t.target = tship.name;
+                        }
+                        else {
+                            t.retreating = true;
+                            t.target = null;
+                        }
                     });
                 });
             }
@@ -1528,7 +1537,7 @@
                     })
                 });
                 return result;
-            }
+            };
             var calculateEvasiveManeuvers = function (shipData) {
                 shipData.forEach(function (team) {
                     team.forEach(function (ship) {
@@ -1539,7 +1548,7 @@
                             shipsCloserThan.forEach(function (closeShip) {
                                 evasiveDir = evasiveDir.add($VQC(closeShip.position));
                             });
-                            // evasiveDir = evasiveDir.multiply(-1);
+
                             evasiveDir = evasiveDir.cross(ship.direction);
                         }
 
@@ -1556,6 +1565,11 @@
                         if (shiposVector.length() > boundarySphere) {
                             direction = ship.evasiveDir
                            .add(ship.direction).add(shiposVector.multiply(-1)).unit()
+                        }
+                        if (ship.position[2] < .1) {
+                            direction = ship.evasiveDir
+                           .add(ship.direction).add(shiposVector.multiply(-1))
+                                .add($VQC([0, 0, 1 - (1 - ship.position[2])])).unit()
                         }
                         if (ship.positions.length > 1) {
                             var current = shiposVector.subtract($VQC(ship.positions[ship.positions.length - 2])).unit();
@@ -1621,37 +1635,42 @@
             }
             var low = 0;
             var lowest = 0;
-            for (var i = 0 ; i < lastframe; i = i + step) {
-                if (i === 0 || (i > 0 && i % changetarget === 0)) {
-                    assignTargets(shipData, i)
+            me.timeIt(function () {
+                for (var i = 0 ; i < lastframe; i = i + step) {
+                    if (i === 0 || (i > 0 && i % changetarget === 0)) {
+                        assignTargets(shipData, i)
+                    }
+
+                    // get current positions
+                    saveCurrentPositions(shipData);
+
+                    // calculate if retreat required
+                    calculateIfRetreatRequired(shipData);
+
+                    // calculate retreat direction 
+                    calculateRetreatDirection(shipData);
+
+                    // calulate target direction
+                    calculateTargetDirection(shipData);
+
+                    // calculate evasive maneuver
+                    if (i % checkPotentialCollisionsEvery === 0) {
+                        calculateEvasiveManeuvers(shipData);
+                    }
+
+                    // add all together
+                    calculateFinalDirection(shipData);
+
+                    //position empty targets
+                    positionEmptyTargets(shipData, i);
+
+                    // multiply times speed
+                    low = calculateNextPosition(shipData);
+                    if (low < lowest) {
+                        lowest = low;
+                    }
                 }
-
-                // get current positions
-                saveCurrentPositions(shipData);
-
-                // calculate if retreat required
-                calculateIfRetreatRequired(shipData);
-                // calculate retreat direction 
-                calculateRetreatDirection(shipData);
-
-                // calulate target direction
-                calculateTargetDirection(shipData);
-
-                // calculate evasive maneuver
-                calculateEvasiveManeuvers(shipData);
-
-                // add all together
-                calculateFinalDirection(shipData);
-
-                //position empty targets
-                positionEmptyTargets(shipData, i);
-
-                // multiply times speed
-                low = calculateNextPosition(shipData);
-                if (low < lowest) {
-                    lowest = low;
-                }
-            }
+            });
             assignTargets(shipData, lastframe)
 
             addShipPaths(shipData, objects);
@@ -1669,9 +1688,9 @@
                 keyframes = sceneData.keyframes,
                 midiTracks = sceneData.midiTracks;
 
-            //me.addBattleScene(objects, keyframes, midiTracks, {
-            //    trackSquareSize: 10
-            //});
+            me.addBattleScene(objects, keyframes, midiTracks, {
+                trackSquareSize: 10
+            });
 
             return sceneData;
         },

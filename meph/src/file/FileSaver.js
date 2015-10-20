@@ -11,7 +11,16 @@ MEPH.define('MEPH.file.FileSaver', {
         })
     },
     save: function (blob, name) {
-        window.saveAs(blob, name || (new Date().toISOString() + '.wav'));
+
+        var res = window.saveAs(blob, name || (new Date().toISOString() + '.wav'));
+
+        if (res) {
+            res.onprogress = function () {
+                console.log('saving');
+            }
+           
+        }
+        return Promise.resolve();
     }
 }).then(function () {
     /* FileSaver.js

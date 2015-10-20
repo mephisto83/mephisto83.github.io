@@ -625,8 +625,8 @@
                 }).join('');
                 completeBat = completeBat + '\n call ' + renderJob + '\n'
                 var jobbat = 'completeBat_' + jobId + '.bat';
-                me.saveFile(jobbat, completeBat, 'application/bat');
                 jobFiles.push(jobbat);
+                return me.saveFile(jobbat, completeBat, 'application/bat');
             }).then(function () {
                 var renderbatch = me.blenderRenderInfos.select(function (info) {
 
@@ -647,8 +647,8 @@
                     jobFiles.push(audio_file);
                     return batFileTemplate;
                 }).join('\n');
-                me.saveFile(renderJob, renderbatch, 'application/bat');
                 jobFiles.push(renderJob);
+                return me.saveFile(renderJob, renderbatch, 'application/bat');
 
             }).then(function () {
                 var job = {
@@ -725,7 +725,7 @@
             var me = this;
             var aFileParts = [text];
             var oMyBlob = new Blob(aFileParts, { type: type });
-            me.fileSaver.save(oMyBlob, file);
+            return me.fileSaver.save(oMyBlob, file);
         },
         generateStaffMovie: function (midiTracks) {
             var me = this;
@@ -1123,7 +1123,7 @@
         },
         addShotFrames: function (keyframes, gunname, frame, body) {
             var v = [0, 10000, 100000, 0];
-            [0, 1, 4, 5].forEach(function (i, t) {
+            [0, 1, 14, 15].forEach(function (i, t) {
                 var b = MEPH.clone(body);
                 b.children.push({
                     name: gunname,
@@ -1314,373 +1314,391 @@
         addBattleScene: function (objects, keyframes, midiTracks, options) {
             var me = this, intialframe = keyframes[0];
             //Create ships
+            return Promise.resolve().then(function () {
 
-            var lastframe = keyframes.last().frame;
-            var midiTracksWithContent = midiTracks.where(function (track) {
-                return track.objects.length && track.events.length;
-            });
+                return new Promise(function (stepresolve) {
 
-            var uniqueTracksAndNotes = midiTracksWithContent.select(function (trackInfo, i) {
-                return trackInfo.objects.select(function (t) {
-                    return {
-                        track: i,
-                        noteNumber: t.noteNumber
-                    }
-                });
-            });
-            var shipGroupsForTracks = uniqueTracksAndNotes.select(function (trackInfo) {
-                return me.getShipsForTrack(trackInfo, keyframes);
-            });
-            var shipDefinitions = shipGroupsForTracks.select(function (x) { return x.shipDefinitions });
+                    var lastframe = keyframes.last().frame;
+                    var midiTracksWithContent = midiTracks.where(function (track) {
+                        return track.objects.length && track.events.length;
+                    });
+
+                    var uniqueTracksAndNotes = midiTracksWithContent.select(function (trackInfo, i) {
+                        return trackInfo.objects.select(function (t) {
+                            return {
+                                track: i,
+                                noteNumber: t.noteNumber
+                            }
+                        });
+                    });
+                    var shipGroupsForTracks = uniqueTracksAndNotes.select(function (trackInfo) {
+                        return me.getShipsForTrack(trackInfo, keyframes);
+                    });
+                    var shipDefinitions = shipGroupsForTracks.select(function (x) { return x.shipDefinitions });
 
 
-            shipGroupsForTracks = shipGroupsForTracks.select(function (x) { return x.ships; });
-            var projectiles = me.createProjectTiles('bullet');
+                    shipGroupsForTracks = shipGroupsForTracks.select(function (x) { return x.ships; });
+                    var projectiles = me.createProjectTiles('bullet');
 
-            var shipTargetEmpties = shipDefinitions.select(function (x) {
-                return x.select(function (ship) {
-                    var empty = me.createEmpty(ship);
-                    intialframe.objects.unshift(me.createKeyFrame({
-                        name: empty.name,
+                    var shipTargetEmpties = shipDefinitions.select(function (x) {
+                        return x.select(function (ship) {
+                            var empty = me.createEmpty(ship);
+                            intialframe.objects.unshift(me.createKeyFrame({
+                                name: empty.name,
+                                position: {
+                                    x: 0,
+                                    y: 0,
+                                    z: 0
+                                }
+                            }));
+                            objects.unshift(empty);
+                            return empty;
+                        })
+                    });
+
+                    //shipTargetEmpties.forEach(function (team) {
+                    //    objects.unshift.apply(objects, team);
+                    //});
+
+                    intialframe.objects.push(me.createKeyFrame({
+                        name: "bullet",
                         position: {
-                            x: 0,
-                            y: 0,
-                            z: 0
+                            x: 10000,
+                            y: 10000,
+                            z: 10000
                         }
                     }));
-                    objects.unshift(empty);
-                    return empty;
-                })
-            });
 
-            //shipTargetEmpties.forEach(function (team) {
-            //    objects.unshift.apply(objects, team);
-            //});
+                    var x = 0;
+                    var y = 0;
+                    var space = 10;
+                    var z = space / 3;
+                    var center = -5;
+                    var angle = 0;
+                    var count = 1;
+                    var $VQC = $Vector.Quick.Create;
+                    shipGroupsForTracks.forEach(function (ships, i) {
+                        ships.forEach(function (ship, index) {
+                            angle += Math.PI * .3;
+                            var shippos = {
+                                x: count * Math.cos(angle),
+                                y: count * Math.sin(angle),
+                                z: z
+                            }
+                            count += .5;
+                            me.setShipPosition(ship, shippos)
+                            ship.follow_path = {
+                                "target": ship.name + '_ship_path'
+                            };
+                        });
+                    });
+                    shipDefinitions.forEach(function (ships) {
+                        objects.push.apply(objects, ships);
+                    });
 
-            intialframe.objects.push(me.createKeyFrame({
-                name: "bullet",
-                position: {
-                    x: 10000,
-                    y: 10000,
-                    z: 10000
-                }
-            }));
 
-            var x = 0;
-            var y = 0;
-            var space = 10;
-            var z = space / 3;
-            var center = -5;
-            var angle = 0;
-            var count = 1;
-            var $VQC = $Vector.Quick.Create;
-            shipGroupsForTracks.forEach(function (ships, i) {
-                ships.forEach(function (ship, index) {
-                    angle += Math.PI * .3;
-                    var shippos = {
-                        x: count * Math.cos(angle),
-                        y: count * Math.sin(angle),
-                        z: z
+                    objects.push.apply(objects, projectiles);
+                    var framesPerSecond = 24;
+                    var step = 50;//frames
+                    var checkPotentialCollisionsEvery = 10;
+                    var stepToMovieLengthFactor = step / 10;
+                    var chaseSpeed = 2 / (framesPerSecond) * stepToMovieLengthFactor
+                    var retreatSpeed = 2.2 / (framesPerSecond) * stepToMovieLengthFactor
+                    var retreatDistance = 4;
+                    var evadeDistance = 4;
+                    var maxAngularVelocity = chaseSpeed * 2.2;
+                    var changetarget = 1400;
+                    var boundarySphere = 5;
+                    var shipData = shipGroupsForTracks.select(function (t, team) {
+                        return t.select(function (x) {
+                            return {
+                                name: x.name,
+                                position: [
+                                    x.position.x,
+                                    x.position.y,
+                                    x.position.z
+                                ],
+                                team: team,
+                                positions: [],
+                                target: null
+                            };
+                        });
+                    });
+                    var assignTargets = function (shipData, frame) {
+                        shipData.forEach(function (team, teamIndex) {
+                            team.forEach(function (t) {
+                                var otherteam = shipData.where(function (s, i) {
+                                    return teamIndex !== i && s.length;
+                                }).random().first();
+                                otherteam = otherteam || shipData[0];
+
+                                var rships = otherteam.where(function (x) {
+                                    return x.name !== t.name;
+                                }).random();
+
+                                var tship;
+                                if (rships.length) {
+                                    tship = rships[0];
+                                }
+                                if (tship) {
+                                    t.target = tship.name;
+                                }
+                                else {
+                                    t.retreating = true;
+                                    t.target = null;
+                                }
+                            });
+                        });
                     }
-                    count += .5;
-                    me.setShipPosition(ship, shippos)
-                    ship.follow_path = {
-                        "target": ship.name + '_ship_path'
-                    };
-                });
-            });
-            shipDefinitions.forEach(function (ships) {
-                objects.push.apply(objects, ships);
-            });
-
-
-            objects.push.apply(objects, projectiles);
-            var framesPerSecond = 24;
-            var step = 50;//frames
-            var checkPotentialCollisionsEvery = 10;
-            var stepToMovieLengthFactor = step / 10;
-            var chaseSpeed = 2 / (framesPerSecond) * stepToMovieLengthFactor
-            var retreatSpeed = 2.2 / (framesPerSecond) * stepToMovieLengthFactor
-            var retreatDistance = 4;
-            var evadeDistance = 4;
-            var maxAngularVelocity = chaseSpeed * 2.2;
-            var changetarget = 1400;
-            var boundarySphere = 5;
-            var shipData = shipGroupsForTracks.select(function (t, team) {
-                return t.select(function (x) {
-                    return {
-                        name: x.name,
-                        position: [
-                            x.position.x,
-                            x.position.y,
-                            x.position.z
-                        ],
-                        team: team,
-                        positions: [],
-                        target: null
-                    };
-                });
-            });
-            var assignTargets = function (shipData, frame) {
-                shipData.forEach(function (team, teamIndex) {
-                    team.forEach(function (t) {
-                        var otherteam = shipData.where(function (s, i) {
-                            return teamIndex !== i && s.length;
-                        }).random().first();
-                        otherteam = otherteam || shipData[0];
-
-                        var rships = otherteam.where(function (x) {
-                            return x.name !== t.name;
-                        }).random();
-
-                        var tship;
-                        if (rships.length) {
-                            tship = rships[0];
+                    var getShipPosition = function (name, shipData) {
+                        var res;
+                        if (shipPositionDictionary[name]) {
+                            return shipPositionDictionary[name]
                         }
-                        if (tship) {
-                            t.target = tship.name;
+                        shipData.first(function (team) {
+                            return team.first(function (ship) {
+                                if (ship.name === name) {
+                                    res = ship.position;
+                                    shipPositionDictionary[name] = ship.position;
+                                    return true;
+                                }
+                            })
+                        });
+                        return res;
+                    }
+                    var saveCurrentPositions = function (shipData) {
+                        shipData.forEach(function (team) {
+                            team.forEach(function (ship) {
+                                ship.positions.push(ship.position);
+                            });
+                        });
+                    }
+                    var $VQC = $Vector.Quick.Create;
+                    var getShipsTargeting = function (name, shipData) {
+                        var results = [];
+                        shipData.forEach(function (team) {
+                            team.forEach(function (ship) {
+                                if (ship.target === name) {
+                                    results.push(ship);
+                                }
+                            });
+                        });
+                        return results;
+                    }
+                    var calculateIfRetreatRequired = function (shipData) {
+                        shipData.forEach(function (team) {
+                            team.forEach(function (ship) {
+                                var enemyShips = getShipsTargeting(ship.name, shipData);
+                                var shipPos = getShipPosition(ship.name, shipData);
+                                shipPos = $VQC(shipPos);
+                                var tooCloseShips = enemyShips.where(function (enemy) {
+                                    var dist = shipPos.distance($VQC(enemy.position));
+                                    return dist < retreatDistance;
+                                });
+                                ship.tooCloseShips = tooCloseShips;
+                                ship.retreating = tooCloseShips.length > 0;
+                            });
+                        })
+                    }
+                    var calculateRetreatDirection = function (shipData) {
+                        shipData.forEach(function (team) {
+                            team.forEach(function (ship) {
+                                var retreatDir = $VQC([0, 0, 0]);;
+                                if (ship.retreating) {
+
+                                    ship.tooCloseShips.forEach(function (enemy) {
+                                        retreatDir = retreatDir.add($VQC(enemy.position))
+                                    });
+                                    retreatDir = retreatDir.divide(ship.tooCloseShips.length);
+                                    $VQC(ship.position).subtract(retreatDir);
+                                }
+                                ship.direction = retreatDir;
+                            });
+                        })
+                    }
+                    var calculateTargetDirection = function (shipData) {
+                        shipData.forEach(function (team) {
+                            team.forEach(function (ship) {
+                                if (!ship.retreating) {
+                                    var targetShipPosition = getShipPosition(ship.target, shipData);
+                                    targetShipPosition = $VQC(targetShipPosition);
+                                    ship.direction = targetShipPosition.subtract($VQC(ship.position));
+                                }
+                            });
+                        })
+                    };
+                    var getAllShipsCloserThan = function (dist, ship, shidData) {
+                        var result = [];
+                        var shipdistance = $VQC(ship.position);
+                        shipData.forEach(function (team) {
+                            team.forEach(function (othership) {
+                                if (othership.name !== ship.name) {
+                                    if (dist > $VQC(othership.position).distance(shipdistance)) {
+                                        result.push(othership);
+                                    }
+                                }
+                            })
+                        });
+                        return result;
+                    };
+                    var calculateEvasiveManeuvers = function (shipData) {
+                        shipData.forEach(function (team) {
+                            team.forEach(function (ship) {
+                                var shipsCloserThan = getAllShipsCloserThan(evadeDistance, ship, shipData);
+                                var evasiveDir = $VQC([0, 0, 0]);
+
+                                if (shipsCloserThan.length) {
+                                    shipsCloserThan.forEach(function (closeShip) {
+                                        evasiveDir = evasiveDir.add($VQC(closeShip.position));
+                                    });
+
+                                    evasiveDir = evasiveDir.cross(ship.direction);
+                                }
+
+                                ship.evasiveDir = evasiveDir;
+                            });
+                        })
+                    }
+                    var calculateFinalDirection = function (shipData) {
+                        shipData.forEach(function (team) {
+                            team.forEach(function (ship) {
+                                var direction = ship.evasiveDir
+                                    .add(ship.direction).unit();
+                                var shiposVector = $VQC(ship.position);
+                                if (shiposVector.length() > boundarySphere) {
+                                    direction = ship.evasiveDir
+                                   .add(ship.direction).add(shiposVector.multiply(-1)).unit()
+                                }
+                                if (ship.position[2] < .1) {
+                                    direction = ship.evasiveDir
+                                   .add(ship.direction).add(shiposVector.multiply(-1))
+                                        .add($VQC([0, 0, 1 - (1 - ship.position[2])])).unit()
+                                }
+                                if (ship.positions.length > 1) {
+                                    var current = shiposVector.subtract($VQC(ship.positions[ship.positions.length - 2])).unit();
+                                    var changeOfDirection = direction.subtract(current);
+                                    var amoutOfChange = changeOfDirection.length();
+                                    if (amoutOfChange > maxAngularVelocity) {
+                                        changeOfDirection = changeOfDirection.getVectorOfLength(maxAngularVelocity);
+                                    }
+                                    direction = current.add(changeOfDirection).unit();
+                                }
+
+
+                                ship.direction = direction;
+                            });
+                        });
+                    }
+                    var shipPositionDictionary = {};
+                    var calculateNextPosition = function (shipData) {
+                        var lowerz = 0;
+                        shipData.forEach(function (team) {
+                            team.forEach(function (ship) {
+                                var speed = ship.retreating ? retreatSpeed : chaseSpeed;
+                                var pos = $VQC(ship.position).add(ship.direction.multiply(speed));
+                                ship.position = pos.vector;
+                                if (lowerz > pos.vector[2]) {
+                                    lowerz = pos.vector[2]
+                                }
+                                shipPositionDictionary[ship.name] = ship.position;
+                            });
+                        });
+                        return lowerz;
+                    };
+
+                    var positionEmptyTargets = function (shipData, frame) {
+                        shipData.forEach(function (team) {
+                            team.forEach(function (ship) {
+                                var position = getShipPosition(ship.target, shipData);
+                                keyframes.push({
+                                    frame: frame,
+                                    objects: [me.createKeyFrame({
+                                        name: me.getEmptyTargetName(ship),
+                                        position: {
+                                            x: position[0],
+                                            y: position[1],
+                                            z: position[2]
+                                        }
+                                    })]
+                                });
+                            });
+                        });
+                    };
+
+                    var addShipPaths = function (shipData, objects) {
+                        shipData.forEach(function (team) {
+                            team.forEach(function (ship) {
+                                var shippath = me.createShipPath(ship, { duration: lastframe });
+                                objects.push(shippath);
+                                intialframe.objects.push({
+                                    "name": shippath.name
+                                });
+                            });
+                        })
+                    }
+                    var low = 0;
+                    var lowest = 0;
+                    //for (var i = 0 ; i < lastframe; i = i + step) {
+                    var i = 0;
+                    var anim = function () {
+                        if (i < lastframe) {
+
+                            if (i === 0 || (i > 0 && i % changetarget === 0)) {
+                                assignTargets(shipData, i)
+                            }
+
+                            // get current positions
+                            saveCurrentPositions(shipData);
+
+                            // calculate if retreat required
+                            calculateIfRetreatRequired(shipData);
+
+                            // calculate retreat direction 
+                            calculateRetreatDirection(shipData);
+
+                            // calulate target direction
+                            calculateTargetDirection(shipData);
+
+                            // calculate evasive maneuver
+                            if (i % checkPotentialCollisionsEvery === 0) {
+                                calculateEvasiveManeuvers(shipData);
+                            }
+
+                            // add all together
+                            calculateFinalDirection(shipData);
+
+                            //position empty targets
+                            positionEmptyTargets(shipData, i);
+
+                            // multiply times speed
+                            low = calculateNextPosition(shipData);
+                            if (low < lowest) {
+                                lowest = low;
+                            }
+
+                            i = i + step;
+                            requestAnimationFrame(anim);
                         }
                         else {
-                            t.retreating = true;
-                            t.target = null;
-                        }
-                    });
-                });
-            }
-            var getShipPosition = function (name, shipData) {
-                var res;
-                if (shipPositionDictionary[name]) {
-                    return shipPositionDictionary[name]
-                }
-                shipData.first(function (team) {
-                    return team.first(function (ship) {
-                        if (ship.name === name) {
-                            res = ship.position;
-                            shipPositionDictionary[name] = ship.position;
-                            return true;
-                        }
-                    })
-                });
-                return res;
-            }
-            var saveCurrentPositions = function (shipData) {
-                shipData.forEach(function (team) {
-                    team.forEach(function (ship) {
-                        ship.positions.push(ship.position);
-                    });
-                });
-            }
-            var $VQC = $Vector.Quick.Create;
-            var getShipsTargeting = function (name, shipData) {
-                var results = [];
-                shipData.forEach(function (team) {
-                    team.forEach(function (ship) {
-                        if (ship.target === name) {
-                            results.push(ship);
-                        }
-                    });
-                });
-                return results;
-            }
-            var calculateIfRetreatRequired = function (shipData) {
-                shipData.forEach(function (team) {
-                    team.forEach(function (ship) {
-                        var enemyShips = getShipsTargeting(ship.name, shipData);
-                        var shipPos = getShipPosition(ship.name, shipData);
-                        shipPos = $VQC(shipPos);
-                        var tooCloseShips = enemyShips.where(function (enemy) {
-                            var dist = shipPos.distance($VQC(enemy.position));
-                            return dist < retreatDistance;
-                        });
-                        ship.tooCloseShips = tooCloseShips;
-                        ship.retreating = tooCloseShips.length > 0;
-                    });
-                })
-            }
-            var calculateRetreatDirection = function (shipData) {
-                shipData.forEach(function (team) {
-                    team.forEach(function (ship) {
-                        var retreatDir = $VQC([0, 0, 0]);;
-                        if (ship.retreating) {
+                            assignTargets(shipData, lastframe)
 
-                            ship.tooCloseShips.forEach(function (enemy) {
-                                retreatDir = retreatDir.add($VQC(enemy.position))
+                            addShipPaths(shipData, objects);
+                            shipGroupsForTracks.forEach(function (ships, i) {
+                                ships.forEach(function (ship, index) {
+                                    var shippos = { x: 0, y: 0, z: 0 };
+                                    me.setShipPosition(ship, shippos);
+                                    intialframe.objects.push(ship);
+                                });
                             });
-                            retreatDir = retreatDir.divide(ship.tooCloseShips.length);
-                            $VQC(ship.position).subtract(retreatDir);
-                        }
-                        ship.direction = retreatDir;
-                    });
-                })
-            }
-            var calculateTargetDirection = function (shipData) {
-                shipData.forEach(function (team) {
-                    team.forEach(function (ship) {
-                        if (!ship.retreating) {
-                            var targetShipPosition = getShipPosition(ship.target, shipData);
-                            targetShipPosition = $VQC(targetShipPosition);
-                            ship.direction = targetShipPosition.subtract($VQC(ship.position));
-                        }
-                    });
-                })
-            };
-            var getAllShipsCloserThan = function (dist, ship, shidData) {
-                var result = [];
-                var shipdistance = $VQC(ship.position);
-                shipData.forEach(function (team) {
-                    team.forEach(function (othership) {
-                        if (othership.name !== ship.name) {
-                            if (dist > $VQC(othership.position).distance(shipdistance)) {
-                                result.push(othership);
-                            }
-                        }
-                    })
-                });
-                return result;
-            };
-            var calculateEvasiveManeuvers = function (shipData) {
-                shipData.forEach(function (team) {
-                    team.forEach(function (ship) {
-                        var shipsCloserThan = getAllShipsCloserThan(evadeDistance, ship, shipData);
-                        var evasiveDir = $VQC([0, 0, 0]);
+                            stepresolve();
 
-                        if (shipsCloserThan.length) {
-                            shipsCloserThan.forEach(function (closeShip) {
-                                evasiveDir = evasiveDir.add($VQC(closeShip.position));
-                            });
-
-                            evasiveDir = evasiveDir.cross(ship.direction);
                         }
-
-                        ship.evasiveDir = evasiveDir;
-                    });
-                })
-            }
-            var calculateFinalDirection = function (shipData) {
-                shipData.forEach(function (team) {
-                    team.forEach(function (ship) {
-                        var direction = ship.evasiveDir
-                            .add(ship.direction).unit();
-                        var shiposVector = $VQC(ship.position);
-                        if (shiposVector.length() > boundarySphere) {
-                            direction = ship.evasiveDir
-                           .add(ship.direction).add(shiposVector.multiply(-1)).unit()
-                        }
-                        if (ship.position[2] < .1) {
-                            direction = ship.evasiveDir
-                           .add(ship.direction).add(shiposVector.multiply(-1))
-                                .add($VQC([0, 0, 1 - (1 - ship.position[2])])).unit()
-                        }
-                        if (ship.positions.length > 1) {
-                            var current = shiposVector.subtract($VQC(ship.positions[ship.positions.length - 2])).unit();
-                            var changeOfDirection = direction.subtract(current);
-                            var amoutOfChange = changeOfDirection.length();
-                            if (amoutOfChange > maxAngularVelocity) {
-                                changeOfDirection = changeOfDirection.getVectorOfLength(maxAngularVelocity);
-                            }
-                            direction = current.add(changeOfDirection).unit();
-                        }
-
-
-                        ship.direction = direction;
-                    });
-                });
-            }
-            var shipPositionDictionary = {};
-            var calculateNextPosition = function (shipData) {
-                var lowerz = 0;
-                shipData.forEach(function (team) {
-                    team.forEach(function (ship) {
-                        var speed = ship.retreating ? retreatSpeed : chaseSpeed;
-                        var pos = $VQC(ship.position).add(ship.direction.multiply(speed));
-                        ship.position = pos.vector;
-                        if (lowerz > pos.vector[2]) {
-                            lowerz = pos.vector[2]
-                        }
-                        shipPositionDictionary[ship.name] = ship.position;
-                    });
-                });
-                return lowerz;
-            };
-
-            var positionEmptyTargets = function (shipData, frame) {
-                shipData.forEach(function (team) {
-                    team.forEach(function (ship) {
-                        var position = getShipPosition(ship.target, shipData);
-                        keyframes.push({
-                            frame: frame,
-                            objects: [me.createKeyFrame({
-                                name: me.getEmptyTargetName(ship),
-                                position: {
-                                    x: position[0],
-                                    y: position[1],
-                                    z: position[2]
-                                }
-                            })]
-                        });
-                    });
-                });
-            };
-
-            var addShipPaths = function (shipData, objects) {
-                shipData.forEach(function (team) {
-                    team.forEach(function (ship) {
-                        var shippath = me.createShipPath(ship, { duration: lastframe });
-                        objects.push(shippath);
-                        intialframe.objects.push({
-                            "name": shippath.name
-                        });
-                    });
-                })
-            }
-            var low = 0;
-            var lowest = 0;
-            me.timeIt(function () {
-                for (var i = 0 ; i < lastframe; i = i + step) {
-                    if (i === 0 || (i > 0 && i % changetarget === 0)) {
-                        assignTargets(shipData, i)
                     }
+                    requestAnimationFrame(anim);
+                }).then(function () {
 
-                    // get current positions
-                    saveCurrentPositions(shipData);
-
-                    // calculate if retreat required
-                    calculateIfRetreatRequired(shipData);
-
-                    // calculate retreat direction 
-                    calculateRetreatDirection(shipData);
-
-                    // calulate target direction
-                    calculateTargetDirection(shipData);
-
-                    // calculate evasive maneuver
-                    if (i % checkPotentialCollisionsEvery === 0) {
-                        calculateEvasiveManeuvers(shipData);
-                    }
-
-                    // add all together
-                    calculateFinalDirection(shipData);
-
-                    //position empty targets
-                    positionEmptyTargets(shipData, i);
-
-                    // multiply times speed
-                    low = calculateNextPosition(shipData);
-                    if (low < lowest) {
-                        lowest = low;
-                    }
-                }
-            });
-            assignTargets(shipData, lastframe)
-
-            addShipPaths(shipData, objects);
-            shipGroupsForTracks.forEach(function (ships, i) {
-                ships.forEach(function (ship, index) {
-                    var shippos = { x: 0, y: 0, z: 0 };
-                    me.setShipPosition(ship, shippos);
-                    intialframe.objects.push(ship);
                 });
-            });
+            })
         },
         attachBattleScene: function (sceneData) {
             var me = this,
@@ -1688,11 +1706,13 @@
                 keyframes = sceneData.keyframes,
                 midiTracks = sceneData.midiTracks;
 
-            me.addBattleScene(objects, keyframes, midiTracks, {
-                trackSquareSize: 10
-            });
-
-            return sceneData;
+            return Promise.resolve().then(function () {
+                return me.addBattleScene(objects, keyframes, midiTracks, {
+                    trackSquareSize: 10
+                });
+            }).then(function () {
+                return sceneData;
+            })
         },
         generateStageInfoMovie: function (midiTracks) {
             var me = this;

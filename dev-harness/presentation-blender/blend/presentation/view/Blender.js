@@ -585,6 +585,8 @@
             var jobResources = ['anim_video_editor.py', 'render.py', 'mat.blend', 'objects.blend'];
             //v$.loadMidi | v$.generateSquareMovie | v$.saveMidiMovie
             me.blenderRenderInfos = [];
+            window.blenderFilesCreated = false;
+            var saveFileObjects = [];
             me.midiFiles.select(function (x) {
                 promise = promise.then(function () {
                     return me.loadMidi({
@@ -593,7 +595,7 @@
                         }
                     });
                 }).then(func)
-                    .then(me.saveMidiMovie.bind(me))
+                    .then(me.saveMidiMovie.bind(me, saveFileObjects))
                     .catch(function (e) {
                         debugger
                         MEPH.Log(e);
@@ -626,6 +628,7 @@
                 completeBat = completeBat + '\n call ' + renderJob + '\n'
                 var jobbat = 'completeBat_' + jobId + '.bat';
                 jobFiles.push(jobbat);
+                saveFileObjects.push({ name: jobbat, file: completeBat });
                 return me.saveFile(jobbat, completeBat, 'application/bat');
             }).then(function () {
                 var renderbatch = me.blenderRenderInfos.select(function (info) {
@@ -648,6 +651,7 @@
                     return batFileTemplate;
                 }).join('\n');
                 jobFiles.push(renderJob);
+                saveFileObjects.push({ name: renderJob, file: renderbatch });
                 return me.saveFile(renderJob, renderbatch, 'application/bat');
 
             }).then(function () {
@@ -658,6 +662,16 @@
                     target: './jobs/projects/'
                 };
                 var jobtext = JSON.stringify(job);
+                window.blenderFiles = JSON.stringify(saveFileObjects);
+                window.blenderFilesCreated = true;
+                function splitValue(value, index) {
+                    return [value.substring(0, index), value.substring(index)];
+                }
+                window.suckUpFile = function () {
+                    var parts = splitValue(window.blenderFiles, 1000000);
+                    window.blenderFiles = parts[1];
+                    return parts[0];
+                }
                 setTimeout(function () {
                     me.saveFile('meph_job_' + jobId + '.js', jobtext, 'application/javascript');
                 }, 3000);
@@ -669,16 +683,27 @@
         },
         generateAllStageInfoMovie: function () {
             var me = this;
-            return me.generateAllMovies(function (a) {
-                var res = me.generateStageInfoMovie(a)
-                me.attachBattleScene(res);
+            return new Promise(function (t) {
+                setTimeout(function () {
+                    me.generateAllMovies(function (a) {
+                        var res = me.generateStageInfoMovie(a)
+                        return me.attachBattleScene(res).then(function () {
+                            return res;
+                        })
+                        .then(function () {
+                            t(res);
+                            return res;
+                        });
+                    });
 
-                return res;
-            });
+                }, 200);
+            })
         },
-        saveMidiMovie: function (midiDef) {
+        saveMidiMovie: function (saveFileObjects, midiDef) {
             var me = this;
-
+            if (!midiDef) {
+                midiDef = saveFileObjects
+            }
             me.save({
                 fileName: midiDef.fileName,
                 "settings": {
@@ -702,7 +727,7 @@
                     "objects": midiDef.objects,
                     "keyframes": midiDef.keyframes
                 }]
-            });
+            }, saveFileObjects);
 
             var pythonScripeTemplate = me.pythonScriptTemplate;
             var jsonFileName = 'presentation-json-' + midiDef.fileName + '.js';
@@ -716,16 +741,22 @@
             var batFileTemplate = MEPH.util.Template.bindTemplate(me.batFileTemplate, {
                 pythonFile: pyfile
             });
+
             me.saveFile(pyfile, pythonFile, 'application/x-python');
+            saveFileObjects.push({ name: pyfile, file: pythonFile });
 
             me.saveFile(batfile, batFileTemplate, 'application/bat');
+            saveFileObjects.push({ name: batfile, file: batFileTemplate });
             //bat-presentation-blend
         },
         saveFile: function (file, text, type) {
             var me = this;
             var aFileParts = [text];
             var oMyBlob = new Blob(aFileParts, { type: type });
-            return me.fileSaver.save(oMyBlob, file);
+            if (!window.donotSaveFiles) {
+                return me.fileSaver.save(oMyBlob, file);
+            }
+            return Promise.resolve();
         },
         generateStaffMovie: function (midiTracks) {
             var me = this;
@@ -2484,11 +2515,15 @@
 
 
         },
-        save: function (obj) {
+        save: function (obj, saveFileObjects) {
             var me = this;
-            var aFileParts = [JSON.stringify(obj)];
-            var oMyBlob = new Blob(aFileParts, { type: 'application/javascript' });
-            me.fileSaver.save(oMyBlob, 'presentation-json-' + (obj.fileName || '') + '.js');
+            var file = JSON.stringify(obj);
+            saveFileObjects.push({ file: file, name: 'presentation-json-' + (obj.fileName || '') + '.js' })
+            var aFileParts = [file];
+            if (!window.donotSaveFiles) {
+                var oMyBlob = new Blob(aFileParts, { type: 'application/javascript' });
+                me.fileSaver.save(oMyBlob, 'presentation-json-' + (obj.fileName || '') + '.js');
+            }
         },
         onLoaded: function () {
             var me = this;

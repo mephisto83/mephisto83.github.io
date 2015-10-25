@@ -47,6 +47,7 @@
             Ships: {
                 Ship_1: 'Ship_1',
                 Ship_3: 'Ship_3',
+                Ship_4: 'Ship_4',
                 Ship_2: 'Ship_2'
             }
         },
@@ -710,7 +711,7 @@
                     "RenderEngine": "CYCLES",
                     "FrameStart": midiDef.startFrame,
                     "FrameEnd": midiDef.startEnd,
-                    "samples": "150",
+                    "samples": "200",
                     "Device": "GPU",
                     "Objects": {
                         "File": "//objects.blend",
@@ -723,7 +724,7 @@
                 },
                 "scenes": [{
                     "name": "default",
-                    "world": "SkyWorld",
+                    "world": "DarkWorld",
                     "objects": midiDef.objects,
                     "keyframes": midiDef.keyframes
                 }]
@@ -1125,14 +1126,19 @@
                     guns = 24;
                     group = Blend.presentation.view.Blender.Ships.Ship_2;
                 }
-                if (rand > 9) {
+                else if (rand > 9) {
                     requiredGuns -= 9;
                     guns = 9;
                     group = Blend.presentation.view.Blender.Ships.Ship_3;
                 }
+                else if (rand > 7) {
+                    requiredGuns -= 7;
+                    guns = 7;
+                    group = Blend.presentation.view.Blender.Ships.Ship_4;
+                }
                 else {
-                    requiredGuns -= 2;
-                    guns = 2;
+                    requiredGuns -= 3;
+                    guns = 3;
                     group = Blend.presentation.view.Blender.Ships.Ship_1;
                 }
                 var gun_note_start = trackInfo.length - requiredGuns - guns;
@@ -1192,6 +1198,17 @@
                 },
                 "children": []
             };
+            var dynamicbrush = {
+                paint_source: "VOLUME",
+                frame_end: me.lastframe,
+                frame_start: 1,
+            };
+            var dynamicpaint = MEPH.clone({
+                "surface_type": "DISPLACE",
+                "use_dissolve": "True",
+                frame_end: me.lastframe,
+                frame_start: 1
+            });
             var bothGuns = ship.noteNumbers.select(function (noteNumber) {
                 //
                 return keyframes.where(function (t) {
@@ -1212,8 +1229,81 @@
             };
             var gunshotFrames = [];
             switch (ship.group) {
-                case Blend.presentation.view.Blender.Ships.Ship_3:
+                case Blend.presentation.view.Blender.Ships.Ship_4:
                     setting.children = [];
+                    [1, 2].forEach(function (x) {
+                        setting.children.push({
+                            "name": "Squirtgun_" + x.toString().pad(3, '0'),
+                            "track_to": {
+                                "target": me.getEmptyTargetName(ship)
+                            },
+                            "limit_rotation": {
+                                "use_limit_y": "True",
+                                "use_limit_z": "True",
+                                "owner_space": "LOCAL"
+                            }
+                        })
+                    });
+
+                    [].interpolate(1, 7, function (x) {
+                        var gunname = 'gunpointstart_' + x.toString().pad(3, '0');
+                        setting.children.push({
+                            "name": gunname,
+                            dynamic_brush: [MEPH.clone(dynamicbrush)]
+                        })
+                        if (bothGuns[x - 1])
+                            bothGuns[x - 1].forEach(function (x) {
+                                me.addShotFrames(keyframes, gunname, x.frame_start, MEPH.clone(body));
+                            });
+                    });
+
+                    var children = [];
+                    children.push({
+                        "name": "eng.body.Y-block"
+                    }, {
+                        "name": "eng.strut.cylinda"
+                    }, {
+                        "name": "Fin.Runner"
+                    }, {
+                        "name": "CruiseShip"
+                    }, {
+                        "name": "HandleHullShip_4"
+                    }, {
+                        "name": "Ship4_Ram"
+                    }, {
+                        "name": "Ship4_HandleHull"
+                    }, {
+                        "name": "Ship_Ram_bottom"
+                    }, {
+                        "name": "Ship_4_hull_lump"
+                    }, {
+                        "name": "SHIP_4_G_block"
+                    }, {
+                        "name": "Ship_4_crab_claw"
+                    }, {
+                        "name": "Ship_4_clip_bridge"
+                    }, {
+                        "name": "Ship4_ybllock"
+                    });
+
+                    children.forEach(function (t) {
+                        var add = dynamicpaint;
+                        t.dynamic_paint = add;
+                    });
+                    setting.children.push.apply(setting.children, children);
+                    break;
+                case Blend.presentation.view.Blender.Ships.Ship_3:
+                    setting.children = [{
+                        "name": "Ship3_bracketengine"
+                    }, {
+                        "name": "Ship3_duckhead"
+                    }, {
+                        "name": "Ship3_hull_black"
+                    }];
+                    setting.children.forEach(function (t) {
+                        var add = MEPH.clone(dynamicpaint);
+                        t.dynamic_paint = add;
+                    });
                     [1, 2, 3, 8].forEach(function (x) {
                         setting.children.push({
                             "name": "gun_ship_3_" + x.toString().pad(3, '0'),
@@ -1243,21 +1333,37 @@
                     });
                     [].interpolate(1, 10, function (x) {
                         var gunname = 'gun_ship_3_tip_' + x.toString().pad(3, '0');
+                        setting.children.push({
+                            "name": gunname,
+                            dynamic_brush: [MEPH.clone(dynamicbrush)]
+                        })
                         if (bothGuns[x - 1])
                             bothGuns[x - 1].forEach(function (x) {
                                 me.addShotFrames(keyframes, gunname, x.frame_start, MEPH.clone(body));
                             });
                     });
-
                     break;
                 case Blend.presentation.view.Blender.Ships.Ship_2:
                     gunshotFrames = [].interpolate(1, 29, function (x) {
                         var gunname = 'Gun.' + x.toString().pad(3, '0');
+                        setting.children.push({
+                            "name": gunname,
+                            dynamic_brush: [MEPH.clone(dynamicbrush)]
+                        })
                         if (bothGuns[x - 1])
                             bothGuns[x - 1].forEach(function (x) {
                                 me.addShotFrames(keyframes, gunname, x.frame_start, MEPH.clone(body));
                             });
                     });
+                    setting.children.push({
+                        name: "BattleShip",
+                        dynamic_paint: {
+                            "surface_type": "DISPLACE",
+                            "use_dissolve": "True",
+                            frame_end: me.lastframe,
+                            frame_start: 1
+                        }
+                    })
                     break;
                 case Blend.presentation.view.Blender.Ships.Ship_1:
 
@@ -1281,9 +1387,36 @@
                             "use_limit_z": "True",
                             "owner_space": "LOCAL"
                         }
+                    }, {
+                        "name": "ship_1_hull_large",
+                        dynamic_paint: {
+                            "surface_type": "DISPLACE",
+                            "use_dissolve": "True",
+                            frame_end: me.lastframe,
+                            frame_start: 1
+                        }
+                    }, {
+                        "name": "hardpoint.dev.hammer_top",
+                        "track_to": {
+                            "target": this.getEmptyTargetName(ship)
+                        },
+                        "limit_rotation": {
+                            "use_limit_y": "True",
+                            "use_limit_x": "True",
+                            "owner_space": "LOCAL"
+                        }
                     }];
-                    ([1, 2]).forEach(function (t) {
+                    ([1, 2, 3]).forEach(function (t) {
                         var gunname = 'gun_endpoint_' + t.toString();
+                        setting.children.push({
+                            "name": gunname,
+                            dynamic_brush: [{
+
+                                paint_source: "VOLUME_DISTANCE",
+                                frame_end: me.lastframe,
+                                frame_start: 1,
+                            }]
+                        })
                         if (bothGuns[t - 1])
                             (bothGuns[t - 1] || []).forEach(function (x) {
                                 me.addShotFrames(keyframes, gunname, x.frame_start, MEPH.clone(body));
@@ -1350,6 +1483,7 @@
                 return new Promise(function (stepresolve) {
 
                     var lastframe = keyframes.last().frame;
+                    me.lastframe = lastframe;
                     var midiTracksWithContent = midiTracks.where(function (track) {
                         return track.objects.length && track.events.length;
                     });
@@ -1975,6 +2109,12 @@
                 var Materials = Blend.presentation.view.Blender.Materials;
                 return Materials[i % Materials.length];
             });
+            var colorslight = [].interpolate(0, midiTracks.length, function (t) {
+                var i = t + 1;
+                var Materials = Blend.presentation.view.Blender.Materials;
+                return Materials[i % Materials.length] + 'Light';
+            });
+
 
             midiTracksWithContent.forEach(function (track, trackI) {
                 track.objects.forEach(function (obj, objecIndex) {
@@ -1982,7 +2122,7 @@
                     objects.push({
                         name: name,
                         type: "cube",
-                        material: colors[trackI] || colors[0]
+                        material: colorslight[trackI] || colorslight[0]
                     });
 
                     initialkeyframeobjects.push(me.createKeyFrame({
@@ -1992,57 +2132,59 @@
                         rotation: startRotation
                     }));
                 });
-                [].interpolate(0, 127, function (t, i) {
-                    var name = 'letter__' + t;
-                    var val_note = MEPH.audio.music.theory.Notes.convertToNote(t)
-                            .split(MEPH.audio.music.theory.Notes.sharp).join('#')
-                            .split(MEPH.audio.music.theory.Notes.flat).join('b');
-                    val_note = val_note.split('').subset(0, val_note.length - 2).join('');
-                    objects.push({
-                        name: name,
-                        type: "text",
-                        value: val_note,
-                        material: colors[t % midiTracksWithContent.length] || colors[0],
-                        "font": "l_10646_",
-                        "extrude": me.extrude
-                    });
-                    objects.push({
-                        name: name + 'box',
-                        type: "cube",
-                        material: colors[t % colors.length] || colors[0]
-                    });
-                    var pos = trackSquareObjectPosition(-1, t);
-                    pos.y += -3;
-                    pos.y += (i % 12) / 4;
-                    pos.z += 0.04;
-                    var sc = .15;
-                    initialkeyframeobjects.push(me.createKeyFrame({
-                        name: name,
-                        position: pos,
-                        scale: { x: sc, y: sc, z: sc },
-                        rotation: { x: 45, y: 0, z: 0 }
-                    }));
-                    var bpos = { x: pos.x, y: -10 };
-                    var add = 0;
-                    if (i % 6 === 0) {
-                        add = .003;
-                    }
-                    if (i % 12 === 0) {
-                        add = .005;
-                    }
-                    if (i % 60 === 0) {
-                        add = .008;
-                    }
-                    initialkeyframeobjects.push(me.createKeyFrame({
-                        name: name + 'box',
-                        position: bpos,
-                        scale: {
-                            x: 0.001 + add,
-                            y: 10,
-                            z: 0.001 + add
+                window.skipNotesAndLines = true;
+                if (!window.skipNotesAndLines)
+                    [].interpolate(0, 127, function (t, i) {
+                        var name = 'letter__' + t;
+                        var val_note = MEPH.audio.music.theory.Notes.convertToNote(t)
+                                .split(MEPH.audio.music.theory.Notes.sharp).join('#')
+                                .split(MEPH.audio.music.theory.Notes.flat).join('b');
+                        val_note = val_note.split('').subset(0, val_note.length - 2).join('');
+                        objects.push({
+                            name: name,
+                            type: "text",
+                            value: val_note,
+                            material: colorslight[t % midiTracksWithContent.length] || colorslight[0],
+                            "font": "l_10646_",
+                            "extrude": me.extrude
+                        });
+                        objects.push({
+                            name: name + 'box',
+                            type: "cube",
+                            material: colorslight[t % colors.length] || colors[0]
+                        });
+                        var pos = trackSquareObjectPosition(-1, t);
+                        pos.y += -3;
+                        pos.y += (i % 12) / 4;
+                        pos.z += 0.04;
+                        var sc = .15;
+                        initialkeyframeobjects.push(me.createKeyFrame({
+                            name: name,
+                            position: pos,
+                            scale: { x: sc, y: sc, z: sc },
+                            rotation: { x: 45, y: 0, z: 0 }
+                        }));
+                        var bpos = { x: pos.x, y: -10 };
+                        var add = 0;
+                        if (i % 6 === 0) {
+                            add = .003;
                         }
-                    }));
-                });
+                        if (i % 12 === 0) {
+                            add = .005;
+                        }
+                        if (i % 60 === 0) {
+                            add = .008;
+                        }
+                        initialkeyframeobjects.push(me.createKeyFrame({
+                            name: name + 'box',
+                            position: bpos,
+                            scale: {
+                                x: 0.001 + add,
+                                y: 10,
+                                z: 0.001 + add
+                            }
+                        }));
+                    });
 
                 track.events.forEach(function (evnt) {
                     getFrame(keyframes, tempTrack, midiTracks, evnt, trackI);
@@ -2071,7 +2213,7 @@
             {
                 "name": "default_sun",
 
-                "strength": 3,
+                "strength": 0,
                 "type": "lamp",
                 "light": "SUN"
             });
@@ -2088,16 +2230,16 @@
                 "name": "default_empty",
                 "position": { "x": 0, "y": 0, "z": 2.2 }
             },
-            {
-                "name": "default_ground_plane",
-                "scale": { x: 1000, y: 1000, z: 1 },
-                "position": { "x": 0, "y": 0, "z": 0 }
-            },
+            //{
+            //    "name": "default_ground_plane",
+            //    "scale": { x: 1000, y: 1000, z: 1 },
+            //    "position": { "x": 0, "y": 0, "z": 0 }
+            //},
             {
                 "name": "default_sun",
                 "type": "lamp",
                 "light": "SUN",
-                "strength": 3,
+                "strength": 0.01,
                 "rotation": { "x": 0, "y": -80, "z": 0 }
             });
 

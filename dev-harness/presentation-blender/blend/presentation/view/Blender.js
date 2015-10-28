@@ -662,7 +662,7 @@
                             endframe: end,
                             camera: cam.name
                         }) + '\n';
-
+                         
                         last = last + each + 1;
                     }
                     batFileTemplate += MEPH.util.Template.bindTemplate(me.blenderRenderTemplate, {
@@ -1444,6 +1444,107 @@
                 })
             };
         },
+        createShipPipes: function (ship, options) {
+            var $VQC = $Vector.Quick.Create;
+            var frames = [{
+                frame: 1,
+                objects: [{
+                    name: ship.name + "_hook_empty",
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                }, {
+                    name: ship.name + "_circle_path",
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    },
+                    scale: {
+                        x: .01,
+                        y: .01,
+                        z: .01
+                    }
+                }, {
+                    name: ship.name + "_vector_path",
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                }, {
+                    name: ship.name + "arm_vector_path",
+                    material: 'TransparentBlue',
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                }]
+            }, {
+                frame: options.lastframe,
+                objects: [{
+                    name: ship.name + "_hook_empty",
+                    "position": {
+                        "x": -1,
+                        "y": 0,
+                        "z": 0
+                    }
+                }]
+            }];
+            var objects = [{
+                "name": ship.name + "_hook_empty",
+                "type": "empty",
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            }, {
+                "name": ship.name + "_circle_path",
+                "type": "circle",
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            }, {
+                "name": ship.name + "_vector_path",
+                "type": "path",
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "points": [
+                                [0, 0, 0, 0],
+                                [1, 0, 0, 0],
+                                [1, 1, 0, 0]],
+                "hooks": [{
+                    "index": 1,
+                    "hook": ship.name + "_hook_empty",
+                }],
+                "use_path_follow": "False"
+            }, {
+                "name": ship.name + "arm_vector_path",
+                material: 'TransparentBlue',
+                "curvetype": "NURBS",
+                "type": "path",
+                "points": ship.positions.select(function (x) {
+                    var v = $VQC(x);
+                    return v.vector.concat([1]);
+                }).reverse(),
+                "bevel_object": ship.name + "_circle_path",
+                "taper_object": ship.name + "_vector_path",
+                "use_path_follow": "False"
+            }];
+            return {
+                objects: objects,
+                frames: frames
+            };
+        },
         getEmptyTargetName: function (ship) {
             return ship.name + '_empty';
         },
@@ -1593,7 +1694,7 @@
                     var evadeDistance = 4;
                     var maxAngularVelocity = chaseSpeed * 2.2;
                     var changetarget = 1400;
-                    var boundarySphere = 5;
+                    var boundarySphere = options.chase ? 20 : 5;
                     var shipData = shipGroupsForTracks.select(function (t, team) {
                         return t.select(function (x) {
                             return {
@@ -1750,7 +1851,7 @@
                                 var direction = ship.evasiveDir
                                     .add(ship.direction).unit();
                                 var shiposVector = $VQC(ship.position);
-                                if (shiposVector.length() > boundarySphere && !options.chase) {
+                                if (shiposVector.length() > boundarySphere) {
                                     direction = ship.evasiveDir
                                    .add(ship.direction).add(shiposVector.multiply(-1)).unit()
                                 }
@@ -1813,11 +1914,14 @@
                     var addShipPaths = function (shipData, objects) {
                         shipData.forEach(function (team) {
                             team.forEach(function (ship) {
-                                var shippath = me.createShipPath(ship, { duration: lastframe });
+                                var shippath = me.createShipPath(ship, { duration: lastframe, pipes: options.pipes });
                                 objects.push(shippath);
                                 intialframe.objects.push({
                                     "name": shippath.name
                                 });
+                                var res = me.createShipPipes(ship, { lastframe: lastframe, pipes: options.pipes });
+                                objects.push.apply(objects, res.objects);
+                                keyframes.push.apply(keyframes, res.frames);
                             });
                         })
                     }
@@ -1895,7 +1999,8 @@
             return Promise.resolve().then(function () {
                 return me.addBattleScene(objects, keyframes, midiTracks, {
                     trackSquareSize: 10,
-                    chase: chase || false
+                    chase: chase || false,
+                    pipes: true
                 });
             }).then(function () {
                 return sceneData;

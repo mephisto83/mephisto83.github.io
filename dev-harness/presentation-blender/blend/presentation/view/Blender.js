@@ -33,6 +33,7 @@
             'MEPH.input.MultilineText',
             'MEPH.audio.music.theory.Scales',
             'MEPH.list.View',
+            'MEPH.math.Quat',
             'Blend.presentation.template.MidiFile',
             'MEPH.audio.midi.reader.MidiFile',
             'MEPH.util.Observable',
@@ -662,7 +663,7 @@
                             endframe: end,
                             camera: cam.name
                         }) + '\n';
-                         
+
                         last = last + each + 1;
                     }
                     batFileTemplate += MEPH.util.Template.bindTemplate(me.blenderRenderTemplate, {
@@ -1540,6 +1541,59 @@
                 "taper_object": ship.name + "_vector_path",
                 "use_path_follow": "False"
             }];
+            if (ship.retreating) {
+                var sp_count = 1;
+                var spiralrad = 7.4;
+                MEPH.math.Vector.skipDefine = true;
+                [].interpolate(0, sp_count, function (t) {
+                    var angle = 0;
+                    objects.push({
+                        "name": ship.name + "arm_vector_path_tunnelpath_" + t,
+                        material: 'TransparentBlue',
+                        "curvetype": "NURBS",
+                        "type": "path",
+                        "bevel_object": ship.name + "_circle_path",
+                        "points": ship.positions.select(function (x, i) {
+                            if (i > 0) {
+                                var v1 = $VQC(x);
+                                var v2 = $VQC(ship.positions[i - 1]);
+                                var vect = v2.subtract(v1);
+
+                                vect = vect.unit();
+                                var arbitrary = $VQC([1, 0, 0]);
+                                var res = arbitrary.vector[0] * vect.vector[0] + arbitrary.vector[1] * vect.vector[1];
+                                var z = -res / vect.vector[2];
+                                var cvect = $VQC([1, 0, z]).unit();
+
+                                //var cvect = vect.cross($VQC([-vect.vector[0], -vect.vector[1], vect.vector[2]]));
+                                //cvect = cvect.getVectorOfLength(spiralrad);
+                                var points = 100;
+                                var circles = 4;
+                                angle += .1;
+                                return [].interpolate(0, points, function (j) {
+                                    var point = $VQC(cvect.vector).rotate(Math.PI * 2 * t / sp_count).multiply(spiralrad);
+                                    var q = new $Q(vect.vector, angle + (circles * Math.PI * 2 * j / points))
+                                    var qres = q.rotate(point.vector);
+
+                                    return qres.add(MEPH.math.Vector.Lerp3D(v1, v2, j / points)).vector.concat([1]);
+                                })
+                            }
+                        }).where().concatFluent(function (x) { return x; }).reverse(),
+                        "use_path_follow": "False"
+                    })
+                    frames.push({
+                        frame: 1,
+                        objects: [{
+                            "name": ship.name + "arm_vector_path_tunnelpath_" + t,
+                            "position": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 0
+                            }
+                        }]
+                    })
+                });
+            }
             return {
                 objects: objects,
                 frames: frames
@@ -1559,7 +1613,7 @@
         },
         createShipCameras: function (ship) {
             var me = this;
-            return [].interpolate(0, 4, function (i) {
+            return [].interpolate(0, 1, function (i) {
                 return {
                     "name": me.getCameraName(ship, i),
                     "type": "camera",
@@ -1626,14 +1680,14 @@
                                     "lens": 15.66,
                                     "sensor_width": 15.80,
                                     "track_to": {
-                                        "target": empty.name,
+                                        "target": ship.name,
                                         "up_axis": "UP_Y",
                                         "track_axis": "TRACK_NEGATIVE_Z"
                                     },
                                     position: {
-                                        x: i % 2 === 0 ? 1 : -1,
-                                        z: i % 3 === 0 ? 1 : -1,
-                                        y: -1
+                                        x: 0,
+                                        z: 1.21,
+                                        y: -5
                                     }
                                 }))
                             });
@@ -1693,8 +1747,8 @@
                     var retreatDistance = 4;
                     var evadeDistance = 4;
                     var maxAngularVelocity = chaseSpeed * 2.2;
-                    var changetarget = 1400;
-                    var boundarySphere = options.chase ? 20 : 5;
+                    var changetarget = 140000;
+                    var boundarySphere = options.chase ? 500 : 5;
                     var shipData = shipGroupsForTracks.select(function (t, team) {
                         return t.select(function (x) {
                             return {
@@ -1711,23 +1765,32 @@
                         });
                     });
                     var assignTargets = function (shipData, frame) {
+                        var chasee;
                         shipData.forEach(function (team, teamIndex) {
                             team.forEach(function (t) {
-                                var otherteam = shipData.where(function (s, i) {
-                                    return teamIndex !== i && s.length;
-                                }).random().first();
-                                otherteam = otherteam || shipData[0];
+                                if (!chasee) {
 
-                                var rships = otherteam.where(function (x) {
-                                    return x.name !== t.name;
-                                }).random();
+                                    var otherteam = shipData.where(function (s, i) {
+                                        return teamIndex !== i && s.length;
+                                    }).random().first();
+                                    otherteam = otherteam || shipData[0];
 
-                                var tship;
-                                if (rships.length) {
-                                    tship = rships[0];
+                                    var rships = otherteam.where(function (x) {
+                                        return x.name !== t.name;
+                                    }).random();
+
+                                    var tship;
+                                    if (rships.length) {
+                                        tship = rships[0];
+                                    }
+                                    chasee = tship;
                                 }
                                 if (tship) {
+                                    chasee = tship;
                                     t.target = tship.name;
+                                }
+                                else if (chasee && chasee.name !== t.name) {
+                                    t.target = chasee.name;
                                 }
                                 else {
                                     t.retreating = true;
@@ -1807,8 +1870,13 @@
                             team.forEach(function (ship) {
                                 if (!ship.retreating) {
                                     var targetShipPosition = getShipPosition(ship.target, shipData);
-                                    targetShipPosition = $VQC(targetShipPosition);
-                                    ship.direction = targetShipPosition.subtract($VQC(ship.position));
+                                    if (targetShipPosition) {
+                                        targetShipPosition = $VQC(targetShipPosition);
+                                        ship.direction = targetShipPosition.subtract($VQC(ship.position));
+                                    }
+                                    else {
+                                        ship.direction = $VQC([1, 0, 0])
+                                    }
                                 }
                             });
                         })
@@ -1896,6 +1964,11 @@
                         shipData.forEach(function (team) {
                             team.forEach(function (ship) {
                                 var position = getShipPosition(ship.target, shipData);
+
+                                if (!position) {
+                                    position = getShipPosition(ship.name, shipData);
+                                }
+
                                 keyframes.push({
                                     frame: frame,
                                     objects: [me.createKeyFrame({

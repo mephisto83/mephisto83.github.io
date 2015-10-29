@@ -1,4 +1,4 @@
-﻿describe("MEPH/math/Quaternion.spec.js", function () {
+﻿describe("MEPH/math/Quaternion.spec.js", 'MEPH.math.Quaternion', 'MEPH.math.Quat', function () {
     beforeEach(function () {
         jasmine.addMatchers(MEPH.customMatchers);
     });
@@ -224,6 +224,22 @@
         }).then(function (x) {
             done();
         });
+
+    });
+
+    it('Quaternion rotate', function () {
+        var angle = Math.PI * 2 * 90 / 360;
+        var angle2 = Math.PI * 2 * -45 / 360;
+        var q1 = new $Q([0, 1, 0], angle);
+        var q2 = new $Q([1, 0, 0], angle2);
+        var q3 = q2.multiply(q1);
+        debugger
+
+        var axis = new MEPH.math.Vector([0, 0, 1]);
+        var angle = Math.PI * 2 * 90 / 360;
+        var res = q1.rotate(axis, angle)
+
+        debugger;
 
     });
 });

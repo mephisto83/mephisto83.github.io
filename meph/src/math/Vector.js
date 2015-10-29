@@ -108,7 +108,7 @@ MEPH.define('MEPH.math.Vector', {
         }
         else me.vector = [];
         me.skipDefine = skipDefine;
-        if (!skipDefine)
+        if (!skipDefine && !MEPH.math.Vector.skipDefine)
             me.defineVectorShortcuts();
 
     },

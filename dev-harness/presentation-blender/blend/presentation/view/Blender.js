@@ -29,10 +29,12 @@
         mixins: ['MEPH.mobile.mixins.Activity'],
         requires: [
             'MEPH.math.Vector',
+            'MEPH.math.Util',
             'MEPH.input.Number', 'MEPH.input.Text',
             'MEPH.input.MultilineText',
             'MEPH.audio.music.theory.Scales',
             'MEPH.list.View',
+            'MEPH.util.CitySystem',
             'MEPH.math.Quat',
             'Blend.presentation.template.MidiFile',
             'MEPH.audio.midi.reader.MidiFile',
@@ -725,6 +727,14 @@
                         else {
                             res = me.generateChaseMovie(a);
                         }
+                        if (true) {
+                            return me.attachCity(res).then(function () {
+                                me.shipFlyThrough(res);
+                            }).then(function () {
+                                t(res);
+                                return res;
+                            });
+                        }
                         return me.attachBattleScene(res, !window.stagemovie).then(function () {
                             return res;
                         })
@@ -1304,8 +1314,8 @@
                         "name": "SHIP_4_G_block"
                     }, {
                         "name": "Ship_4_crab_claw"
-                    }, {
-                        "name": "Ship_4_clip_bridge"
+                    }, {  
+                        "name": "Ship_4_clip_bridge" 
                     }, {
                         "name": "Ship4_ybllock"
                     });
@@ -2063,6 +2073,394 @@
                 });
             })
         },
+        attachCity: function (sceneData) {
+            var me = this,
+                objects = sceneData.objects,
+                keyframes = sceneData.keyframes,
+                count = 0,
+                city_size = 1000,
+                city_state = MEPH.util.CitySystem.get({ iterations: 30, size_w: city_size, size_h: city_size });
+            var addCityBlockToScene = function (state) {
+                state.forEach(function (t) {
+                    if (Array.isArray(t)) {
+                        addCityBlockToScene(t);
+                    }
+                    else {
+                        switch (t.type) {
+                            case 'lot':
+                            case 'city_alley':
+                            case 'sidewalk':
+                                objects.push({
+                                    'name': 'city_object_sidewalk_' + count,
+                                    'type': 'cube'
+                                });
+                                var frame = {
+                                    frame: 1,
+                                    objects: [{
+                                        'name': 'city_object_sidewalk_' + count,
+                                        'position': {
+                                            x: t.position.x,
+                                            y: t.position.y,
+                                            z: .1
+                                        },
+                                        'scale': {
+                                            x: t.width / 2,
+                                            y: t.height / 2,
+                                            z: .2
+                                        }
+                                    }]
+                                }
+                                keyframes.push(frame);
+                                break;
+                            case 'city_building':
+                                objects.push({
+                                    'name': 'city_object_city_building_' + count,
+                                    'type': 'cube'
+                                });
+
+
+                                var dist = MEPH.math.Vector.Quick.Create([t.position.x, t.position.y, 0]).length();
+                                var max_height = MEPH.math.Util.window.Triangle(0, dist, city_size) * 100;
+
+                                var vert_height = (3 + (3 * (Math.random() * max_height))) / 2;
+
+                                var frame = {
+                                    frame: 1,
+                                    objects: [{
+                                        'name': 'city_object_city_building_' + count,
+                                        'position': {
+                                            x: t.position.x,
+                                            y: t.position.y,
+                                            z: vert_height
+                                        },
+                                        'scale': {
+                                            x: t.width / 2,
+                                            y: t.height / 2,
+                                            z: vert_height
+                                        }
+                                    }]
+                                };
+
+                                keyframes.push(frame);
+
+                                break;
+                        }
+
+                        count++;
+                    }
+                })
+            };
+
+            var addCityToScene = function (state) {
+                state.forEach(function (t) {
+                    if (Array.isArray(t)) {
+                        addCityToScene(t);
+                    }
+                    else {
+                        var horizontal = 'horizontal';
+                        var vertical = 'vertical';
+                        if (t.type === 'road') {
+                            var city_obj = {
+                                'type': t.type === 'road' ? 'plane' : 'cube',
+                                'name': 'city_object_road_' + count
+                            };
+                            objects.push(city_obj);
+                            var dist = MEPH.math.Vector.Quick.Create([t.position.x, t.position.y, 0]).length();
+                            var max_height = MEPH.math.Util.window.Triangle(0, dist, city_size / 2) * 100;
+
+                            var vert_height = (3 + (3 * (Math.random() * max_height))) / 2;
+
+                            var frame = {
+                                frame: 1,
+                                objects: [{
+                                    'name': 'city_object_road_' + count,
+                                    'position': {
+                                        y: t.position.y,
+                                        x: t.position.x,
+                                        z: t.type === 'road' ? 0 : vert_height
+                                    },
+                                    'scale': {
+                                        x: t.width / 2,
+                                        y: t.height / 2,
+                                        z: t.type === 'road' ? 0 : vert_height
+                                    }
+                                }]
+                            }
+                            keyframes.push(frame);
+                            count++;
+                        }
+                        else {
+                            var state = MEPH.util.CitySystem.block({
+                                iterations: 30, size_w: t.width, size_h: t.height, area: t
+                            });
+                            addCityBlockToScene(state);
+                        }
+                    }
+                })
+            }
+            return Promise.resolve().then(function () {
+                addCityToScene(city_state);
+                sceneData.city_state = city_state;
+                return sceneData;
+            });;
+        },
+        constructCityMap: function (city_state) {
+            var roads = city_state.filter(function (x) {
+                x.road_id = MEPH.GUID();
+                return x.type === 'road'
+            });
+            var $VQC = $Vector.Quick.Create;
+            var map = {};
+            var hroadWidth = 30;
+            roads.forEach(function (road) {
+                var length = road.orientation === 'vertical' ? 'height' : 'width';
+                var olength = road.orientation !== 'vertical' ? 'height' : 'width';
+                var roadposition = $VQC([road.position.x, road.position.y, 0]);;
+                roads.filter(function (t) {
+                    return road.orientation !== t.orientation && t.road_id !== road.road_id;
+                }).filter(function (otherRoad) {
+                    var potentialCross = road.orientation === 'vertical' ?
+                        $VQC([road.position.x, otherRoad.position.y, 0]) :
+                        $VQC([otherRoad.position.x, road.position.y, 0]);
+                    var dist = roadposition.distance(potentialCross);
+
+                    if (dist <= road[length] / 2 + hroadWidth) {
+                        var otherposition = $VQC([otherRoad.position.x, otherRoad.position.y, 0]);
+                        dist = otherposition.distance(potentialCross);
+                        if (dist <= otherRoad[olength] / 2 + hroadWidth) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }).forEach(function (otherRoad) {
+                    map[road.road_id] = map[road.road_id] || {};
+                    map[road.road_id][otherRoad.road_id] = true;
+                });
+
+            });
+            return map;
+        },
+        shipFlyThrough: function (sceneData) {
+            var me = this,
+            objects = sceneData.objects,
+            keyframes = sceneData.keyframes,
+            midiTracks = sceneData.midiTracks,
+            city_state = sceneData.city_state;
+            keyframes.sort(function (x, y) {
+                return x.frame - y.frame;
+            });
+            var map = me.constructCityMap(city_state);
+            var tracksAndDefinitions = me.getShipsForTracksAndDefinitions(midiTracks, keyframes);
+            keyframes.sort(function (x, y) {
+                return x.frame - y.frame;
+            });
+            var lastframe = keyframes.last().frame;
+            objects.push({
+                "name": "default_sun_shipfly",
+                "type": "lamp",
+                "light": "SUN",
+                "strength": 10.01,
+                "rotation": { "x": 0, "y": -80, "z": 0 }
+            })
+            keyframes.push({
+                frame: 1, objects: [{
+                    "name": "default_sun_shipfly",
+                    "type": "lamp",
+                    "light": "SUN",
+                    "strength": 10.01,
+                    "rotation": { "x": 0, "y": -80, "z": 0 }
+                }]
+            });
+            keyframes.push({
+                frame: lastframe, objects: [{
+                    "name": "default_sun_shipfly",
+                    "type": "lamp",
+                    "light": "SUN",
+                    "strength": 10.01,
+                    "rotation": { "x": 45, "y": 80, "z": 0 }
+                }]
+            });
+            me.addShipsToMove(keyframes, objects, tracksAndDefinitions, map, city_state);
+        },
+        generateShipPath: function (randomRoads, randomRoad, city_state, map, options) {
+            var me = this, result = [],
+                done;
+            var getPath = function (road, dest, map, seen) {
+                var res = [];
+                seen = seen || [];
+                if (map[road] && map[road][dest]) {
+                    res.push(dest);
+                }
+                else {
+                    var best = null;
+                    for (var i in map[road]) {
+                        if (seen.indexOf(i) === -1) {
+                            var traversed = seen.select().concat([i]);
+                            var re = getPath(i, dest, map, traversed);
+                            if (re && re.indexOf(road) === -1) {
+                                if (best === null || best.length < traversed.length) {
+                                    best = traversed;
+                                }
+                            }
+                        }
+                    }
+                    res = best;
+                }
+                return res;
+            }
+            var getPoints = function (start, end) {
+                if (start.orientation === 'horizontal') {
+                    return [$VQC(start.position), $VQC({ x: end.position.x, y: start.position.y }), $VQC(end.position)];
+                }
+                return [$VQC(start.position), $VQC({
+                    x: start.position.x,
+                    y: end.position.y
+                }), $VQC(end.position)];
+            }
+            var $VQC = $Vector.Quick.Create;
+            var distancetraveled = 0;
+            var step = .02;
+            var speed = 1 / step;
+            var ship_positions = [];
+            var dist_to_travel = options.lastframe * speed;
+            MEPH.math.Vector.skipeDefine = true;
+            var end;
+            while (!done) {
+                done = true;
+                var dest = randomRoads.random().first(function (t) { return t.road_id !== randomRoad.road_id; });
+                var dest_path = getPath(end ? end.road_id : randomRoad.road_id, dest.road_id, map);
+                if (dest_path)
+                    dest_path.forEach(function (road, index) {
+                        var start;
+                        if (!end) {
+                            start = city_state.first(function (t) { return t.road_id === randomRoad.road_id; });
+                            end = city_state.first(function (t) { return t.road_id === road; });
+                        }
+                        else {
+                            start = end;
+                            end = city_state.first(function (t) { return t.road_id === road; });
+                        };
+                        var points = getPoints(start, end);
+                        for (var p = 0 ; p < 2 ; p++) {
+                            var dist = points[p].distance(points[p + 1]);
+                            var count = dist / speed;
+                            distancetraveled += dist;
+                            [].interpolate(0, count, function (t) {
+                                ship_positions.push($Vector.Lerp2D(points[p], points[p + 1], t / count));
+                            });
+                        }
+                    });
+                if (distancetraveled < dist_to_travel) {
+                    done = false;
+                }
+
+            }
+            return ship_positions;
+        },
+        addShipsToMove: function (keyframes, objects, tracksAndDefinitions, map, city_state) {
+            var me = this;
+            keyframes.sort(function (x, y) {
+                return x.frame - y.frame;
+            });
+            var lastframe = keyframes.last().frame;
+            var shipGroupsForTracks = tracksAndDefinitions.shipGroupsForTracks;
+            var shipDefinitions = tracksAndDefinitions.shipDefinitions;
+            var randomRoads = city_state.filter(function (t) { return t.type === 'road'; }).random()
+            var cameras = [];
+            shipGroupsForTracks.forEach(function (ships, i) {;
+                ships.forEach(function (ship, index) {
+                    var randomRoad = randomRoads[index % randomRoads.length];
+                    var shippos = {
+                        x: 0,
+                        y: 0,
+                        z: index + 3
+                    };
+                    me.setShipPosition(ship, shippos);
+                    var shippositions = me.generateShipPath(randomRoads, randomRoad, city_state, map, {
+                        lastframe: lastframe
+                    });
+                    ship.positions = shippositions;
+                    var shippath = me.createShipPath(ship, { duration: lastframe });
+                    objects.push(shippath);
+                    me.createShipCameras(ship).forEach(function (camera, i) {
+                        cameras.push(camera);
+                        objects.push(camera);
+                        keyframes.push(({
+                            frame: 1, objects: [{
+                                name: camera.name,
+                                "lens": 15.66,
+                                "sensor_width": 15.80,
+                                "track_to": {
+                                    "target": ship.name,
+                                    "up_axis": "UP_Y",
+                                    "track_axis": "TRACK_NEGATIVE_Z"
+                                },
+                                position: {
+                                    x: 0,
+                                    z: 31.21,
+                                    y: -1
+                                }
+                            }]
+                        }));
+                    });
+                    ship.follow_path = {
+                        "target": me.getShipPathName(ship)
+                    };
+                    keyframes.push({
+                        frame: 1,
+                        objects: [{
+                            "name": shippath.name
+                        }, ship]
+                    })
+                });
+            });
+            me.cameras = cameras;
+            shipDefinitions.forEach(function (ships) {
+                objects.push.apply(objects, ships);
+                ships.forEach(function (ship) {
+                    objects.push({
+                        name: me.getEmptyTargetName(ship),
+                        type: 'empty',
+                        parent: ship.name
+                    });
+                    keyframes.push({
+                        frame: 1,
+                        objects: [{
+                            "name": me.getEmptyTargetName(ship)
+                        }]
+                    })
+                });
+            });
+        },
+        getShipPathName: function (ship) {
+            return ship.name + '_ship_path';
+        },
+        getShipsForTracksAndDefinitions: function (midiTracks, keyframes) {
+            var me = this;
+            var midiTracksWithContent = midiTracks.where(function (track) {
+                return track.objects.length && track.events.length;
+            });
+
+            var uniqueTracksAndNotes = midiTracksWithContent.select(function (trackInfo, i) {
+                return trackInfo.objects.select(function (t) {
+                    return {
+                        track: i,
+                        noteNumber: t.noteNumber
+                    }
+                });
+            });
+            var shipGroupsForTracks = uniqueTracksAndNotes.select(function (trackInfo) {
+                return me.getShipsForTrack(trackInfo, keyframes);
+            });
+            var shipDefinitions = shipGroupsForTracks.select(function (x) { return x.shipDefinitions });
+
+
+            shipGroupsForTracks = shipGroupsForTracks.select(function (x) { return x.ships; });
+            return {
+                shipGroupsForTracks: shipGroupsForTracks,
+                shipDefinitions: shipDefinitions
+            }
+        },
         attachBattleScene: function (sceneData, chase) {
             var me = this,
                 objects = sceneData.objects,
@@ -2077,7 +2475,7 @@
                 });
             }).then(function () {
                 return sceneData;
-            })
+            });
         },
         generateChaseMovie: function (midiTracks) {
             var me = this;

@@ -758,7 +758,7 @@
                     "RenderEngine": "CYCLES",
                     "FrameStart": midiDef.startFrame,
                     "FrameEnd": midiDef.startEnd,
-                    "samples": "500",
+                    "samples": "900",
                     "Device": "GPU",
                     "Objects": {
                         "File": "//objects.blend",
@@ -1246,7 +1246,7 @@
                 "children": []
             };
 
-            var bothGuns = ship.noteNumbers.select(function (noteNumber) {
+            var bothGuns =[]|| ship.noteNumbers.select(function (noteNumber) {
                 //
                 return keyframes.where(function (t) {
                     return t.objects.where(function (j) {
@@ -1314,8 +1314,8 @@
                         "name": "SHIP_4_G_block"
                     }, {
                         "name": "Ship_4_crab_claw"
-                    }, {  
-                        "name": "Ship_4_clip_bridge" 
+                    }, {
+                        "name": "Ship_4_clip_bridge"
                     }, {
                         "name": "Ship4_ybllock"
                     });
@@ -2397,12 +2397,15 @@
                                 },
                                 position: {
                                     x: 0,
-                                    z: 31.21,
+                                    z: 20.21,
                                     y: -1
                                 }
                             }]
                         }));
                     });
+                    ship.scale = {
+                        x: 10, y: 10, z: 10
+                    };
                     ship.follow_path = {
                         "target": me.getShipPathName(ship)
                     };

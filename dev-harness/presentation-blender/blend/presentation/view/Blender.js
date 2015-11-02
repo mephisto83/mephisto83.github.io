@@ -758,7 +758,7 @@
                     "RenderEngine": "CYCLES",
                     "FrameStart": midiDef.startFrame,
                     "FrameEnd": midiDef.startEnd,
-                    "samples": "900",
+                    "samples": "1000",
                     "Device": "GPU",
                     "Objects": {
                         "File": "//objects.blend",

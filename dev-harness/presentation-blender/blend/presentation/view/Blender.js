@@ -721,19 +721,22 @@
                 setTimeout(function () {
                     me.generateAllMovies(function (a) {
                         var res;
-                        if (window.stagemovie) {
+                        if (!window.stagemovie) {
                             res = me.generateStageInfoMovie(a);
                         }
                         else {
                             res = me.generateChaseMovie(a);
                         }
-                        if (true) {
+                        if (false) {
                             return me.attachCity(res).then(function () {
                                 me.shipFlyThrough(res);
                             }).then(function () {
                                 t(res);
                                 return res;
                             });
+                        }
+                        else {
+                            return Promise.resolve(res);
                         }
                         return me.attachBattleScene(res, !window.stagemovie).then(function () {
                             return res;

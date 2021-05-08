@@ -1,0 +1,36 @@
+﻿Augmented scale; V00020406080A; 1 2 3 +4 +5 +6
+Blues ; V0003040506070A; 1 -3 3 4 +4 5 -7
+Byzantine ; V0001040507080B; 1 -2 3 4 5 -6 7
+Dimhed 7 Note; V0002030506090B; 1 2 -3 4 -5 6 7
+Diminished 8 note scale ; V000203050608090B; 1 2 -3 4 +4 +5 6 7
+Dominant 8 note scale ; V000103040607090A; 1 -2 -3 3 +4 5 6 -7
+Dominant bebop scale ; V0002040507090A0B; 1 2 3 4 5 6  -7 7
+Harmonic Major ; ; 1 2 3 4 5 -6 7
+Harmonic Minor ; ; 1 2 -3 4 5 -6 7
+Hemitonic pentatonic scale 1 3 4 6 7; ; 
+Hungarian Major 1 +2 3 +4 5 6 -7; ; 
+Leading Whole Tone 1 2 3 +4 +5 +6 7; ; 
+Lois 1 2 -3 +4 5 -6 --7; ; 
+Major bebop scale 1 2 3 4 5 +5 6 7; ; 
+Major Pentatonic Scale 1 2 3 5 6; ; 
+Major Scale 1 2 3 4 5 6 7; ; 
+Mela Chalenata 1 +2 3 4 5 +6 7; ; 
+Mela Dhatuvardhani 1 +2 3 +4 5 -6 7; ; 
+Mela Ganamurti 1 -2 --3 4 5 -6 7; ; 
+Mela Gangeyabhusani 1 +2 3 4 5 -6 7; ; 
+Mela Jyotisvarupini 1 +2 3 +4 5 -6 -7; ; 
+Mela Kanakangi 1 -2 --3 4 5 -6 --7; ; 
+Mela Manavati 1 2 3 4 5 -6 --7; ; 
+Mela Ragavardhani 1 +2 3 4 5 -6 -7; ; 
+Mela Ratrangi 1 -2 --3 4 5 -6 -7; ; 
+Mela Sucharitra 1 +2 3 +4 5 -6 --7; ; 
+Mela Sulini 1 +2 3 4 5 6 7; ; 
+Mela Vagedhisvari 1 +2 3 4 5 6 -7; ; 
+Mela Vanaspati 1 -2 --3 4 5 6 -7; ; 
+Mela Yagapraya 1 +2 3 4 5 -6 --7; ; 
+Melodic Minor 1 2 -3 4 5 6 7; ; 
+Prometheus scale 1 2 3 +4 6 -7; ; 
+Spanish Gypsy 1 -2 3 4 5 6 7; ; 
+Tritone scale 1 -2 3 -5 5 -7; ; 
+two-semitone tritone scale 1 -2 2 +4 5 -6; ; 
+Whole scale 1 2 3 +4 +5 +6; ; 

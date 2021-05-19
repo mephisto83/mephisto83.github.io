@@ -250,7 +250,13 @@ var invertVoices = function (voices) {
     }
     return voiceswithinversions
 }
+ function InvertVoice(voice, inv) {
 
+    var inversionversion = voice.chordInversion(inv);
+    inversionversion = inversionversion.parseInt(12)
+    var iv = inversionversion.chordNormalize(12);
+    return iv;
+}
 var complete = function (voiceswithinversions) {
     for (var i in bosslist) {
         for (var j = 0; j < bosslist[i].length; j++) {

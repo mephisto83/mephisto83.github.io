@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/composer-companion-ss/static/css/main.d34385b1.chunk.css",
-    "main.js": "/composer-companion-ss/static/js/main.ff0aafea.chunk.js",
-    "main.js.map": "/composer-companion-ss/static/js/main.ff0aafea.chunk.js.map",
+    "main.js": "/composer-companion-ss/static/js/main.bcc093d9.chunk.js",
+    "main.js.map": "/composer-companion-ss/static/js/main.bcc093d9.chunk.js.map",
     "runtime-main.js": "/composer-companion-ss/static/js/runtime-main.36b657bb.js",
     "runtime-main.js.map": "/composer-companion-ss/static/js/runtime-main.36b657bb.js.map",
     "static/js/2.11c75caf.chunk.js": "/composer-companion-ss/static/js/2.11c75caf.chunk.js",
@@ -16,6 +16,6 @@
     "static/js/runtime-main.36b657bb.js",
     "static/js/2.11c75caf.chunk.js",
     "static/css/main.d34385b1.chunk.css",
-    "static/js/main.ff0aafea.chunk.js"
+    "static/js/main.bcc093d9.chunk.js"
   ]
 }

@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/composer-companion-ss/static/css/main.d34385b1.chunk.css",
-    "main.js": "/composer-companion-ss/static/js/main.9638c196.chunk.js",
-    "main.js.map": "/composer-companion-ss/static/js/main.9638c196.chunk.js.map",
+    "main.js": "/composer-companion-ss/static/js/main.a2375f40.chunk.js",
+    "main.js.map": "/composer-companion-ss/static/js/main.a2375f40.chunk.js.map",
     "runtime-main.js": "/composer-companion-ss/static/js/runtime-main.36b657bb.js",
     "runtime-main.js.map": "/composer-companion-ss/static/js/runtime-main.36b657bb.js.map",
-    "static/js/2.11c75caf.chunk.js": "/composer-companion-ss/static/js/2.11c75caf.chunk.js",
-    "static/js/2.11c75caf.chunk.js.map": "/composer-companion-ss/static/js/2.11c75caf.chunk.js.map",
+    "static/js/2.bf81d284.chunk.js": "/composer-companion-ss/static/js/2.bf81d284.chunk.js",
+    "static/js/2.bf81d284.chunk.js.map": "/composer-companion-ss/static/js/2.bf81d284.chunk.js.map",
     "index.html": "/composer-companion-ss/index.html",
     "static/css/main.d34385b1.chunk.css.map": "/composer-companion-ss/static/css/main.d34385b1.chunk.css.map",
-    "static/js/2.11c75caf.chunk.js.LICENSE.txt": "/composer-companion-ss/static/js/2.11c75caf.chunk.js.LICENSE.txt",
+    "static/js/2.bf81d284.chunk.js.LICENSE.txt": "/composer-companion-ss/static/js/2.bf81d284.chunk.js.LICENSE.txt",
     "static/media/logo.b2e5a01e.svg": "/composer-companion-ss/static/media/logo.b2e5a01e.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.36b657bb.js",
-    "static/js/2.11c75caf.chunk.js",
+    "static/js/2.bf81d284.chunk.js",
     "static/css/main.d34385b1.chunk.css",
-    "static/js/main.9638c196.chunk.js"
+    "static/js/main.a2375f40.chunk.js"
   ]
 }

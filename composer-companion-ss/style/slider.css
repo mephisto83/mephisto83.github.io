@@ -147,3 +147,6 @@
     counter-reset: c var(--c);
     content: counter(c);
   }
+  .slider-container output.out::after {
+    content: attr(out)
+  }

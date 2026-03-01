@@ -562,6 +562,95 @@
     .footer-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color .2s; }
     .footer-links a:hover { color: var(--ink); }
 
+    /* EXPERIENCE TIMELINE */
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before {
+      content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px;
+      width: 2px; background: linear-gradient(to bottom, var(--accent), var(--border));
+    }
+    .timeline-item {
+      position: relative; padding-bottom: 40px;
+    }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-dot {
+      position: absolute; left: -32px; top: 6px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--accent);
+      box-shadow: 0 0 12px rgba(200,255,0,.25);
+    }
+    .timeline-item:first-child .timeline-dot { background: var(--accent); }
+    .timeline-card {
+      padding: 24px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--card-bg);
+      transition: border-color .3s, transform .35s cubic-bezier(.22,1,.36,1);
+    }
+    .timeline-card:hover { border-color: rgba(200,255,0,.15); transform: translateY(-3px); }
+    .timeline-card h4 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px; font-weight: 600; letter-spacing: -.02em; margin-bottom: 4px;
+    }
+    .timeline-company {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 15px; font-weight: 600; color: var(--accent); margin-bottom: 4px;
+    }
+    .timeline-meta { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+    .timeline-card p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .timeline-card ul {
+      list-style: none; margin-top: 10px;
+    }
+    .timeline-card ul li {
+      padding: 4px 0; color: var(--muted); font-size: 14px; line-height: 1.55;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .timeline-card ul li::before {
+      content: ""; flex-shrink: 0; width: 5px; height: 5px;
+      margin-top: 8px; border-radius: 50%; background: var(--accent); opacity: .6;
+    }
+
+    /* EDUCATION & LANGUAGES */
+    .edu-lang-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    @media (max-width: 700px) { .edu-lang-grid { grid-template-columns: 1fr; } }
+    .edu-card, .lang-card {
+      padding: 28px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--card-bg);
+      transition: border-color .3s, transform .35s cubic-bezier(.22,1,.36,1);
+    }
+    .edu-card:hover, .lang-card:hover { border-color: rgba(200,255,0,.15); transform: translateY(-3px); }
+    .edu-card h4, .lang-card h4 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px; font-weight: 600; margin-bottom: 6px;
+    }
+    .edu-card .edu-degree { color: var(--accent); font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+    .edu-card .edu-years { color: var(--muted); font-size: 13px; }
+    .lang-list { list-style: none; margin-top: 12px; }
+    .lang-list li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--ink);
+    }
+    .lang-list li:last-child { border-bottom: none; }
+    .lang-level {
+      font-size: 11px; padding: 3px 10px; border-radius: 999px;
+      border: 1px solid var(--border); color: var(--muted);
+    }
+    .lang-level.native { border-color: rgba(200,255,0,.3); color: var(--accent); }
+
+    /* CONTACT LINKS IN CTA */
+    .contact-links {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .contact-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 18px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--card-bg);
+      color: var(--muted); font-size: 13px; text-decoration: none;
+      transition: all .2s;
+    }
+    .contact-link:hover { border-color: rgba(200,255,0,.2); color: var(--ink); }
+
     /* ANIM UTILITIES */
     .reveal { opacity: 0; transform: translateY(30px); }
 
@@ -592,11 +681,15 @@
       </div>
       <div class="nav-links">
         <a href="#work">Projects</a>
+        <a href="#experience">Experience</a>
         <a href="#skills">Skills</a>
         <a href="#all-projects">All Work</a>
         <a href="#labs">Labs</a>
       </div>
-      <a href="https://github.com/mephisto83" target="_blank" class="nav-cta">GitHub &#8599;</a>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <a href="https://www.linkedin.com/in/andrew-porter-ba81a418" target="_blank" class="nav-cta" style="background:transparent;color:var(--muted);border:1px solid var(--border);">LinkedIn &#8599;</a>
+        <a href="https://github.com/mephisto83" target="_blank" class="nav-cta">GitHub &#8599;</a>
+      </div>
     </nav>
   </header>
 
@@ -607,7 +700,7 @@
       <div class="hero-content">
         <div class="hero-badge">
           <span class="dot"></span>
-          200+ Open Source Projects &mdash; 2025
+          Software Engineer at Square &bull; 200+ Open Source Projects
         </div>
 
         <h1 class="hero-title">
@@ -617,7 +710,7 @@
         </h1>
 
         <p class="hero-sub" id="heroSub">
-          Full-stack engineer with expertise in AI-powered platform development, having delivered 200+ production-ready projects spanning ML, microservices, and scalable web applications.
+          Full-stack engineer and AI platform architect based in the Minneapolis metro area with 200+ production-ready open-source projects. Currently at Square building internal tools for software distribution and telemetry. Specialized in GPU-accelerated ML pipelines, real-time collaborative systems, and end-to-end automation platforms.
         </p>
 
         <div class="hero-cta-row">
@@ -675,6 +768,108 @@
         <img src="images/andrewporter_infographic.jpg" alt="Andrew Porter — Engineer & AI Architect Infographic" loading="lazy" class="reveal" />
       </picture>
     </div>
+
+    <!-- EXPERIENCE -->
+    <section class="section" id="experience">
+      <div class="section-header">
+        <div>
+          <p class="kicker">Career</p>
+          <h2 class="section-title reveal">Professional<br>Experience</h2>
+        </div>
+        <p class="section-sub reveal">15+ years of software engineering across enterprise platforms, internal tooling, and product development.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-company">Block (Square)</div>
+            <h4>Software Engineer</h4>
+            <div class="timeline-meta">May 2021 &ndash; Present &bull; Minnesota, United States</div>
+            <ul>
+              <li>Work on an internal tools team specializing in software distribution and telemetry</li>
+              <li>Maintain and develop a system to distribute updates to all Square devices</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-company">Renaissance Learning</div>
+            <h4>Senior Software Engineer</h4>
+            <div class="timeline-meta">June 2017 &ndash; May 2021 &bull; Greater Minneapolis-St. Paul Area</div>
+            <ul>
+              <li>Developed customer-facing Single Page Applications (SPAs) and developer-focused tools</li>
+              <li>Focused on improving colleague performance and product quality through efficient internal tooling</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-company">Unit4 Agresso R &amp; D</div>
+            <h4>Senior Software Engineer</h4>
+            <div class="timeline-meta">November 2012 &ndash; June 2017</div>
+            <ul>
+              <li>Contributed to the People Platform department, solving enterprise-wide challenges in architecture and integration</li>
+              <li>Designed and implemented Wanda, a distributed digital assistant and aggregator of functional agents</li>
+              <li>Managed LUIS (Language Understanding) strategies and trained international development teams in Poland, Spain, Sweden, and Norway</li>
+              <li>Built scripts to automate deployment and upgrades without incurring downtime</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-company">LUUP</div>
+            <h4>Systems Developer</h4>
+            <div class="timeline-meta">June 2010 &ndash; October 2012</div>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-company">Mamut ASA</div>
+            <h4>Systems Developer</h4>
+            <div class="timeline-meta">August 2007 &ndash; May 2010 &bull; Oslo, Norway</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDUCATION & LANGUAGES -->
+    <section class="section" id="education">
+      <div class="section-header">
+        <div>
+          <p class="kicker">Background</p>
+          <h2 class="section-title reveal">Education &amp;<br>Languages</h2>
+        </div>
+      </div>
+
+      <div class="edu-lang-grid">
+        <div class="edu-card reveal">
+          <h4>Macalester College</h4>
+          <div class="edu-degree">Bachelor of Arts &mdash; Computer Science &amp; Mathematics</div>
+          <div class="edu-years">1999 &ndash; 2003</div>
+        </div>
+
+        <div class="lang-card reveal">
+          <h4>Languages</h4>
+          <ul class="lang-list">
+            <li>English <span class="lang-level native">Native / Bilingual</span></li>
+            <li>French <span class="lang-level">Professional Working</span></li>
+            <li>Norwegian (Bokm&aring;l) <span class="lang-level">Professional Working</span></li>
+            <li>Finnish <span class="lang-level">Elementary</span></li>
+            <li>German <span class="lang-level">Elementary</span></li>
+            <li>Italian <span class="lang-level">Elementary</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
     <!-- STATS -->
     <div class="stats-strip">
@@ -804,18 +999,29 @@
           GitHub Profile
           <span class="btn-arrow">&#8599;</span>
         </a>
-        <a href="index.html" class="btn btn-ghost reveal">
-          Legacy Site
+        <a href="https://www.linkedin.com/in/andrew-porter-ba81a418" target="_blank" class="btn btn-ghost reveal">
+          LinkedIn
+          <span class="btn-arrow">&#8599;</span>
+        </a>
+        <a href="mailto:mephisto83@hotmail.com" class="btn btn-ghost reveal">
+          Email Me
           <span class="btn-arrow">&#8594;</span>
         </a>
+      </div>
+      <div class="contact-links reveal">
+        <a href="mailto:mephisto83@hotmail.com" class="contact-link">&#9993; mephisto83@hotmail.com</a>
+        <a href="https://www.linkedin.com/in/andrew-porter-ba81a418" target="_blank" class="contact-link">&#128279; LinkedIn</a>
+        <a href="https://github.com/mephisto83" target="_blank" class="contact-link">&#128187; GitHub</a>
       </div>
     </section>
 
     <!-- FOOTER -->
     <footer>
       <div class="footer-inner">
-        <span>&copy; 2025 Andrew Porter. All rights reserved.</span>
+        <span>&copy; 2025 Andrew Porter &bull; St Paul, Minnesota</span>
         <div class="footer-links">
+          <a href="mailto:mephisto83@hotmail.com">Email</a>
+          <a href="https://www.linkedin.com/in/andrew-porter-ba81a418" target="_blank">LinkedIn</a>
           <a href="https://github.com/mephisto83" target="_blank">GitHub</a>
           <a href="index.html">Legacy Site</a>
         </div>

@@ -32,7 +32,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    html, body { height: 100%; }
+    html, body { min-height: 100%; }
 
     body {
       background: var(--bg);
@@ -49,6 +49,7 @@
       position: fixed; inset: 0;
       width: 100%; height: 100%;
       z-index: -3; opacity: .4;
+      pointer-events: none;
     }
 
     /* Grain overlay */
@@ -107,9 +108,29 @@
 
     /* HERO */
     .hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      justify-content: center; padding: 140px 24px 80px;
+      min-height: 100vh; display: flex; flex-direction: row; align-items: center;
+      justify-content: space-between; padding: 140px 24px 80px;
       max-width: 1200px; margin: 0 auto; position: relative;
+      gap: 48px;
+    }
+    .hero-content { flex: 1; min-width: 0; }
+    .hero-portrait {
+      flex-shrink: 0; width: 260px; height: 260px;
+      border-radius: 50%; overflow: hidden;
+      border: 3px solid rgba(200,255,0,.2);
+      box-shadow: 0 0 60px rgba(200,255,0,.08), 0 20px 50px rgba(0,0,0,.5);
+      position: relative;
+    }
+    .hero-portrait img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center 20%;
+      filter: grayscale(.15) contrast(1.05);
+      transition: filter .4s;
+    }
+    .hero-portrait:hover img { filter: grayscale(0) contrast(1); }
+    @media (max-width: 860px) {
+      .hero { flex-direction: column; text-align: center; }
+      .hero-portrait { width: 180px; height: 180px; order: -1; margin-bottom: 16px; }
+      .hero-cta-row { justify-content: center; }
     }
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
@@ -368,11 +389,19 @@
     .projects-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 16px;
+      max-height: 1000px;
+      overflow: auto;
+      padding-bottom: 40px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(200,255,0,.2) transparent;
     }
+    .projects-grid::-webkit-scrollbar { width: 6px; }
+    .projects-grid::-webkit-scrollbar-track { background: transparent; }
+    .projects-grid::-webkit-scrollbar-thumb { background: rgba(200,255,0,.2); border-radius: 3px; }
     .mini-card {
       padding: 20px; border-radius: var(--radius);
       border: 1px solid var(--border); background: var(--card-bg);
-      transition: all .3s; cursor: pointer; position: relative; overflow: hidden;
+      transition: opacity .25s, transform .3s, border-color .3s; cursor: pointer; position: relative; overflow: hidden;
     }
     .mini-card:hover { border-color: rgba(200,255,0,.15); transform: translateY(-3px); }
     .mini-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
@@ -393,7 +422,6 @@
       font-size: 10px; padding: 3px 8px; border-radius: 999px;
       border: 1px solid var(--border); color: var(--muted);
     }
-    .load-more-row { text-align: center; padding: 32px 0; }
 
     /* PROCESS */
     .process-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -576,30 +604,39 @@
 
     <!-- HERO -->
     <section class="hero" id="top">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        200+ Open Source Projects &mdash; 2025
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          200+ Open Source Projects &mdash; 2025
+        </div>
+
+        <h1 class="hero-title">
+          <span class="line"><span class="word">Full-Stack</span></span>
+          <span class="line"><span class="word accent-word">Engineer</span> <span class="word">&amp;</span></span>
+          <span class="line"><span class="word outline-word">Architect</span></span>
+        </h1>
+
+        <p class="hero-sub" id="heroSub">
+          Full-stack engineer with expertise in AI-powered platform development, having delivered 200+ production-ready projects spanning ML, microservices, and scalable web applications.
+        </p>
+
+        <div class="hero-cta-row">
+          <a href="#work" class="btn btn-primary">
+            View Projects
+            <span class="btn-arrow">&#8594;</span>
+          </a>
+          <a href="#skills" class="btn btn-ghost">
+            Skills &amp; Tech
+            <span class="btn-arrow">&#8594;</span>
+          </a>
+        </div>
       </div>
 
-      <h1 class="hero-title">
-        <span class="line"><span class="word">Full-Stack</span></span>
-        <span class="line"><span class="word accent-word">Engineer</span> <span class="word">&amp;</span></span>
-        <span class="line"><span class="word outline-word">Architect</span></span>
-      </h1>
-
-      <p class="hero-sub" id="heroSub">
-        Full-stack engineer with expertise in AI-powered platform development, having delivered 200+ production-ready projects spanning ML, microservices, and scalable web applications.
-      </p>
-
-      <div class="hero-cta-row">
-        <a href="#work" class="btn btn-primary">
-          View Projects
-          <span class="btn-arrow">&#8594;</span>
-        </a>
-        <a href="#skills" class="btn btn-ghost">
-          Skills &amp; Tech
-          <span class="btn-arrow">&#8594;</span>
-        </a>
+      <div class="hero-portrait">
+        <picture>
+          <source srcset="images/aporter.webp" type="image/webp" />
+          <img src="images/aporter.jpg" alt="Andrew Porter" loading="eager" />
+        </picture>
       </div>
     </section>
 
@@ -702,13 +739,7 @@
       </div>
 
       <div class="projects-grid" id="projectsGrid"></div>
-      <div class="load-more-row" id="loadMoreRow">
-        <button class="btn btn-ghost" id="loadMoreBtn" style="display:none;">
-          Load More Projects
-          <span class="btn-arrow">&#8594;</span>
-        </button>
-        <p id="projectCount" style="color:var(--muted);font-size:13px;margin-top:8px;"></p>
-      </div>
+      <p id="projectCount" style="color:var(--muted);font-size:13px;margin-top:16px;text-align:center;"></p>
     </section>
 
     <!-- LABS & DEMOS -->
@@ -810,8 +841,6 @@
     let ALL_PROJECTS = null;
     let currentFilter = 'All';
     let searchQuery = '';
-    let displayedCount = 0;
-    const PAGE_SIZE = 24;
 
     const CATEGORY_COLORS = {
       'Full-Stack': '#c8ff00',
@@ -1002,14 +1031,13 @@
       return list;
     }
 
-    function renderProjectsPage(append) {
+    function renderProjectsPage() {
       if (!ALL_PROJECTS) return;
       var grid = document.getElementById('projectsGrid');
       var filtered = getFilteredProjects();
-      if (!append) { displayedCount = 0; grid.innerHTML = ''; }
+      grid.innerHTML = '';
 
-      var slice = filtered.slice(displayedCount, displayedCount + PAGE_SIZE);
-      slice.forEach(function(p) {
+      filtered.forEach(function(p) {
         var card = document.createElement('div');
         card.className = 'mini-card';
         card.addEventListener('click', function() { openProjectModal(p.r, false); });
@@ -1027,34 +1055,52 @@
         grid.appendChild(card);
       });
 
-      displayedCount += slice.length;
-      var remaining = filtered.length - displayedCount;
-      var btn = document.getElementById('loadMoreBtn');
-      btn.style.display = remaining > 0 ? '' : 'none';
       document.getElementById('projectCount').textContent =
-        'Showing ' + displayedCount + ' of ' + filtered.length + ' projects';
+        'Showing ' + filtered.length + ' of ' + ALL_PROJECTS.length + ' projects';
 
-      // Animate new cards
+      // Apply scroll-based fade and kick off listener
+      applyGridScrollFade();
+    }
+
+    function applyGridScrollFade() {
+      var grid = document.getElementById('projectsGrid');
       var cards = grid.querySelectorAll('.mini-card');
-      var newCards = Array.prototype.slice.call(cards, -slice.length);
-      newCards.forEach(function(c, i) {
-        gsap.from(c, { opacity: 0, y: 20, duration: .4, delay: i * .03, ease: 'power2.out' });
+      var gridRect = grid.getBoundingClientRect();
+      var gridH = grid.clientHeight;
+      var fadeZone = 120; // px from top/bottom edges to fade
+
+      cards.forEach(function(card) {
+        var cardRect = card.getBoundingClientRect();
+        // Position relative to the grid container
+        var top = cardRect.top - gridRect.top;
+        var bottom = cardRect.bottom - gridRect.top;
+        var opacity = 1;
+
+        if (bottom < 0 || top > gridH) {
+          opacity = 0;
+        } else if (top < fadeZone) {
+          opacity = Math.max(0, top / fadeZone);
+        } else if (bottom > gridH - fadeZone) {
+          opacity = Math.max(0, (gridH - bottom + fadeZone) / fadeZone);
+        }
+        card.style.opacity = Math.max(0.05, opacity);
       });
     }
+
+    document.getElementById('projectsGrid').addEventListener('scroll', applyGridScrollFade);
 
     function updateFilters() {
       document.querySelectorAll('.filter-btn').forEach(function(b) {
         var label = b.textContent.split(' (')[0];
         b.classList.toggle('active', label === currentFilter);
       });
-      renderProjectsPage(false);
+      renderProjectsPage();
     }
 
     document.getElementById('searchBox').addEventListener('input', function(e) {
       searchQuery = e.target.value;
-      renderProjectsPage(false);
+      renderProjectsPage();
     });
-    document.getElementById('loadMoreBtn').addEventListener('click', function() { renderProjectsPage(true); });
 
     /* ─── PROJECT MODAL ─── */
     async function openProjectModal(repoName, isTopProject) {

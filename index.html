@@ -1,75 +1,1311 @@
-﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<!doctype html>
+<html lang="en">
 <head>
-    <title></title>
-    <script type="text/javascript">
-        var host = "mephisto83.github.io";
-        if ((host == window.location.host) && (window.location.protocol != "https:"))
-            window.location.protocol = "https";
-    </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Andrew Porter — Full-Stack Engineer &amp; AI Platform Architect</title>
+  <meta name="description" content="Full-stack engineer with 200+ projects spanning AI platforms, ML pipelines, real-time collaboration, and scalable cloud infrastructure." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+  <!-- Marked.js for rendering markdown docs on demand -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --ink: #f0f0f0;
+      --muted: rgba(240,240,240,.6);
+      --accent: #c8ff00;
+      --accent2: #ff5733;
+      --accent3: #7b61ff;
+      --card-bg: rgba(18,18,18,.85);
+      --border: rgba(255,255,255,.08);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: var(--accent); color: #000; }
+
+    /* Canvas starfield */
+    #stars {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: -3; opacity: .4;
+    }
+
+    /* Grain overlay */
+    .grain {
+      position: fixed; inset: -60px; z-index: -2;
+      pointer-events: none; opacity: .06;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      animation: grainMove 8s steps(10) infinite;
+    }
+    @keyframes grainMove {
+      0%{transform:translate(0,0)}10%{transform:translate(-4%,-6%)}20%{transform:translate(-7%,2%)}30%{transform:translate(6%,-3%)}40%{transform:translate(-3%,7%)}50%{transform:translate(-8%,-2%)}60%{transform:translate(3%,6%)}70%{transform:translate(7%,1%)}80%{transform:translate(-2%,-6%)}90%{transform:translate(4%,-2%)}100%{transform:translate(0,0)}
+    }
+
+    /* Cursor glow */
+    .cursorGlow {
+      position: fixed; left: 0; top: 0;
+      width: 500px; height: 500px; border-radius: 999px;
+      background: radial-gradient(circle, rgba(200,255,0,.12), transparent 60%);
+      filter: blur(20px); transform: translate(-50%,-50%);
+      pointer-events: none; z-index: -1; opacity: .7; mix-blend-mode: screen;
+    }
+
+    /* NAV */
+    header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 24px; }
+    .nav {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; border: 1px solid var(--border);
+      border-radius: 999px; background: rgba(10,10,10,.7);
+      backdrop-filter: blur(20px);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 700; font-size: 13px;
+      letter-spacing: .08em; text-transform: uppercase;
+    }
+    .brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 14px rgba(200,255,0,.5); }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500;
+      padding: 8px 14px; border-radius: 999px; transition: all .2s;
+    }
+    .nav-links a:hover { color: var(--ink); background: rgba(255,255,255,.06); }
+    .nav-cta {
+      padding: 8px 18px; border-radius: 999px; border: none;
+      background: var(--accent); color: #000; font-weight: 600; font-size: 13px;
+      cursor: pointer; transition: transform .15s, box-shadow .2s; text-decoration: none;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(200,255,0,.25); }
+
+    @media (max-width: 700px) {
+      .nav-links { display: none; }
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; padding: 140px 24px 80px;
+      max-width: 1200px; margin: 0 auto; position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--card-bg);
+      font-size: 13px; color: var(--muted); width: fit-content; margin-bottom: 32px;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse {
+      0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(200,255,0,.4)}
+      50%{opacity:.7;box-shadow:0 0 0 8px rgba(200,255,0,0)}
+    }
+    .hero-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 700; font-size: clamp(52px, 9vw, 130px);
+      line-height: .88; letter-spacing: -.04em; margin-bottom: 28px;
+    }
+    .hero-title .line { display: block; overflow: hidden; }
+    .hero-title .word { display: inline-block; will-change: transform; }
+    .hero-title .accent-word { color: var(--accent); text-shadow: 0 0 60px rgba(200,255,0,.15); }
+    .hero-title .outline-word { -webkit-text-stroke: 1.5px var(--ink); color: transparent; }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px); color: var(--muted);
+      max-width: 65ch; line-height: 1.6; margin-bottom: 40px;
+    }
+    .hero-cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 24px; border-radius: 999px;
+      font-weight: 600; font-size: 14px; border: 1px solid var(--border);
+      cursor: pointer; transition: all .2s; text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--accent); color: #000; border-color: var(--accent);
+      box-shadow: 0 8px 30px rgba(200,255,0,.15);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(200,255,0,.25); }
+    .btn-ghost { background: transparent; color: var(--ink); }
+    .btn-ghost:hover { background: rgba(255,255,255,.06); transform: translateY(-2px); }
+    .btn-arrow { display: inline-flex; width: 20px; height: 20px; align-items: center; justify-content: center; transition: transform .2s; }
+    .btn:hover .btn-arrow { transform: translateX(3px); }
+
+    /* MARQUEE */
+    .marquee-section {
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 20px 0; overflow: hidden; white-space: nowrap;
+    }
+    .marquee-track {
+      display: flex; gap: 0; animation: marquee 40s linear infinite; width: max-content;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    .marquee-item {
+      display: inline-flex; align-items: center; gap: 24px; padding: 0 24px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(18px, 3vw, 28px); font-weight: 600;
+      letter-spacing: -.01em; color: var(--muted); transition: color .3s;
+    }
+    .marquee-item:hover { color: var(--accent); }
+    .marquee-sep { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; opacity: .6; }
+
+    /* SECTION */
+    .section { max-width: 1200px; margin: 0 auto; padding: 120px 24px; }
+    .section-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 24px; margin-bottom: 48px; flex-wrap: wrap;
+    }
+    .kicker {
+      font-family: "Space Grotesk", sans-serif;
+      text-transform: uppercase; letter-spacing: .15em;
+      font-size: 12px; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(32px, 5vw, 56px); font-weight: 700;
+      letter-spacing: -.03em; line-height: 1.05;
+    }
+    .section-sub { color: var(--muted); font-size: 15px; max-width: 44ch; line-height: 1.6; }
+
+    /* SHOWCASE SCROLL */
+    .showcase-scroll {
+      display: flex; gap: 20px; overflow-x: auto;
+      scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+      padding: 0 24px 24px; cursor: grab;
+    }
+    .showcase-scroll:active { cursor: grabbing; }
+    .showcase-scroll::-webkit-scrollbar { height: 0; }
+
+    .project-card {
+      flex: 0 0 380px; scroll-snap-align: start;
+      border-radius: var(--radius); border: 1px solid var(--border);
+      background: var(--card-bg); overflow: hidden;
+      transition: transform .35s cubic-bezier(.22,1,.36,1), border-color .3s;
+      position: relative; cursor: pointer;
+    }
+    .project-card:hover { transform: translateY(-6px); border-color: rgba(200,255,0,.2); }
+    .project-visual {
+      height: 220px;
+      background: linear-gradient(135deg, rgba(200,255,0,.08), rgba(123,97,255,.08));
+      position: relative; overflow: hidden; display: grid; place-items: center;
+    }
+    .project-visual img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .project-visual::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, var(--card-bg));
+    }
+    .project-visual .project-icon { font-size: 48px; opacity: .6; }
+    .project-body { padding: 20px; }
+    .project-tags { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .tag {
+      font-size: 11px; padding: 5px 10px; border-radius: 999px;
+      border: 1px solid var(--border); color: var(--muted); background: rgba(255,255,255,.03);
+    }
+    .tag.tag-accent { border-color: rgba(200,255,0,.2); color: var(--accent); }
+    .project-body h3 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px; font-weight: 600; letter-spacing: -.02em; margin-bottom: 8px;
+    }
+    .project-body p { color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .project-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 16px; font-size: 13px; font-weight: 600;
+      color: var(--accent); text-decoration: none; transition: gap .2s;
+    }
+    .project-link:hover { gap: 10px; }
+
+    .score-badge {
+      position: absolute; top: 12px; right: 12px; z-index: 2;
+      background: rgba(0,0,0,.7); backdrop-filter: blur(8px);
+      border: 1px solid rgba(200,255,0,.3);
+      padding: 4px 10px; border-radius: 999px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 12px; font-weight: 700; color: var(--accent);
+    }
+
+    /* STATEMENT */
+    .statement { padding: 100px 24px; text-align: center; position: relative; }
+    .statement-text {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(36px, 6vw, 80px); font-weight: 700;
+      letter-spacing: -.04em; line-height: 1.0; max-width: 900px; margin: 0 auto;
+    }
+    .statement-text .highlight {
+      color: var(--accent); position: relative;
+    }
+    .statement-text .highlight::after {
+      content: ""; position: absolute; bottom: -.05em; left: 0;
+      width: 100%; height: 4px; background: var(--accent); border-radius: 2px; opacity: .3;
+    }
+    .statement-sub {
+      margin-top: 24px; color: var(--muted);
+      font-size: clamp(15px, 2vw, 18px); max-width: 60ch;
+      margin-left: auto; margin-right: auto; line-height: 1.6;
+    }
+
+    /* INFOGRAPHIC */
+    .infographic-section {
+      max-width: 900px; margin: 0 auto; padding: 40px 24px 80px;
+      text-align: center;
+    }
+    .infographic-section img {
+      width: 100%; border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+      transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s;
+    }
+    .infographic-section img:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 30px 80px rgba(0,0,0,.5), 0 0 40px rgba(200,255,0,.06);
+    }
+
+    /* STATS STRIP */
+    .stats-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--border);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    @media (max-width: 700px) { .stats-strip { grid-template-columns: repeat(2, 1fr); } }
+    .stat { padding: 40px 24px; background: var(--bg); text-align: center; }
+    .stat-num {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(36px, 5vw, 56px); font-weight: 700;
+      letter-spacing: -.03em; color: var(--accent);
+    }
+    .stat-label { margin-top: 8px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+
+    /* SKILLS MATRIX */
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+    .skill-card {
+      padding: 24px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--card-bg);
+      transition: border-color .3s, transform .35s cubic-bezier(.22,1,.36,1);
+    }
+    .skill-card:hover { border-color: rgba(200,255,0,.15); transform: translateY(-3px); }
+    .skill-card-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+    }
+    .skill-card h4 {
+      font-family: "Space Grotesk", sans-serif; font-size: 18px; font-weight: 600;
+    }
+    .skill-count {
+      font-size: 12px; color: var(--accent); padding: 4px 10px;
+      border-radius: 999px; border: 1px solid rgba(200,255,0,.2);
+    }
+    .skill-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .skill-pill {
+      font-size: 11px; padding: 4px 10px; border-radius: 999px;
+      border: 1px solid var(--border); color: var(--muted);
+      background: rgba(255,255,255,.02); transition: all .2s;
+    }
+    .skill-pill:hover { border-color: rgba(200,255,0,.3); color: var(--accent); }
+
+    /* ACHIEVEMENTS */
+    .achievements-list { list-style: none; }
+    .achievements-list li {
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+      color: var(--muted); font-size: 15px; line-height: 1.6;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .achievements-list li::before {
+      content: ""; flex-shrink: 0;
+      width: 8px; height: 8px; margin-top: 8px;
+      border-radius: 50%; background: var(--accent);
+    }
+
+    /* ALL PROJECTS GRID */
+    .filter-bar {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;
+    }
+    .filter-btn {
+      padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border);
+      background: transparent; color: var(--muted); font-size: 13px;
+      cursor: pointer; transition: all .2s; font-family: Inter, sans-serif;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: rgba(200,255,0,.3); color: var(--accent); background: rgba(200,255,0,.05);
+    }
+    .search-box {
+      flex: 1; min-width: 200px; padding: 10px 18px;
+      border-radius: 999px; border: 1px solid var(--border);
+      background: rgba(255,255,255,.03); color: var(--ink);
+      font-size: 14px; font-family: Inter, sans-serif;
+      outline: none; transition: border-color .2s;
+    }
+    .search-box:focus { border-color: rgba(200,255,0,.3); }
+    .search-box::placeholder { color: rgba(240,240,240,.3); }
+
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+    .mini-card {
+      padding: 20px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--card-bg);
+      transition: all .3s; cursor: pointer; position: relative; overflow: hidden;
+    }
+    .mini-card:hover { border-color: rgba(200,255,0,.15); transform: translateY(-3px); }
+    .mini-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+    .mini-card h4 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 16px; font-weight: 600; letter-spacing: -.02em;
+      line-height: 1.3;
+    }
+    .mini-score {
+      flex-shrink: 0; font-family: "Space Grotesk", sans-serif;
+      font-size: 13px; font-weight: 700; color: var(--accent);
+      padding: 2px 8px; border-radius: 999px;
+      border: 1px solid rgba(200,255,0,.2);
+    }
+    .mini-card p { color: var(--muted); font-size: 13px; line-height: 1.5; margin-bottom: 12px; }
+    .mini-card .mini-tech { display: flex; flex-wrap: wrap; gap: 5px; }
+    .mini-card .mini-tech span {
+      font-size: 10px; padding: 3px 8px; border-radius: 999px;
+      border: 1px solid var(--border); color: var(--muted);
+    }
+    .load-more-row { text-align: center; padding: 32px 0; }
+
+    /* PROCESS */
+    .process-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    @media (max-width: 860px) { .process-grid { grid-template-columns: 1fr; } }
+    .process-card {
+      padding: 32px 24px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--card-bg);
+      position: relative; overflow: hidden;
+      transition: border-color .3s, transform .35s cubic-bezier(.22,1,.36,1);
+    }
+    .process-card:hover { border-color: rgba(200,255,0,.15); transform: translateY(-4px); }
+    .process-card::before {
+      content: ""; position: absolute; top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0; transition: opacity .3s;
+    }
+    .process-card:hover::before { opacity: 1; }
+    .process-num {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 52px; font-weight: 700; color: var(--accent);
+      opacity: .2; line-height: 1; margin-bottom: 16px;
+    }
+    .process-card h4 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px; font-weight: 600; letter-spacing: -.02em; margin-bottom: 10px;
+    }
+    .process-card p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+    /* LABS */
+    .labs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+    .lab-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--card-bg);
+      text-decoration: none; color: var(--ink); transition: all .3s;
+    }
+    .lab-link:hover { border-color: rgba(200,255,0,.15); transform: translateY(-2px); }
+    .lab-link .lab-icon { font-size: 20px; }
+    .lab-link span { font-size: 14px; font-weight: 500; }
+
+    /* PROJECT DETAIL MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,.8); backdrop-filter: blur(10px);
+      overflow-y: auto; padding: 40px 20px;
+    }
+    .modal-overlay.open { display: flex; justify-content: center; align-items: flex-start; }
+    .modal {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); max-width: 800px; width: 100%;
+      padding: 40px; position: relative; margin: auto;
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: 1px solid var(--border);
+      color: var(--muted); width: 36px; height: 36px;
+      border-radius: 50%; cursor: pointer; font-size: 18px;
+      display: grid; place-items: center; transition: all .2s;
+    }
+    .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+    .modal h2 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 28px; font-weight: 700; margin-bottom: 8px;
+    }
+    .modal .modal-oneliner { color: var(--muted); font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
+    .modal .modal-meta {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .modal .modal-img {
+      width: 100%; border-radius: 12px; margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+    .modal .modal-bullets { list-style: none; margin-bottom: 24px; }
+    .modal .modal-bullets li {
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+      color: var(--muted); font-size: 14px; line-height: 1.6;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .modal .modal-bullets li::before {
+      content: ""; flex-shrink: 0; width: 6px; height: 6px;
+      margin-top: 8px; border-radius: 50%; background: var(--accent);
+    }
+    .modal .modal-doc {
+      border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px;
+    }
+    .modal .modal-doc h1,
+    .modal .modal-doc h2,
+    .modal .modal-doc h3,
+    .modal .modal-doc h4 {
+      font-family: "Space Grotesk", sans-serif;
+      margin-top: 20px; margin-bottom: 10px;
+    }
+    .modal .modal-doc h1 { font-size: 22px; }
+    .modal .modal-doc h2 { font-size: 18px; }
+    .modal .modal-doc h3 { font-size: 16px; }
+    .modal .modal-doc p { color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
+    .modal .modal-doc code {
+      background: rgba(255,255,255,.05); padding: 2px 6px; border-radius: 4px; font-size: 13px;
+    }
+    .modal .modal-doc pre {
+      background: rgba(255,255,255,.03); padding: 16px; border-radius: 8px;
+      overflow-x: auto; margin-bottom: 16px;
+    }
+    .modal .modal-doc pre code { background: none; padding: 0; }
+    .modal .modal-doc ul, .modal .modal-doc ol {
+      color: var(--muted); font-size: 14px; padding-left: 20px; margin-bottom: 12px;
+    }
+    .modal .modal-doc li { margin-bottom: 4px; line-height: 1.5; }
+    .modal .modal-doc table {
+      width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px;
+    }
+    .modal .modal-doc th, .modal .modal-doc td {
+      padding: 8px 12px; border: 1px solid var(--border); text-align: left; color: var(--muted);
+    }
+    .modal .modal-doc th { color: var(--ink); font-weight: 600; background: rgba(255,255,255,.03); }
+
+    /* CTA / FOOTER */
+    .cta-section { text-align: center; padding: 120px 24px 60px; }
+    .cta-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(40px, 7vw, 90px); font-weight: 700;
+      letter-spacing: -.04em; line-height: .95; margin-bottom: 24px;
+    }
+    .cta-title .accent-word { color: var(--accent); }
+    .cta-sub {
+      color: var(--muted); font-size: clamp(15px, 2vw, 18px);
+      max-width: 50ch; margin: 0 auto 36px; line-height: 1.6;
+    }
+    footer { border-top: 1px solid var(--border); padding: 32px 24px; }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-inner span { color: var(--muted); font-size: 13px; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color .2s; }
+    .footer-links a:hover { color: var(--ink); }
+
+    /* ANIM UTILITIES */
+    .reveal { opacity: 0; transform: translateY(30px); }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+      background: var(--card-bg); color: var(--ink);
+      padding: 14px 24px; border-radius: 999px;
+      border: 1px solid var(--border); font-size: 14px;
+      z-index: 300; opacity: 0; transition: opacity .3s;
+      backdrop-filter: blur(12px); pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+  </style>
 </head>
 
 <body>
-    <h1>
-        <img src="meph/resources/css/images/meph.png" />Meph
-    </h1>
-    <h3>Meta Quest 2 Labs</h3>
-    <ul>
-        <li>
-            <img src="meph/resources/css/images/meph.png" />
-            <a href="/aframe_test/index.html">A Frame Test</a>
-        </li>
-    </ul>
-    <h3>Meph Labs</h3>
-    <ul>
-        <li>
-            <img src="meph/resources/css/images/meph.png" />
-            <a href="/composer-companion-ss/index.html">Composer Companion SS</a>
-        </li>
-        <li>
-            <img src="meph/resources/css/images/meph.png" />
-            <a href="redhash/explorer" target="_blank">Red Explorer</a>
-        </li>
-        <li>
-            <img src="meph/resources/css/images/meph.png" />
-            <a href="dev-harness/meph-mobile-example/MephApplication.html" target="_blank">Meph Gallery</a>
-        </li>
-        <li>
-            <img src="meph/resources/css/images/meph.png" />
-            <a href="dev-harness/meph-mobile-example/MephApplication-min.html" target="_blank">Meph Gallery min</a>
-        </li>
-        <li>
-            <img src="meph/resources/css/images/meph.png" />
-            <a href="dev-harness/nection-prototype/index.html">Connection</a>
-        </li>
-        <li>
-            <img src="meph/resources/css/images/meph.png" />
-            <a href="dev-harness/presentation-blender/MephApplication.html">Blender</a>
-        </li>
-        <li>
-            <img src="meph/resources/css/images/meph.png" />
-            <a href="../SheepRun/sheep-run/index.html" target="_blank">SheepRun</a>
-        </li>
-        <li>
-            <img src="meph/resources/css/images/meph.png" />
-            <a href="dev-harness/presentation-blender/MephApplication.html" target="_blank">Presentation Blend</a>
-        </li>
-    </ul>
+  <canvas id="stars"></canvas>
+  <div class="grain"></div>
+  <div class="cursorGlow" id="cursorGlow" aria-hidden="true"></div>
 
-    <h3>Meph Tests</h3>
-    <ul>
-        <li>
-            <img src="meph/resources/css/images/meph.png" /><a href="meph/specs/Test.html" target="_blank">Tests</a>
-        </li>
-    </ul>
+  <!-- NAV -->
+  <header>
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        Andrew Porter
+      </div>
+      <div class="nav-links">
+        <a href="#work">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#all-projects">All Work</a>
+        <a href="#labs">Labs</a>
+      </div>
+      <a href="https://github.com/mephisto83" target="_blank" class="nav-cta">GitHub &#8599;</a>
+    </nav>
+  </header>
 
-    <h3>Meph Documentation</h3>
-    <ul>
-        <li>
-            <img src="meph/resources/css/images/meph.png" /><a href="docs/index.html" target="_blank">Documentation</a>
-        </li>
-    </ul>
+  <main>
+
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        200+ Open Source Projects &mdash; 2025
+      </div>
+
+      <h1 class="hero-title">
+        <span class="line"><span class="word">Full-Stack</span></span>
+        <span class="line"><span class="word accent-word">Engineer</span> <span class="word">&amp;</span></span>
+        <span class="line"><span class="word outline-word">Architect</span></span>
+      </h1>
+
+      <p class="hero-sub" id="heroSub">
+        Full-stack engineer with expertise in AI-powered platform development, having delivered 200+ production-ready projects spanning ML, microservices, and scalable web applications.
+      </p>
+
+      <div class="hero-cta-row">
+        <a href="#work" class="btn btn-primary">
+          View Projects
+          <span class="btn-arrow">&#8594;</span>
+        </a>
+        <a href="#skills" class="btn btn-ghost">
+          Skills &amp; Tech
+          <span class="btn-arrow">&#8594;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- MARQUEE - Top Technologies -->
+    <div class="marquee-section">
+      <div class="marquee-track" id="marquee1"></div>
+    </div>
+
+    <!-- FEATURED PROJECTS -->
+    <section class="section" id="work">
+      <div class="section-header">
+        <div>
+          <p class="kicker">Selected Work</p>
+          <h2 class="section-title reveal">Featured<br>Projects</h2>
+        </div>
+        <p class="section-sub reveal">Top-rated projects spanning AI platforms, real-time systems, workflow automation, and GPU-accelerated ML infrastructure.</p>
+      </div>
+    </section>
+
+    <div class="showcase-scroll" id="showcaseScroll"></div>
+
+    <!-- STATEMENT -->
+    <div class="statement" id="about">
+      <p class="statement-text reveal">
+        Building systems that turn <span class="highlight">complexity</span> into capability.
+      </p>
+      <p class="statement-sub reveal">
+        Specialized in GPU-accelerated ML workflows, real-time collaborative systems, and end-to-end development platforms that integrate computer vision, workflow automation, and distributed processing.
+      </p>
+    </div>
+
+    <!-- INFOGRAPHIC -->
+    <div class="infographic-section">
+      <picture>
+        <source srcset="images/andrewporter_infographic.webp" type="image/webp" />
+        <img src="images/andrewporter_infographic.jpg" alt="Andrew Porter — Engineer & AI Architect Infographic" loading="lazy" class="reveal" />
+      </picture>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-strip">
+      <div class="stat">
+        <div class="stat-num" data-count="200" data-suffix="+">0</div>
+        <div class="stat-label">Repositories</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-count="79">0</div>
+        <div class="stat-label">Full-Stack Apps</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-count="9">0</div>
+        <div class="stat-label">Tech Categories</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-count="55" data-suffix="+">0</div>
+        <div class="stat-label">High-Impact Projects</div>
+      </div>
+    </div>
+
+    <!-- KEY ACHIEVEMENTS -->
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <p class="kicker">Track Record</p>
+          <h2 class="section-title reveal">Key<br>Achievements</h2>
+        </div>
+      </div>
+      <ul class="achievements-list" id="achievementsList"></ul>
+    </section>
+
+    <!-- SKILLS MATRIX -->
+    <section class="section" id="skills">
+      <div class="section-header">
+        <div>
+          <p class="kicker">Expertise</p>
+          <h2 class="section-title reveal">Skills<br>Matrix</h2>
+        </div>
+        <p class="section-sub reveal">Technologies and tools organized by domain, built through years of hands-on production experience.</p>
+      </div>
+      <div class="skills-grid" id="skillsGrid"></div>
+    </section>
+
+    <!-- SECOND MARQUEE (reverse) -->
+    <div class="marquee-section">
+      <div class="marquee-track" id="marquee2" style="animation-direction: reverse;"></div>
+    </div>
+
+    <!-- ALL PROJECTS (lazy loaded) -->
+    <section class="section" id="all-projects">
+      <div class="section-header">
+        <div>
+          <p class="kicker">Complete Portfolio</p>
+          <h2 class="section-title reveal">All<br>Projects</h2>
+        </div>
+        <p class="section-sub reveal">Every project from the full repository collection — filter by category, search by name or technology.</p>
+      </div>
+
+      <div class="filter-bar" id="filterBar">
+        <input type="text" class="search-box" id="searchBox" placeholder="Search projects, technologies..." />
+      </div>
+
+      <div class="projects-grid" id="projectsGrid"></div>
+      <div class="load-more-row" id="loadMoreRow">
+        <button class="btn btn-ghost" id="loadMoreBtn" style="display:none;">
+          Load More Projects
+          <span class="btn-arrow">&#8594;</span>
+        </button>
+        <p id="projectCount" style="color:var(--muted);font-size:13px;margin-top:8px;"></p>
+      </div>
+    </section>
+
+    <!-- LABS & DEMOS -->
+    <section class="section" id="labs">
+      <div class="section-header">
+        <div>
+          <p class="kicker">Interactive</p>
+          <h2 class="section-title reveal">Labs &amp;<br>Demos</h2>
+        </div>
+        <p class="section-sub reveal">Live interactive demos and experiments — WebVR, music, visualizations, and more.</p>
+      </div>
+      <div class="labs-grid">
+        <a href="/aframe_test/index.html" class="lab-link reveal">
+          <span class="lab-icon">&#127760;</span>
+          <span>A-Frame WebVR Test</span>
+        </a>
+        <a href="/composer-companion-ss/index.html" class="lab-link reveal">
+          <span class="lab-icon">&#127925;</span>
+          <span>Composer Companion SS</span>
+        </a>
+        <a href="redhash/explorer" target="_blank" class="lab-link reveal">
+          <span class="lab-icon">&#128373;</span>
+          <span>Red Explorer</span>
+        </a>
+        <a href="dev-harness/meph-mobile-example/MephApplication.html" target="_blank" class="lab-link reveal">
+          <span class="lab-icon">&#127912;</span>
+          <span>Meph Gallery</span>
+        </a>
+        <a href="dev-harness/meph-mobile-example/MephApplication-min.html" target="_blank" class="lab-link reveal">
+          <span class="lab-icon">&#127912;</span>
+          <span>Meph Gallery (min)</span>
+        </a>
+        <a href="dev-harness/nection-prototype/index.html" class="lab-link reveal">
+          <span class="lab-icon">&#128279;</span>
+          <span>Connection Prototype</span>
+        </a>
+        <a href="dev-harness/presentation-blender/MephApplication.html" class="lab-link reveal">
+          <span class="lab-icon">&#127922;</span>
+          <span>Blender + Presentations</span>
+        </a>
+        <a href="meph/specs/Test.html" class="lab-link reveal">
+          <span class="lab-icon">&#128300;</span>
+          <span>Meph Tests</span>
+        </a>
+        <a href="docs/index.html" class="lab-link reveal">
+          <span class="lab-icon">&#128196;</span>
+          <span>Meph Documentation</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="contact">
+      <h2 class="cta-title reveal">
+        Let's Build<br><span class="accent-word">Together</span>
+      </h2>
+      <p class="cta-sub reveal">
+        Explore the code, fork a project, or reach out to collaborate on something new.
+      </p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <a href="https://github.com/mephisto83" target="_blank" class="btn btn-primary reveal">
+          GitHub Profile
+          <span class="btn-arrow">&#8599;</span>
+        </a>
+        <a href="index.html" class="btn btn-ghost reveal">
+          Legacy Site
+          <span class="btn-arrow">&#8594;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <span>&copy; 2025 Andrew Porter. All rights reserved.</span>
+        <div class="footer-links">
+          <a href="https://github.com/mephisto83" target="_blank">GitHub</a>
+          <a href="index.html">Legacy Site</a>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- PROJECT DETAIL MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ─── STATE ─── */
+    let SUMMARY = null;
+    let ALL_PROJECTS = null;
+    let currentFilter = 'All';
+    let searchQuery = '';
+    let displayedCount = 0;
+    const PAGE_SIZE = 24;
+
+    const CATEGORY_COLORS = {
+      'Full-Stack': '#c8ff00',
+      'Backend': '#22d3ee',
+      'Frontend': '#a78bfa',
+      'Tools': '#f97316',
+      'Library': '#f472b6',
+      'ML': '#fb923c',
+      'Data': '#34d399',
+      'Infrastructure': '#60a5fa',
+      'Other': '#94a3b8'
+    };
+
+    const CATEGORY_ICONS = {
+      'Full-Stack': '\u26A1', 'Backend': '\u2699', 'Frontend': '\uD83C\uDFA8',
+      'Tools': '\uD83D\uDD27', 'Library': '\uD83D\uDCDA', 'ML': '\uD83E\uDDE0',
+      'Data': '\uD83D\uDCCA', 'Infrastructure': '\u2601', 'Other': '\u2726'
+    };
+
+    /* ─── BOOT ─── */
+    async function boot() {
+      try {
+        const sumResp = await fetch('data/summary.json');
+        SUMMARY = await sumResp.json();
+
+        // Use real summary text if available
+        if (SUMMARY.overallSummary) {
+          const heroSub = document.getElementById('heroSub');
+          if (heroSub) heroSub.textContent = SUMMARY.overallSummary;
+        }
+
+        renderMarquees();
+        renderFeaturedProjects();
+        renderAchievements();
+        renderSkillsMatrix();
+        initAnimations();
+
+        // Lazy load all projects in background
+        const projResp = await fetch('data/projects.json');
+        ALL_PROJECTS = await projResp.json();
+        renderFilterBar();
+        renderProjectsPage();
+      } catch(err) {
+        console.error('Boot error:', err);
+      }
+    }
+
+    boot();
+
+    /* ─── MARQUEE ─── */
+    function renderMarquees() {
+      // Pull real skills from the skills matrix
+      let allSkills = [];
+      if (SUMMARY && SUMMARY.skillsMatrix) {
+        const order = ['Full-Stack', 'ML', 'Backend', 'Frontend', 'Infrastructure', 'Tools', 'Library', 'Data'];
+        order.forEach(cat => {
+          if (SUMMARY.skillsMatrix[cat]) {
+            allSkills = allSkills.concat(SUMMARY.skillsMatrix[cat].slice(0, 4));
+          }
+        });
+      }
+      // Deduplicate
+      const seen = new Set();
+      allSkills = allSkills.filter(s => { const l = s.toLowerCase(); if (seen.has(l)) return false; seen.add(l); return true; });
+
+      const half = Math.ceil(allSkills.length / 2);
+      const topTech = allSkills.slice(0, half);
+      const topTech2 = allSkills.slice(half);
+
+      function buildMarquee(items) {
+        return (items.concat(items)).map(t =>
+          '<span class="marquee-item">' + esc(t) + ' <span class="marquee-sep"></span></span>'
+        ).join('');
+      }
+
+      document.getElementById('marquee1').innerHTML = buildMarquee(topTech.length ? topTech : ['TypeScript', 'Python', 'React', 'Node.js']);
+      document.getElementById('marquee2').innerHTML = buildMarquee(topTech2.length ? topTech2 : ['TensorFlow', 'Docker', 'Next.js', 'Redis']);
+    }
+
+    /* ─── FEATURED PROJECTS ─── */
+    function renderFeaturedProjects() {
+      const el = document.getElementById('showcaseScroll');
+      if (!SUMMARY || !SUMMARY.topProjects) return;
+
+      el.innerHTML = SUMMARY.topProjects.map(function(p) {
+        var icon = CATEGORY_ICONS[p.category] || '\u2726';
+        return '<div class="project-card reveal" data-repo="' + attr(p.repoName) + '">' +
+          '<span class="score-badge">\u2605 ' + p.impactScore + '/10</span>' +
+          '<div class="project-visual">' +
+            imgPicture(p.repoName, p.projectTitle, '', ' onerror="this.outerHTML=\'<span class=project-icon>' + icon + '</span>\'"') +
+          '</div>' +
+          '<div class="project-body">' +
+            '<div class="project-tags">' +
+              '<span class="tag tag-accent">' + esc(p.category) + '</span>' +
+              p.techStack.slice(0,3).map(function(t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('') +
+            '</div>' +
+            '<h3>' + esc(p.projectTitle) + '</h3>' +
+            '<p>' + esc(truncate(p.oneLiner, 120)) + '</p>' +
+            '<span class="project-link">View Details \u2192</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      // Add click handlers
+      el.querySelectorAll('.project-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+          openProjectModal(card.dataset.repo, true);
+        });
+      });
+    }
+
+    /* ─── ACHIEVEMENTS ─── */
+    function renderAchievements() {
+      var el = document.getElementById('achievementsList');
+      if (!SUMMARY || !SUMMARY.recommendedBullets) return;
+      el.innerHTML = SUMMARY.recommendedBullets.map(function(b) {
+        return '<li class="reveal">' + esc(b) + '</li>';
+      }).join('');
+    }
+
+    /* ─── SKILLS MATRIX ─── */
+    function renderSkillsMatrix() {
+      var el = document.getElementById('skillsGrid');
+      if (!SUMMARY || !SUMMARY.skillsMatrix) return;
+
+      var order = ['Full-Stack', 'ML', 'Backend', 'Frontend', 'Infrastructure', 'Tools', 'Library', 'Data', 'Other'];
+      el.innerHTML = order.filter(function(k) { return SUMMARY.skillsMatrix[k]; }).map(function(cat) {
+        var skills = SUMMARY.skillsMatrix[cat];
+        var shown = skills.slice(0, 18);
+        var extra = skills.length - shown.length;
+        var count = (SUMMARY.categoryCounts && SUMMARY.categoryCounts[cat]) || 0;
+        return '<div class="skill-card reveal">' +
+          '<div class="skill-card-header">' +
+            '<h4>' + esc(cat) + '</h4>' +
+            '<span class="skill-count">' + count + ' projects</span>' +
+          '</div>' +
+          '<div class="skill-pills">' +
+            shown.map(function(s) { return '<span class="skill-pill">' + esc(s) + '</span>'; }).join('') +
+            (extra > 0 ? '<span class="skill-pill" style="color:var(--accent);border-color:rgba(200,255,0,.2);">+' + extra + ' more</span>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    /* ─── ALL PROJECTS (LAZY, FILTERABLE) ─── */
+    function renderFilterBar() {
+      if (!ALL_PROJECTS || !SUMMARY) return;
+
+      var cats = ['All'];
+      var catKeys = Object.keys(SUMMARY.categoryCounts || {}).sort(function(a, b) {
+        return (SUMMARY.categoryCounts[b] || 0) - (SUMMARY.categoryCounts[a] || 0);
+      });
+      cats = cats.concat(catKeys);
+
+      var bar = document.getElementById('filterBar');
+      var searchBox = bar.querySelector('.search-box');
+      bar.innerHTML = '';
+
+      cats.forEach(function(c) {
+        var btn = document.createElement('button');
+        btn.className = 'filter-btn' + (c === currentFilter ? ' active' : '');
+        btn.textContent = c === 'All' ? 'All (' + ALL_PROJECTS.length + ')' : c + ' (' + (SUMMARY.categoryCounts[c] || 0) + ')';
+        btn.addEventListener('click', function() {
+          currentFilter = c;
+          updateFilters();
+        });
+        bar.appendChild(btn);
+      });
+      bar.appendChild(searchBox);
+    }
+
+    function getFilteredProjects() {
+      if (!ALL_PROJECTS) return [];
+      var list = ALL_PROJECTS;
+      if (currentFilter !== 'All') {
+        list = list.filter(function(p) { return p.c === currentFilter; });
+      }
+      if (searchQuery) {
+        var q = searchQuery.toLowerCase();
+        list = list.filter(function(p) {
+          return p.t.toLowerCase().indexOf(q) !== -1 ||
+            p.r.toLowerCase().indexOf(q) !== -1 ||
+            p.o.toLowerCase().indexOf(q) !== -1 ||
+            (p.s && p.s.some(function(t) { return t.toLowerCase().indexOf(q) !== -1; }));
+        });
+      }
+      list.sort(function(a, b) { return b.i - a.i; });
+      return list;
+    }
+
+    function renderProjectsPage(append) {
+      if (!ALL_PROJECTS) return;
+      var grid = document.getElementById('projectsGrid');
+      var filtered = getFilteredProjects();
+      if (!append) { displayedCount = 0; grid.innerHTML = ''; }
+
+      var slice = filtered.slice(displayedCount, displayedCount + PAGE_SIZE);
+      slice.forEach(function(p) {
+        var card = document.createElement('div');
+        card.className = 'mini-card';
+        card.addEventListener('click', function() { openProjectModal(p.r, false); });
+        var color = CATEGORY_COLORS[p.c] || '#c8ff00';
+        card.innerHTML =
+          '<div class="mini-card-top">' +
+            '<h4>' + esc(p.t) + '</h4>' +
+            '<span class="mini-score" style="border-color:' + color + '40;color:' + color + '">\u2605' + p.i + '</span>' +
+          '</div>' +
+          '<p>' + esc(truncate(p.o, 100)) + '</p>' +
+          '<div class="mini-tech">' +
+            '<span style="border-color:' + color + '30;color:' + color + '">' + esc(p.c) + '</span>' +
+            (p.s ? p.s.slice(0, 4).map(function(t) { return '<span>' + esc(t) + '</span>'; }).join('') : '') +
+          '</div>';
+        grid.appendChild(card);
+      });
+
+      displayedCount += slice.length;
+      var remaining = filtered.length - displayedCount;
+      var btn = document.getElementById('loadMoreBtn');
+      btn.style.display = remaining > 0 ? '' : 'none';
+      document.getElementById('projectCount').textContent =
+        'Showing ' + displayedCount + ' of ' + filtered.length + ' projects';
+
+      // Animate new cards
+      var cards = grid.querySelectorAll('.mini-card');
+      var newCards = Array.prototype.slice.call(cards, -slice.length);
+      newCards.forEach(function(c, i) {
+        gsap.from(c, { opacity: 0, y: 20, duration: .4, delay: i * .03, ease: 'power2.out' });
+      });
+    }
+
+    function updateFilters() {
+      document.querySelectorAll('.filter-btn').forEach(function(b) {
+        var label = b.textContent.split(' (')[0];
+        b.classList.toggle('active', label === currentFilter);
+      });
+      renderProjectsPage(false);
+    }
+
+    document.getElementById('searchBox').addEventListener('input', function(e) {
+      searchQuery = e.target.value;
+      renderProjectsPage(false);
+    });
+    document.getElementById('loadMoreBtn').addEventListener('click', function() { renderProjectsPage(true); });
+
+    /* ─── PROJECT MODAL ─── */
+    async function openProjectModal(repoName, isTopProject) {
+      var overlay = document.getElementById('modalOverlay');
+      var content = document.getElementById('modalContent');
+
+      // Find project data
+      var proj = null;
+      if (isTopProject && SUMMARY && SUMMARY.topProjects) {
+        proj = SUMMARY.topProjects.find(function(p) { return p.repoName === repoName; });
+      }
+      if (!proj && ALL_PROJECTS) {
+        var mini = ALL_PROJECTS.find(function(p) { return p.r === repoName; });
+        if (mini) {
+          proj = {
+            repoName: mini.r, projectTitle: mini.t, oneLiner: mini.o,
+            techStack: mini.s || [], impactScore: mini.i, category: mini.c,
+            bulletPoints: mini.b || [], highlights: mini.h || []
+          };
+        }
+      }
+      if (!proj) return;
+
+      var color = CATEGORY_COLORS[proj.category] || '#c8ff00';
+
+      var html = '<div class="modal-meta">' +
+        '<span class="tag tag-accent" style="border-color:' + color + '40;color:' + color + '">' + esc(proj.category) + '</span>' +
+        '<span class="tag" style="border-color:' + color + '40;color:' + color + '">\u2605 ' + proj.impactScore + '/10</span>' +
+        proj.techStack.slice(0, 6).map(function(t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('') +
+      '</div>' +
+      '<h2>' + esc(proj.projectTitle) + '</h2>' +
+      '<p class="modal-oneliner">' + esc(proj.oneLiner) + '</p>' +
+      imgPicture(repoName, proj.projectTitle, 'modal-img', ' onerror="this.style.display=\'none\'"');
+
+      if (proj.bulletPoints && proj.bulletPoints.length) {
+        html += '<ul class="modal-bullets">' +
+          proj.bulletPoints.map(function(b) { return '<li>' + esc(b) + '</li>'; }).join('') +
+        '</ul>';
+      }
+
+      if (proj.highlights && proj.highlights.length) {
+        html += '<div style="margin-bottom:20px">' +
+          '<strong style="font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;">Highlights</strong>' +
+          '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px">' +
+            proj.highlights.map(function(h) { return '<span class="tag tag-accent">' + esc(h) + '</span>'; }).join('') +
+          '</div>' +
+        '</div>';
+      }
+
+      html += '<div style="display:flex;gap:12px;flex-wrap:wrap;">' +
+        '<a href="https://github.com/mephisto83/' + encodeURIComponent(repoName) + '" target="_blank" class="btn btn-primary" style="font-size:13px;padding:10px 18px;">' +
+          'View on GitHub \u2197' +
+        '</a>' +
+      '</div>' +
+      '<div class="modal-doc" id="modalDoc">' +
+        '<p style="color:var(--muted);font-size:13px;">Loading documentation...</p>' +
+      '</div>';
+
+      content.innerHTML = html;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      // Lazy load markdown documentation
+      try {
+        var resp = await fetch('data/docs/' + encodeURIComponent(repoName) + '.md');
+        if (resp.ok) {
+          var md = await resp.text();
+          var docEl = document.getElementById('modalDoc');
+          if (docEl && typeof marked !== 'undefined') {
+            docEl.innerHTML = '<h3 style="margin-bottom:12px;">Documentation</h3>' + marked.parse(md);
+          } else if (docEl) {
+            docEl.innerHTML = '<pre style="white-space:pre-wrap;font-size:13px;color:var(--muted)">' + esc(md) + '</pre>';
+          }
+        } else {
+          var docEl2 = document.getElementById('modalDoc');
+          if (docEl2) docEl2.innerHTML = '';
+        }
+      } catch(e) {
+        var docEl3 = document.getElementById('modalDoc');
+        if (docEl3) docEl3.innerHTML = '';
+      }
+    }
+
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    /* ─── HELPERS ─── */
+    // All 200 repo images compressed to WebP + JPG fallback
+    function imgSrc(repoName) {
+      var san = sanitize(repoName);
+      return 'images/repos/repo-' + san + '.webp';
+    }
+
+    function imgPicture(repoName, alt, cls, extra) {
+      var san = sanitize(repoName);
+      return '<picture>' +
+        '<source srcset="images/repos/repo-' + san + '.webp" type="image/webp" />' +
+        '<img src="images/repos/repo-' + san + '.jpg" alt="' + attr(alt) + '"' +
+        (cls ? ' class="' + cls + '"' : '') + ' loading="lazy"' +
+        (extra || '') + ' />' +
+      '</picture>';
+    }
+
+    function sanitize(s) {
+      if (!s) return '';
+      return s.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    }
+    function esc(s) {
+      if (!s) return '';
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+    function attr(s) {
+      if (!s) return '';
+      return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function truncate(s, n) {
+      return s && s.length > n ? s.slice(0, n) + '...' : s || '';
+    }
+    function toast(msg) {
+      var el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(function() { el.classList.remove('show'); }, 2500);
+    }
+
+    /* ─── STARFIELD ─── */
+    var canvas = document.getElementById("stars");
+    var ctx0 = canvas.getContext("2d");
+    var W, H, DPR, stars = [];
+
+    function resizeCanvas() {
+      DPR = Math.min(2, window.devicePixelRatio || 1);
+      W = canvas.width = Math.floor(window.innerWidth * DPR);
+      H = canvas.height = Math.floor(window.innerHeight * DPR);
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      stars = [];
+      for (var i = 0; i < 180; i++) {
+        stars.push({
+          x: Math.random() * W, y: Math.random() * H,
+          r: (Math.random() * 1.4 + 0.2) * DPR,
+          vx: (Math.random() * 0.3 + 0.04) * DPR,
+          a: Math.random() * 0.5 + 0.15
+        });
+      }
+    }
+
+    function drawStars() {
+      ctx0.clearRect(0, 0, W, H);
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        s.x += s.vx;
+        if (s.x > W + 10) s.x = -10;
+        ctx0.beginPath();
+        ctx0.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx0.fillStyle = "rgba(255,255,255," + s.a + ")";
+        ctx0.fill();
+      }
+      requestAnimationFrame(drawStars);
+    }
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    requestAnimationFrame(drawStars);
+
+    /* ─── CURSOR GLOW ─── */
+    var glow = document.getElementById("cursorGlow");
+    var gx = window.innerWidth * 0.5, gy = window.innerHeight * 0.4;
+    var tx = gx, ty = gy;
+
+    window.addEventListener("pointermove", function(e) { tx = e.clientX; ty = e.clientY; });
+
+    function animateGlow() {
+      gx += (tx - gx) * 0.07;
+      gy += (ty - gy) * 0.07;
+      glow.style.transform = "translate(" + gx + "px," + gy + "px) translate(-50%,-50%)";
+      requestAnimationFrame(animateGlow);
+    }
+    requestAnimationFrame(animateGlow);
+
+    /* ─── GSAP ANIMATIONS ─── */
+    function initAnimations() {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Hero entrance
+      gsap.from(".hero-badge", { y: 20, opacity: 0, duration: .7, ease: "power3.out", delay: .1 });
+      gsap.from(".hero-title .word", { y: 60, opacity: 0, duration: 1, ease: "power3.out", stagger: .1, delay: .2 });
+      gsap.from(".hero-sub", { y: 20, opacity: 0, duration: .8, ease: "power2.out", delay: .5 });
+      gsap.from(".hero-cta-row .btn", { y: 14, opacity: 0, duration: .7, ease: "power2.out", stagger: .08, delay: .6 });
+
+      // Reveal on scroll
+      gsap.utils.toArray(".reveal").forEach(function(el) {
+        gsap.to(el, {
+          opacity: 1, y: 0, x: 0, duration: .8, ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 85%" }
+        });
+      });
+
+      // Stats counter
+      gsap.utils.toArray(".stat-num").forEach(function(el) {
+        var target = parseInt(el.dataset.count);
+        var suffix = el.dataset.suffix || "";
+        ScrollTrigger.create({
+          trigger: el, start: "top 85%", once: true,
+          onEnter: function() {
+            gsap.to({ val: 0 }, {
+              val: target, duration: 1.8, ease: "power2.out",
+              onUpdate: function() { el.textContent = Math.round(this.targets()[0].val) + suffix; }
+            });
+          }
+        });
+      });
+
+      // Project cards staggered reveal
+      gsap.utils.toArray(".project-card").forEach(function(card, i) {
+        gsap.to(card, {
+          opacity: 1, y: 0, duration: .7, ease: "power3.out",
+          delay: i * .1, scrollTrigger: { trigger: card, start: "top 90%" }
+        });
+      });
+
+      // Parallax statement
+      gsap.to(".statement-text", {
+        yPercent: -8, ease: "none",
+        scrollTrigger: { trigger: ".statement", start: "top bottom", end: "bottom top", scrub: true }
+      });
+    }
+
+    /* ─── SHOWCASE DRAG SCROLL ─── */
+    var scrollEl = document.getElementById("showcaseScroll");
+    var isDown = false, startX, scrollLeft;
+
+    scrollEl.addEventListener("mousedown", function(e) {
+      isDown = true; startX = e.pageX - scrollEl.offsetLeft; scrollLeft = scrollEl.scrollLeft;
+    });
+    scrollEl.addEventListener("mouseleave", function() { isDown = false; });
+    scrollEl.addEventListener("mouseup", function() { isDown = false; });
+    scrollEl.addEventListener("mousemove", function(e) {
+      if (!isDown) return; e.preventDefault();
+      scrollEl.scrollLeft = scrollLeft - (e.pageX - scrollEl.offsetLeft - startX) * 1.5;
+    });
+  </script>
 </body>
-
 </html>

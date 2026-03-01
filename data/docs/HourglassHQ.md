@@ -1,0 +1,71 @@
+# HourglassHQ
+
+![Language](https://img.shields.io/badge/language-TypeScript-blue) ![CI](https://img.shields.io/badge/CI-GitHub%20Actions-green)
+
+## Overview
+
+HourglassHQ is a comprehensive project management platform designed specifically for software development agencies and freelancers to manage client relationships, track project milestones, monitor SLA compliance, and handle contract-based work. The application provides a complete business management solution with multi-tenant architecture, ensuring data segregation between developers while offering advanced features like dispute resolution, force majeure event tracking, support plan management, and automated email notifications. Built as a React TypeScript SPA with Firebase backend, it serves as an all-in-one solution for managing the entire lifecycle of development projects from initial client onboarding through project completion and ongoing support.
+
+## Architecture
+
+The application follows a component-based React architecture with Firebase as the backend-as-a-service. The main App.tsx orchestrates routing through react-router-dom, with authentication managed by AuthContext.tsx providing user state throughout the application. Data flows through Firestore with strict security rules enforcing developer-level data segregation. The component structure includes specialized cards for different project aspects (ProjectHoursCard, ProjectInvoicesCard, ProjectMilestonesCard, etc.) that compose into larger views like ProjectDetail and Dashboard. The types/index.ts file defines comprehensive TypeScript interfaces for all data models including Developer, Client, Project, SupportPlan, Dispute, and ForceMajeure entities. Email notifications are abstracted through utils/emailService.ts, and the application supports CSV data export through react-csv integration.
+
+## Tech Stack
+
+- React 19.1.1
+- TypeScript 5.8.3
+- Firebase 12.2.1 (Firestore, Auth)
+- Vite 7.1.2
+- Tailwind CSS 3.4.17
+- React Router DOM 7.8.2
+- Chart.js 4.5.0
+- React Hook Form 7.62.0
+- Lucide React (icons)
+- React CSV 2.2.2
+- Jest 30.1.3
+- ESLint 9.33.0
+- PostCSS
+- Autoprefixer
+
+## Key Features
+
+- Multi-tenant data architecture with developer-level segregation enforced by Firestore security rules
+- Comprehensive project management with milestone tracking, hour logging, and change request workflows
+- Advanced SLA monitoring system with real-time breach detection and automated email alerts
+- Support plan management with configurable tiers (Basic, Growth, Premium) including hour tracking and overage calculations
+- Dispute resolution system with structured workflows, priority levels, and resolution tracking
+- Force majeure event logging with impact assessment and automatic timeline extensions
+- Payment milestone tracking with percentage-based billing and invoice generation
+- Real-time dashboard with Chart.js visualizations for hours, revenue, and SLA metrics
+- Automated email notification system through pluggable EmailService interface
+- CSV data export functionality for all major data types
+- Firebase Authentication with Google sign-in integration
+- Responsive UI with custom Tailwind CSS theme including primary, secondary, accent, success, warning, and danger color palettes
+- Team member management with role-based access (developer, client, manager)
+- Expense tracking with approval workflows and billable/non-billable categorization
+
+## Getting Started
+
+1. Clone the repository and run 'npm install' to install all dependencies. 2. Create a Firebase project at console.firebase.google.com and enable Authentication (Email/Password and Google providers) and Firestore Database. 3. Update src/firebase.ts with your Firebase configuration object containing apiKey, authDomain, projectId, storageBucket, messagingSenderId, and appId. 4. Deploy the Firestore security rules from firestore.rules to your Firebase project to enforce data segregation. 5. For production deployment, set up environment variables for Firebase config (VITE_FIREBASE_API_KEY, VITE_FIREBASE_AUTH_DOMAIN, etc.) in your hosting provider. 6. Configure email service integration in src/utils/emailService.ts by implementing your chosen provider (SendGrid, Mailgun, AWS SES). 7. Run 'npm run dev' to start the development server on Vite. 8. For production builds, run 'npm run build' which compiles TypeScript and bundles assets to the dist/ folder. 9. Deploy using 'npm run deploy' for Firebase Hosting or connect to Vercel via GitHub integration for automatic deployments. 10. Ensure proper domain configuration in Firebase Authentication settings for production URLs.
+
+## Language Breakdown
+
+| Language | Lines |
+|----------|-------|
+| typescript | 9,515 |
+| json | 8,811 |
+| css | 285 |
+| markdown | 206 |
+| javascript | 158 |
+| html | 104 |
+| text | 84 |
+| yaml | 65 |
+
+## Infrastructure
+
+- **CI/CD**: GitHub Actions
+- **Cloud**: Google Cloud / Firebase, Vercel
+
+---
+
+*Documentation generated by [repo-looper](https://github.com/mephisto83/HourglassHQ)*

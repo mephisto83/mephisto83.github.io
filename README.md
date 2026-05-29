@@ -8,16 +8,16 @@ Personal portfolio and project showcase hosted on GitHub Pages at [mephisto83.gi
 
 ## Overview
 
-A modern, animated portfolio site presenting **200+ production-ready projects** spanning AI/ML platforms, full-stack web applications, mobile apps, game engines, distributed systems, and developer tools. The site features a dark-themed design with GSAP scroll animations, a starfield canvas background, and a horizontally-scrollable project showcase that loads project data dynamically from JSON.
+A modern, animated portfolio site presenting **250+ projects** spanning AI/ML platforms, full-stack web applications, mobile apps, game engines, distributed systems, and developer tools — including recent agentic-AI and insurance-automation work at Zachary Companies. The site features a dark-themed design with GSAP scroll animations, a starfield canvas background, and a horizontally-scrollable project showcase that loads project data dynamically from JSON.
 
 ---
 
 ## Live Site Features
 
 - **Animated hero section** with GSAP + ScrollTrigger text reveal and cursor-glow effect
-- **Filterable project showcase** — horizontal card scroll with category filters (All, Full-Stack, ML, Frontend, Backend, Library, Tools, Infrastructure, Data)
+- **Filterable project showcase** — horizontal card scroll with category filters (All, Zachary Companies, Full-Stack, ML, Frontend, Backend, Library, Tools, Infrastructure, Data)
 - **Per-project documentation** — each project card can open a detailed markdown doc rendered in-page via Marked.js
-- **Stats strip** displaying aggregate metrics (200+ projects, 30M+ lines of code, 50+ technologies, etc.)
+- **Stats strip** displaying aggregate metrics (250+ projects, 30M+ lines of code, 50+ technologies, etc.)
 - **Tech marquee** scrolling through key technologies
 - **Responsive design** with mobile-friendly navigation and adaptive typography
 
@@ -28,7 +28,7 @@ A modern, animated portfolio site presenting **200+ production-ready projects** 
 ```
 ├── index.html                  # Main portfolio site (single-page app)
 ├── data/
-│   ├── projects.json           # All 200+ projects: metadata, tech stacks, bullets, scores
+│   ├── projects.json           # All 250+ projects: metadata, tech stacks, bullets, scores
 │   ├── summary.json            # Aggregated summary, skills matrix, top projects, category counts
 │   └── docs/                   # Per-project markdown documentation (180+ .md files)
 │       ├── woodbury.md
@@ -85,6 +85,8 @@ Each entry in `data/projects.json` contains:
 | `c`   | Category (`Full-Stack`, `ML`, `Frontend`, `Backend`, `Library`, `Tools`, `Infrastructure`, `Data`, `Other`) |
 | `b`   | Array of detailed bullet points describing key accomplishments |
 | `h`   | Array of highlight strings shown on the card |
+| `g`   | GitHub owner/org for the repo link (e.g. `Zachary-Companies`); defaults to `mephisto83` |
+| `v`   | Visibility flag — `private` suppresses the GitHub link and the entry uses a synthetic slug |
 
 ### summary.json
 
@@ -123,15 +125,17 @@ The portfolio showcases work across a broad technology landscape:
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| Full-Stack | 79 | End-to-end applications with frontend and backend |
-| Backend | 33 | Server-side services, APIs, data pipelines |
+| Full-Stack | 90 | End-to-end applications with frontend and backend |
+| Backend | 58 | Server-side services, APIs, data pipelines |
+| Tools | 30 | Developer tools, automation, CLI utilities |
 | Frontend | 29 | Client-side applications, UI libraries |
-| Tools | 23 | Developer tools, automation, CLI utilities |
-| Library | 17 | Reusable packages and frameworks |
+| Library | 27 | Reusable packages and frameworks |
 | Other | 8 | Miscellaneous and conceptual projects |
 | ML | 6 | Machine learning models and training pipelines |
-| Data | 3 | Dataset management and curation |
-| Infrastructure | 2 | IaC and cloud provisioning |
+| Infrastructure | 6 | IaC and cloud provisioning |
+| Data | 5 | Dataset management and curation |
+
+> 59 of these are recent **Zachary Companies** projects (filterable via the dedicated chip). See below.
 
 ---
 
@@ -149,6 +153,17 @@ The portfolio showcases work across a broad technology landscape:
 | **ComposerCompanion** | AI music composition with TensorFlow.js & MIDI | React, Redux, TensorFlow.js, Firebase |
 | **MEPH** | 560K+ LOC JavaScript MVC/MVVM framework | JavaScript, Express.js, SignalR |
 | **Redhash** | Hashgraph consensus algorithm implementation | JavaScript, React, Redux, D3.js |
+
+---
+
+## Zachary Companies (2026)
+
+Recent work at Zachary Companies appears as sanitized project cards, filterable via the **Zachary Companies** chip. Because this is a public site, private repositories are represented with capability-focused descriptions only — no client/vendor names, account identifiers, or internal domains — use synthetic slugs, and omit GitHub links. Themes:
+
+- **Agentic-AI infrastructure** — a multi-provider tool-calling framework, an eval-driven LLM solver-optimization platform, a multi-tenant agent dashboard, and an AI code-generation platform
+- **Insurance workflow automation** — a multi-tenant agency-management API + web app and a serverless email-processing pipeline feeding ~16 document, claims, and servicing agents
+- **Local GPU inference** — LAN-accessible Ollama and ComfyUI/Whisper inference services for private, on-network model serving
+- **Local-commerce product family** — an MCP-readable business platform, a mobile consumer buying agent, and an automated form-filling SaaS
 
 ---
 

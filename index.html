@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Andrew Porter — Full-Stack Engineer &amp; AI Platform Architect</title>
-  <meta name="description" content="Full-stack engineer with 200+ projects spanning AI platforms, ML pipelines, real-time collaboration, and scalable cloud infrastructure." />
+  <meta name="description" content="Full-stack engineer with 250+ projects spanning AI platforms, agentic automation, ML pipelines, and scalable cloud infrastructure." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -700,7 +700,7 @@
       <div class="hero-content">
         <div class="hero-badge">
           <span class="dot"></span>
-          Software Engineer at Square &bull; 200+ Open Source Projects
+          Software Engineer at Square &bull; 250+ Projects
         </div>
 
         <h1 class="hero-title">
@@ -710,7 +710,7 @@
         </h1>
 
         <p class="hero-sub" id="heroSub">
-          Full-stack engineer and AI platform architect based in the Minneapolis metro area with 200+ production-ready open-source projects. Currently at Square building internal tools for software distribution and telemetry. Specialized in GPU-accelerated ML pipelines, real-time collaborative systems, and end-to-end automation platforms.
+          Full-stack engineer and AI platform architect based in the Minneapolis metro area with 250+ production-ready projects. Specialized in agentic-AI infrastructure, GPU-accelerated ML pipelines, real-time collaborative systems, and end-to-end automation platforms — including recent work at Zachary Companies on AI agents and insurance workflow automation.
         </p>
 
         <div class="hero-cta-row">
@@ -874,11 +874,11 @@
     <!-- STATS -->
     <div class="stats-strip">
       <div class="stat">
-        <div class="stat-num" data-count="200" data-suffix="+">0</div>
-        <div class="stat-label">Repositories</div>
+        <div class="stat-num" data-count="250" data-suffix="+">0</div>
+        <div class="stat-label">Projects</div>
       </div>
       <div class="stat">
-        <div class="stat-num" data-count="79">0</div>
+        <div class="stat-num" data-count="90">0</div>
         <div class="stat-label">Full-Stack Apps</div>
       </div>
       <div class="stat">
@@ -886,7 +886,7 @@
         <div class="stat-label">Tech Categories</div>
       </div>
       <div class="stat">
-        <div class="stat-num" data-count="55" data-suffix="+">0</div>
+        <div class="stat-num" data-count="65" data-suffix="+">0</div>
         <div class="stat-label">High-Impact Projects</div>
       </div>
     </div>
@@ -1196,6 +1196,8 @@
       if (!ALL_PROJECTS || !SUMMARY) return;
 
       var cats = ['All'];
+      var zCount = ALL_PROJECTS.filter(function(p) { return p.g === 'Zachary-Companies'; }).length;
+      if (zCount > 0) cats.push('Zachary Companies');
       var catKeys = Object.keys(SUMMARY.categoryCounts || {}).sort(function(a, b) {
         return (SUMMARY.categoryCounts[b] || 0) - (SUMMARY.categoryCounts[a] || 0);
       });
@@ -1208,7 +1210,8 @@
       cats.forEach(function(c) {
         var btn = document.createElement('button');
         btn.className = 'filter-btn' + (c === currentFilter ? ' active' : '');
-        btn.textContent = c === 'All' ? 'All (' + ALL_PROJECTS.length + ')' : c + ' (' + (SUMMARY.categoryCounts[c] || 0) + ')';
+        var cnt = c === 'All' ? ALL_PROJECTS.length : (c === 'Zachary Companies' ? zCount : (SUMMARY.categoryCounts[c] || 0));
+        btn.textContent = c + ' (' + cnt + ')';
         btn.addEventListener('click', function() {
           currentFilter = c;
           updateFilters();
@@ -1221,7 +1224,9 @@
     function getFilteredProjects() {
       if (!ALL_PROJECTS) return [];
       var list = ALL_PROJECTS;
-      if (currentFilter !== 'All') {
+      if (currentFilter === 'Zachary Companies') {
+        list = list.filter(function(p) { return p.g === 'Zachary-Companies'; });
+      } else if (currentFilter !== 'All') {
         list = list.filter(function(p) { return p.c === currentFilter; });
       }
       if (searchQuery) {
@@ -1256,6 +1261,7 @@
           '<p>' + esc(truncate(p.o, 100)) + '</p>' +
           '<div class="mini-tech">' +
             '<span style="border-color:' + color + '30;color:' + color + '">' + esc(p.c) + '</span>' +
+            (p.g === 'Zachary-Companies' ? '<span style="border-color:rgba(123,97,255,.4);color:#a78bfa">Zachary Companies</span>' : '') +
             (p.s ? p.s.slice(0, 4).map(function(t) { return '<span>' + esc(t) + '</span>'; }).join('') : '') +
           '</div>';
         grid.appendChild(card);
@@ -1324,7 +1330,8 @@
           proj = {
             repoName: mini.r, projectTitle: mini.t, oneLiner: mini.o,
             techStack: mini.s || [], impactScore: mini.i, category: mini.c,
-            bulletPoints: mini.b || [], highlights: mini.h || []
+            bulletPoints: mini.b || [], highlights: mini.h || [],
+            github: mini.g, private: mini.v === 'private'
           };
         }
       }
@@ -1356,12 +1363,19 @@
         '</div>';
       }
 
-      html += '<div style="display:flex;gap:12px;flex-wrap:wrap;">' +
-        '<a href="https://github.com/mephisto83/' + encodeURIComponent(repoName) + '" target="_blank" class="btn btn-primary" style="font-size:13px;padding:10px 18px;">' +
-          'View on GitHub \u2197' +
-        '</a>' +
-      '</div>' +
-      '<div class="modal-doc" id="modalDoc">' +
+      if (proj.private) {
+        html += '<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">' +
+          '<span class="tag" style="border-color:rgba(123,97,255,.35);color:#a78bfa;">\ud83d\udd12 Private \u00b7 Zachary Companies</span>' +
+        '</div>';
+      } else {
+        var ghOwner = proj.github || 'mephisto83';
+        html += '<div style="display:flex;gap:12px;flex-wrap:wrap;">' +
+          '<a href="https://github.com/' + encodeURIComponent(ghOwner) + '/' + encodeURIComponent(repoName) + '" target="_blank" class="btn btn-primary" style="font-size:13px;padding:10px 18px;">' +
+            'View on GitHub \u2197' +
+          '</a>' +
+        '</div>';
+      }
+      html += '<div class="modal-doc" id="modalDoc">' +
         '<p style="color:var(--muted);font-size:13px;">Loading documentation...</p>' +
       '</div>';
 

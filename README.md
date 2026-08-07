@@ -1,6 +1,6 @@
 # mephisto83.github.io
 
-**Andrew Porter — Full-Stack Engineer & AI Platform Architect**
+**Andrew Porter — Staff Software Engineer & AI Platform Architect**
 
 Personal portfolio and project showcase hosted on GitHub Pages at [mephisto83.github.io](https://mephisto83.github.io).
 
@@ -8,16 +8,19 @@ Personal portfolio and project showcase hosted on GitHub Pages at [mephisto83.gi
 
 ## Overview
 
-A modern, animated portfolio site presenting **250+ projects** spanning AI/ML platforms, full-stack web applications, mobile apps, game engines, distributed systems, and developer tools — including recent agentic-AI and insurance-automation work at Zachary Companies. The site features a dark-themed design with GSAP scroll animations, a starfield canvas background, and a horizontally-scrollable project showcase that loads project data dynamically from JSON.
+A modern, animated portfolio site presenting **250+ projects** spanning agent platforms, enterprise SaaS, distributed systems, developer tooling, ML infrastructure, mobile apps, and game engines — including recent governed agentic-AI and insurance-automation work at Zachary Companies. The site features a dark-themed design with GSAP scroll animations, a starfield canvas background, and a horizontally-scrollable project showcase that loads project data dynamically from JSON.
+
+The positioning is deliberately platform-first: the narrative leads with agent runtime, governed actions, evaluation, observability, systems-of-record integration, and software distribution — not with a generic full-stack summary.
 
 ---
 
 ## Live Site Features
 
 - **Animated hero section** with GSAP + ScrollTrigger text reveal and cursor-glow effect
+- **Agent Platform Engineering section** (`#platform`) — nine capability cards covering agent runtime and durable workflows, governed actions and approvals, evaluation harnesses, reliability tiers, run observability, systems-of-record integration, software distribution, multi-tenant foundations, and compliance-sensitive automation
 - **Filterable project showcase** — horizontal card scroll with category filters (All, Zachary Companies, Full-Stack, ML, Frontend, Backend, Library, Tools, Infrastructure, Data)
 - **Per-project documentation** — each project card can open a detailed markdown doc rendered in-page via Marked.js
-- **Stats strip** displaying aggregate metrics (250+ projects, 30M+ lines of code, 50+ technologies, etc.)
+- **Stats strip** displaying aggregate metrics (19 years engineering, 250+ projects, 59 AI platform repos, 4 countries)
 - **Tech marquee** scrolling through key technologies
 - **Responsive design** with mobile-friendly navigation and adaptive typography
 
@@ -81,7 +84,7 @@ Each entry in `data/projects.json` contains:
 | `t`   | Project title |
 | `o`   | One-line overview / description |
 | `s`   | Array of technologies used |
-| `i`   | Impact score (1–8, used for sorting/badging) |
+| `i`   | Impact score (1–9, used for sorting/badging) |
 | `c`   | Category (`Full-Stack`, `ML`, `Frontend`, `Backend`, `Library`, `Tools`, `Infrastructure`, `Data`, `Other`) |
 | `b`   | Array of detailed bullet points describing key accomplishments |
 | `h`   | Array of highlight strings shown on the card |
@@ -125,9 +128,9 @@ The portfolio showcases work across a broad technology landscape:
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| Full-Stack | 90 | End-to-end applications with frontend and backend |
+| Full-Stack | 92 | End-to-end applications with frontend and backend |
 | Backend | 58 | Server-side services, APIs, data pipelines |
-| Tools | 30 | Developer tools, automation, CLI utilities |
+| Tools | 31 | Developer tools, automation, CLI utilities |
 | Frontend | 29 | Client-side applications, UI libraries |
 | Library | 27 | Reusable packages and frameworks |
 | Other | 8 | Miscellaneous and conceptual projects |
@@ -135,7 +138,7 @@ The portfolio showcases work across a broad technology landscape:
 | Infrastructure | 6 | IaC and cloud provisioning |
 | Data | 5 | Dataset management and curation |
 
-> 59 of these are recent **Zachary Companies** projects (filterable via the dedicated chip). See below.
+> 62 of these are recent **Zachary Companies** projects (filterable via the dedicated chip). See below.
 
 ---
 
@@ -143,6 +146,10 @@ The portfolio showcases work across a broad technology landscape:
 
 | Project | Description | Stack |
 |---------|-------------|-------|
+| **Agentic Commerce Platform** | Governed MCP gateway, scoped task grants, durable workflow runtime, approval inbox, evidence ledger | TypeScript, MCP, Aurora PostgreSQL, Lambda, Fargate |
+| **Eval Forge** | Eval-driven LLM solver optimization — case generation, skill discovery, config sweeps, typed package codegen | TypeScript, Node.js, Docker |
+| **Agentic Loop** | Multi-provider agent runtime with a ReAct loop over 35+ tools | TypeScript, Claude/OpenAI/Groq, Node.js |
+| **Digital Assistant (Wanda)** | Distributed multi-agent enterprise assistant with LUIS intent routing (48K+ LOC C#) | C#, Bot Framework, Azure Service Fabric, LUIS |
 | **Woodbury** | AI-powered dev platform with 14-tool CLI and real-time pipeline dashboard | TypeScript, Next.js, Firebase, WebSocket |
 | **Story-Gen** | Multimedia content platform with GPU fallback (H100→CPU) | TypeScript, Python, Google Cloud Run, Docker |
 | **Flow-Midjourney** | Computer vision workflow platform with YOLO training | Node.js, PyTorch, Docker, GCP |
@@ -161,9 +168,10 @@ The portfolio showcases work across a broad technology landscape:
 Recent work at Zachary Companies appears as sanitized project cards, filterable via the **Zachary Companies** chip. Because this is a public site, private repositories are represented with capability-focused descriptions only — no client/vendor names, account identifiers, or internal domains — use synthetic slugs, and omit GitHub links. Themes:
 
 - **Agentic-AI infrastructure** — a multi-provider tool-calling framework, an eval-driven LLM solver-optimization platform, a multi-tenant agent dashboard, and an AI code-generation platform
-- **Insurance workflow automation** — a multi-tenant agency-management API + web app and a serverless email-processing pipeline feeding ~16 document, claims, and servicing agents
+- **Governed agent platform** — a two-layer MCP surface (open public discovery + a task-grant-protected tenant action gateway), a durable workflow runtime with approval inboxes, an append-only evidence ledger, metered agentic work units, and versioned capability packs pinned into immutable tenant profiles
+- **Insurance workflow automation** — a multi-tenant agency-management API + web app and a serverless email-processing pipeline feeding ~16 document, claims, and servicing agents, plus a long-running Fargate agent harness with budgets and audit trails
 - **Local GPU inference** — LAN-accessible Ollama and ComfyUI/Whisper inference services for private, on-network model serving
-- **Local-commerce product family** — an MCP-readable business platform, a mobile consumer buying agent, and an automated form-filling SaaS
+- **Local-commerce product family** — an MCP-readable business platform, a mobile consumer buying agent, a discovery/enrichment platform, a field-agent onboarding and selling gate, an agentic market simulator, and an automated form-filling SaaS
 
 ---
 

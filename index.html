@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Andrew Porter — Full-Stack Engineer &amp; AI Platform Architect</title>
-  <meta name="description" content="Full-stack engineer with 250+ projects spanning AI platforms, agentic automation, ML pipelines, and scalable cloud infrastructure." />
+  <title>Andrew Porter — Staff Software Engineer &amp; AI Platform Architect</title>
+  <meta name="description" content="Staff-level platform engineer and AI architect. Nearly 20 years building enterprise SaaS, distributed systems, agent runtimes, developer platforms, production telemetry, and governed workflow automation. Former Square engineer." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -351,6 +351,43 @@
     }
     .skill-pill:hover { border-color: rgba(200,255,0,.3); color: var(--accent); }
 
+    /* PLATFORM CAPABILITIES */
+    .cap-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .cap-card {
+      padding: 28px 24px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--card-bg);
+      transition: border-color .3s, transform .35s cubic-bezier(.22,1,.36,1);
+      display: flex; flex-direction: column;
+    }
+    .cap-card:hover { border-color: rgba(200,255,0,.18); transform: translateY(-3px); }
+    .cap-num {
+      font-family: "Space Grotesk", sans-serif; font-size: 12px; font-weight: 600;
+      letter-spacing: .12em; color: var(--accent); opacity: .75; margin-bottom: 12px;
+    }
+    .cap-card h4 {
+      font-family: "Space Grotesk", sans-serif; font-size: 19px; font-weight: 600;
+      line-height: 1.25; margin-bottom: 12px;
+    }
+    .cap-card p {
+      color: var(--muted); font-size: 14px; line-height: 1.65; margin-bottom: 16px; flex: 1;
+    }
+    .cap-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .cap-tags span {
+      font-size: 11px; padding: 4px 10px; border-radius: 999px;
+      border: 1px solid var(--border); color: var(--muted);
+      background: rgba(255,255,255,.02);
+    }
+    .cap-note {
+      margin-top: 28px; padding: 20px 24px; border-radius: var(--radius);
+      border: 1px solid var(--border); border-left: 2px solid var(--accent);
+      background: rgba(200,255,0,.03); color: var(--muted);
+      font-size: 14px; line-height: 1.7;
+    }
+    .cap-note strong { color: var(--ink); font-weight: 600; }
+
     /* ACHIEVEMENTS */
     .achievements-list { list-style: none; }
     .achievements-list li {
@@ -681,6 +718,7 @@
       </div>
       <div class="nav-links">
         <a href="#work">Projects</a>
+        <a href="#platform">Platform</a>
         <a href="#experience">Experience</a>
         <a href="#skills">Skills</a>
         <a href="#all-projects">All Work</a>
@@ -700,26 +738,26 @@
       <div class="hero-content">
         <div class="hero-badge">
           <span class="dot"></span>
-          Software Engineer at Square &bull; 250+ Projects
+          Staff Engineer &bull; Former Square &bull; 250+ Projects
         </div>
 
         <h1 class="hero-title">
-          <span class="line"><span class="word">Full-Stack</span></span>
+          <span class="line"><span class="word">AI</span> <span class="word">Platform</span></span>
           <span class="line"><span class="word accent-word">Engineer</span> <span class="word">&amp;</span></span>
           <span class="line"><span class="word outline-word">Architect</span></span>
         </h1>
 
         <p class="hero-sub" id="heroSub">
-          Full-stack engineer and AI platform architect based in the Minneapolis metro area with 250+ production-ready projects. Specialized in agentic-AI infrastructure, GPU-accelerated ML pipelines, real-time collaborative systems, and end-to-end automation platforms — including recent work at Zachary Companies on AI agents and insurance workflow automation.
+          Staff-level engineer and AI platform architect with nearly 20 years across enterprise SaaS, distributed systems, and production infrastructure. Former Square engineer on fleet-wide software distribution and telemetry; now building governed agent runtimes, scoped-permission models, and evaluation harnesses for compliance-sensitive business workflows.
         </p>
 
         <div class="hero-cta-row">
-          <a href="#work" class="btn btn-primary">
-            View Projects
+          <a href="#platform" class="btn btn-primary">
+            Platform Work
             <span class="btn-arrow">&#8594;</span>
           </a>
-          <a href="#skills" class="btn btn-ghost">
-            Skills &amp; Tech
+          <a href="#experience" class="btn btn-ghost">
+            Experience
             <span class="btn-arrow">&#8594;</span>
           </a>
         </div>
@@ -745,7 +783,7 @@
           <p class="kicker">Selected Work</p>
           <h2 class="section-title reveal">Featured<br>Projects</h2>
         </div>
-        <p class="section-sub reveal">Top-rated projects spanning AI platforms, real-time systems, workflow automation, and GPU-accelerated ML infrastructure.</p>
+        <p class="section-sub reveal">Agent platforms and evaluation infrastructure, enterprise distributed systems, and the serverless and .NET backbones underneath them.</p>
       </div>
     </section>
 
@@ -757,7 +795,7 @@
         Building systems that turn <span class="highlight">complexity</span> into capability.
       </p>
       <p class="statement-sub reveal">
-        Specialized in GPU-accelerated ML workflows, real-time collaborative systems, and end-to-end development platforms that integrate computer vision, workflow automation, and distributed processing.
+        I turn ambiguous business requirements into safe, observable, reusable platforms that connect AI capabilities to real systems of record — where permissions, accurate data, approvals, auditability, and recovery all matter because the software drives real-world outcomes.
       </p>
     </div>
 
@@ -769,6 +807,86 @@
       </picture>
     </div>
 
+    <!-- PLATFORM CAPABILITIES -->
+    <section class="section" id="platform">
+      <div class="section-header">
+        <div>
+          <p class="kicker">Systems Focus</p>
+          <h2 class="section-title reveal">Agent Platform<br>Engineering</h2>
+        </div>
+        <p class="section-sub reveal">Not chatbots layered onto a product — the shared runtime, context, action, trust, and evaluation infrastructure that lets AI safely operate real business functions.</p>
+      </div>
+
+      <div class="cap-grid">
+        <div class="cap-card reveal">
+          <div class="cap-num">01</div>
+          <h4>Agent Runtime &amp; Durable Workflows</h4>
+          <p>Provider-agnostic tool-calling runtime (Anthropic, OpenAI, Groq) running a Reason-Act-Observe loop over 35+ registered tools, with automatic continuation on truncated responses. Long-running agent work executes on Fargate when tasks exceed Lambda timeouts, backed by leaseable job queues, durable run state, task records, and idempotent replay.</p>
+          <div class="cap-tags"><span>ReAct loop</span><span>Tool registry</span><span>Durable state</span><span>ECS/Fargate</span><span>Job leasing</span></div>
+        </div>
+
+        <div class="cap-card reveal">
+          <div class="cap-num">02</div>
+          <h4>Governed Actions &amp; Approvals</h4>
+          <p>Short-lived scoped task grants with tool allow-lists, capability sets, risk ceilings, tenant scoping, and expiry — separating what an agent is technically <em>capable</em> of from what it is <em>authorized</em> to do for a given user, role, and workflow. Everything not permitted routes to an approval inbox as a draft or review item, and every server surface fails closed.</p>
+          <div class="cap-tags"><span>Scoped grants</span><span>Approval inbox</span><span>Fail-closed gates</span><span>Human-in-the-loop</span><span>Audit trail</span></div>
+        </div>
+
+        <div class="cap-card reveal">
+          <div class="cap-num">03</div>
+          <h4>Evaluation &amp; Regression Harnesses</h4>
+          <p>An evaluation platform that generates scored eval cases from a problem domain, discovers a recursive skill hierarchy, sweeps model/prompt/temperature configurations per skill, emits typed TypeScript packages, and refines them against real-world performance. Hard verifiers and LLM judges score capability vs. reliability, and every new workflow ships with control, edge, boundary, must-refuse, idempotency, and clarification cases before it can graduate.</p>
+          <div class="cap-tags"><span>Eval case generation</span><span>Automated sweeps</span><span>Must-refuse suites</span><span>Scenario harness</span><span>Regression gates</span></div>
+        </div>
+
+        <div class="cap-card reveal">
+          <div class="cap-num">04</div>
+          <h4>Reliability Tiers &amp; Earned Autonomy</h4>
+          <p>Eval metrics feed a reliability gate that classifies every extractor, router, and workflow as trusted, assisted, review-only, or unsafe — using pass rate, capability/reliability gap, confidence flags, sample size, failure severity, human-correction rate, and regression count. The tier <em>caps</em> how aggressive an owner's approval mode may be. Autonomy is earned, never assumed.</p>
+          <div class="cap-tags"><span>Reliability policy</span><span>Autonomy ladder</span><span>Correction loop</span><span>Refinement triggers</span></div>
+        </div>
+
+        <div class="cap-card reveal">
+          <div class="cap-num">05</div>
+          <h4>Observability &amp; Run Analytics</h4>
+          <p>Typed activity events, converged run analytics, a replaceable projection store, a tenant-safe query gateway, run timelines, and live feeds — plus metered work units carrying model/provider usage, cost, status, entitlement, and audit reference per run. Complements fleet-scale production telemetry work on Square's device software distribution platform.</p>
+          <div class="cap-tags"><span>OpenTelemetry</span><span>Run timelines</span><span>Cost &amp; latency metering</span><span>Saved views</span><span>Trace drilldown</span></div>
+        </div>
+
+        <div class="cap-card reveal">
+          <div class="cap-num">06</div>
+          <h4>Systems-of-Record Integration</h4>
+          <p>An outbound delegated-authorization model — connected accounts as first-class revocable consent records with scope, credential custody, and revocation lifecycle — for CRM, calendar, payment, accounting, and field-service systems. Idempotent one-way sync through integration adapters, over a unified client with retry, token-bucket rate limiting, and shared auth across every provider.</p>
+          <div class="cap-tags"><span>OAuth2 / delegation</span><span>Idempotent sync</span><span>Adapter contracts</span><span>Rate limiting</span><span>Webhooks</span></div>
+        </div>
+
+        <div class="cap-card reveal">
+          <div class="cap-num">07</div>
+          <h4>Software Distribution &amp; Deployment</h4>
+          <p>Fleet-wide software distribution and telemetry for Square devices operating in merchants' hands, where a bad release affects businesses taking payments. Earlier, zero-downtime deployment and upgrade automation for enterprise ERP at Unit4. Today: Terraform-provisioned AWS estates, deployment reconciliation workers, and release gates.</p>
+          <div class="cap-tags"><span>Controlled rollout</span><span>Release telemetry</span><span>Failure diagnosis</span><span>Terraform / IaC</span><span>CI gates</span></div>
+        </div>
+
+        <div class="cap-card reveal">
+          <div class="cap-num">08</div>
+          <h4>Multi-Tenant SaaS Foundations</h4>
+          <p>Cognito/JWT auth with RBAC and passwordless magic-link flows, per-tenant isolation enforced down to the repository layer, tenant configuration and secret management with production-edit locks, versioned capability packs pinned into immutable per-tenant profiles, plus metering, budgets, entitlements, and billing.</p>
+          <div class="cap-tags"><span>Tenant isolation</span><span>RBAC</span><span>Capability packs</span><span>Entitlements</span><span>Metering &amp; budgets</span></div>
+        </div>
+
+        <div class="cap-card reveal">
+          <div class="cap-num">09</div>
+          <h4>Compliance-Sensitive Automation</h4>
+          <p>Insurance workflow automation across submission intake, COI and ACORD forms, loss runs, quote comparison, underwriting, endorsements, renewals, commissions, and claims FNOL — real documents, real customer communications, approvals, and external systems. Append-only evidence ledgers, policy-versioned trust snapshots, cost budgets, and graceful wind-down, with risky work queued for review rather than sent autonomously.</p>
+          <div class="cap-tags"><span>Document AI</span><span>Evidence ledger</span><span>Policy versioning</span><span>Budget enforcement</span><span>Review queues</span></div>
+        </div>
+      </div>
+
+      <p class="cap-note reveal">
+        <strong>Why this shape:</strong> the defensible layer is not the model — it is the governed workflow fabric around it. Structured contracts, scoped grants, approval boundaries, durable evidence, and evaluation-driven regression testing are what let an agent touch a system of record at all. The agent is the last step, not the first.
+      </p>
+    </section>
+
     <!-- EXPERIENCE -->
     <section class="section" id="experience">
       <div class="section-header">
@@ -776,20 +894,40 @@
           <p class="kicker">Career</p>
           <h2 class="section-title reveal">Professional<br>Experience</h2>
         </div>
-        <p class="section-sub reveal">15+ years of software engineering across enterprise platforms, internal tooling, and product development.</p>
+        <p class="section-sub reveal">Nearly 20 years of software engineering across enterprise SaaS, ERP, payments, developer platforms, and AI infrastructure.</p>
       </div>
 
       <div class="timeline">
         <div class="timeline-item reveal">
           <div class="timeline-dot"></div>
           <div class="timeline-card">
+            <div class="timeline-company">Zachary Companies</div>
+            <h4>Principal Engineer &amp; AI Platform Architect</h4>
+            <div class="timeline-meta">February 2026 &ndash; Present &bull; Minneapolis Metro, Remote</div>
+            <ul>
+              <li>Architect of a multi-tenant agentic-commerce platform: governed MCP gateway, scoped task grants, durable workflow runtime, approval inboxes, append-only evidence ledger, and owner-facing business portal</li>
+              <li>Built an evaluation-driven solver-optimization platform that generates eval cases, sweeps model and prompt configurations per skill, emits typed TypeScript packages, and refines them against real-world performance</li>
+              <li>Defined the reliability-tier model &mdash; trusted, assisted, review-only, unsafe &mdash; that binds how much autonomy any workflow may exercise, with must-refuse safety suites treated as first-class regression tests</li>
+              <li>Delivered compliance-sensitive insurance workflow automation: 15+ email-driven agents on a serverless SES/Lambda/SQS/DynamoDB pipeline, a long-running Fargate agent harness, and a 200+ endpoint multi-tenant API on Aurora PostgreSQL</li>
+              <li>Set cross-cutting architecture and interface contracts spanning ~60 repositories, and provide day-to-day technical leadership to the engineers building against them</li>
+              <li>Carry direct people-management responsibility &mdash; inherited an engineer on joining and own their direction, growth, and delivery alongside hands-on architecture work</li>
+            </ul>
+            <div class="cap-tags" style="margin-top:14px"><span>TypeScript</span><span>AWS Lambda / Fargate</span><span>Aurora PostgreSQL</span><span>Terraform</span><span>MCP</span><span>React</span></div>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
             <div class="timeline-company">Block (Square)</div>
             <h4>Software Engineer</h4>
-            <div class="timeline-meta">May 2021 &ndash; Present &bull; Minnesota, United States</div>
+            <div class="timeline-meta">May 2021 &ndash; February 2026 &bull; Minnesota, United States</div>
             <ul>
-              <li>Work on an internal tools team specializing in software distribution and telemetry</li>
-              <li>Maintain and develop a system to distribute updates to all Square devices</li>
+              <li>Maintained and evolved the fleet-wide software distribution and telemetry platform used to deploy updates across Square devices operating in merchants' hands</li>
+              <li>Worked on an internal tools team focused on controlled rollout, release visibility, failure diagnosis, and production reliability for operational endpoints where a bad release affects businesses taking payments</li>
+              <li>Built and supported observability into deployment health across a large, heterogeneous device fleet</li>
             </ul>
+            <div class="cap-tags" style="margin-top:14px"><span>Software distribution</span><span>Telemetry</span><span>Progressive rollout</span><span>Internal tooling</span><span>Production reliability</span></div>
           </div>
         </div>
 
@@ -800,9 +938,11 @@
             <h4>Senior Software Engineer</h4>
             <div class="timeline-meta">June 2017 &ndash; May 2021 &bull; Greater Minneapolis-St. Paul Area</div>
             <ul>
-              <li>Developed customer-facing Single Page Applications (SPAs) and developer-focused tools</li>
-              <li>Focused on improving colleague performance and product quality through efficient internal tooling</li>
+              <li>Developed customer-facing single-page applications for a mature, large-scale education SaaS platform</li>
+              <li>Built developer-focused internal tooling that measurably improved colleague throughput and product quality &mdash; the same developer-experience work that later became a platform specialty</li>
+              <li>Worked across both the customer-facing product surface and the internal platform supporting it</li>
             </ul>
+            <div class="cap-tags" style="margin-top:14px"><span>React</span><span>TypeScript</span><span>SPA architecture</span><span>Developer experience</span></div>
           </div>
         </div>
 
@@ -811,13 +951,15 @@
           <div class="timeline-card">
             <div class="timeline-company">Unit4 Agresso R &amp; D</div>
             <h4>Senior Software Engineer</h4>
-            <div class="timeline-meta">November 2012 &ndash; June 2017</div>
+            <div class="timeline-meta">November 2012 &ndash; June 2017 &bull; International (Norway / Poland / Spain / Sweden)</div>
             <ul>
-              <li>Contributed to the People Platform department, solving enterprise-wide challenges in architecture and integration</li>
-              <li>Designed and implemented Wanda, a distributed digital assistant and aggregator of functional agents</li>
-              <li>Managed LUIS (Language Understanding) strategies and trained international development teams in Poland, Spain, Sweden, and Norway</li>
-              <li>Built scripts to automate deployment and upgrades without incurring downtime</li>
+              <li>Designed and implemented <strong>Wanda</strong>, a distributed digital assistant that aggregated functional business agents across an enterprise ERP &mdash; a multi-agent architecture with intent routing, conversation state, and per-domain handlers, years before the current LLM-agent wave</li>
+              <li>Architected it as microservices on Azure Service Fabric with ASP.NET Web API and OWIN, durable conversation and configuration state in Azure Table Storage, and Application Insights telemetry &mdash; 48,000+ lines of production C#</li>
+              <li>Solved enterprise-wide architecture and integration problems in the People Platform department, establishing reusable approaches rather than one-off solutions</li>
+              <li>Owned language-understanding (LUIS) strategy and trained engineering teams in Poland, Spain, Sweden, and Norway &mdash; setting technical direction across organizational and cultural boundaries</li>
+              <li>Automated deployment and upgrade paths so releases shipped without incurring downtime</li>
             </ul>
+            <div class="cap-tags" style="margin-top:14px"><span>C# / .NET</span><span>ASP.NET Web API</span><span>Azure Service Fabric</span><span>Microsoft LUIS</span><span>Application Insights</span><span>Autofac</span></div>
           </div>
         </div>
 
@@ -827,6 +969,10 @@
             <div class="timeline-company">LUUP</div>
             <h4>Systems Developer</h4>
             <div class="timeline-meta">June 2010 &ndash; October 2012</div>
+            <ul>
+              <li>Backend and systems development on mobile payments infrastructure</li>
+            </ul>
+            <div class="cap-tags" style="margin-top:14px"><span>C# / .NET</span><span>Payments</span><span>Systems integration</span></div>
           </div>
         </div>
 
@@ -836,6 +982,10 @@
             <div class="timeline-company">Mamut ASA</div>
             <h4>Systems Developer</h4>
             <div class="timeline-meta">August 2007 &ndash; May 2010 &bull; Oslo, Norway</div>
+            <ul>
+              <li>Product development on business and ERP software for small and mid-sized companies</li>
+            </ul>
+            <div class="cap-tags" style="margin-top:14px"><span>C# / .NET</span><span>ERP</span><span>Product development</span></div>
           </div>
         </div>
       </div>
@@ -874,20 +1024,20 @@
     <!-- STATS -->
     <div class="stats-strip">
       <div class="stat">
+        <div class="stat-num" data-count="19">0</div>
+        <div class="stat-label">Years Engineering</div>
+      </div>
+      <div class="stat">
         <div class="stat-num" data-count="250" data-suffix="+">0</div>
-        <div class="stat-label">Projects</div>
+        <div class="stat-label">Projects Shipped</div>
       </div>
       <div class="stat">
-        <div class="stat-num" data-count="90">0</div>
-        <div class="stat-label">Full-Stack Apps</div>
+        <div class="stat-num" data-count="59">0</div>
+        <div class="stat-label">AI Platform Repos</div>
       </div>
       <div class="stat">
-        <div class="stat-num" data-count="9">0</div>
-        <div class="stat-label">Tech Categories</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" data-count="65" data-suffix="+">0</div>
-        <div class="stat-label">High-Impact Projects</div>
+        <div class="stat-num" data-count="4">0</div>
+        <div class="stat-label">Countries Trained Teams</div>
       </div>
     </div>
 
@@ -1018,7 +1168,7 @@
     <!-- FOOTER -->
     <footer>
       <div class="footer-inner">
-        <span>&copy; 2025 Andrew Porter &bull; St Paul, Minnesota</span>
+        <span>&copy; 2026 Andrew Porter &bull; St Paul, Minnesota</span>
         <div class="footer-links">
           <a href="mailto:mephisto83@hotmail.com">Email</a>
           <a href="https://www.linkedin.com/in/andrew-porter-ba81a418" target="_blank">LinkedIn</a>

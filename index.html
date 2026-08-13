@@ -1481,11 +1481,19 @@
             repoName: mini.r, projectTitle: mini.t, oneLiner: mini.o,
             techStack: mini.s || [], impactScore: mini.i, category: mini.c,
             bulletPoints: mini.b || [], highlights: mini.h || [],
-            github: mini.g, private: mini.v === 'private'
+            github: mini.g, private: mini.v === 'private', repoPath: mini.u
           };
         }
       }
       if (!proj) return;
+
+      // Repo identity lives in data/projects.json; topProjects is a denormalized
+      // copy, so prefer the canonical record. repoPath is the real owner/repo path
+      // and is absent only for the sanitized zc-* slugs, which name no real repo.
+      var canon = ALL_PROJECTS && ALL_PROJECTS.find(function(p) { return p.r === repoName; });
+      var repoOwner = canon ? canon.g : proj.github;
+      var repoPath = canon ? canon.u : proj.repoPath;
+      var isPrivate = canon ? canon.v === 'private' : proj.private !== false;
 
       var color = CATEGORY_COLORS[proj.category] || '#c8ff00';
 
@@ -1513,16 +1521,25 @@
         '</div>';
       }
 
-      if (proj.private) {
+      if (!isPrivate && repoPath) {
+        // Public: a link that actually resolves.
         html += '<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">' +
-          '<span class="tag" style="border-color:rgba(123,97,255,.35);color:#a78bfa;">\ud83d\udd12 Private \u00b7 Zachary Companies</span>' +
-        '</div>';
-      } else {
-        var ghOwner = proj.github || 'mephisto83';
-        html += '<div style="display:flex;gap:12px;flex-wrap:wrap;">' +
-          '<a href="https://github.com/' + encodeURIComponent(ghOwner) + '/' + encodeURIComponent(repoName) + '" target="_blank" class="btn btn-primary" style="font-size:13px;padding:10px 18px;">' +
+          '<a href="https://github.com/' + esc(repoPath) + '" target="_blank" class="btn btn-primary" style="font-size:13px;padding:10px 18px;">' +
             'View on GitHub \u2197' +
           '</a>' +
+        '</div>';
+      } else {
+        // Private: show where the code really lives, as plain text \u2014 the URL is
+        // real but returns 404 for anyone without access, so it is not a link.
+        var privateLabel = repoOwner === 'Zachary-Companies'
+          ? '\ud83d\udd12 Private \u00b7 Zachary Companies'
+          : '\ud83d\udd12 Private repository';
+        html += '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">' +
+          '<span class="tag" style="border-color:rgba(123,97,255,.35);color:#a78bfa;">' + privateLabel + '</span>' +
+          (repoPath
+            ? '<code style="font-size:12px;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:5px 9px;">github.com/' + esc(repoPath) + '</code>' +
+              '<span style="font-size:12px;color:var(--muted);">not publicly accessible</span>'
+            : '<span style="font-size:12px;color:var(--muted);">repository name withheld</span>') +
         '</div>';
       }
       html += '<div class="modal-doc" id="modalDoc">' +

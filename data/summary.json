@@ -781,7 +781,9 @@
     "Replayable evidence & trust ledger"
    ],
    "impactScore": 9,
-   "category": "Full-Stack"
+   "category": "Full-Stack",
+   "github": "Zachary-Companies",
+   "private": true
   },
   {
    "repoName": "zc-eval-forge",
@@ -807,7 +809,9 @@
     "Autonomy earned through evals"
    ],
    "impactScore": 9,
-   "category": "Full-Stack"
+   "category": "Full-Stack",
+   "github": "Zachary-Companies",
+   "private": true
   },
   {
    "repoName": "zc-agentic-loop",
@@ -832,7 +836,9 @@
     "35+ built-in agent tools"
    ],
    "impactScore": 9,
-   "category": "Library"
+   "category": "Library",
+   "github": "Zachary-Companies",
+   "private": true
   },
   {
    "repoName": "DigitalAssistant",
@@ -856,7 +862,9 @@
     "Multi-agent architecture with intelligent conversation routing and state management"
    ],
    "impactScore": 8,
-   "category": "Backend"
+   "category": "Backend",
+   "private": true,
+   "repoPath": "mephisto83/DigitalAssistant"
   },
   {
    "repoName": "zc-management-api",
@@ -881,7 +889,9 @@
     "Multi-tenant by design"
    ],
    "impactScore": 8,
-   "category": "Backend"
+   "category": "Backend",
+   "github": "Zachary-Companies",
+   "private": true
   },
   {
    "repoName": "redquick",
@@ -905,7 +915,9 @@
     "Multi-platform architecture spanning backend services and mobile applications"
    ],
    "impactScore": 8,
-   "category": "Full-Stack"
+   "category": "Full-Stack",
+   "private": true,
+   "repoPath": "mephisto83/redquick"
   },
   {
    "repoName": "zc-email-infra",
@@ -930,7 +942,9 @@
     "Pluggable handler architecture"
    ],
    "impactScore": 7,
-   "category": "Infrastructure"
+   "category": "Infrastructure",
+   "github": "Zachary-Companies",
+   "private": true
   },
   {
    "repoName": "zc-bodji-scout",
@@ -957,7 +971,9 @@
     "Credit-metered multi-tenant SaaS"
    ],
    "impactScore": 8,
-   "category": "Full-Stack"
+   "category": "Full-Stack",
+   "github": "Zachary-Companies",
+   "private": true
   },
   {
    "repoName": "zc-ams-frontend",
@@ -982,7 +998,9 @@
     "3D relationship graph"
    ],
    "impactScore": 8,
-   "category": "Full-Stack"
+   "category": "Full-Stack",
+   "github": "Zachary-Companies",
+   "private": true
   },
   {
    "repoName": "woobury-models",
@@ -1006,7 +1024,10 @@
     "Custom distributed training system with remote GPU coordination"
    ],
    "impactScore": 8,
-   "category": "ML"
+   "category": "ML",
+   "github": "Zachary-Companies",
+   "private": true,
+   "repoPath": "Zachary-Companies/woobury-models"
   }
  ],
  "categoryCounts": {

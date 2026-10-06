@@ -740,6 +740,7 @@
         <a href="#skills">Skills</a>
         <a href="#all-projects">All Work</a>
         <a href="#labs">Labs</a>
+        <a href="consulting/">Consulting</a>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <a href="https://www.linkedin.com/in/andrew-porter-ba81a418" target="_blank" class="nav-cta nav-secondary" style="background:transparent;color:var(--muted);border:1px solid var(--border);">LinkedIn &#8599;</a>
@@ -776,6 +777,10 @@
           </a>
           <a href="#experience" class="btn btn-ghost">
             Experience
+            <span class="btn-arrow">&#8594;</span>
+          </a>
+          <a href="consulting/" class="btn btn-ghost">
+            Consulting &amp; Rates
             <span class="btn-arrow">&#8594;</span>
           </a>
         </div>
@@ -1705,7 +1710,8 @@
       gsap.from(".hero-badge", { y: 20, opacity: 0, duration: .7, ease: "power3.out", delay: .1 });
       gsap.from(".hero-title .word", { y: 60, opacity: 0, duration: 1, ease: "power3.out", stagger: .1, delay: .2 });
       gsap.from(".hero-sub", { y: 20, opacity: 0, duration: .8, ease: "power2.out", delay: .5 });
-      gsap.from(".hero-cta-row .btn", { y: 14, opacity: 0, duration: .7, ease: "power2.out", stagger: .08, delay: .6 });
+      // fromTo, not from: .btn's CSS `transition: all` fades the buttons out before a delayed from() reads its end values
+      gsap.fromTo(".hero-cta-row .btn", { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: .7, ease: "power2.out", stagger: .08, delay: .6, clearProps: "transform,opacity" });
 
       // Reveal on scroll
       gsap.utils.toArray(".reveal").forEach(function(el) {
